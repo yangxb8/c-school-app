@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flip/flip.dart';
 import 'package:get/get.dart';
+import 'package:like_button/like_button.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:spoken_chinese/controller/review_words_controller.dart';
 import 'package:spoken_chinese/service/logger_service.dart';
@@ -8,25 +9,25 @@ import 'dart:math';
 
 //TODO: this is test data
 List<String> images = [
-  "assets/review_panel/image_04.jpg",
-  "assets/review_panel/image_03.jpg",
-  "assets/review_panel/image_02.jpg",
-  "assets/review_panel/image_01.png",
-  "assets/review_panel/image_04.jpg",
-  "assets/review_panel/image_03.jpg",
-  "assets/review_panel/image_02.jpg",
-  "assets/review_panel/image_01.png",
+  'assets/review_panel/image_04.jpg',
+  'assets/review_panel/image_03.jpg',
+  'assets/review_panel/image_02.jpg',
+  'assets/review_panel/image_01.png',
+  'assets/review_panel/image_04.jpg',
+  'assets/review_panel/image_03.jpg',
+  'assets/review_panel/image_02.jpg',
+  'assets/review_panel/image_01.png',
 ];
 
 List<String> title = [
-  "Hounted Ground",
-  "Fallen In Love",
-  "The Dreaming Moon",
-  "Jack the Persian and the Black Castel",
-  "Hounted Ground",
-  "Fallen In Love",
-  "The Dreaming Moon",
-  "Jack the Persian and the Black Castel",
+  'Hounted Ground',
+  'Fallen In Love',
+  'The Dreaming Moon',
+  'Jack the Persian and the Black Castel',
+  'Hounted Ground',
+  'Fallen In Love',
+  'The Dreaming Moon',
+  'Jack the Persian and the Black Castel',
 ];
 
 class WordsFlashcard extends StatefulWidget {
@@ -48,7 +49,7 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
     controller.addListener(() {
       setState(() {
         pageFraction = controller.page;
-        if(!flipController.isFront) flipController.flip();
+        if (!flipController.isFront) flipController.flip();
       });
     });
 
@@ -58,19 +59,31 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
       padding: const EdgeInsets.only(top: 90.0),
       child: SimpleGestureDetector(
         onTap: _onTap,
-        child: Stack(
-          children: <Widget>[
-            CardScrollWidget(pageFraction, flipController),
-            Positioned.fill(
-              child: PageView.builder(
-                itemCount: images.length,
-                controller: controller,
-                reverse: true,
-                itemBuilder: (context, index) {
-                  return Container();
-                },
-              ),
+        child: Column(
+          children: [
+            Stack(
+              children: <Widget>[
+                CardScrollWidget(pageFraction, flipController),
+                Positioned.fill(
+                  child: PageView.builder(
+                    itemCount: images.length,
+                    controller: controller,
+                    reverse: true,
+                    itemBuilder: (context, index) {
+                      return Container();
+                    },
+                  ),
+                ),
+              ],
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: [LikeButton(), LikeButton()],
+              ),
+            )
           ],
         ),
       ),
@@ -121,6 +134,13 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
             fit: StackFit.expand,
             children: <Widget>[
               Image.asset(images[i], fit: BoxFit.cover),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: LikeButton(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+              ),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Column(
@@ -190,11 +210,5 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
         );
       }),
     );
-  }
-}
-
-extension ShouldFlip on FlipController {
-  void flipIf(bool shouldFlip) {
-    if (shouldFlip) flip();
   }
 }
