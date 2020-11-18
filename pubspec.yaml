@@ -1,0 +1,117 @@
+name: spoken_chinese
+description: App provide spoken chinese training
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  device_info: ^1.0.0
+  firebase_core: "0.5.2"
+  firebase_analytics: "^6.0.0"
+  firebase_auth: "^0.18.0+1"
+#  flutter_facebook_auth: "^0.2.3"
+  flutter_twitter_login: ^1.1.0
+  google_sign_in: "^4.5.1"
+  get: ^3.15.0
+  i18n_extension: ^1.4.5
+  shared_preferences: ">=0.5.10 <2.0.0"
+  form_field_validator: ^1.0.1
+  flutter_beautiful_popup: ^1.5.0
+  modal_progress_hud: ^0.1.3
+  supercharged: ^1.11.1
+  logger: ^0.9.4
+  cloud_firestore: "^0.14.0+2"
+  firebase_storage: "^5.0.1"
+  uuid: 2.2.2
+  enum_to_string: ^1.0.13
+  convex_bottom_bar: ^2.6.0
+  settings_ui: ^0.4.0
+  modal_bottom_sheet: ^0.2.2
+  audioplayers: ^0.16.2
+  permission_handler: ^5.0.1+1
+  path_provider: ^1.6.24
+  json_annotation: ^3.1.0
+  flutter_radar_chart: ^0.1.6
+  fl_chart: ^0.12.0
+  flip: ^1.0.0
+  simple_gesture_detector: ^0.1.4
+  material_floating_search_bar: ^0.2.3
+  sticky_and_expandable_list: ^0.2.3
+  flamingo: ^1.10.0
+  flamingo_annotation: ^0.3.0
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  font_awesome_flutter: ^8.10.0
+  pedantic: ^1.9.2
+  build_runner: ^1.10.4
+  json_serializable: ^3.5.0
+  test: ^1.15.4
+  flamingo_generator: ^0.7.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/discover_panel/
+    - assets/main_app/
+    - assets/login/
+    - assets/study_panel/
+    - assets/review_panel/
+    - assets/setting_panel/
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  fonts:
+    - family: WorkSansSemiBold
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-SemiBold.ttf
+
+    - family: WorkSansBold
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-Bold.ttf
+
+    - family: WorkSansMedium
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-Medium.ttf
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages

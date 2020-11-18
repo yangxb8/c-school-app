@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "853976991023",
+    "firebase_url": "https://spoken-chinese.firebaseio.com",
+    "project_id": "spoken-chinese",
+    "storage_bucket": "spoken-chinese.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853976991023:android:a642f157e8dd41e187cdda",
+        "android_client_info": {
+          "package_name": "site.alphasho.spoken_chinese"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853976991023-b180g333nov3g7afmf5v4pdpd32e7l2m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "site.alphasho.spoken_chinese",
+            "certificate_hash": "7bdf83adcf7b2b3a3329983a8bc5103036558f79"
+          }
+        },
+        {
+          "client_id": "853976991023-rjjphat45tfjjjkc5v8k7t9s20db7d49.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXyMyBRz1IyV6dPSl9cAjXruHhaczWPPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853976991023-rjjphat45tfjjjkc5v8k7t9s20db7d49.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
