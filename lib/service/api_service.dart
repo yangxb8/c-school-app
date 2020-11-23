@@ -246,8 +246,8 @@ class _FirestoreApi {
       'membershipType': [EnumToString.convertToString(MembershipType.FREE)],
       'membershipEndAt': null,
       'rankHistory': [],
-      'progress': {'learnedLectures': {}, 'history': {}},
-      'userGeneratedData': {'savedLecturesID': [], 'memo': []}
+      'progress': {'learnedLectures': {}, 'reviewedWords':{}, 'history': {}},
+      'userGeneratedData': {'savedLecturesID': [], 'savedWordsID':[], 'memo': []}
     };
     _appUsersCollection
         .doc(firebaseUser.uid)
