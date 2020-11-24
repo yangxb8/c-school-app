@@ -298,6 +298,12 @@ class _FirestoreApi {
         : null; // If user login anonymously, this will be null
   }
 
+  //TODO: implement this
+  Future<List<Word>> fetchWords({tag: tag}) {
+    DocumentAccessor documentAccessor = DocumentAccessor();
+    
+  }
+
   // Setup emulator for firestore ONLY in debug mode
   static void _setupEmulator() {
     var debugMode = false;

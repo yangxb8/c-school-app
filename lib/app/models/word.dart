@@ -83,7 +83,20 @@ class Word extends Document<Word> {
     return _examplesAudioMap;
   }
 
-  /// For debug use only!!!
+  set examplesAudio(Map<String, List<StorageFile>> examplesAudio_){
+    if(examples.isEmpty()){
+      throw NotSetupException('Examples must be set before examplesAudio');
+    }
+    examples.keys.forEach((key){
+      if(exampleAudio_.containsKey(key)){
+        _examplesAudio.addAll(exampleAudio_[key])
+      }
+      _examplesAudio.add(null);
+    });
+    // Remove the last null we add
+    _examplesAudio.removeLast();
+  }
+
   set examples(Map<String, List<String>> examples_) {
     _examples = examples_.map((key, value) => MapEntry(key, value.join('#')));
   }
@@ -111,4 +124,9 @@ enum WordTag {
   HSK2,
   HSK3,
   HSK4
+}
+
+class NotSetupException extends Exception {
+  String message;
+  NotSetupException(this.message);
 }
