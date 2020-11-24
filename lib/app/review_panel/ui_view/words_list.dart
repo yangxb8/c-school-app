@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:spoken_chinese/app/models/word.dart';
 import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 import 'package:get/get.dart';
-import 'package:settings_ui/settings_ui.dart';
 import 'package:spoken_chinese/controller/review_words_controller.dart';
 
 class WordsList extends GetView<ReviewWordsController> {
   @override
   Widget build(BuildContext context) {
-    var value = true;
+    var sectionList = controller.sectionList;
     return ExpandableListView(
-      builder: SliverExpandableChildDelegate<String, ExampleSection>(
-          sectionList: controller.sectionList,
+      builder: SliverExpandableChildDelegate<Word, WordsSection>(
+          sectionList: sectionList,
           headerBuilder: (context, sectionIndex, index) =>
               Text(controller.getSectionHeader(sectionIndex)),
           itemBuilder: (context, sectionIndex, itemIndex, index) {
-            Word word = sectionList[sectionIndex].items[itemIndex];
+            var word = sectionList[sectionIndex].items[itemIndex];
             return ListTile(
-              trailing: TextButton(
-                child: Text("$index"),
+              trailing: IconButton(
+                icon: Icon(Icons.headset),
+                onPressed: ()=>controller.playWord(word: word),
               ),
-              title: Text(item),
+              title: Row(children: [
+                Text(word.word.join()),
+                Text(word.pinyin.join(' '))
+              ],),
             );
           }),
     );

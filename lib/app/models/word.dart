@@ -1,6 +1,7 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:spoken_chinese/exceptions/sound_exceptions.dart';
 
 part 'word.flamingo.dart';
 
@@ -65,6 +66,8 @@ class Word extends Document<Word> {
   Map<String, List<String>> get examples =>
       _examples.map((key, value) => MapEntry(key, value.split('#')));
 
+  String get classId => id.split('-').first;
+
   Map<String, List<StorageFile>> get examplesAudio {
     if(_examplesAudioMap != null) return _examplesAudioMap;
     var meaningIndex = 0;
@@ -84,12 +87,12 @@ class Word extends Document<Word> {
   }
 
   set examplesAudio(Map<String, List<StorageFile>> examplesAudio_){
-    if(examples.isEmpty()){
+    if(examples.isEmpty){
       throw NotSetupException('Examples must be set before examplesAudio');
     }
     examples.keys.forEach((key){
-      if(exampleAudio_.containsKey(key)){
-        _examplesAudio.addAll(exampleAudio_[key])
+      if(examplesAudio_.containsKey(key)){
+        _examplesAudio.addAll(examplesAudio_[key]);
       }
       _examplesAudio.add(null);
     });
@@ -124,9 +127,4 @@ enum WordTag {
   HSK2,
   HSK3,
   HSK4
-}
-
-class NotSetupException extends Exception {
-  String message;
-  NotSetupException(this.message);
 }
