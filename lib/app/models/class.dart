@@ -4,7 +4,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 
 class CSchoolClass extends Document<CSchoolClass>{
     CSchoolClass({
-    @required id,
+    String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
   }) : super(id: id, snapshot: snapshot, values: values);

@@ -79,7 +79,7 @@ class ReviewWordsController extends GetxController {
     wordsList.groupBy((word) => word.id.split('-').first).forEach((key, value) {
       var section = WordsSection();
       section
-        ..expanded = true;
+        ..expanded = true
         ..items = value;
       sectionList_.add(section);
     });

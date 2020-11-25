@@ -1,6 +1,5 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:flutter/foundation.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:spoken_chinese/exceptions/sound_exceptions.dart';
 
@@ -9,10 +8,14 @@ part 'word.flamingo.dart';
 /// id is used as primary key for any word
 class Word extends Document<Word> {
   Word({
-    @required id,
+    String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
-  }) : super(id: id, snapshot: snapshot, values: values);
+  }) : wordId=id,
+        super(id: id, snapshot: snapshot, values: values);
+
+  @Field()
+  String wordId;
 
   /// Example: [['我'],[们]]
   @Field()

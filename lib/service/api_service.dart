@@ -228,6 +228,7 @@ class _FirestoreApi {
   static FirebaseFirestore _firestore;
   static CollectionReference _appUsersCollection;
   static CollectionReference _userSpeechCollection;
+  static DocumentAccessor _documentAccessor = DocumentAccessor();
 
   static _FirestoreApi getInstance() {
     if (_instance == null) {
@@ -300,10 +301,24 @@ class _FirestoreApi {
         : null; // If user login anonymously, this will be null
   }
 
-  //TODO: implement this
   Future<List<Word>> fetchWords({List<String> tags}) {
-    DocumentAccessor documentAccessor = DocumentAccessor();
-    
+    final collectionPaging = CollectionPaging<Word>(
+      query: Word().collectionRef.orderBy('createdAt', descending: true),
+      limit: 20,
+      decode: (snap) => Word(snapshot: snap),
+    );
+
+    List<User> items = [];
+
+    final _items = await collectionPaging.load();
+    items = _items;
+
+    final _items = await collectionPaging.loadMore();
+    items.addAll(_items);
+  }
+
+  Future<List<Word>> fetchClasses({List<String> tags}) {
+
   }
 
   // Setup emulator for firestore ONLY in debug mode
