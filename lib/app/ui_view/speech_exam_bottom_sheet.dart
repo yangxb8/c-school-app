@@ -34,7 +34,7 @@ class FloatBottomSheetContainer extends StatelessWidget {
 Future<T> showSpeechExamBottomSheet<T>({@required SpeechExam exam}) async {
   final result = await showCustomModalBottomSheet(
     context: Get.context,
-    builder: (context) => SpeechExamBottomSheet(exam: exam),
+    builder: (context, scrollController) => SpeechExamBottomSheet(exam: exam),
     containerWidget: (_, animation, child) => FloatBottomSheetContainer(
       child: child,
     ),
