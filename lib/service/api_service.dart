@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spoken_chinese/app/models/exams.dart';
 import 'package:spoken_chinese/app/models/speech_evaluation_result.dart';
 import 'package:spoken_chinese/app/models/user_speech.dart';
+import 'package:spoken_chinese/app/models/word.dart';
 import '../model/user.dart';
 import './logger_service.dart';
 import '../i18n/api_service.i18n.dart';
@@ -296,6 +298,12 @@ class _FirestoreApi {
     return snapshot.exists
         ? snapshot.data()
         : null; // If user login anonymously, this will be null
+  }
+
+  //TODO: implement this
+  Future<List<Word>> fetchWords({List<String> tags}) {
+    DocumentAccessor documentAccessor = DocumentAccessor();
+    
   }
 
   // Setup emulator for firestore ONLY in debug mode

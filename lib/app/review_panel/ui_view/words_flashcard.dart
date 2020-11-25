@@ -67,7 +67,7 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
           children: [
             Stack(
               children: <Widget>[
-                // We only use this to controller the PageController behind screen
+                // We only use this to control the PageController behind screen
                 Positioned.fill(
                   child: PageView.builder(
                     itemCount: reviewWordsController.wordsList.length,
@@ -130,6 +130,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
   final padding = 10.0;
   final verticalInset = 8.0;
   final logger = Get.find<LoggerService>().logger;
+  static const MAX_CARDS_FRAME = 8;
 
   CardScrollWidget(this.pageFraction, this.flipController);
 
@@ -155,6 +156,10 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
         for (var i = 0; i < controller.wordsList.length; i++) {
           var delta = i - pageFraction;
           var isPrimaryCard = delta.toInt() == 0;
+          // If card is not visible, don't build it
+          if (delta.abs() > MAX_CARDS_FRAME) {
+            continue;
+          }
           if (isPrimaryCard) {
             controller.primaryWordOrdinal.value = i;
           }
@@ -285,10 +290,13 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                                       meaning: meaning, sentence: example),
                                   child: RichText(
                                     text: TextSpan(
-                                        style: TextStyle(fontSize: 20.0, color: Colors.black),
-                                        children: _divideExample(
-                                                [controller.primaryWordString, ...controller.findRelatedWord()],
-                                                example)
+                                        style: TextStyle(
+                                            fontSize: 20.0,
+                                            color: Colors.black),
+                                        children: _divideExample([
+                                          controller.primaryWordString,
+                                          ...controller.findRelatedWord()
+                                        ], example)
                                             .map((part) => TextSpan(
                                                 text: part,
                                                 style: part ==
@@ -361,15 +369,13 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
       });
       return exampleDivided;
     } else if (example is String) {
-      var exampleList = example.split(keyword);
-      exampleList.forEachIndexed((index, part) {
+      example.split(keyword).forEachIndexed((index, part) {
         exampleDivided.add(part);
-        if (index < exampleList.length - 1) {
-          exampleDivided.add(keyword);
-        }
+        exampleDivided.add(keyword);
       });
-      exampleDivided.removeWhere(
-          (currentValue) => currentValue.isEmpty);
+      // Remove the last null we add
+      exampleDivided.removeLast();
+      exampleDivided.removeWhere((currentValue) => currentValue.isEmpty);
       return exampleDivided;
     }
     return null;
