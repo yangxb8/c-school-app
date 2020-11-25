@@ -20,9 +20,11 @@ void main() async {
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
   ]);
-  await Flamingo.initializeApp();
   await initServices();
-  Logger.level = Level.debug;
+  await Flamingo.initializeApp();
+  Logger.level = Get.find<AppStateService>().systemInfo.isDebugMode
+      ? Level.debug
+      : Level.error;
   runApp(SpokenChineseApp());
 }
 
@@ -68,6 +70,7 @@ class SpokenChineseApp extends GetView<AppStateService> {
         ],
         getPages: AppRouter.setupRouter(),
         //TODO: change default route, only for words-list test
-        initialRoute: controller.systemInfo.startCount == 0 ? '/login' : '/review/words');
+        initialRoute:
+            controller.systemInfo.startCount == 0 ? '/login' : '/review/words');
   }
 }
