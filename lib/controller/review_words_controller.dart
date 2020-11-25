@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:spoken_chinese/service/class_service.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spoken_chinese/app/review_panel/ui_view/words_list.dart';
 import 'package:spoken_chinese/model/user.dart';
 import 'package:spoken_chinese/app/models/word.dart';
-import 'package:spoken_chinese/service/api_service.dart';
 import 'package:spoken_chinese/service/logger_service.dart';
 
 class ReviewWordsController extends GetxController {
@@ -24,15 +24,22 @@ class ReviewWordsController extends GetxController {
   final _userSavedWordsID =
       (AppUser.userGeneratedData['savedWordsID'] as List).obs;
 
-  /// Total words list
+  List<Word> _allWords;
   List<Word> wordsList = [];
-  final apiService = Get.find<ApiService>();
   final logger = Get.find<LoggerService>().logger;
   final tts = FlutterTts();
   AudioPlayer audioPlayer = AudioPlayer();
 
+  @override
+  Future<void> onInit() async {
+    _allWords = await Get.find<ClassService>().allWords;
+    super.onInit();
+  }
+
   Future<void> fetchWordsAndInitByTags(List<String> tags) async {
     //TODO: Test data, replace me
+    wordsList = _allWords
+        .filter((word) => tags.every((tag) => word.tags.contains(tag)));
     var word1 = Word(id: 'C0001-0001');
     word1
       ..word = ['我', '们']

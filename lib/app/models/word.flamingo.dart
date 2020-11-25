@@ -8,6 +8,7 @@ part of 'word.dart';
 
 /// Field value key
 enum WordKey {
+  wordId,
   word,
   pinyin,
   meaningJp,
@@ -16,7 +17,7 @@ enum WordKey {
   breakdowns,
   synonyms,
   antonyms,
-  tags,
+  _tags,
 
   pic,
   wordAudio,
@@ -26,6 +27,8 @@ enum WordKey {
 extension WordKeyExtension on WordKey {
   String get value {
     switch (this) {
+      case WordKey.wordId:
+        return 'wordId';
       case WordKey.word:
         return 'word';
       case WordKey.pinyin:
@@ -42,8 +45,8 @@ extension WordKeyExtension on WordKey {
         return 'synonyms';
       case WordKey.antonyms:
         return 'antonyms';
-      case WordKey.tags:
-        return 'tags';
+      case WordKey._tags:
+        return '_tags';
       case WordKey.pic:
         return 'pic';
       case WordKey.wordAudio:
@@ -59,6 +62,7 @@ extension WordKeyExtension on WordKey {
 /// For save data
 Map<String, dynamic> _$toData(Word doc) {
   final data = <String, dynamic>{};
+  Helper.writeNotNull(data, 'wordId', doc.wordId);
   Helper.writeNotNull(data, 'word', doc.word);
   Helper.writeNotNull(data, 'pinyin', doc.pinyin);
   Helper.writeNotNull(data, 'meaningJp', doc.meaningJp);
@@ -67,7 +71,7 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, 'breakdowns', doc.breakdowns);
   Helper.writeNotNull(data, 'synonyms', doc.synonyms);
   Helper.writeNotNull(data, 'antonyms', doc.antonyms);
-  Helper.writeNotNull(data, 'tags', doc.tags);
+  Helper.writeNotNull(data, '_tags', doc._tags);
 
   Helper.writeStorageNotNull(data, 'pic', doc.pic, isSetNull: true);
   Helper.writeStorageNotNull(data, 'wordAudio', doc.wordAudio, isSetNull: true);
@@ -79,6 +83,7 @@ Map<String, dynamic> _$toData(Word doc) {
 
 /// For load data
 void _$fromData(Word doc, Map<String, dynamic> data) {
+  doc.wordId = Helper.valueFromKey<String>(data, 'wordId');
   doc.word = Helper.valueListFromKey<String>(data, 'word');
   doc.pinyin = Helper.valueListFromKey<String>(data, 'pinyin');
   doc.meaningJp = Helper.valueListFromKey<String>(data, 'meaningJp');
@@ -87,7 +92,7 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
   doc.synonyms = Helper.valueListFromKey<String>(data, 'synonyms');
   doc.antonyms = Helper.valueListFromKey<String>(data, 'antonyms');
-  doc.tags = Helper.valueListFromKey<String>(data, 'tags');
+  doc._tags = Helper.valueListFromKey<String>(data, '_tags');
 
   doc.pic = Helper.storageFile(data, 'pic');
   doc.wordAudio = Helper.storageFile(data, 'wordAudio');

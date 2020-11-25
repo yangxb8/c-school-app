@@ -2,12 +2,18 @@ import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 
+part 'class.flamingo.dart';
+
 class CSchoolClass extends Document<CSchoolClass>{
     CSchoolClass({
     String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
-  }) : super(id: id, snapshot: snapshot, values: values);
+  }) : classId = id,
+          super(id: id, snapshot: snapshot, values: values);
+
+  @Field()
+  String classId;
 
   @Field()
   String title;
@@ -26,6 +32,12 @@ class CSchoolClass extends Document<CSchoolClass>{
   List<ClassTag> get tags => EnumToString.fromList(ClassTag.values, _tags);
 
   set tags(List<ClassTag> tags_) => EnumToString.toList(tags_);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
     
 }
 

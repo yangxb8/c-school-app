@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:spoken_chinese/service/class_service.dart';
+
 import './service/app_state_service.dart';
 
 import 'app_theme.dart';
@@ -34,6 +36,7 @@ Future<void> initServices() async {
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   Get.put<LoggerService>(LoggerService());
   Get.put<AppStateService>(AppStateService.getInstance());
+  Get.put<ClassService>(ClassService.getInstance());
   Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
 }
 

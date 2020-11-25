@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spoken_chinese/app/models/class.dart';
 import 'package:spoken_chinese/app/models/exams.dart';
 import 'package:spoken_chinese/app/models/speech_evaluation_result.dart';
 import 'package:spoken_chinese/app/models/user_speech.dart';
@@ -301,24 +302,22 @@ class _FirestoreApi {
         : null; // If user login anonymously, this will be null
   }
 
-  Future<List<Word>> fetchWords({List<String> tags}) {
+  Future<List<Word>> fetchWords({List<String> tags}) async {
     final collectionPaging = CollectionPaging<Word>(
-      query: Word().collectionRef.orderBy('createdAt', descending: true),
-      limit: 20,
+      query: Word().collectionRef.orderBy('wordId', descending: true),
+      limit: 10000,
       decode: (snap) => Word(snapshot: snap),
     );
-
-    List<User> items = [];
-
-    final _items = await collectionPaging.load();
-    items = _items;
-
-    final _items = await collectionPaging.loadMore();
-    items.addAll(_items);
+    return await collectionPaging.load();
   }
 
-  Future<List<Word>> fetchClasses({List<String> tags}) {
-
+  Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async{
+    final collectionPaging = CollectionPaging<CSchoolClass>(
+      query: CSchoolClass().collectionRef.orderBy('classId', descending: true),
+      limit: 10000,
+      decode: (snap) => CSchoolClass(snapshot: snap),
+    );
+    return await collectionPaging.load();
   }
 
   // Setup emulator for firestore ONLY in debug mode
