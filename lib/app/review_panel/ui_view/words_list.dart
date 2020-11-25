@@ -12,7 +12,7 @@ class WordsList extends GetView<ReviewWordsController> {
       builder: SliverExpandableChildDelegate<Word, WordsSection>(
           sectionList: sectionList,
           headerBuilder: (context, sectionIndex, index) =>
-              Text(controller.getSectionHeader(sectionIndex)),
+              Text(sectionList[sectionIndex].header),
           itemBuilder: (context, sectionIndex, itemIndex, index) {
             var word = sectionList[sectionIndex].items[itemIndex];
             return ListTile(
@@ -31,12 +31,8 @@ class WordsList extends GetView<ReviewWordsController> {
 }
 
 class WordsSection implements ExpandableListSection<Word> {
-  //store expand state.
   bool expanded;
-  //return item model list.
   List<Word> items;
-
-  //example header, optional
   String header;
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:spoken_chinese/exceptions/sound_exceptions.dart';
 
 part 'word.flamingo.dart';
@@ -46,7 +47,7 @@ class Word extends Document<Word> {
 
   /// Converted from WordTag enum
   @Field()
-  List<String> tags;
+  List<String> _tags;
 
   /// If the word has pic in cloud storage
   @StorageField()
@@ -103,6 +104,10 @@ class Word extends Document<Word> {
   set examples(Map<String, List<String>> examples_) {
     _examples = examples_.map((key, value) => MapEntry(key, value.join('#')));
   }
+
+  List<WordTag> get tags => EnumToString.fromList(WordTag.values, _tags);
+
+  set tags(List<WordTag> tags_) => EnumToString.toList(tags_);
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

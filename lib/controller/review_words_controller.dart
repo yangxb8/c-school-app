@@ -73,13 +73,17 @@ class ReviewWordsController extends GetxController {
   Word get primaryWord => wordsList[primaryWordOrdinal.value];
   String get primaryWordString => primaryWord.word.join();
   bool get isFavorite => _userSavedWordsID.contains(primaryWord.id);
-  //TODO: implement this
   List<WordsSection> get sectionList {
-    var sectionList = <WordsSection>[];
+    var sectionList_ = <WordsSection>[];
+    // Get class id from wordId, and use classId to group words
     wordsList.groupBy((word) => word.id.split('-').first).forEach((key, value) {
       var section = WordsSection();
-      
+      section
+        ..expanded = true;
+        ..items = value;
+      sectionList_.add(section);
     });
+    return sectionList_;
   }
 
   void toggleFavorite() {
@@ -131,11 +135,6 @@ class ReviewWordsController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-  }
-
-  //TODO: implement this
-  String getSectionHeader(int sectionIndex) {
-
   }
 }
 
