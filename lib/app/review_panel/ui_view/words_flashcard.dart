@@ -27,8 +27,6 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
 
   @override
   void initState() {
-    //TODO: test tag, replace this
-    reviewWordsController.fetchWordsAndInitByTags(['C1']);
     pageFraction = reviewWordsController.wordsList.length - 1.0;
     super.initState();
   }
@@ -293,9 +291,10 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                                         style: TextStyle(
                                             fontSize: 20.0,
                                             color: Colors.black),
+                                            //TODO: give related words a link
                                         children: _divideExample([
                                           controller.primaryWordString,
-                                          ...controller.findRelatedWord()
+                                          ...controller.primaryWord.relatedWords.map((word)=>word.word.join()).toList()
                                         ], example)
                                             .map((part) => TextSpan(
                                                 text: part,

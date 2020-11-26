@@ -1,7 +1,9 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:get/get.dart';
 import 'package:spoken_chinese/exceptions/sound_exceptions.dart';
+import 'package:spoken_chinese/service/class_service.dart';
 
 part 'word.flamingo.dart';
 
@@ -36,7 +38,7 @@ class Word extends Document<Word> {
 
   /// related word in examples
   @Field()
-  List<String> relatedWordIDs;
+  List<String> _relatedWordIDs;
 
   /// 拆字
   @Field()
@@ -66,6 +68,8 @@ class Word extends Document<Word> {
   List<StorageFile> _examplesAudio;
 
   Map<String, List<StorageFile>> _examplesAudioMap;
+
+  List<Word> get relatedWords => Get.find<ClassService>().findWordsByIds(_relatedWordIDs);
 
   Map<String, List<String>> get examples =>
       _examples.map((key, value) => MapEntry(key, value.split('#')));

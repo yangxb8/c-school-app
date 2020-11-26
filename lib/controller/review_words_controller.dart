@@ -24,22 +24,24 @@ class ReviewWordsController extends GetxController {
   final _userSavedWordsID =
       (AppUser.userGeneratedData['savedWordsID'] as List).obs;
 
-  List<Word> _allWords;
   List<Word> wordsList = [];
   final logger = Get.find<LoggerService>().logger;
+  final classService = Get.find<ClassService>();
   final tts = FlutterTts();
   AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   Future<void> onInit() async {
-    _allWords = await Get.find<ClassService>().allWords;
+    // Make sure classService fetch all
+    await classService.allWords;
     super.onInit();
   }
 
-  Future<void> fetchWordsAndInitByTags(List<String> tags) async {
+  //TODO: should not have this method, controller will be init by receiving param from router
+  Future<void> fetchWordsAndInitByTags(List<WordTag> tags) async {
+    // As our cards are stack from bottom to top, reverse the words order
+    // wordsList = List.from(classService.findWordsByTags(tags).reversed);
     //TODO: Test data, replace me
-    wordsList = _allWords
-        .filter((word) => tags.every((tag) => word.tags.contains(tag)));
     var word1 = Word(id: 'C0001-0001');
     word1
       ..word = ['我', '们']
@@ -132,10 +134,6 @@ class ReviewWordsController extends GetxController {
     } else {
       await audioPlayer.play(audioFileList[exampleOrdinal].url);
     }
-  }
-
-  List<String> findRelatedWord() {
-    //TODO: implement this
   }
 
   // TODO: implement this. we should save liked, smile, sad, viewed words
