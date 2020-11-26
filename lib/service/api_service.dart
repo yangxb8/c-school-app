@@ -229,7 +229,6 @@ class _FirestoreApi {
   static FirebaseFirestore _firestore;
   static CollectionReference _appUsersCollection;
   static CollectionReference _userSpeechCollection;
-  static DocumentAccessor _documentAccessor = DocumentAccessor();
 
   static _FirestoreApi getInstance() {
     if (_instance == null) {
