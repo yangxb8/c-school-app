@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:spoken_chinese/service/class_service.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:spoken_chinese/app/review_panel/ui_view/words_list.dart';
+import 'package:spoken_chinese/app/review_panel/review_words_screen//ui_view/words_list.dart';
 import 'package:spoken_chinese/model/user.dart';
 import 'package:spoken_chinese/app/models/word.dart';
 import 'package:spoken_chinese/service/logger_service.dart';
@@ -26,56 +26,17 @@ class ReviewWordsController extends GetxController {
 
   List<Word> wordsList = [];
   final logger = Get.find<LoggerService>().logger;
-  final classService = Get.find<ClassService>();
   final tts = FlutterTts();
   AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   Future<void> onInit() async {
-    // Make sure classService fetch all
-    await classService.allWords;
-    super.onInit();
-  }
-
-  //TODO: should not have this method, controller will be init by receiving param from router
-  Future<void> fetchWordsAndInitByTags(List<WordTag> tags) async {
     // As our cards are stack from bottom to top, reverse the words order
     // wordsList = List.from(classService.findWordsByTags(tags).reversed);
-    //TODO: Test data, replace me
-    var word1 = Word(id: 'C0001-0001');
-    word1
-      ..word = ['我', '们']
-      ..pinyin = ['wo', 'men']
-      ..meaningJp = ['私達']
-      ..examples = {
-        '私達': ['我们都是好学生。', '我们都是好战士']
-      }
-      ..relatedWordIDs = ['C0001-0002'];
-    var word2 = Word(id: 'C0001-0002');
-    word2
-      ..word = ['都', '是']
-      ..pinyin = ['dou', 'shi']
-      ..meaningJp = ['は..だ']
-      ..examples = {
-        'は..だ': ['我们都是猪。', '你才是猪']
-      };
-    var temp_wordList = [
-      word1,
-      word2,
-      word1,
-      word2,
-      word1,
-      word2,
-      word1,
-      word2,
-      word1,
-      word2,
-      word1,
-      word2
-    ];
-    wordsList = List.from(temp_wordList.reversed);
+    wordsList = List.from((ClassService.allWords).reversed);
     await tts.setLanguage('zh-cn');
     await tts.setSpeechRate(0.5);
+    super.onInit();
   }
 
   WordsReviewMode get mode => _mode.value.wordsReviewMode;

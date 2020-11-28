@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spoken_chinese/app/models/word.dart';
 import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 import 'package:get/get.dart';
-import 'package:spoken_chinese/controller/review_words_controller.dart';
+import 'package:spoken_chinese/app/review_panel/controller/review_words_controller.dart';
 
 class WordsList extends GetView<ReviewWordsController> {
   @override

@@ -13,7 +13,7 @@ class Word extends Document<Word> {
     String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
-  }) : wordId=id,
+  })  : wordId = id,
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
@@ -69,7 +69,8 @@ class Word extends Document<Word> {
 
   Map<String, List<StorageFile>> _examplesAudioMap;
 
-  List<Word> get relatedWords => Get.find<ClassService>().findWordsByIds(_relatedWordIDs);
+  List<Word> get relatedWords =>
+      Get.find<ClassService>().findWordsByIds(_relatedWordIDs);
 
   Map<String, List<String>> get examples =>
       _examples.map((key, value) => MapEntry(key, value.split('#')));
@@ -77,14 +78,14 @@ class Word extends Document<Word> {
   String get classId => id.split('-').first;
 
   Map<String, List<StorageFile>> get examplesAudio {
-    if(_examplesAudioMap != null) return _examplesAudioMap;
+    if (_examplesAudioMap != null) return _examplesAudioMap;
     var meaningIndex = 0;
     _examplesAudioMap = {};
     _examplesAudio?.forEach((exampleAudio) {
-      if(exampleAudio == null) {
+      if (exampleAudio == null) {
         meaningIndex++;
       } else {
-        if(_examplesAudioMap[meaningJp[meaningIndex]] == null){
+        if (_examplesAudioMap[meaningJp[meaningIndex]] == null) {
           _examplesAudioMap[meaningJp[meaningIndex]] = [exampleAudio];
         } else {
           _examplesAudioMap[meaningJp[meaningIndex]].add(exampleAudio);
@@ -94,12 +95,15 @@ class Word extends Document<Word> {
     return _examplesAudioMap;
   }
 
-  set examplesAudio(Map<String, List<StorageFile>> examplesAudio_){
-    if(examples.isEmpty){
+  set relatedWordIDs(List<String> relatedWordIDs) =>
+      _relatedWordIDs = relatedWordIDs;
+
+  set examplesAudio(Map<String, List<StorageFile>> examplesAudio_) {
+    if (examples.isEmpty) {
       throw NotSetupException('Examples must be set before examplesAudio');
     }
-    examples.keys.forEach((key){
-      if(examplesAudio_.containsKey(key)){
+    examples.keys.forEach((key) {
+      if (examplesAudio_.containsKey(key)) {
         _examplesAudio.addAll(examplesAudio_[key]);
       }
       _examplesAudio.add(null);
@@ -114,7 +118,7 @@ class Word extends Document<Word> {
 
   List<WordTag> get tags => EnumToString.fromList(WordTag.values, _tags);
 
-  set tags(List<WordTag> tags_) => EnumToString.toList(tags_);
+  set tags(List<WordTag> tags_) => _tags = EnumToString.toList(tags_);
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

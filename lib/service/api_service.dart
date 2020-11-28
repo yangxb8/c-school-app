@@ -302,21 +302,61 @@ class _FirestoreApi {
   }
 
   Future<List<Word>> fetchWords({List<String> tags}) async {
-    final collectionPaging = CollectionPaging<Word>(
-      query: Word().collectionRef.orderBy('wordId', descending: true),
-      limit: 10000,
-      decode: (snap) => Word(snapshot: snap),
-    );
-    return await collectionPaging.load();
+    // final collectionPaging = CollectionPaging<Word>(
+    //   query: Word().collectionRef.orderBy('wordId', descending: true),
+    //   limit: 10000,
+    //   decode: (snap) => Word(snapshot: snap),
+    // );
+    // return await collectionPaging.load();
+    //TODO: Test data, replace me
+    var word1 = Word(id: 'C0001-0001');
+    word1
+      ..word = ['我', '们']
+      ..pinyin = ['wo', 'men']
+      ..tags = [WordTag.C0001]
+      ..meaningJp = ['私達']
+      ..examples = {
+        '私達': ['我们都是好学生。', '我们都是好战士']
+      }
+      ..relatedWordIDs = ['C0001-0002'];
+    var word2 = Word(id: 'C0001-0002');
+    word2
+      ..word = ['都', '是']
+      ..pinyin = ['dou', 'shi']
+      ..tags = [WordTag.C0001]
+      ..meaningJp = ['は..だ']
+      ..examples = {
+        'は..だ': ['我们都是猪。', '你才是猪']
+      };
+    await Timer(Duration(seconds: 1), () {});
+    return [
+      word1,
+      word2,
+      word1,
+      word2,
+      word1,
+      word2,
+      word1,
+      word2,
+      word1,
+      word2,
+      word1,
+      word2
+    ];
   }
 
   Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async{
-    final collectionPaging = CollectionPaging<CSchoolClass>(
-      query: CSchoolClass().collectionRef.orderBy('classId', descending: true),
-      limit: 10000,
-      decode: (snap) => CSchoolClass(snapshot: snap),
-    );
-    return await collectionPaging.load();
+    // final collectionPaging = CollectionPaging<CSchoolClass>(
+    //   query: CSchoolClass().collectionRef.orderBy('classId', descending: true),
+    //   limit: 10000,
+    //   decode: (snap) => CSchoolClass(snapshot: snap),
+    // );
+    // return await collectionPaging.load();
+    //TODO: Test data, replace me
+    var class1 = CSchoolClass(id: 'C0001');
+    class1.title = 'Test class';
+    await Timer(Duration(seconds: 1), () {});
+    return [class1];
   }
 
   // Setup emulator for firestore ONLY in debug mode
@@ -337,8 +377,8 @@ class _CloudStorageApi {
   static _CloudStorageApi getInstance(FirebaseApp firebaseApp) {
     if (_instance == null) {
       _instance = _CloudStorageApi();
-      _firebaseStorage = FirebaseStorage(
-          app: firebaseApp, storageBucket: 'gs://spoken-chinese.appspot.com');
+      _firebaseStorage = FirebaseStorage.instanceFor(
+          app: firebaseApp, bucket: 'gs://spoken-chinese.appspot.com');
     }
 
     return _instance;

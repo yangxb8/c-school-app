@@ -4,6 +4,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:spoken_chinese/app/models/class.dart';
 import 'package:spoken_chinese/app/models/word.dart';
 import 'api_service.dart';
+
 /*
 * This class provide service related to Class, like fetching class,
 * words, etc.
@@ -11,33 +12,27 @@ import 'api_service.dart';
 class ClassService extends GetxService {
   static ClassService _instance;
   static final ApiService _apiService = Get.find();
-  static List<CSchoolClass> _allClasses;
-  static List<Word> _allWords;
+  static List<CSchoolClass> allClasses;
+  static List<Word> allWords;
 
-  static ClassService getInstance() {
-    _instance ??= ClassService();
+  static Future<ClassService> getInstance() async {
+    if (_instance.isNull) {
+      _instance ??= ClassService();
+      allWords = await _apiService.firestoreApi.fetchWords();
+      allClasses = await _apiService.firestoreApi.fetchClasses();
+    }
+
     return _instance;
   }
 
-  Future<List<CSchoolClass>> get allClasses async{
-    _allClasses ??= await _apiService.firestoreApi.fetchClasses();
-    return _allClasses;
-  }
-
-  Future<List<Word>> get allWords async{
-    _allWords ??= await _apiService.firestoreApi.fetchWords();
-    return _allWords;
-  }
-
-  /// get allWords must have been before this method, so _allWords
-  /// were assumed to be not null
   List<Word> findWordsByIds(List<String> ids) {
-    return _allWords
-        .filter((word) => ids.contains(word.wordId)); 
+    return allWords.filter((word) => ids.contains(word.wordId)).toList();
   }
 
   List<Word> findWordsByTags(List<WordTag> tags) {
-    return _allWords
-        .filter((word) => tags.every((tag) => word.tags.contains(EnumToString.convertToString(tag)))); 
+    return allWords
+        .filter((word) => tags.every(
+            (tag) => word.tags.contains(EnumToString.convertToString(tag))))
+        .toList();
   }
 }

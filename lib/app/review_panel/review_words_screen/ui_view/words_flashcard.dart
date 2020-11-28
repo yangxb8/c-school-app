@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:spoken_chinese/util/functions.dart';
 import 'package:supercharged/supercharged.dart';
-import '../../../util/functions.dart';
-import 'package:spoken_chinese/controller/review_words_controller.dart';
+import 'package:spoken_chinese/app/review_panel/controller/review_words_controller.dart';
 import 'package:spoken_chinese/service/logger_service.dart';
 import 'dart:math';
 

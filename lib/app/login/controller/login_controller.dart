@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter_beautiful_popup/main.dart';
-import '../service/api_service.dart';
-import '../i18n/api_service.i18n.dart';
-import '../i18n/login_page.i18n.dart';
+import '../../../service/api_service.dart';
+import '../../../i18n/api_service.i18n.dart';
+import '../../../i18n/login_page.i18n.dart';
 
 class LoginController extends GetxController{
   final ApiService apiService = Get.find();

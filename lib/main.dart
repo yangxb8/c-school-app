@@ -23,7 +23,6 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await initServices();
-  await Flamingo.initializeApp();
   Logger.level = Get.find<AppStateService>().systemInfo.isDebugMode
       ? Level.debug
       : Level.error;
@@ -34,9 +33,10 @@ Future<void> initServices() async {
   await Get.putAsync<LocalStorageService>(
       () async => await LocalStorageService.getInstance());
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
+  await Flamingo.initializeApp();
   Get.put<LoggerService>(LoggerService());
   Get.put<AppStateService>(AppStateService.getInstance());
-  Get.put<ClassService>(ClassService.getInstance());
+  await Get.putAsync<ClassService>(() async => await ClassService.getInstance());
   Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
 }
 
@@ -74,6 +74,6 @@ class SpokenChineseApp extends GetView<AppStateService> {
         getPages: AppRouter.setupRouter(),
         //TODO: change default route, only for words-list test
         initialRoute:
-            controller.systemInfo.startCount == 0 ? '/login' : '/review/words');
+            controller.systemInfo.startCount == 0 ? '/login' : '/review/words/home');
   }
 }
