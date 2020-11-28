@@ -5,3 +5,4 @@ targets:
         generate_for:
           include:
             - lib/app/models/*.dart
+            - lib/model/*.dart

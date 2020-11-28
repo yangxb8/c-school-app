@@ -1,69 +1,64 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flamingo/flamingo.dart';
+import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
-import 'package:spoken_chinese/service/logger_service.dart';
-import '../service/api_service.dart';
+import 'package:spoken_chinese/model/user_class_history.dart';
+import 'package:spoken_chinese/model/user_memo.dart';
+import 'package:spoken_chinese/model/user_rank.dart';
+import 'package:spoken_chinese/model/user_word_history.dart';
+
+part 'user.flamingo.dart';
 
 /*
-* Keep tracking latest User info, modify/create user will NOT
-* be done through this class.
+* User info
  */
-class AppUser {
-  static User _firebaseUser;
-  static String nickName;
-  static List<MembershipType> membershipTypes;
-  static Timestamp membershipEndAt;
-  static List<dynamic> rankHistory;
-  static Map<String,dynamic> progress;
-  static Map<String,dynamic> userGeneratedData;
-  static final ApiService _apiService = Get.find();
+class AppUser extends Document<AppUser>{
+  AppUser({
+    String id,
+    DocumentSnapshot snapshot,
+    Map<String, dynamic> values,
+  }) : super(id: id, snapshot: snapshot, values: values);
 
-  AppUser._internal();
+  @Field()
+  String nickName;
+  @Field()
+  List<String> _membershipTypes;
+  @Field()
+  Timestamp membershipEndAt;
+  @ModelField()
+  List<UserRank> rankHistory;
+  @ModelField()
+  List<ClassHistory> reviewedClassHistory;
+  @ModelField()
+  List<WordHistory> reviewedWordHistory;
+  @Field()
+  List<String> savedClasses;
+  @Field()
+  List<String> savedWords;
+  @ModelField()
+  List<UserMemo> userMemos;
+  User firebaseUser;
 
-  factory AppUser.fromFirebaseUser(User firebaseUser){
-    var user = AppUser._internal();
-    user.setAppUser(firebaseUser);
-    return user;
-  }
+  set membershipTypes(List<MembershipType> types) => _membershipTypes = EnumToString.toList(types);
+
+  List<MembershipType> get membershipTypes => EnumToString.fromList(MembershipType.values, _membershipTypes);
 
   bool isLogin() {
-    return _firebaseUser != null;
+    return firebaseUser != null;
   }
 
-  User get firebaseUser => _firebaseUser;
-  String get userId => _firebaseUser?.uid ?? 'NO_FIREBASE_USER';
-  int get userRankNow => rankHistory.last['rank'];
+  String get userId => firebaseUser?.uid ?? 'NO_FIREBASE_USER';
+  int get userRankNow => rankHistory.last.rank;
   //TODO: get userScoreCoeff(For speech evaluation) properly
   double get userScoreCoeff => userRankNow.toDouble();
 
-  void setAppUser(User firebaseUser) async {
-    _firebaseUser = firebaseUser;
-    if (firebaseUser.isNull){
-      setNullAppUser();
-    }
-    var appUserMap = await _apiService.firestoreApi.fetchAppUser(firebaseUser: firebaseUser);
-    if (appUserMap.isNull){
-      setNullAppUser();
-    } else {
-      nickName = appUserMap['nickname'] as String;
-      membershipTypes = EnumToString.fromList(MembershipType.values, appUserMap['membershipType']);
-      membershipEndAt = appUserMap['membershipEndAt'] as Timestamp;
-      rankHistory = appUserMap['rankHistory'];
-      progress = appUserMap['progress'];
-      userGeneratedData = appUserMap['userGeneratedData'];
-    }
-    Get.find<LoggerService>().logger.i(this,'Update User:');
-  }
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
 
-  void setNullAppUser() {
-    nickName = null;
-    membershipTypes = null;
-    membershipEndAt = null;
-    rankHistory = null;
-    progress = null;
-    userGeneratedData = null;
-  }
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }
 
 enum MembershipType {

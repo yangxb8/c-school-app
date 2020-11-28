@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:spoken_chinese/service/user_service.dart';
 
 import '../../app/models/exams.dart';
 import '../../service/api_service.dart';
@@ -34,7 +35,7 @@ class UserSpeech {
   /// Remember to call init()!!
   /// When created from free speech, pass null as exam
   factory UserSpeech.forExam({@required SpeechExam exam}) {
-    return UserSpeech._internal(exam, Get.find<AppStateService>().user.userId,
+    return UserSpeech._internal(exam, UserService.user.userId,
         exam?.lectureId ?? 'freeSpeech', exam?.examId ?? '0');
   }
 

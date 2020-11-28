@@ -25,14 +25,56 @@ class ClassService extends GetxService {
     return _instance;
   }
 
+  /// If id is empty , get all
   List<Word> findWordsByIds(List<String> ids) {
-    return allWords.filter((word) => ids.contains(word.wordId)).toList();
+    if (ids.isNullOrBlank) {
+      return allWords;
+    } else {
+      return allWords.filter((word) => ids.contains(word.wordId)).toList();
+    }
   }
 
+  /// If id is empty , get all
   List<Word> findWordsByTags(List<WordTag> tags) {
-    return allWords
-        .filter((word) => tags.every(
-            (tag) => word.tags.contains(EnumToString.convertToString(tag))))
-        .toList();
+    if (tags.isNullOrBlank) {
+      return allWords;
+    } else {
+      return allWords
+          .filter((word) => tags.every((tag) => word.tags.contains(tag)))
+          .toList();
+    }
+  }
+
+  /// If id is empty , get all
+  List<CSchoolClass> findClassesById(String id) {
+    if (id.isNullOrBlank) {
+      return allClasses;
+    } else {
+      return [
+        allClasses.filter((cschoolClass) => id == cschoolClass.classId).single
+      ];
+    }
+  }
+
+  /// If id is empty , get all
+  List<CSchoolClass> findClassesByTags(List<ClassTag> tags) {
+    if (tags.isNullOrBlank) {
+      return allClasses;
+    } else {
+      return allClasses
+          .filter((cschoolClass) =>
+              tags.every((tag) => cschoolClass.tags.contains(tag)))
+          .toList();
+    }
+  }
+  //TODO: implement those
+  WordStatus getStausOfWord(Word word) {}
+
+  bool isWordLiked(Word word) {}
+
+  int wordViewedCount(Word word) {}
+
+  int classViewedCount(CSchoolClass cSchoolClass){
+
   }
 }

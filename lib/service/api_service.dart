@@ -17,6 +17,7 @@ import 'package:spoken_chinese/app/models/exams.dart';
 import 'package:spoken_chinese/app/models/speech_evaluation_result.dart';
 import 'package:spoken_chinese/app/models/user_speech.dart';
 import 'package:spoken_chinese/app/models/word.dart';
+import 'package:spoken_chinese/app/models/word_meaning.dart';
 import '../model/user.dart';
 import './logger_service.dart';
 import '../i18n/api_service.i18n.dart';
@@ -227,15 +228,15 @@ class _FirebaseAuthApi {
 class _FirestoreApi {
   static _FirestoreApi _instance;
   static FirebaseFirestore _firestore;
-  static CollectionReference _appUsersCollection;
+  static DocumentAccessor _documentAccessor;
   static CollectionReference _userSpeechCollection;
 
   static _FirestoreApi getInstance() {
     if (_instance == null) {
       _instance = _FirestoreApi();
       _firestore = FirebaseFirestore.instance;
+      _documentAccessor = DocumentAccessor();
       _setupEmulator();
-      _appUsersCollection = _firestore.collection('app_users');
       _userSpeechCollection = _firestore.collection('user_speeches');
     }
 
@@ -244,20 +245,16 @@ class _FirestoreApi {
 
   void _registerAppUser(
       {@required User firebaseUser, @required String nickname}) {
-    var userCollection = {
-      'nickname': nickname,
-      'membershipType': [EnumToString.convertToString(MembershipType.FREE)],
-      'membershipEndAt': null,
-      'rankHistory': [],
-      'progress': {'learnedLectures': {}, 'reviewedWords':{}, 'history': {}},
-      'userGeneratedData': {'savedLecturesID': [], 'savedWordsID':[], 'memo': []}
-    };
-    _appUsersCollection
-        .doc(firebaseUser.uid)
-        .set(userCollection)
-        .then((value) =>
-            logger.d(userCollection, 'User added: ${firebaseUser.uid}'))
+    var appUser = AppUser(id: firebaseUser.uid);
+    appUser.nickName=nickname;
+    _documentAccessor.save(appUser)
         .catchError((e) => logger.e(e.printError()));
+  }
+
+  Future<AppUser> fetchAppUser(
+      {@required User firebaseUser}) async {
+    if (firebaseUser.isNull) return null;
+    return await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
   }
 
   /// User can have many trial for same fingerprint
@@ -292,15 +289,6 @@ class _FirestoreApi {
     });
   }
 
-  Future<Map<String, dynamic>> fetchAppUser(
-      {@required User firebaseUser}) async {
-    if (firebaseUser.isNull) return null;
-    var snapshot = await _appUsersCollection.doc(firebaseUser.uid).get();
-    return snapshot.exists
-        ? snapshot.data()
-        : null; // If user login anonymously, this will be null
-  }
-
   Future<List<Word>> fetchWords({List<String> tags}) async {
     // final collectionPaging = CollectionPaging<Word>(
     //   query: Word().collectionRef.orderBy('wordId', descending: true),
@@ -314,20 +302,24 @@ class _FirestoreApi {
       ..word = ['我', '们']
       ..pinyin = ['wo', 'men']
       ..tags = [WordTag.C0001]
-      ..meaningJp = ['私達']
-      ..examples = {
-        '私達': ['我们都是好学生。', '我们都是好战士']
-      }
+      ..wordMeanings = [
+        WordMeaning(
+          meaning: '私達',
+          examples: {'我们都是好学生。': null, '我们都是好战士': null},
+        )
+      ]
       ..relatedWordIDs = ['C0001-0002'];
     var word2 = Word(id: 'C0001-0002');
     word2
       ..word = ['都', '是']
       ..pinyin = ['dou', 'shi']
       ..tags = [WordTag.C0001]
-      ..meaningJp = ['は..だ']
-      ..examples = {
-        'は..だ': ['我们都是猪。', '你才是猪']
-      };
+      ..wordMeanings = [
+        WordMeaning(
+          meaning: 'は..だ',
+          examples: {'我们都是猪。': null, '你才是猪': null},
+        )
+      ];
     await Timer(Duration(seconds: 1), () {});
     return [
       word1,
@@ -345,7 +337,7 @@ class _FirestoreApi {
     ];
   }
 
-  Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async{
+  Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async {
     // final collectionPaging = CollectionPaging<CSchoolClass>(
     //   query: CSchoolClass().collectionRef.orderBy('classId', descending: true),
     //   limit: 10000,
@@ -421,11 +413,11 @@ class _TencentApi {
 
   /// Return speech data in Uint8List and evaluation result as SpeechEvaluationResult
   Future<Map<String, dynamic>> soeStopRecordAndEvaluate() async {
-    var result={};
+    var result = {};
     try {
       result = await soeChannel.invokeMapMethod('soeStopRecordAndEvaluate');
-      result['evaluationResult'] =
-          SpeechEvaluationResult.fromJson(jsonDecode(result['evaluationResult']));
+      result['evaluationResult'] = SpeechEvaluationResult.fromJson(
+          jsonDecode(result['evaluationResult']));
       logger.i('soe stop recording and get evaluation result succeed!');
     } on PlatformException catch (e, t) {
       logger.e('Error calling native soe stop method', e, t);

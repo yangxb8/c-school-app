@@ -8,6 +8,8 @@ import 'package:spoken_chinese/service/class_service.dart';
 part 'class.flamingo.dart';
 
 class CSchoolClass extends Document<CSchoolClass> {
+  static ClassService classService = Get.find<ClassService>();
+
   CSchoolClass({
     String id,
     DocumentSnapshot snapshot,
@@ -34,8 +36,11 @@ class CSchoolClass extends Document<CSchoolClass> {
 
   List<ClassTag> get tags => EnumToString.fromList(ClassTag.values, _tags);
 
-  List<Word> get words => Get.find<ClassService>()
+  /// Convert class Id to WordTag and find words related
+  List<Word> get words => classService
       .findWordsByTags([EnumToString.fromString(WordTag.values, classId)]);
+
+  int get classViewedCount => classService.classViewedCount(this);
 
   set tags(List<ClassTag> tags_) => _tags = EnumToString.toList(tags_);
 

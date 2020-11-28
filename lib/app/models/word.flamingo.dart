@@ -11,17 +11,12 @@ enum WordKey {
   wordId,
   word,
   pinyin,
-  meaningJp,
-  _examples,
   _relatedWordIDs,
   breakdowns,
-  synonyms,
-  antonyms,
   _tags,
-
+  wordMeanings,
   pic,
   wordAudio,
-  _examplesAudio,
 }
 
 extension WordKeyExtension on WordKey {
@@ -33,26 +28,18 @@ extension WordKeyExtension on WordKey {
         return 'word';
       case WordKey.pinyin:
         return 'pinyin';
-      case WordKey.meaningJp:
-        return 'meaningJp';
-      case WordKey._examples:
-        return '_examples';
       case WordKey._relatedWordIDs:
         return '_relatedWordIDs';
       case WordKey.breakdowns:
         return 'breakdowns';
-      case WordKey.synonyms:
-        return 'synonyms';
-      case WordKey.antonyms:
-        return 'antonyms';
       case WordKey._tags:
         return '_tags';
+      case WordKey.wordMeanings:
+        return 'wordMeanings';
       case WordKey.pic:
         return 'pic';
       case WordKey.wordAudio:
         return 'wordAudio';
-      case WordKey._examplesAudio:
-        return '_examplesAudio';
       default:
         return null;
     }
@@ -65,18 +52,14 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, 'wordId', doc.wordId);
   Helper.writeNotNull(data, 'word', doc.word);
   Helper.writeNotNull(data, 'pinyin', doc.pinyin);
-  Helper.writeNotNull(data, 'meaningJp', doc.meaningJp);
-  Helper.writeNotNull(data, '_examples', doc._examples);
   Helper.writeNotNull(data, '_relatedWordIDs', doc._relatedWordIDs);
   Helper.writeNotNull(data, 'breakdowns', doc.breakdowns);
-  Helper.writeNotNull(data, 'synonyms', doc.synonyms);
-  Helper.writeNotNull(data, 'antonyms', doc.antonyms);
   Helper.writeNotNull(data, '_tags', doc._tags);
+
+  Helper.writeModelListNotNull(data, 'wordMeanings', doc.wordMeanings);
 
   Helper.writeStorageNotNull(data, 'pic', doc.pic, isSetNull: true);
   Helper.writeStorageNotNull(data, 'wordAudio', doc.wordAudio, isSetNull: true);
-  Helper.writeStorageListNotNull(data, '_examplesAudio', doc._examplesAudio,
-      isSetNull: true);
 
   return data;
 }
@@ -86,16 +69,22 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   doc.wordId = Helper.valueFromKey<String>(data, 'wordId');
   doc.word = Helper.valueListFromKey<String>(data, 'word');
   doc.pinyin = Helper.valueListFromKey<String>(data, 'pinyin');
-  doc.meaningJp = Helper.valueListFromKey<String>(data, 'meaningJp');
-  doc._examples = Helper.valueMapFromKey<String, String>(data, '_examples');
   doc._relatedWordIDs =
       Helper.valueListFromKey<String>(data, '_relatedWordIDs');
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
-  doc.synonyms = Helper.valueListFromKey<String>(data, 'synonyms');
-  doc.antonyms = Helper.valueListFromKey<String>(data, 'antonyms');
   doc._tags = Helper.valueListFromKey<String>(data, '_tags');
+
+  final _wordMeanings =
+      Helper.valueMapListFromKey<String, dynamic>(data, 'wordMeanings');
+  if (_wordMeanings != null) {
+    doc.wordMeanings = _wordMeanings
+        .where((d) => d != null)
+        .map((d) => WordMeaning(values: d))
+        .toList();
+  } else {
+    doc.wordMeanings = null;
+  }
 
   doc.pic = Helper.storageFile(data, 'pic');
   doc.wordAudio = Helper.storageFile(data, 'wordAudio');
-  doc._examplesAudio = Helper.storageFiles(data, '_examplesAudio');
 }

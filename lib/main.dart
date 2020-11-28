@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:spoken_chinese/service/class_service.dart';
+import 'package:spoken_chinese/service/user_service.dart';
 
 import './service/app_state_service.dart';
 
@@ -23,9 +24,8 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await initServices();
-  Logger.level = Get.find<AppStateService>().systemInfo.isDebugMode
-      ? Level.debug
-      : Level.error;
+  Logger.level =
+      AppStateService.systemInfo.isDebugMode ? Level.debug : Level.error;
   runApp(SpokenChineseApp());
 }
 
@@ -36,7 +36,9 @@ Future<void> initServices() async {
   await Flamingo.initializeApp();
   Get.put<LoggerService>(LoggerService());
   Get.put<AppStateService>(AppStateService.getInstance());
-  await Get.putAsync<ClassService>(() async => await ClassService.getInstance());
+  await Get.putAsync<UserService>(() async => await UserService.getInstance());
+  await Get.putAsync<ClassService>(
+      () async => await ClassService.getInstance());
   Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
 }
 
@@ -73,7 +75,8 @@ class SpokenChineseApp extends GetView<AppStateService> {
         ],
         getPages: AppRouter.setupRouter(),
         //TODO: change default route, only for words-list test
-        initialRoute:
-            controller.systemInfo.startCount == 0 ? '/login' : '/review/words/home');
+        initialRoute: AppStateService.systemInfo.startCount == 0
+            ? '/login'
+            : '/review/words/home');
   }
 }

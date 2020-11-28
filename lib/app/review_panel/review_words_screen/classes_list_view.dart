@@ -5,7 +5,6 @@ import 'package:spoken_chinese/app/models/class.dart';
 import 'package:spoken_chinese/service/class_service.dart';
 import 'package:supercharged/supercharged.dart';
 import './review_words_theme.dart';
-import '../../../i18n/review_words.i18n.dart';
 
 class CSchoolClassListView extends StatefulWidget {
   const CSchoolClassListView({Key key, this.callBack}) : super(key: key);

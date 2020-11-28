@@ -262,7 +262,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
       divider()
     ];
     // Second meaning part
-    var partMeanings = controller.wordsList[i].meaningJp
+    var partMeanings = controller.wordsList[i].wordMeanings
         .map((meaning) => Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -271,21 +271,20 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: Text(
-                            '・$meaning：',
+                            '・${meaning.meaning}：',
                             style: TextStyle(fontSize: 30.0),
                           ),
                         ),
                       ],
                     ),
                   ] +
-                  controller.wordsList[i].examples[meaning]
-                      .map((example) => Row(
+                  meaning.exampleAndAudios.entries
+                      .map((exampleAndAudio) => Row(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 50.0),
                                 child: SimpleGestureDetector(
-                                  onTap: () => controller.playExample(
-                                      meaning: meaning, sentence: example),
+                                  onTap: () => controller.playExample(string: exampleAndAudio.key, audio: exampleAndAudio.value),
                                   child: RichText(
                                     text: TextSpan(
                                         style: TextStyle(
@@ -295,7 +294,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                                         children: _divideExample([
                                           controller.primaryWordString,
                                           ...controller.primaryWord.relatedWords.map((word)=>word.word.join()).toList()
-                                        ], example)
+                                        ], exampleAndAudio.key)
                                             .map((part) => TextSpan(
                                                 text: part,
                                                 style: part ==
@@ -336,9 +335,9 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: controller.wordsList[i].meaningJp
+        children: controller.wordsList[i].wordMeanings
             .map((e) => Text(
-                  e,
+                  e.meaning,
                   style: TextStyle(fontSize: 40.0),
                 ))
             .toList(),

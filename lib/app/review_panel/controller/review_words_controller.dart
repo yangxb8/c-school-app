@@ -1,14 +1,16 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flamingo/flamingo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:spoken_chinese/app/models/class.dart';
 import 'package:spoken_chinese/service/class_service.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:spoken_chinese/app/review_panel/review_words_screen//ui_view/words_list.dart';
 import 'package:spoken_chinese/model/user.dart';
 import 'package:spoken_chinese/app/models/word.dart';
 import 'package:spoken_chinese/service/logger_service.dart';
+import 'package:spoken_chinese/service/user_service.dart';
 
 class ReviewWordsController extends GetxController {
   /// Current primary word ordinal in _wordList
@@ -22,10 +24,12 @@ class ReviewWordsController extends GetxController {
 
   /// Words user favorite
   final _userSavedWordsID =
-      (AppUser.userGeneratedData['savedWordsID'] as List).obs;
+      (UserService.user.savedWords).obs;
 
+  List<CSchoolClass> classes;
   List<Word> wordsList = [];
   final logger = Get.find<LoggerService>().logger;
+  final ClassService classService = Get.find();
   final tts = FlutterTts();
   AudioPlayer audioPlayer = AudioPlayer();
 
@@ -33,7 +37,10 @@ class ReviewWordsController extends GetxController {
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
     // wordsList = List.from(classService.findWordsByTags(tags).reversed);
-    wordsList = List.from((ClassService.allWords).reversed);
+    classes = classService.findClassesById(Get.parameters['classId']);
+    wordsList = classes.length == 1
+        ? List.from(classes.single.words.reversed)
+        : ClassService.allWords;
     await tts.setLanguage('zh-cn');
     await tts.setSpeechRate(0.5);
     super.onInit();
@@ -46,11 +53,12 @@ class ReviewWordsController extends GetxController {
   List<WordsSection> get sectionList {
     var sectionList_ = <WordsSection>[];
     // Get class id from wordId, and use classId to group words
-    wordsList.groupBy((word) => word.id.split('-').first).forEach((key, value) {
+    classes.forEach((cschoolClass) {
       var section = WordsSection();
       section
         ..expanded = true
-        ..items = value;
+        ..header = cschoolClass.title
+        ..items = cschoolClass.words;
       sectionList_.add(section);
     });
     return sectionList_;
@@ -87,13 +95,11 @@ class ReviewWordsController extends GetxController {
 
   /// Play audio of the examples
   Future<void> playExample(
-      {@required String meaning, @required String sentence}) async {
-    var exampleOrdinal = primaryWord.examples[meaning]?.indexOf(sentence);
-    var audioFileList = primaryWord.examplesAudio[meaning];
-    if (audioFileList.isNull || audioFileList[exampleOrdinal].isNull) {
-      await tts.speak(sentence);
+      {@required String string, @required StorageFile audio}) async {
+    if (audio.isNull) {
+      await tts.speak(string);
     } else {
-      await audioPlayer.play(audioFileList[exampleOrdinal].url);
+      await audioPlayer.play(audio.url);
     }
   }
 
