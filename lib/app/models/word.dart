@@ -1,7 +1,6 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:spoken_chinese/app/models/word_meaning.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:get/get.dart';
 import 'package:spoken_chinese/app/models/class.dart';
@@ -73,7 +72,7 @@ class Word extends Document<Word> {
 
   String get wordAsString => word.join();
 
-  WordStatus get statue => classService.getStausOfWord(this);
+  WordMemoryStatus get statue => classService.getMemoryStatusOfWord(this);
 
   @override
   Map<String, dynamic> toData() => _$toData(this);
@@ -100,4 +99,4 @@ enum WordTag {
   HSK4
 }
 
-enum WordStatus { REMEMBERED, NORMAL, FORGOT }
+enum WordMemoryStatus { REMEMBERED, NORMAL, FORGOT, NOT_REVIEWED }

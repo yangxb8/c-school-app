@@ -3,7 +3,6 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:get/get.dart';
 import 'package:spoken_chinese/model/user_class_history.dart';
 import 'package:spoken_chinese/model/user_memo.dart';
 import 'package:spoken_chinese/model/user_rank.dart';
@@ -14,7 +13,7 @@ part 'user.flamingo.dart';
 /*
 * User info
  */
-class AppUser extends Document<AppUser>{
+class AppUser extends Document<AppUser> {
   AppUser({
     String id,
     DocumentSnapshot snapshot,
@@ -22,28 +21,30 @@ class AppUser extends Document<AppUser>{
   }) : super(id: id, snapshot: snapshot, values: values);
 
   @Field()
-  String nickName;
+  String nickName = '';
   @Field()
-  List<String> _membershipTypes;
+  List<String> _membershipTypes = [];
   @Field()
-  Timestamp membershipEndAt;
+  Timestamp membershipEndAt = Timestamp.fromDate(DateTime.now());
   @ModelField()
-  List<UserRank> rankHistory;
+  List<UserRank> rankHistory = [];
   @ModelField()
-  List<ClassHistory> reviewedClassHistory;
+  List<ClassHistory> reviewedClassHistory = [];
   @ModelField()
-  List<WordHistory> reviewedWordHistory;
+  List<WordHistory> reviewedWordHistory = [];
   @Field()
-  List<String> savedClasses;
+  List<String> likedClasses = [];
   @Field()
-  List<String> savedWords;
+  List<String> likedWords = [];
   @ModelField()
-  List<UserMemo> userMemos;
+  List<UserMemo> userMemos = [];
   User firebaseUser;
 
-  set membershipTypes(List<MembershipType> types) => _membershipTypes = EnumToString.toList(types);
+  set membershipTypes(List<MembershipType> types) =>
+      _membershipTypes = EnumToString.toList(types);
 
-  List<MembershipType> get membershipTypes => EnumToString.fromList(MembershipType.values, _membershipTypes);
+  List<MembershipType> get membershipTypes =>
+      EnumToString.fromList(MembershipType.values, _membershipTypes);
 
   bool isLogin() {
     return firebaseUser != null;
@@ -59,6 +60,7 @@ class AppUser extends Document<AppUser>{
 
   @override
   void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
 }
 
 enum MembershipType {

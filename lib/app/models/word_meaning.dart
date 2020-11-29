@@ -1,29 +1,32 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 part 'word_meaning.flamingo.dart';
 
 class WordMeaning extends Model {
   WordMeaning({
-    this.meaning,
-    Map<String, StorageFile> examples,
+    @required this.meaning,
+    @required Map<String, StorageFile> examples,
     Map<String, dynamic> values,
-  })  : _examples = examples.keys,
-        _exampleAudios = examples.values,
+  })  : _examples = examples.keys.toList(),
+        _exampleAudios = examples.values.toList(),
         super(values: values);
 
   @Field()
   String meaning;
 
   @Field()
+  // ignore: prefer_final_fields
   List<String> _examples;
 
   /// Example ordinal : audio file
   @StorageField()
+  // ignore: prefer_final_fields
   List<StorageFile> _exampleAudios;
 
   Map<String, StorageFile> get exampleAndAudios {
-    var exampleAndAudios_ = {};
+    var exampleAndAudios_ = <String, StorageFile>{};
     for (var i = 0; i < _examples.length; i++) {
       exampleAndAudios_[_examples[i]] = _exampleAudios[i];
     }

@@ -1,12 +1,14 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
+import 'package:flutter/cupertino.dart';
 
 part 'user_class_history.flamingo.dart';
 
 class ClassHistory extends Model {
   ClassHistory({
-    this.classId,
-    this.timestamp,
+    @required this.classId,
+    @required this.timestamp,
+    @required this.isLatest,
     Map<String, dynamic> values,
   }) : super(values: values);
 
@@ -14,6 +16,8 @@ class ClassHistory extends Model {
   String classId;
   @Field()
   Timestamp timestamp;
+  @Field()
+  bool isLatest;
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

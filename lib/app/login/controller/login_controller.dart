@@ -156,7 +156,7 @@ class LoginController extends GetxController{
         onPressed: (){
           // After login user should not press 'back' and return to login page
           //TODO: change this, only for words-list test
-          Get.offAllNamed('/review/words');
+          Get.offAllNamed('/review/words/home');
         },
       )
     ];

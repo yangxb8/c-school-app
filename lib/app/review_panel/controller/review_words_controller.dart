@@ -1,18 +1,25 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flamingo/flamingo.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:spoken_chinese/app/models/class.dart';
+import 'package:spoken_chinese/model/user_word_history.dart';
 import 'package:spoken_chinese/service/class_service.dart';
 import 'package:spoken_chinese/app/review_panel/review_words_screen//ui_view/words_list.dart';
-import 'package:spoken_chinese/model/user.dart';
 import 'package:spoken_chinese/app/models/word.dart';
 import 'package:spoken_chinese/service/logger_service.dart';
-import 'package:spoken_chinese/service/user_service.dart';
 
 class ReviewWordsController extends GetxController {
+  final ClassService classService = Get.find();
+  final logger = Get.find<LoggerService>().logger;
+  final tts = FlutterTts();
+  final AudioPlayer audioPlayer = AudioPlayer();
+
   /// Current primary word ordinal in _wordList
   final primaryWordOrdinal = 0.obs;
 
@@ -23,20 +30,25 @@ class ReviewWordsController extends GetxController {
   final searchBarController = FloatingSearchBarController();
 
   /// Words user favorite
-  final _userSavedWordsID =
-      (UserService.user.savedWords).obs;
+  RxList<String> _userLikedWordIds;
 
+  /// WordsHistory of this user
+  RxList<WordHistory> _userWordsHistory;
+
+  /// If all words mode, there will be multiple classes associated
   List<CSchoolClass> classes;
+
+  /// WordsList for this class(es)
   List<Word> wordsList = [];
-  final logger = Get.find<LoggerService>().logger;
-  final ClassService classService = Get.find();
-  final tts = FlutterTts();
-  AudioPlayer audioPlayer = AudioPlayer();
+
+  Rx<WordMemoryStatus> wordMemoryStatus = WordMemoryStatus.NOT_REVIEWED.obs;
 
   @override
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
     // wordsList = List.from(classService.findWordsByTags(tags).reversed);
+    _userLikedWordIds = ClassService.userLikedWordIds_Rx;
+    _userWordsHistory = ClassService.userWordsHistory_Rx;
     classes = classService.findClassesById(Get.parameters['classId']);
     wordsList = classes.length == 1
         ? List.from(classes.single.words.reversed)
@@ -46,10 +58,74 @@ class ReviewWordsController extends GetxController {
     super.onInit();
   }
 
+  /// Flashcard or List mode
   WordsReviewMode get mode => _mode.value.wordsReviewMode;
+
+  /// PrimaryWord associated with primaryWordOrdinal
   Word get primaryWord => wordsList[primaryWordOrdinal.value];
+
+  /// PrimaryWord.word to String for display
   String get primaryWordString => primaryWord.word.join();
-  bool get isFavorite => _userSavedWordsID.contains(primaryWord.id);
+
+  /// If primary word is liked by user
+  bool get isPrimaryWordLiked => _userLikedWordIds.contains(primaryWord.id);
+
+  void toggleFavoriteCard(int cardOrdinal) =>
+      classService.toggleWordLiked(wordsList[cardOrdinal]);
+
+  int countWordMemoryStatusOfWordByStatus(
+          {@required WordMemoryStatus status}) =>
+      _userWordsHistory
+          .filter((history) =>
+              history.wordId == primaryWord.wordId &&
+              history.wordMemoryStatus == status)
+          .length;
+
+  /// Return value is defined by like_button package
+  Future<bool> handleRememberPressed(bool isLiked) {
+    if (isLiked) {
+      _handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED);
+    } else {
+      _handWordMemoryStatusPressed(WordMemoryStatus.NOT_REVIEWED);
+    }
+    return Future.value(true);
+  }
+
+  /// Return value is defined by like_button package
+  Future<bool> handleNormalPressed(bool isLiked) {
+    if (isLiked) {
+      _handWordMemoryStatusPressed(WordMemoryStatus.NORMAL);
+    } else {
+      _handWordMemoryStatusPressed(WordMemoryStatus.NOT_REVIEWED);
+    }
+    return Future.value(true);
+  }
+
+  /// Return value is defined by like_button package
+  Future<bool> handleForgotPressed(bool isLiked) {
+    if (isLiked) {
+      _handWordMemoryStatusPressed(WordMemoryStatus.FORGOT);
+    } else {
+      _handWordMemoryStatusPressed(WordMemoryStatus.NOT_REVIEWED);
+    }
+    return Future.value(true);
+  }
+
+  void _handWordMemoryStatusPressed(WordMemoryStatus status) {
+    wordMemoryStatus.value = status;
+  }
+
+  /// If nothing is pressed, default to NORMAL
+  void saveAndResetWordHistory() {
+    if (wordMemoryStatus.value == WordMemoryStatus.NOT_REVIEWED) {
+      wordMemoryStatus.value = WordMemoryStatus.NORMAL;
+    }
+    classService.addWordReviewedHistory(primaryWord,
+        status: wordMemoryStatus.value);
+    wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
+  }
+
+  /// Sections for words list
   List<WordsSection> get sectionList {
     var sectionList_ = <WordsSection>[];
     // Get class id from wordId, and use classId to group words
@@ -62,14 +138,6 @@ class ReviewWordsController extends GetxController {
       sectionList_.add(section);
     });
     return sectionList_;
-  }
-
-  void toggleFavorite() {
-    if (isFavorite) {
-      _userSavedWordsID.remove(primaryWord.id);
-    } else {
-      _userSavedWordsID.add(primaryWord.id);
-    }
   }
 
   void changeMode() {
@@ -103,9 +171,9 @@ class ReviewWordsController extends GetxController {
     }
   }
 
-  // TODO: implement this. we should save liked, smile, sad, viewed words
   @override
   void onClose() {
+    classService.commitChange();
     super.onClose();
   }
 }

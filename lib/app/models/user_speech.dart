@@ -7,7 +7,6 @@ import 'package:spoken_chinese/service/user_service.dart';
 
 import '../../app/models/exams.dart';
 import '../../service/api_service.dart';
-import '../../service/app_state_service.dart';
 import 'speech_evaluation_result.dart';
 
 class UserSpeech {
@@ -17,7 +16,7 @@ class UserSpeech {
   /// Lecture this speech belong to. If free speech, lectureID='freeSpeech'.
   String lectureId;
 
-  /// Exam this speech belong to. If free speech, examID='0'
+  /// Exam this speech belong to. If free speech, examID='freeSpeech'
   String examId;
 
   /// trial=1,2,3.. as user can record speech for same exam as many times as they like

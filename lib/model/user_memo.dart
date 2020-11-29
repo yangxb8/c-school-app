@@ -1,14 +1,15 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 part 'user_memo.flamingo.dart';
 
 class UserMemo extends Model {
   UserMemo({
-    this.title,
-    this.content,
-    this.relatedClassId,
-    this.timestamp,
+    @required this.title,
+    @required this.content,
+    @required this.relatedClassId,
+    @required this.timestamp,
     Map<String, dynamic> values,
   }) : super(values: values);
 

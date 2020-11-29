@@ -178,7 +178,9 @@ class CSchoolClassView extends StatelessWidget {
                                                       ),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.only(left: 6.0),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 6.0),
                                                       child: Icon(
                                                         Icons.menu_book,
                                                         color: ReviewWordsTheme
@@ -206,11 +208,15 @@ class CSchoolClassView extends StatelessWidget {
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.only(left:6.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 6.0),
                                                         child: Icon(
                                                           Icons.remove_red_eye,
-                                                          color: ReviewWordsTheme
-                                                              .nearlyBlue,
+                                                          color:
+                                                              ReviewWordsTheme
+                                                                  .nearlyBlue,
                                                           size: 20,
                                                         ),
                                                       ),
@@ -257,20 +263,22 @@ class CSchoolClassView extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(16.0)),
                             child: AspectRatio(
                                 aspectRatio: 1.28,
-                                child: CachedNetworkImage(
-                                    imageUrl:
-                                        cschoolClass.pic?.url ?? DEFAULT_IMAGE,
-                                    placeholder: (context, url) => SizedBox(
-                                          width: 200.0,
-                                          height: 100.0,
-                                          child: Shimmer.fromColors(
-                                            baseColor: Colors.grey[300],
-                                            highlightColor: Colors.grey[100],
-                                            child: Container(),
-                                          ),
-                                        ),
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset(DEFAULT_IMAGE))),
+                                child: cschoolClass.pic?.url == null
+                                    ? Image.asset(DEFAULT_IMAGE)
+                                    : CachedNetworkImage(
+                                        imageUrl: cschoolClass.pic.url,
+                                        placeholder: (context, url) => SizedBox(
+                                              width: 200.0,
+                                              height: 100.0,
+                                              child: Shimmer.fromColors(
+                                                baseColor: Colors.grey[300],
+                                                highlightColor:
+                                                    Colors.grey[100],
+                                                child: Container(),
+                                              ),
+                                            ),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(DEFAULT_IMAGE))),
                           ),
                         ),
                       ),

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:spoken_chinese/service/logger_service.dart';
 import 'api_service.dart';
 import '../model/user.dart';
 
@@ -13,6 +14,7 @@ class UserService extends GetxService {
   static UserService _instance;
   static AppUser user;
   static final ApiService _apiService = Get.find();
+  static final logger = Get.find<LoggerService>().logger;
 
   static Future<UserService> getInstance() async {
     if (_instance == null) {
@@ -30,7 +32,7 @@ class UserService extends GetxService {
   /// Return Empty AppUser if firebase user is null, otherwise,
   /// return AppUser fetched from firestore
   static Future<AppUser> _getCurrentUser() async {
-    if (_apiService.firebaseAuthApi.currentUser.isAnonymous) {
+    if (_apiService.firebaseAuthApi.currentUser.isNull) {
       return AppUser();
     } else {
       return await _apiService.firestoreApi
@@ -40,5 +42,13 @@ class UserService extends GetxService {
 
   static void _refreshAppUser(User firebaseUser) {
     _getCurrentUser().then((appUser) => user = appUser);
+  }
+
+  static void commitChange(AppUser appUserForUpdate) {
+    if(user.isNull){
+      logger.e('AppUser is not initialized! Commit is canceled');
+      return;
+    }
+    _apiService.firestoreApi.updateAppUser(appUserForUpdate, _refreshAppUser);
   }
 }

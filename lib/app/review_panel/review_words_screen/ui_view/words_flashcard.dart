@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:spoken_chinese/app/models/word.dart';
 import 'package:spoken_chinese/util/functions.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spoken_chinese/app/review_panel/controller/review_words_controller.dart';
@@ -47,6 +48,7 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
     }
 
     void _onHorizontalSwipe(swipeDirection) {
+      reviewWordsController.saveAndResetWordHistory();
       if (swipeDirection == SwipeDirection.right) {
         pageController.nextPage(
             duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
@@ -85,33 +87,72 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  LikeButton(
-                      size: BUTTON_SIZE,
-                      likeCount: 665,
-                      circleColor: CircleColor(
-                          start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                      bubblesColor: BubblesColor(
-                        dotPrimaryColor: Color(0xff33b5e5),
-                        dotSecondaryColor: Color(0xff0099cc),
-                      ),
-                      likeBuilder: (bool isLiked) {
-                        return FaIcon(
-                          FontAwesomeIcons.laughSquint,
-                          color:
-                              isLiked ? Colors.lightGreenAccent : Colors.grey,
-                          size: BUTTON_SIZE,
-                        );
-                      }),
-                  LikeButton(
-                      size: BUTTON_SIZE,
-                      likeCount: 665,
-                      likeBuilder: (bool isLiked) {
-                        return FaIcon(
-                          FontAwesomeIcons.tired,
-                          color: isLiked ? Colors.redAccent : Colors.grey,
-                          size: BUTTON_SIZE,
-                        );
-                      })
+                  Obx(
+                    () => LikeButton(
+                        size: BUTTON_SIZE,
+                        onTap: reviewWordsController.handleRememberPressed,
+                        isLiked: reviewWordsController.wordMemoryStatus.value ==
+                            WordMemoryStatus.REMEMBERED,
+                        likeCount: reviewWordsController
+                            .countWordMemoryStatusOfWordByStatus(
+                                status: WordMemoryStatus.REMEMBERED),
+                        circleColor: CircleColor(
+                            start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                        bubblesColor: BubblesColor(
+                          dotPrimaryColor: Color(0xff33b5e5),
+                          dotSecondaryColor: Color(0xff0099cc),
+                        ),
+                        likeBuilder: (bool isLiked) {
+                          return FaIcon(
+                            FontAwesomeIcons.laughBeam,
+                            color:
+                                isLiked ? Colors.yellowAccent : Colors.blueGrey,
+                            size: BUTTON_SIZE,
+                          );
+                        }),
+                  ),
+                  Obx(
+                    () => LikeButton(
+                        size: BUTTON_SIZE,
+                        onTap: reviewWordsController.handleNormalPressed,
+                        isLiked: reviewWordsController.wordMemoryStatus.value ==
+                            WordMemoryStatus.NORMAL,
+                        likeCount: reviewWordsController
+                            .countWordMemoryStatusOfWordByStatus(
+                                status: WordMemoryStatus.NORMAL),
+                        circleColor: CircleColor(
+                            start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                        bubblesColor: BubblesColor(
+                          dotPrimaryColor: Color(0xff33b5e5),
+                          dotSecondaryColor: Color(0xff0099cc),
+                        ),
+                        likeBuilder: (bool isLiked) {
+                          return FaIcon(
+                            FontAwesomeIcons.frownOpen,
+                            color:
+                                isLiked ? Colors.yellowAccent : Colors.blueGrey,
+                            size: BUTTON_SIZE,
+                          );
+                        }),
+                  ),
+                  Obx(
+                    () => LikeButton(
+                        size: BUTTON_SIZE,
+                        onTap: reviewWordsController.handleForgotPressed,
+                        isLiked: reviewWordsController.wordMemoryStatus.value ==
+                            WordMemoryStatus.FORGOT,
+                        likeCount: reviewWordsController
+                            .countWordMemoryStatusOfWordByStatus(
+                                status: WordMemoryStatus.FORGOT),
+                        likeBuilder: (bool isLiked) {
+                          return FaIcon(
+                            FontAwesomeIcons.sadCry,
+                            color:
+                                isLiked ? Colors.yellowAccent : Colors.blueGrey,
+                            size: BUTTON_SIZE,
+                          );
+                        }),
+                  )
                 ],
               ),
             )
@@ -204,12 +245,12 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                                   IconButton(
                                     icon: Icon(Icons.favorite),
                                     // key: favoriteButtonKey,
-                                    color: controller.isFavorite
+                                    color: controller.isPrimaryWordLiked
                                         ? Colors.redAccent
                                         : Colors.grey,
                                     iconSize: BUTTON_SIZE,
                                     onPressed: () =>
-                                        controller.toggleFavorite(),
+                                        controller.toggleFavoriteCard(i),
                                   ),
                                 ],
                               ),
@@ -284,16 +325,20 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 50.0),
                                 child: SimpleGestureDetector(
-                                  onTap: () => controller.playExample(string: exampleAndAudio.key, audio: exampleAndAudio.value),
+                                  onTap: () => controller.playExample(
+                                      string: exampleAndAudio.key,
+                                      audio: exampleAndAudio.value),
                                   child: RichText(
                                     text: TextSpan(
                                         style: TextStyle(
                                             fontSize: 20.0,
                                             color: Colors.black),
-                                            //TODO: give related words a link
+                                        //TODO: give related words a link
                                         children: _divideExample([
                                           controller.primaryWordString,
-                                          ...controller.primaryWord.relatedWords.map((word)=>word.word.join()).toList()
+                                          ...controller.primaryWord.relatedWords
+                                              .map((word) => word.word.join())
+                                              .toList()
                                         ], exampleAndAudio.key)
                                             .map((part) => TextSpan(
                                                 text: part,

@@ -21,7 +21,6 @@ import 'package:spoken_chinese/app/models/word_meaning.dart';
 import '../model/user.dart';
 import './logger_service.dart';
 import '../i18n/api_service.i18n.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 
 final logger = Get.find<LoggerService>().logger;
 
@@ -230,6 +229,7 @@ class _FirestoreApi {
   static FirebaseFirestore _firestore;
   static DocumentAccessor _documentAccessor;
   static CollectionReference _userSpeechCollection;
+  static User _currentUser;
 
   static _FirestoreApi getInstance() {
     if (_instance == null) {
@@ -238,6 +238,7 @@ class _FirestoreApi {
       _documentAccessor = DocumentAccessor();
       _setupEmulator();
       _userSpeechCollection = _firestore.collection('user_speeches');
+      _currentUser = _FirebaseAuthApi().currentUser;
     }
 
     return _instance;
@@ -245,15 +246,18 @@ class _FirestoreApi {
 
   void _registerAppUser(
       {@required User firebaseUser, @required String nickname}) {
+    if (firebaseUser.isAnonymous) return;
     var appUser = AppUser(id: firebaseUser.uid);
-    appUser.nickName=nickname;
-    _documentAccessor.save(appUser)
-        .catchError((e) => logger.e(e.printError()));
+    appUser.nickName = nickname;
+    _documentAccessor.save(appUser).catchError((e) => logger.e(e.printError()));
   }
 
-  Future<AppUser> fetchAppUser(
-      {@required User firebaseUser}) async {
-    if (firebaseUser.isNull) return null;
+  Future<AppUser> fetchAppUser({User firebaseUser}) async {
+    firebaseUser ??= _currentUser;
+    if (firebaseUser.isNull) {
+      logger.e('fetchAppUser was called on null firebaseUser');
+      return null;
+    }
     return await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
   }
 
@@ -263,6 +267,14 @@ class _FirestoreApi {
         .where('fingerprint', isEqualTo: fingerprint)
         .get()
         .then((QuerySnapshot snapshot) => snapshot.size);
+  }
+
+  /// Update App User using flamingo, appUserForUpdate should contain
+  /// only updated values
+  void updateAppUser(AppUser appUserForUpdate, Function refreshAppUser) {
+    _documentAccessor
+        .update(appUserForUpdate)
+        .then((_) => fetchAppUser().then((appUser) => refreshAppUser(appUser)));
   }
 
   /// Return the specific speech data as Uint8List

@@ -10,6 +10,7 @@ part of 'user_class_history.dart';
 enum ClassHistoryKey {
   classId,
   timestamp,
+  isLatest,
 }
 
 extension ClassHistoryKeyExtension on ClassHistoryKey {
@@ -19,6 +20,8 @@ extension ClassHistoryKeyExtension on ClassHistoryKey {
         return 'classId';
       case ClassHistoryKey.timestamp:
         return 'timestamp';
+      case ClassHistoryKey.isLatest:
+        return 'isLatest';
       default:
         return null;
     }
@@ -30,6 +33,7 @@ Map<String, dynamic> _$toData(ClassHistory doc) {
   final data = <String, dynamic>{};
   Helper.writeNotNull(data, 'classId', doc.classId);
   Helper.writeNotNull(data, 'timestamp', doc.timestamp);
+  Helper.writeNotNull(data, 'isLatest', doc.isLatest);
 
   return data;
 }
@@ -42,4 +46,6 @@ void _$fromData(ClassHistory doc, Map<String, dynamic> data) {
   } else {
     doc.timestamp = Helper.valueFromKey<Timestamp>(data, 'timestamp');
   }
+
+  doc.isLatest = Helper.valueFromKey<bool>(data, 'isLatest');
 }

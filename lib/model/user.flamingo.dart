@@ -11,8 +11,8 @@ enum AppUserKey {
   nickName,
   _membershipTypes,
   membershipEndAt,
-  savedClasses,
-  savedWords,
+  likedClasses,
+  likedWords,
   rankHistory,
   reviewedClassHistory,
   reviewedWordHistory,
@@ -28,10 +28,10 @@ extension AppUserKeyExtension on AppUserKey {
         return '_membershipTypes';
       case AppUserKey.membershipEndAt:
         return 'membershipEndAt';
-      case AppUserKey.savedClasses:
-        return 'savedClasses';
-      case AppUserKey.savedWords:
-        return 'savedWords';
+      case AppUserKey.likedClasses:
+        return 'likedClasses';
+      case AppUserKey.likedWords:
+        return 'likedWords';
       case AppUserKey.rankHistory:
         return 'rankHistory';
       case AppUserKey.reviewedClassHistory:
@@ -52,8 +52,8 @@ Map<String, dynamic> _$toData(AppUser doc) {
   Helper.writeNotNull(data, 'nickName', doc.nickName);
   Helper.writeNotNull(data, '_membershipTypes', doc._membershipTypes);
   Helper.writeNotNull(data, 'membershipEndAt', doc.membershipEndAt);
-  Helper.writeNotNull(data, 'savedClasses', doc.savedClasses);
-  Helper.writeNotNull(data, 'savedWords', doc.savedWords);
+  Helper.writeNotNull(data, 'likedClasses', doc.likedClasses);
+  Helper.writeNotNull(data, 'likedWords', doc.likedWords);
 
   Helper.writeModelListNotNull(data, 'rankHistory', doc.rankHistory);
   Helper.writeModelListNotNull(
@@ -77,8 +77,8 @@ void _$fromData(AppUser doc, Map<String, dynamic> data) {
         Helper.valueFromKey<Timestamp>(data, 'membershipEndAt');
   }
 
-  doc.savedClasses = Helper.valueListFromKey<String>(data, 'savedClasses');
-  doc.savedWords = Helper.valueListFromKey<String>(data, 'savedWords');
+  doc.likedClasses = Helper.valueListFromKey<String>(data, 'likedClasses');
+  doc.likedWords = Helper.valueListFromKey<String>(data, 'likedWords');
 
   final _rankHistory =
       Helper.valueMapListFromKey<String, dynamic>(data, 'rankHistory');
