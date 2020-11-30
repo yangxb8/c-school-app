@@ -43,6 +43,8 @@ class ReviewWordsController extends GetxController {
 
   Rx<WordMemoryStatus> wordMemoryStatus = WordMemoryStatus.NOT_REVIEWED.obs;
 
+  RxDouble pageFraction;
+
   @override
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
@@ -53,6 +55,7 @@ class ReviewWordsController extends GetxController {
     wordsList = classes.length == 1
         ? List.from(classes.single.words.reversed)
         : ClassService.allWords;
+    pageFraction = (wordsList.length - 1.0).obs;
     await tts.setLanguage('zh-cn');
     await tts.setSpeechRate(0.5);
     super.onInit();
@@ -67,8 +70,7 @@ class ReviewWordsController extends GetxController {
   /// PrimaryWord.word to String for display
   String get primaryWordString => primaryWord.word.join();
 
-  /// If primary word is liked by user
-  bool get isPrimaryWordLiked => _userLikedWordIds.contains(primaryWord.id);
+  bool isWordLiked(Word word) => _userLikedWordIds.contains(word.wordId);
 
   void toggleFavoriteCard(int cardOrdinal) =>
       classService.toggleWordLiked(wordsList[cardOrdinal]);
@@ -81,47 +83,20 @@ class ReviewWordsController extends GetxController {
               history.wordMemoryStatus == status)
           .length;
 
-  /// Return value is defined by like_button package
-  Future<bool> handleRememberPressed(bool isLiked) {
-    if (isLiked) {
-      _handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED);
+  void handWordMemoryStatusPressed(WordMemoryStatus status) {
+    if (wordMemoryStatus.value == status) {
+      wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     } else {
-      _handWordMemoryStatusPressed(WordMemoryStatus.NOT_REVIEWED);
+      wordMemoryStatus.value = status;
     }
-    return Future.value(true);
-  }
-
-  /// Return value is defined by like_button package
-  Future<bool> handleNormalPressed(bool isLiked) {
-    if (isLiked) {
-      _handWordMemoryStatusPressed(WordMemoryStatus.NORMAL);
-    } else {
-      _handWordMemoryStatusPressed(WordMemoryStatus.NOT_REVIEWED);
-    }
-    return Future.value(true);
-  }
-
-  /// Return value is defined by like_button package
-  Future<bool> handleForgotPressed(bool isLiked) {
-    if (isLiked) {
-      _handWordMemoryStatusPressed(WordMemoryStatus.FORGOT);
-    } else {
-      _handWordMemoryStatusPressed(WordMemoryStatus.NOT_REVIEWED);
-    }
-    return Future.value(true);
-  }
-
-  void _handWordMemoryStatusPressed(WordMemoryStatus status) {
-    wordMemoryStatus.value = status;
   }
 
   /// If nothing is pressed, default to NORMAL
-  void saveAndResetWordHistory() {
+  void saveAndResetWordHistory(Word word) {
     if (wordMemoryStatus.value == WordMemoryStatus.NOT_REVIEWED) {
       wordMemoryStatus.value = WordMemoryStatus.NORMAL;
     }
-    classService.addWordReviewedHistory(primaryWord,
-        status: wordMemoryStatus.value);
+    classService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
     wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
   }
 
@@ -176,6 +151,7 @@ class ReviewWordsController extends GetxController {
     classService.commitChange();
     super.onClose();
   }
+
 }
 
 class _WordsReviewModeWrapper {

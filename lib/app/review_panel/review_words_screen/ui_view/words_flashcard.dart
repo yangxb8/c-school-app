@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flip/flip.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:like_button/like_button.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:c_school_app/app/models/word.dart';
 import 'package:c_school_app/util/functions.dart';
@@ -23,39 +22,31 @@ var widgetAspectRatio = cardAspectRatio * 1.2;
 
 class _WordsFlashcardState extends State<WordsFlashcard> {
   final ReviewWordsController reviewWordsController = Get.find();
-  var pageFraction;
   var flipController = FlipController();
-
-  @override
-  void initState() {
-    pageFraction = reviewWordsController.wordsList.length - 1.0;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     var pageController =
         PageController(initialPage: reviewWordsController.wordsList.length - 1);
     pageController.addListener(() {
-      setState(() {
-        pageFraction = pageController.page;
-        if (!flipController.isFront) flipController.flip();
-      });
+      reviewWordsController.pageFraction.value = pageController.page;
+      if (!flipController.isFront) flipController.flip();
     });
 
     void _onTap() {
       flipController.flip();
     }
 
-    void _onHorizontalSwipe(swipeDirection) {
-      reviewWordsController.saveAndResetWordHistory();
+    Future<void> _onHorizontalSwipe(swipeDirection) async {
+      var currentPrimaryWord = reviewWordsController.primaryWord;
       if (swipeDirection == SwipeDirection.right) {
-        pageController.nextPage(
+        await pageController.nextPage(
             duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
       } else {
-        pageController.previousPage(
+        await pageController.previousPage(
             duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
       }
+      reviewWordsController.saveAndResetWordHistory(currentPrimaryWord);
     }
 
     return Padding(
@@ -64,107 +55,78 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
         onTap: _onTap,
         onHorizontalSwipe: _onHorizontalSwipe,
         child: Column(
-          children: [
-            Stack(
-              children: <Widget>[
-                // We only use this to control the PageController behind screen
-                Positioned.fill(
-                  child: PageView.builder(
-                    itemCount: reviewWordsController.wordsList.length,
-                    controller: pageController,
-                    reverse: true,
-                    itemBuilder: (context, index) {
-                      return Container();
-                    },
+            children: [
+              Stack(
+                children: <Widget>[
+                  // We only use this to control the PageController behind screen
+                  Positioned.fill(
+                    child: PageView.builder(
+                      itemCount: reviewWordsController.wordsList.length,
+                      controller: pageController,
+                      reverse: true,
+                      itemBuilder: (context, index) {
+                        return Container();
+                      },
+                    ),
                   ),
-                ),
-                CardScrollWidget(pageFraction, flipController),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Obx(
-                    () => LikeButton(
-                        size: BUTTON_SIZE,
-                        onTap: reviewWordsController.handleRememberPressed,
-                        isLiked: reviewWordsController.wordMemoryStatus.value ==
-                            WordMemoryStatus.REMEMBERED,
-                        likeCount: reviewWordsController
-                            .countWordMemoryStatusOfWordByStatus(
-                                status: WordMemoryStatus.REMEMBERED),
-                        circleColor: CircleColor(
-                            start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                        bubblesColor: BubblesColor(
-                          dotPrimaryColor: Color(0xff33b5e5),
-                          dotSecondaryColor: Color(0xff0099cc),
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return FaIcon(
-                            FontAwesomeIcons.laughBeam,
-                            color:
-                                isLiked ? Colors.yellowAccent : Colors.blueGrey,
-                            size: BUTTON_SIZE,
-                          );
-                        }),
-                  ),
-                  Obx(
-                    () => LikeButton(
-                        size: BUTTON_SIZE,
-                        onTap: reviewWordsController.handleNormalPressed,
-                        isLiked: reviewWordsController.wordMemoryStatus.value ==
-                            WordMemoryStatus.NORMAL,
-                        likeCount: reviewWordsController
-                            .countWordMemoryStatusOfWordByStatus(
-                                status: WordMemoryStatus.NORMAL),
-                        circleColor: CircleColor(
-                            start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                        bubblesColor: BubblesColor(
-                          dotPrimaryColor: Color(0xff33b5e5),
-                          dotSecondaryColor: Color(0xff0099cc),
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return FaIcon(
-                            FontAwesomeIcons.frownOpen,
-                            color:
-                                isLiked ? Colors.yellowAccent : Colors.blueGrey,
-                            size: BUTTON_SIZE,
-                          );
-                        }),
-                  ),
-                  Obx(
-                    () => LikeButton(
-                        size: BUTTON_SIZE,
-                        onTap: reviewWordsController.handleForgotPressed,
-                        isLiked: reviewWordsController.wordMemoryStatus.value ==
-                            WordMemoryStatus.FORGOT,
-                        likeCount: reviewWordsController
-                            .countWordMemoryStatusOfWordByStatus(
-                                status: WordMemoryStatus.FORGOT),
-                        likeBuilder: (bool isLiked) {
-                          return FaIcon(
-                            FontAwesomeIcons.sadCry,
-                            color:
-                                isLiked ? Colors.yellowAccent : Colors.blueGrey,
-                            size: BUTTON_SIZE,
-                          );
-                        }),
-                  )
+                  Obx(()=> CardScrollWidget(reviewWordsController.pageFraction.value, flipController)),
                 ],
               ),
-            )
-          ],
-        ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child:
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      IconButton(
+                        splashRadius: 0.01,
+                        icon: Obx(()=>
+                          FaIcon(
+                                  FontAwesomeIcons.laughBeam,
+                                  color:
+                                  reviewWordsController.wordMemoryStatus.value ==
+                                      WordMemoryStatus.REMEMBERED ? Colors.yellowAccent : Colors.blueGrey,
+                                  size: BUTTON_SIZE,
+                                ),
+                        ), onPressed: ()=>reviewWordsController.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
+                      ),
+                      IconButton(
+                        splashRadius: 0.01,
+                        icon: Obx(()=>
+                          FaIcon(
+                                  FontAwesomeIcons.frownOpen,
+                                  color:
+                                  reviewWordsController.wordMemoryStatus.value ==
+                                      WordMemoryStatus.NORMAL ? Colors.yellowAccent : Colors.blueGrey,
+                                  size: BUTTON_SIZE,
+                                ),
+                        ), onPressed: ()=>reviewWordsController.handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
+                      ),
+                      IconButton(
+                        splashRadius: 0.01,
+                        icon: Obx(()=>
+                          FaIcon(
+                                  FontAwesomeIcons.sadCry,
+                                  color:
+                                  reviewWordsController.wordMemoryStatus.value ==
+                                      WordMemoryStatus.FORGOT ? Colors.yellowAccent : Colors.blueGrey,
+                                  size: BUTTON_SIZE,
+                                ),
+                        ), onPressed: ()=>reviewWordsController.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
+                      ),
+                    ],
+                  ),
+              )
+            ],
+          ),
       ),
     );
   }
 }
 
 class CardScrollWidget extends GetView<ReviewWordsController> {
-  final double pageFraction;
+  final pageFraction;
   final flipController;
   final padding = 10.0;
   final verticalInset = 8.0;
@@ -237,25 +199,24 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                               firstChild: buildFrontCardContent(i),
                             )
                           : buildFrontCardContent(i),
-                      isPrimaryCard
-                          ? Obx(
-                              () => Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
+                      Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Obx(()=>
                                   IconButton(
+                                    splashRadius: 0.01,
                                     icon: Icon(Icons.favorite),
                                     // key: favoriteButtonKey,
-                                    color: controller.isPrimaryWordLiked
+                                    color: controller.isWordLiked(controller.wordsList[i])
                                         ? Colors.redAccent
                                         : Colors.grey,
                                     iconSize: BUTTON_SIZE,
                                     onPressed: () =>
                                         controller.toggleFavoriteCard(i),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             )
-                          : Container(),
                     ],
                   ),
                 ),
