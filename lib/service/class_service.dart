@@ -124,25 +124,21 @@ class ClassService extends GetxService {
   /// Add record to reviewedWordHistory, won't overwrite it
   void addWordReviewedHistory(Word word,
       {WordMemoryStatus status = WordMemoryStatus.NORMAL}) {
-    userWordsHistory_Rx.add(WordHistory(
-        wordId: word.wordId,
-        wordMemoryStatus: status,
-        timestamp: Timestamp.now(),
-        isLatest: true));
     // If have history, change it to not latest
     var relatedWordHistory = userWordsHistory_Rx
         .filter((history) => history.wordId == word.wordId && history.isLatest);
     if (relatedWordHistory.length == 1) {
       relatedWordHistory.single.isLatest = false;
     }
+    userWordsHistory_Rx.add(WordHistory(
+        wordId: word.wordId,
+        wordMemoryStatus: status,
+        timestamp: Timestamp.now(),
+        isLatest: true));
   }
 
   /// Add record to reviewedClassHistory, won't overwrite it
   void addClassReviewedHistory(CSchoolClass cschoolClass) {
-    userClassesHistory_Rx.add(ClassHistory(
-        classId: cschoolClass.classId,
-        timestamp: Timestamp.now(),
-        isLatest: true));
     // If have history, change it to not latest
     var relatedClassHistory = userClassesHistory_Rx
         .filter((history) =>
@@ -150,15 +146,18 @@ class ClassService extends GetxService {
     if(relatedClassHistory.length==1){
       relatedClassHistory.single.isLatest =false;
     }
+    userClassesHistory_Rx.add(ClassHistory(
+        classId: cschoolClass.classId,
+        timestamp: Timestamp.now(),
+        isLatest: true));
   }
 
   /// Commit any changed made to _appUserForUpdate
   void commitChange() {
-    var appUserForUpdate = AppUser(id: UserService.user.id);
-    appUserForUpdate
+    UserService.user
       ..likedWords = userLikedWordIds_Rx.toList()
       ..reviewedClassHistory = userClassesHistory_Rx.toList()
       ..reviewedWordHistory = userWordsHistory_Rx.toList();
-    UserService.commitChange(appUserForUpdate);
+    UserService.commitChange();
   }
 }

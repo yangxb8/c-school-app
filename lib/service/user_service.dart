@@ -35,15 +35,15 @@ class UserService extends GetxService {
     }
   }
 
-  static void _refreshAppUser(User firebaseUser) {
+  static void _refreshAppUser() {
     _getCurrentUser().then((appUser) => user = appUser);
   }
 
-  static void commitChange(AppUser appUserForUpdate) {
+  static void commitChange() {
     if(user.isNull){
       logger.e('AppUser is not initialized! Commit is canceled');
       return;
     }
-    _apiService.firestoreApi.updateAppUser(appUserForUpdate, _refreshAppUser);
+    _apiService.firestoreApi.updateAppUser(user, _refreshAppUser);
   }
 }

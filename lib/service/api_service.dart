@@ -83,7 +83,7 @@ class _FirebaseAuthApi {
   User get currentUser => _firebaseAuth.currentUser;
 
   void listenToFirebaseAuth(Function func) {
-    _firebaseAuth.authStateChanges().listen((User user) => func(user));
+    _firebaseAuth.authStateChanges().listen((User user) => func());
   }
 
   // Already return fromm every conditions
@@ -274,7 +274,7 @@ class _FirestoreApi {
   void updateAppUser(AppUser appUserForUpdate, Function refreshAppUser) {
     _documentAccessor
         .update(appUserForUpdate)
-        .then((_) => fetchAppUser().then((appUser) => refreshAppUser(appUser)));
+        .then((_) => refreshAppUser());
   }
 
   /// Return the specific speech data as Uint8List

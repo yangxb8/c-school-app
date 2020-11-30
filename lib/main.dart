@@ -75,8 +75,8 @@ class SpokenChineseApp extends GetView<AppStateService> {
         ],
         getPages: AppRouter.setupRouter(),
         //TODO: change default route, only for words-list test
-        initialRoute: AppStateService.systemInfo.startCount == 0
-            ? '/login'
-            : '/review/words/home');
+        initialRoute: UserService.user.isLogin()
+            ? '/review/words/home'
+            : '/login');
   }
 }

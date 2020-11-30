@@ -17,7 +17,7 @@ class LocalStorageService extends GetxService{
     int currentCount = _getFromDisk(AppStartCountKey) ?? 0;
     _saveToDisk(AppStartCountKey, currentCount +1);
     //TODO: For login debug, remove me!!
-    return 1;
+    return 0;
     // return currentCount;
   }
 
