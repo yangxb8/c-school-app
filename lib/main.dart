@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:spoken_chinese/service/class_service.dart';
-import 'package:spoken_chinese/service/user_service.dart';
+import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/service/user_service.dart';
 
 import './service/app_state_service.dart';
 

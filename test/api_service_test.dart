@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spoken_chinese/model/user.dart';
-import 'package:spoken_chinese/util/extensions.dart';
+import 'package:c_school_app/model/user.dart';
+import 'package:c_school_app/util/extensions.dart';
 
 void main(){
   //TODO: This test isn't implemented

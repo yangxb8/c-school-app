@@ -1,4 +1,4 @@
-# spoken_chinese
+# c_school_app
 
 App provide spoken chinese training
 

@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:spoken_chinese/app/models/word.dart';
-import 'package:spoken_chinese/util/functions.dart';
+import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/util/functions.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:spoken_chinese/app/review_panel/controller/review_words_controller.dart';
-import 'package:spoken_chinese/service/logger_service.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import 'package:c_school_app/service/logger_service.dart';
 import 'dart:math';
 
 const BUTTON_SIZE = 50.0;

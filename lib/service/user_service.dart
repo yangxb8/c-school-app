@@ -1,15 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:spoken_chinese/service/logger_service.dart';
+import 'package:c_school_app/service/logger_service.dart';
 import 'api_service.dart';
 import '../model/user.dart';
 
-/*
-* This class provide AppState from firebase/shared_preference/others
-* It should not expose inner service(_localStorageService etc.) usage!!!
-* This service use ApiService and LocalStorageService so they must be
-* initialized first!
-*/
+/// Provide user related service, like create and update user
 class UserService extends GetxService {
   static UserService _instance;
   static AppUser user;

@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:853976991023:android:a642f157e8dd41e187cdda",
         "android_client_info": {
-          "package_name": "site.alphasho.spoken_chinese"
+          "package_name": "site.alphasho.c_school_app"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "853976991023-b180g333nov3g7afmf5v4pdpd32e7l2m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "site.alphasho.spoken_chinese",
+            "package_name": "site.alphasho.c_school_app",
             "certificate_hash": "7bdf83adcf7b2b3a3329983a8bc5103036558f79"
           }
         },

@@ -2,7 +2,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:flutter/foundation.dart';
-import 'package:spoken_chinese/app/models/word.dart';
+import 'package:c_school_app/app/models/word.dart';
 
 part 'user_word_history.flamingo.dart';
 

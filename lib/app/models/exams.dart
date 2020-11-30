@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:spoken_chinese/exceptions/sound_exceptions.dart';
+import 'package:c_school_app/exceptions/sound_exceptions.dart';
 
 class SpeechExam extends ExamBase {
   String refText;

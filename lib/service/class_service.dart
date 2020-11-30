@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:spoken_chinese/model/user_class_history.dart';
-import 'package:spoken_chinese/model/user_word_history.dart';
-import 'package:spoken_chinese/service/user_service.dart';
+import 'package:c_school_app/model/user_class_history.dart';
+import 'package:c_school_app/model/user_word_history.dart';
+import 'package:c_school_app/service/user_service.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:spoken_chinese/app/models/class.dart';
-import 'package:spoken_chinese/app/models/word.dart';
+import 'package:c_school_app/app/models/class.dart';
+import 'package:c_school_app/app/models/word.dart';
 import 'api_service.dart';
 import '../model/user.dart';
 
@@ -30,11 +30,16 @@ class ClassService extends GetxService {
   static Future<ClassService> getInstance() async {
     if (_instance.isNull) {
       _instance ??= ClassService();
+      /// All available words
       allWords = await _apiService.firestoreApi.fetchWords();
+      /// All available Classes
       allClasses = await _apiService.firestoreApi.fetchClasses();
-      userLikedWordIds_Rx = (List<String>.of(UserService.user.likedWords)).obs();
-      userClassesHistory_Rx = (List<ClassHistory>.of(UserService.user.reviewedClassHistory)).obs();
-      userWordsHistory_Rx = (List<WordHistory>.of(UserService.user.reviewedWordHistory)).obs();
+      /// This properties need to be observable and can be use to update AppUser
+      userLikedWordIds_Rx = List<String>.of(UserService.user.likedWords).obs;
+      /// This properties need to be observable and can be use to update AppUser
+      userClassesHistory_Rx = (List<ClassHistory>.of(UserService.user.reviewedClassHistory)).obs;
+      /// This properties need to be observable and can be use to update AppUser
+      userWordsHistory_Rx = (List<WordHistory>.of(UserService.user.reviewedWordHistory)).obs;
     }
 
     return _instance;

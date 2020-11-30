@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:spoken_chinese/app/models/class.dart';
-import 'package:spoken_chinese/service/class_service.dart';
+import 'package:c_school_app/app/models/class.dart';
+import 'package:c_school_app/service/class_service.dart';
 import 'package:supercharged/supercharged.dart';
 import './review_words_theme.dart';
 

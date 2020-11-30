@@ -7,12 +7,12 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:spoken_chinese/app/models/class.dart';
-import 'package:spoken_chinese/model/user_word_history.dart';
-import 'package:spoken_chinese/service/class_service.dart';
-import 'package:spoken_chinese/app/review_panel/review_words_screen//ui_view/words_list.dart';
-import 'package:spoken_chinese/app/models/word.dart';
-import 'package:spoken_chinese/service/logger_service.dart';
+import 'package:c_school_app/app/models/class.dart';
+import 'package:c_school_app/model/user_word_history.dart';
+import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/app/review_panel/review_words_screen//ui_view/words_list.dart';
+import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/service/logger_service.dart';
 
 class ReviewWordsController extends GetxController {
   final ClassService classService = Get.find();

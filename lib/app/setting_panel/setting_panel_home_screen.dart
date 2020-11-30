@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:spoken_chinese/app/models/exams.dart';
-import 'package:spoken_chinese/service/app_state_service.dart';
+import 'package:c_school_app/app/models/exams.dart';
+import 'package:c_school_app/service/app_state_service.dart';
 import '../ui_view/speech_exam_bottom_sheet.dart';
 
 class SettingPanelHomeScreen extends StatelessWidget {

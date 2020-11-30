@@ -2,8 +2,8 @@ import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:get/get.dart';
-import 'package:spoken_chinese/app/models/word.dart';
-import 'package:spoken_chinese/service/class_service.dart';
+import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/service/class_service.dart';
 
 part 'class.flamingo.dart';
 

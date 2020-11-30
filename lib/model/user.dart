@@ -3,10 +3,10 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:spoken_chinese/model/user_class_history.dart';
-import 'package:spoken_chinese/model/user_memo.dart';
-import 'package:spoken_chinese/model/user_rank.dart';
-import 'package:spoken_chinese/model/user_word_history.dart';
+import 'package:c_school_app/model/user_class_history.dart';
+import 'package:c_school_app/model/user_memo.dart';
+import 'package:c_school_app/model/user_rank.dart';
+import 'package:c_school_app/model/user_word_history.dart';
 
 part 'user.flamingo.dart';
 

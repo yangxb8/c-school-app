@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:spoken_chinese/app/review_panel/controller/review_words_controller.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import './ui_view/words_flashcard.dart';
 import './ui_view/words_list.dart';
 

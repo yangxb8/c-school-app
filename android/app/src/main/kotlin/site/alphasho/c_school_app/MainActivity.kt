@@ -1,4 +1,4 @@
-package site.alphasho.spoken_chinese
+package site.alphasho.c_school_app
 
 import android.content.Context
 import androidx.annotation.NonNull

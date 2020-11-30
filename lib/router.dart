@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:i18n_extension/i18n_widget.dart';
-import 'package:spoken_chinese/app/review_panel/review_words_screen/review_words_home_screen.dart';
+import 'package:c_school_app/app/review_panel/review_words_screen/review_words_home_screen.dart';
 import 'app/login/login_page.dart';
 import 'app/main_app_home_screen.dart';
 import 'app/review_panel/review_words_screen//review_words_screen.dart';

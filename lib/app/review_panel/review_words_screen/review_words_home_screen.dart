@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spoken_chinese/app/models/class.dart';
+import 'package:c_school_app/app/models/class.dart';
 import './classes_list_view.dart';
 import 'review_words_theme.dart';
 import '../../../i18n/review_words.i18n.dart';

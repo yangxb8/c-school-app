@@ -38,7 +38,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "site.alphasho.spoken_chinese"
+        applicationId "site.alphasho.c_school_app"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

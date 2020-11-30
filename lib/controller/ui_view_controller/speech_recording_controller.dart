@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:spoken_chinese/exceptions/sound_exceptions.dart';
-import 'package:spoken_chinese/service/app_state_service.dart';
+import 'package:c_school_app/exceptions/sound_exceptions.dart';
+import 'package:c_school_app/service/app_state_service.dart';
 
 import '../../app/models/exams.dart';
 import '../../app/models/user_speech.dart';

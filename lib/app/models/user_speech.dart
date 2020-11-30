@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:spoken_chinese/service/user_service.dart';
+import 'package:c_school_app/service/user_service.dart';
 
 import '../../app/models/exams.dart';
 import '../../service/api_service.dart';
