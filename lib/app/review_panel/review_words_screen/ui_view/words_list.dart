@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:c_school_app/app/models/word.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
@@ -40,11 +41,14 @@ class WordsList extends GetView<ReviewWordsController> {
             itemBuilder: (context, sectionIndex, itemIndex, index) {
               var word = sectionList[sectionIndex].items[itemIndex];
               return ListTile(
-                trailing: Padding(
-                  padding: const EdgeInsets.only(right:20.0),
-                  child: IconButton(
-                    icon: Icon(FontAwesomeIcons.play),
-                    onPressed: () => controller.playWord(word: word),
+                trailing: SimpleGestureDetector(
+                  onTap: controller.showSingleCard(word),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right:20.0),
+                    child: IconButton(
+                      icon: Icon(FontAwesomeIcons.play),
+                      onPressed: () => controller.playWord(word: word),
+                    ),
                   ),
                 ),
                 title: Padding(

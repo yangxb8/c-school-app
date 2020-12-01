@@ -43,7 +43,13 @@ class ReviewWordsController extends GetxController {
 
   Rx<WordMemoryStatus> wordMemoryStatus = WordMemoryStatus.NOT_REVIEWED.obs;
 
+  /// Used to controller pagination of card
   RxDouble pageFraction;
+
+  /// If we are in autoPlay mode
+  RxBool autoPlay = false.obs;
+
+  RxList<Word> searchResult = [].obs;
 
   @override
   Future<void> onInit() async {
@@ -151,6 +157,17 @@ class ReviewWordsController extends GetxController {
     classService.commitChange();
     super.onClose();
   }
+
+  //TODO: implement this
+  void autoPlayPressed() {}
+
+  //TODO: implement this
+  /// Show a single word card from bottom sheet
+  void showSingleCard(Word word) {}
+
+  //TODO: implement this
+  /// Use debounce to delay search happen
+  void handleSearchQueryChange(String query) {}
 
 }
 

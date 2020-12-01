@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
@@ -31,7 +32,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
       maxWidth: 600,
       debounceDelay: const Duration(milliseconds: 500),
       onQueryChanged: (query) {
-        // Call your model, bloc, controller here.
+        controller.handleSearchQueryChange(query);
       },
       // Specify a custom transition to be used for
       // animating between opened and closed stated.
@@ -44,6 +45,17 @@ class ReviewWords extends GetView<ReviewWordsController> {
                 : Icon(Icons.list)),
             onPressed: () => controller.changeMode(),
           ),
+        ),
+        FloatingSearchBarAction(
+          child: CircularButton(
+            icon: Obx(() => FaIcon(
+                  FontAwesomeIcons.play,
+                  color: controller.autoPlay.value
+                      ? Colors.lightBlue
+                      : Colors.grey,
+                )),
+            onPressed: () => controller.autoPlayPressed(),
+          ),
         )
       ],
       actions: [
@@ -53,16 +65,25 @@ class ReviewWords extends GetView<ReviewWordsController> {
       ],
       builder: (context, transition) {
         return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Material(
-            color: Colors.white,
-            elevation: 4.0,
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [Container(height: 112)]),
-          ),
-        );
+            borderRadius: BorderRadius.circular(8),
+            child: Material(
+              color: Colors.white,
+              elevation: 4.0,
+              child: Obx(
+                () => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: _buildSearchResult()
+                ),
+              ),
+            ));
       },
     );
+  }
+
+  //TODO: distinguish empty keyword, not result, and there is result
+  List<Widget> _buildSearchResult() {
+    return controller.searchResult
+        .map((word) => Text(word.wordAsString))
+        .toList();
   }
 }
