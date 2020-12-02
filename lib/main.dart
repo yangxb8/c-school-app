@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:c_school_app/service/class_service.dart';
 import 'package:c_school_app/service/user_service.dart';
+import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 
 import './service/app_state_service.dart';
 
@@ -56,27 +57,29 @@ class SpokenChineseApp extends GetView<AppStateService> {
       systemNavigationBarDividerColor: Colors.grey,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
-    return GetMaterialApp(
-        title: 'Chinese Classroom',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textTheme: AppTheme.textTheme,
-          platform: TargetPlatform.iOS,
-        ),
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en'),
-          const Locale('ja', 'JP'),
-        ],
-        getPages: AppRouter.setupRouter(),
-        //TODO: change default route, only for words-list test
-        initialRoute: UserService.user.isLogin()
-            ? '/review/words/home'
-            : '/login');
+    return KeyboardDismisser(
+      child: GetMaterialApp(
+          title: 'Chinese Classroom',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            textTheme: AppTheme.textTheme,
+            platform: TargetPlatform.iOS,
+          ),
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en'),
+            const Locale('ja', 'JP'),
+          ],
+          getPages: AppRouter.setupRouter(),
+          //TODO: change default route, only for words-list test
+          initialRoute: UserService.user.isLogin()
+              ? '/review/words/home'
+              : '/login'),
+    );
   }
 }

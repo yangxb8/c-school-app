@@ -55,12 +55,14 @@ class ReviewWordsController extends GetxController {
   /// Used to controller pagination of card
   RxDouble pageFraction;
 
+  RxBool isAutoPlayMode = false.obs;
+
   /// Null Timer means we are not in autoPlay mode
-  Timer autoPlayTimer;
+  Timer _autoPlayTimer;
 
   RxString searchQuery = ''.obs;
 
-  RxList<Word> searchResult = [].obs;
+  RxList<Word> searchResult = <Word>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -94,8 +96,6 @@ class ReviewWordsController extends GetxController {
   String get primaryWordString => primaryWord.word.join();
 
   bool isWordLiked(Word word) => _userLikedWordIds.contains(word.wordId);
-
-  bool get isAutoPlayMode => !autoPlayTimer.isNull;
 
   void toggleFavoriteCard(int cardOrdinal) =>
       classService.toggleWordLiked(wordsList[cardOrdinal]);
@@ -142,7 +142,7 @@ class ReviewWordsController extends GetxController {
 
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
-    if (isAutoPlayMode) return;
+    if (isAutoPlayMode.value) return;
     if (_mode.value.wordsReviewMode == WordsReviewMode.FLASH_CARD) {
       _mode.update((mode) => mode.wordsReviewMode = WordsReviewMode.LIST);
       logger.i('Change to List Mode');
@@ -190,9 +190,9 @@ class ReviewWordsController extends GetxController {
 
   void autoPlayPressed() async {
     // If already in autoPlay mode
-    if (isAutoPlayMode) {
-      autoPlayTimer.cancel();
-      autoPlayTimer = null;
+    if (isAutoPlayMode.value) {
+      _autoPlayTimer.cancel();
+      _autoPlayTimer = null;
     } else {
       // Force using card mode
       if (_mode.value.wordsReviewMode == WordsReviewMode.LIST) {
@@ -201,12 +201,12 @@ class ReviewWordsController extends GetxController {
       // Play from beginning
       await pageController.animateToPage(pageController.initialPage,
           duration: 2.seconds, curve: Curves.bounceInOut);
-      autoPlayTimer = Timer.periodic(2.seconds, (_) async {
+      _autoPlayTimer = Timer.periodic(2.seconds, (_) async {
         // When user press button or we reach last card
-        if (!isAutoPlayMode ||
+        if (!isAutoPlayMode.value ||
             primaryWordOrdinal.value == wordsList.lastIndex) {
-          autoPlayTimer.cancel();
-          autoPlayTimer = null;
+          _autoPlayTimer.cancel();
+          _autoPlayTimer = null;
           return;
         }
         await Timer(500.milliseconds, () async => await playMeaning());
@@ -216,6 +216,7 @@ class ReviewWordsController extends GetxController {
             duration: 300.milliseconds, curve: Curves.easeInOut);
       });
     }
+    isAutoPlayMode.value=!isAutoPlayMode.value;
   }
 
   /// Show a single word card from dialog
