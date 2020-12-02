@@ -32,7 +32,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
       maxWidth: 600,
       debounceDelay: const Duration(milliseconds: 500),
       onQueryChanged: (query) {
-        controller.handleSearchQueryChange(query);
+        controller.searchQuery.value=query;
       },
       // Specify a custom transition to be used for
       // animating between opened and closed stated.

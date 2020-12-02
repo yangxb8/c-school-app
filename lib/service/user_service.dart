@@ -46,4 +46,11 @@ class UserService extends GetxService {
     }
     _apiService.firestoreApi.updateAppUser(user, _refreshAppUser);
   }
+
+  /// Commit any change made to user
+  @override
+  void onClose() {
+    commitChange();
+    super.onClose();
+  }
 }

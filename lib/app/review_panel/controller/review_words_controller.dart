@@ -14,6 +14,9 @@ import 'package:c_school_app/app/review_panel/review_words_screen//ui_view/words
 import 'package:c_school_app/app/models/word.dart';
 import 'package:c_school_app/service/logger_service.dart';
 
+const LAN_CODE_CN = 'zh-cn';
+const LAN_CODE_JP = 'ja';
+
 class ReviewWordsController extends GetxController {
   final ClassService classService = Get.find();
   final logger = Get.find<LoggerService>().logger;
@@ -46,8 +49,10 @@ class ReviewWordsController extends GetxController {
   /// Used to controller pagination of card
   RxDouble pageFraction;
 
-  /// If we are in autoPlay mode
-  RxBool autoPlay = false.obs;
+  /// Null Timer means we are not in autoPlay mode
+  Timer autoPlayTimer;
+
+  RxString searchQuery = ''.obs;
 
   RxList<Word> searchResult = [].obs;
 
@@ -64,6 +69,8 @@ class ReviewWordsController extends GetxController {
     pageFraction = (wordsList.length - 1.0).obs;
     await tts.setLanguage('zh-cn');
     await tts.setSpeechRate(0.5);
+    // worker to monitor search query change and fire search function
+    debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
     super.onInit();
   }
 
@@ -77,6 +84,8 @@ class ReviewWordsController extends GetxController {
   String get primaryWordString => primaryWord.word.join();
 
   bool isWordLiked(Word word) => _userLikedWordIds.contains(word.wordId);
+
+  bool get isAutoPlayMode => !autoPlayTimer.isNull;
 
   void toggleFavoriteCard(int cardOrdinal) =>
       classService.toggleWordLiked(wordsList[cardOrdinal]);
@@ -121,7 +130,9 @@ class ReviewWordsController extends GetxController {
     return sectionList_;
   }
 
+  /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
+    if(isAutoPlayMode) return;
     if (_mode.value.wordsReviewMode == WordsReviewMode.FLASH_CARD) {
       _mode.update((mode) => mode.wordsReviewMode = WordsReviewMode.LIST);
       logger.i('Change to List Mode');
@@ -159,15 +170,37 @@ class ReviewWordsController extends GetxController {
   }
 
   //TODO: implement this
-  void autoPlayPressed() {}
+  void autoPlayPressed({@required PageController pageController, @required FlipController flipController}) async{
+    // If already in autoPlay mode
+    if(isAutoPlayMode){
+      autoPlayTimer.cancel();
+      autoPlayTimer = null;
+    
+    } else {
+      // Force using card mode
+      if(_mode.value.wordsReviewMode == WordsReviewMode.LIST){
+        changeMode();
+      }
+      autoPlayTimer = Timer.periodic(2.seconds,()=>{
+        
+      });
+    }
+  }
 
-  //TODO: implement this
-  /// Show a single word card from bottom sheet
-  void showSingleCard(Word word) {}
+  /// Show a single word card from dialog
+  void showSingleCard(Word word) {
+    showDialog<void>(context: Get.context, builder: (context) => SimpleDialog(
+      children: [WordCard(word: word)]));
+  }
 
-  //TODO: implement this
-  /// Use debounce to delay search happen
-  void handleSearchQueryChange(String query) {}
+  /// Search card content, consider a match if word or meaning contains query
+  void search() {
+    var containKeyWord = (Word word) {
+     return word.wordAsString.contains(searchQuery.value) || word.wordMeanings.has(m=>m.meaning.contains(searchQuery.value));
+    }
+    searchResult.clear();
+    searchResult.addAll(wordsList.filter((word)=>containKeyWord(word)));
+  }
 
 }
 
