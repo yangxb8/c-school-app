@@ -50,7 +50,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
           child: CircularButton(
             icon: Obx(() => FaIcon(
                   FontAwesomeIcons.play,
-                  color: controller.autoPlay.value
+                  color: controller.isAutoPlayMode
                       ? Colors.lightBlue
                       : Colors.grey,
                 )),

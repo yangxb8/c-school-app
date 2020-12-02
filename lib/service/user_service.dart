@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'api_service.dart';

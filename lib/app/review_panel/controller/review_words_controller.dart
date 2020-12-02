@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flamingo/flamingo.dart';
+import 'package:flip/flip.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -21,7 +24,10 @@ class ReviewWordsController extends GetxController {
   final ClassService classService = Get.find();
   final logger = Get.find<LoggerService>().logger;
   final tts = FlutterTts();
+  final tts_jp = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
+  final flipController = FlipController();
+  PageController pageController;
 
   /// Current primary word ordinal in _wordList
   final primaryWordOrdinal = 0.obs;
@@ -67,8 +73,12 @@ class ReviewWordsController extends GetxController {
         ? List.from(classes.single.words.reversed)
         : ClassService.allWords;
     pageFraction = (wordsList.length - 1.0).obs;
-    await tts.setLanguage('zh-cn');
+    pageController =
+        PageController(initialPage: wordsList.length - 1);
+    await tts.setLanguage(LAN_CODE_CN);
     await tts.setSpeechRate(0.5);
+    await tts_jp.setLanguage(LAN_CODE_JP);
+    await tts_jp.setSpeechRate(0.8);
     // worker to monitor search query change and fire search function
     debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
     super.onInit();
@@ -132,7 +142,7 @@ class ReviewWordsController extends GetxController {
 
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
-    if(isAutoPlayMode) return;
+    if (isAutoPlayMode) return;
     if (_mode.value.wordsReviewMode == WordsReviewMode.FLASH_CARD) {
       _mode.update((mode) => mode.wordsReviewMode = WordsReviewMode.LIST);
       logger.i('Change to List Mode');
@@ -153,6 +163,15 @@ class ReviewWordsController extends GetxController {
     }
   }
 
+  /// Play audio of the meanings one by one
+  Future<void> playMeaning({Word word}) async {
+    if (word.isNull) word = primaryWord;
+    await word.wordMeanings.forEach((meaning) async {
+      await Timer(
+          500.milliseconds, () async => await tts.speak(meaning.meaning));
+    });
+  }
+
   /// Play audio of the examples
   Future<void> playExample(
       {@required String string, @required StorageFile audio}) async {
@@ -169,39 +188,52 @@ class ReviewWordsController extends GetxController {
     super.onClose();
   }
 
-  //TODO: implement this
-  void autoPlayPressed({@required PageController pageController, @required FlipController flipController}) async{
+  void autoPlayPressed() async {
     // If already in autoPlay mode
-    if(isAutoPlayMode){
+    if (isAutoPlayMode) {
       autoPlayTimer.cancel();
       autoPlayTimer = null;
-    
     } else {
       // Force using card mode
-      if(_mode.value.wordsReviewMode == WordsReviewMode.LIST){
+      if (_mode.value.wordsReviewMode == WordsReviewMode.LIST) {
         changeMode();
       }
-      autoPlayTimer = Timer.periodic(2.seconds,()=>{
-        
+      // Play from beginning
+      await pageController.animateToPage(pageController.initialPage,
+          duration: 2.seconds, curve: Curves.bounceInOut);
+      autoPlayTimer = Timer.periodic(2.seconds, (_) async {
+        // When user press button or we reach last card
+        if (!isAutoPlayMode ||
+            primaryWordOrdinal.value == wordsList.lastIndex) {
+          autoPlayTimer.cancel();
+          autoPlayTimer = null;
+          return;
+        }
+        await Timer(500.milliseconds, () async => await playMeaning());
+        await flipController.flip();
+        await Timer(500.milliseconds, () async => await playWord());
+        await pageController.nextPage(
+            duration: 300.milliseconds, curve: Curves.easeInOut);
       });
     }
   }
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
-    showDialog<void>(context: Get.context, builder: (context) => SimpleDialog(
-      children: [WordCard(word: word)]));
+    showDialog<void>(
+        context: Get.context,
+        builder: (context) => SimpleDialog(children: [WordCard(word: word)]));
   }
 
   /// Search card content, consider a match if word or meaning contains query
   void search() {
     var containKeyWord = (Word word) {
-     return word.wordAsString.contains(searchQuery.value) || word.wordMeanings.has(m=>m.meaning.contains(searchQuery.value));
-    }
+      return word.wordAsString.contains(searchQuery.value) ||
+          word.wordMeanings.any((m) => m.meaning.contains(searchQuery.value));
+    };
     searchResult.clear();
-    searchResult.addAll(wordsList.filter((word)=>containKeyWord(word)));
+    searchResult.addAll(wordsList.filter((word) => containKeyWord(word)));
   }
-
 }
 
 class _WordsReviewModeWrapper {

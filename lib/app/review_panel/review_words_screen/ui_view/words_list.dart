@@ -42,7 +42,7 @@ class WordsList extends GetView<ReviewWordsController> {
               var word = sectionList[sectionIndex].items[itemIndex];
               return ListTile(
                 trailing: SimpleGestureDetector(
-                  onTap: controller.showSingleCard(word),
+                  onTap: ()=>controller.showSingleCard(word),
                   child: Padding(
                     padding: const EdgeInsets.only(right:20.0),
                     child: IconButton(

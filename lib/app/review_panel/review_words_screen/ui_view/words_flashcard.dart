@@ -5,48 +5,39 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:c_school_app/app/models/word.dart';
 import 'package:c_school_app/util/functions.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'dart:math';
 
 const BUTTON_SIZE = 50.0;
+const cardAspectRatio = 12.0 / 22.0;
+const widgetAspectRatio = cardAspectRatio * 1.2;
 
-class WordsFlashcard extends StatefulWidget {
-  @override
-  _WordsFlashcardState createState() => _WordsFlashcardState();
-}
+class WordsFlashcard extends GetView<ReviewWordsController> {
 
-var cardAspectRatio = 12.0 / 22.0;
-var widgetAspectRatio = cardAspectRatio * 1.2;
-
-class _WordsFlashcardState extends State<WordsFlashcard> {
-  final ReviewWordsController reviewWordsController = Get.find();
-  var flipController = FlipController();
-
+  
   @override
   Widget build(BuildContext context) {
-    var pageController =
-        PageController(initialPage: reviewWordsController.wordsList.length - 1);
-    pageController.addListener(() {
-      reviewWordsController.pageFraction.value = pageController.page;
-      if (!flipController.isFront) flipController.flip();
+    controller.pageController.addListener(() {
+      controller.pageFraction.value = controller.pageController.page;
+      if (!controller.flipController.isFront) controller.flipController.flip();
     });
 
     void _onTap() {
-      flipController.flip();
+      controller.flipController.flip();
     }
 
     Future<void> _onHorizontalSwipe(swipeDirection) async {
-      var currentPrimaryWord = reviewWordsController.primaryWord;
+      var currentPrimaryWord = controller.primaryWord;
       if (swipeDirection == SwipeDirection.right) {
-        await pageController.nextPage(
+        await controller.pageController.nextPage(
             duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
       } else {
-        await pageController.previousPage(
+        await controller.pageController.previousPage(
             duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
       }
-      reviewWordsController.saveAndResetWordHistory(currentPrimaryWord);
+      controller.saveAndResetWordHistory(currentPrimaryWord);
     }
 
     return Padding(
@@ -58,18 +49,18 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
             children: [
               Stack(
                 children: <Widget>[
-                  // We only use this to control the PageController behind screen
+                  // We only use this to control the controller.pageController behind screen
                   Positioned.fill(
                     child: PageView.builder(
-                      itemCount: reviewWordsController.wordsList.length,
-                      controller: pageController,
+                      itemCount: controller.wordsList.length,
+                      controller: controller.pageController,
                       reverse: true,
                       itemBuilder: (context, index) {
                         return Container();
                       },
                     ),
                   ),
-                  Obx(()=> CardScrollWidget(reviewWordsController.pageFraction.value, flipController)),
+                  Obx(()=> CardScrollWidget(controller.pageFraction.value)),
                 ],
               ),
               Padding(
@@ -85,11 +76,11 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
                           FaIcon(
                                   FontAwesomeIcons.laughBeam,
                                   color:
-                                  reviewWordsController.wordMemoryStatus.value ==
+                                  controller.wordMemoryStatus.value ==
                                       WordMemoryStatus.REMEMBERED ? Colors.yellowAccent : Colors.blueGrey,
                                   size: BUTTON_SIZE,
                                 ),
-                        ), onPressed: ()=>reviewWordsController.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
+                        ), onPressed: ()=>controller.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
                       ),
                       IconButton(
                         splashRadius: 0.01,
@@ -97,11 +88,11 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
                           FaIcon(
                                   FontAwesomeIcons.frownOpen,
                                   color:
-                                  reviewWordsController.wordMemoryStatus.value ==
+                                  controller.wordMemoryStatus.value ==
                                       WordMemoryStatus.NORMAL ? Colors.yellowAccent : Colors.blueGrey,
                                   size: BUTTON_SIZE,
                                 ),
-                        ), onPressed: ()=>reviewWordsController.handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
+                        ), onPressed: ()=>controller.handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
                       ),
                       IconButton(
                         splashRadius: 0.01,
@@ -109,11 +100,11 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
                           FaIcon(
                                   FontAwesomeIcons.sadCry,
                                   color:
-                                  reviewWordsController.wordMemoryStatus.value ==
+                                  controller.wordMemoryStatus.value ==
                                       WordMemoryStatus.FORGOT ? Colors.yellowAccent : Colors.blueGrey,
                                   size: BUTTON_SIZE,
                                 ),
-                        ), onPressed: ()=>reviewWordsController.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
+                        ), onPressed: ()=>controller.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
                       ),
                     ],
                   ),
@@ -127,13 +118,12 @@ class _WordsFlashcardState extends State<WordsFlashcard> {
 
 class CardScrollWidget extends GetView<ReviewWordsController> {
   final pageFraction;
-  final flipController;
   final padding = 10.0;
   final verticalInset = 8.0;
   final logger = Get.find<LoggerService>().logger;
   static const MAX_CARDS_FRAME = 8;
 
-  CardScrollWidget(this.pageFraction, this.flipController);
+  CardScrollWidget(this.pageFraction);
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +182,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                     children: [
                       isPrimaryCard
                           ? Flip(
-                              controller: flipController,
+                              controller: controller.flipController,
                               flipDirection: Axis.vertical,
                               flipDuration: Duration(milliseconds: 200),
                               secondChild: buildBackCardContent(i, delta),

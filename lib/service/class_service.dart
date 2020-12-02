@@ -7,7 +7,6 @@ import 'package:supercharged/supercharged.dart';
 import 'package:c_school_app/app/models/class.dart';
 import 'package:c_school_app/app/models/word.dart';
 import 'api_service.dart';
-import '../model/user.dart';
 
 /*
 * This class provide service related to Class, like fetching class,
