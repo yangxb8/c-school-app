@@ -49,6 +49,8 @@ class ReviewWordsController extends GetxController {
   /// If we are in autoPlay mode
   RxBool autoPlay = false.obs;
 
+  RxString searchQuery = ''.obs;
+
   RxList<Word> searchResult = [].obs;
 
   @override
@@ -64,6 +66,8 @@ class ReviewWordsController extends GetxController {
     pageFraction = (wordsList.length - 1.0).obs;
     await tts.setLanguage('zh-cn');
     await tts.setSpeechRate(0.5);
+    // worker to monitor search query change and fire search function
+    debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
     super.onInit();
   }
 
@@ -159,15 +163,30 @@ class ReviewWordsController extends GetxController {
   }
 
   //TODO: implement this
-  void autoPlayPressed() {}
+  void autoPlayPressed() {
+    // If already in autoPlay mode
+    if(autoPlay.value){
+      
+    } else {
 
-  //TODO: implement this
-  /// Show a single word card from bottom sheet
-  void showSingleCard(Word word) {}
+    }
+    autoPlay.value = !autoPlay.value;
+  }
 
-  //TODO: implement this
-  /// Use debounce to delay search happen
-  void handleSearchQueryChange(String query) {}
+  /// Show a single word card from dialog
+  void showSingleCard(Word word) {
+    showDialog<void>(context: Get.context, builder: (context) => SimpleDialog(
+      children: [WordCard(word: word)]));
+  }
+
+  /// Search card content, consider a match if word or meaning contains query
+  void search() {
+    var containKeyWord = (Word word) {
+     return word.wordAsString.contains(searchQuery.value) || word.wordMeanings.has(m=>m.meaning.contains(searchQuery.value));
+    }
+    searchResult.clear();
+    searchResult.addAll(wordsList.filter((word)=>containKeyWord(word)));
+  }
 
 }
 
