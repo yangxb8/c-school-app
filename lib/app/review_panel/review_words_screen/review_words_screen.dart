@@ -33,7 +33,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
       maxWidth: 600,
       debounceDelay: const Duration(milliseconds: 500),
       onQueryChanged: (query) {
-        controller.searchQuery.value=query;
+        controller.searchQuery.value = query;
       },
       // Specify a custom transition to be used for
       // animating between opened and closed stated.
@@ -72,12 +72,18 @@ class ReviewWords extends GetView<ReviewWordsController> {
               elevation: 4.0,
               child: Obx(
                 () => Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: controller.searchResult.isEmpty()
-                    ? ListTile(title: Text('Empty'.i18n,style: TextStyle(color: Colors.lightGray)))  
-                    : controller.searchResult
-                        .map((word) => ListTile(title:TextButton(child: Text(word.wordAsString), onPressed: ()=>controller.showSingleCard(word)))).toList();
-                ),
+                    mainAxisSize: MainAxisSize.min,
+                    children: controller.searchResult.isEmpty
+                        ? [ListTile(
+                            title: Text('Empty'.i18n,
+                                style: TextStyle(color: Colors.grey)))]
+                        : controller.searchResult
+                            .map((word) => ListTile(
+                                title: TextButton(
+                                    child: Text(word.wordAsString),
+                                    onPressed: () =>
+                                        controller.showSingleCard(word))))
+                            .toList()),
               ),
             ));
       },

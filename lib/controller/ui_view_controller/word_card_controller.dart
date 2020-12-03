@@ -19,15 +19,16 @@ class WordCardController extends GetxController {
   final logger = Get.find<LoggerService>().logger;
   final tts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
+  RxBool isWordLiked;
 
   @override
   Future<void> onInit() async {
     await tts.setLanguage(LAN_CODE_CN);
     await tts.setSpeechRate(0.5);
+    isWordLiked = word.isLiked.obs;
     super.onInit();
   }
 
-  bool get isWordLiked => word.isLiked;
   void toggleFavoriteCard() => classService.toggleWordLiked(word);
 
   /// Play audio of the word

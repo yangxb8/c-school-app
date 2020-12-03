@@ -14,7 +14,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(top:30.0),
+            padding: const EdgeInsets.only(top: 30.0),
             child: Container(
               height: MediaQuery.of(context).size.height,
               child: Column(
@@ -58,6 +58,5 @@ class ReviewWordsHomeScreen extends StatelessWidget {
         ],
       ),
     );
-  }    
   }
 }

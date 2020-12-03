@@ -24,7 +24,6 @@ class ReviewWordsController extends GetxController {
   final ClassService classService = Get.find();
   final logger = Get.find<LoggerService>().logger;
   final tts = FlutterTts();
-  final tts_jp = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   final flipController = FlipController();
   PageController pageController;
@@ -67,7 +66,6 @@ class ReviewWordsController extends GetxController {
   @override
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
-    // wordsList = List.from(classService.findWordsByTags(tags).reversed);
     _userLikedWordIds = ClassService.userLikedWordIds_Rx;
     _userWordsHistory = ClassService.userWordsHistory_Rx;
     classes = classService.findClassesById(Get.parameters['classId']);
@@ -79,8 +77,6 @@ class ReviewWordsController extends GetxController {
         PageController(initialPage: wordsList.length - 1);
     await tts.setLanguage(LAN_CODE_CN);
     await tts.setSpeechRate(0.5);
-    await tts_jp.setLanguage(LAN_CODE_JP);
-    await tts_jp.setSpeechRate(0.8);
     // worker to monitor search query change and fire search function
     debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
     super.onInit();
@@ -157,7 +153,7 @@ class ReviewWordsController extends GetxController {
     if (word.isNull) word = primaryWord;
     var wordAudio = word.wordAudio;
     if (wordAudio.isNull) {
-      await tts.speak(word.word.join());
+      await tts.speak(word.wordAsString);
     } else {
       await audioPlayer.play(wordAudio.url);
     }
@@ -165,11 +161,15 @@ class ReviewWordsController extends GetxController {
 
   /// Play audio of the meanings one by one
   Future<void> playMeaning({Word word}) async {
+    await tts.setLanguage(LAN_CODE_JP);
+    await tts.setSpeechRate(0.8);
     if (word.isNull) word = primaryWord;
     await word.wordMeanings.forEach((meaning) async {
       await Timer(
           500.milliseconds, () async => await tts.speak(meaning.meaning));
     });
+    await tts.setLanguage(LAN_CODE_CN);
+    await tts.setSpeechRate(0.5);
   }
 
   /// Play audio of the examples

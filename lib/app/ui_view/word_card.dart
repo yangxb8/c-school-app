@@ -60,7 +60,7 @@ class WordCard extends StatelessWidget {
                       splashRadius: 0.01,
                       icon: Icon(Icons.favorite),
                       // key: favoriteButtonKey,
-                      color: controller.isWordLiked
+                      color: controller.isWordLiked.value
                           ? Colors.redAccent
                           : Colors.grey,
                       iconSize: BUTTON_SIZE,

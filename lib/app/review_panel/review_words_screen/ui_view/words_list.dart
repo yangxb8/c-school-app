@@ -41,23 +41,23 @@ class WordsList extends GetView<ReviewWordsController> {
             itemBuilder: (context, sectionIndex, itemIndex, index) {
               var word = sectionList[sectionIndex].items[itemIndex];
               return ListTile(
-                trailing: SimpleGestureDetector(
-                  onTap: ()=>controller.showSingleCard(word),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right:20.0),
-                    child: IconButton(
-                      icon: Icon(FontAwesomeIcons.play),
-                      onPressed: () => controller.playWord(word: word),
-                    ),
+                trailing: Padding(
+                  padding: const EdgeInsets.only(right:20.0),
+                  child: IconButton(
+                    icon: Icon(FontAwesomeIcons.play),
+                    onPressed: () => controller.playWord(word: word),
                   ),
                 ),
-                title: Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Row(
-                    children: [
-                      Text(word.word.join()),
-                      Text(word.pinyin.join(' '))
-                    ],
+                title: SimpleGestureDetector(
+                  onTap: ()=>controller.showSingleCard(word),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: Row(
+                      children: [
+                        Text('${word.wordAsString}       '),
+                        Text(word.pinyin.join(' '))
+                      ],
+                    ),
                   ),
                 ),
               );

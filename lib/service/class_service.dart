@@ -28,7 +28,7 @@ class ClassService extends GetxService {
   static RxList<WordHistory> userWordsHistory_Rx;
   static Future<ClassService> getInstance() async {
     if (_instance.isNull) {
-      _instance ??= ClassService();
+      _instance = ClassService();
       /// All available words
       allWords = await _apiService.firestoreApi.fetchWords();
       /// All available Classes

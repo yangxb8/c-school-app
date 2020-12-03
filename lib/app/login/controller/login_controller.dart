@@ -1,3 +1,4 @@
+import 'package:c_school_app/service/app_state_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter_beautiful_popup/main.dart';
@@ -5,22 +6,19 @@ import '../../../service/api_service.dart';
 import '../../../i18n/api_service.i18n.dart';
 import '../../../i18n/login_page.i18n.dart';
 
-class LoginController extends GetxController{
+class LoginController extends GetxController {
   final ApiService apiService = Get.find();
   final BuildContext context = Get.context;
 
-  final GlobalKey<FormFieldState> loginEmailKey =
-  GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> loginEmailKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> loginPasswordKey =
-  GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupEmailKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupEmailKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> signupPasswordKey =
-  GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupNamelKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupNamelKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> signupConfirmPasswordlKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
 
   Map<String, String> formTexts = {
     'loginEmail': '',
@@ -43,11 +41,12 @@ class LoginController extends GetxController{
       signupPasswordKey.currentState.reset();
       signupConfirmPasswordlKey.currentState.reset();
       var result = await apiService.firebaseAuthApi.signUpWithEmail(
-          formTexts['signupEmail'], formTexts['signupPassword'], formTexts['signupName']);
-      if (result == 'need email verify'){
+          formTexts['signupEmail'],
+          formTexts['signupPassword'],
+          formTexts['signupName']);
+      if (result == 'need email verify') {
         _showEmailVerificationPopup(context, formTexts['signupEmail']);
-      }
-      else if (result != 'ok') {
+      } else if (result != 'ok') {
         _showErrorPopup(result);
       }
     }
@@ -76,7 +75,7 @@ class LoginController extends GetxController{
     }
   }
 
-  void handleFacebookLogin() async{
+  void handleFacebookLogin() async {
     var result = await apiService.firebaseAuthApi.loginWithFacebook();
     if (result == 'ok') {
       _showLoginSuccessPopup();
@@ -94,7 +93,7 @@ class LoginController extends GetxController{
     }
   }
 
-  void handleTwitterLogin() async{
+  void handleTwitterLogin() async {
     var result = await apiService.firebaseAuthApi.loginWithTwitter();
     if (result == 'ok') {
       _showLoginSuccessPopup();
@@ -114,7 +113,7 @@ class LoginController extends GetxController{
     }
   }
 
-  void handleAnonymousLogin() async{
+  void handleAnonymousLogin() async {
     var result = await apiService.firebaseAuthApi.loginAnonymous();
     if (result == 'ok') {
       //TODO: change this, only for words-list test
@@ -124,8 +123,7 @@ class LoginController extends GetxController{
     }
   }
 
-  void _showErrorPopup(String content,
-      {Map<String, dynamic> extraAction}) {
+  void _showErrorPopup(String content, {Map<String, dynamic> extraAction}) {
     final popup = BeautifulPopup(
       context: context,
       template: TemplateFail,
@@ -133,7 +131,7 @@ class LoginController extends GetxController{
     final actions = [
       popup.button(
         label: 'Close'.i18n,
-        onPressed: ()=>Get.back(),
+        onPressed: () => Get.back(),
       )
     ];
     if (extraAction != null) {
@@ -141,10 +139,11 @@ class LoginController extends GetxController{
           label: extraAction['label'], onPressed: extraAction['onPressed']));
     }
     popup.show(title: 'Oops?'.i18n, content: content, actions: actions
-      // bool barrierDismissible = false,
-      // Widget close,
-    );
+        // bool barrierDismissible = false,
+        // Widget close,
+        );
   }
+
   void _showLoginSuccessPopup() {
     final popup = BeautifulPopup(
       context: context,
@@ -153,7 +152,7 @@ class LoginController extends GetxController{
     final actions = [
       popup.button(
         label: 'Close'.i18n,
-        onPressed: (){
+        onPressed: () {
           // After login user should not press 'back' and return to login page
           //TODO: change this, only for words-list test
           Get.offAllNamed('/review/words/home');
@@ -161,13 +160,18 @@ class LoginController extends GetxController{
       )
     ];
     // TODO: get study daycount properly
-    final content = 'You have study for %d times!'.i18n.fill([AppStateService.systemInfo.startCount]);
+    final content = 'You have study for %d times!'
+        .i18n
+        .fill([AppStateService.systemInfo.startCount]);
 
-    popup.show(title: 'Welcome Back!'.i18n, content: content, actions: actions,
+    popup.show(
+        title: 'Welcome Back!'.i18n,
+        content: content,
+        actions: actions,
         close: Container()
-      // bool barrierDismissible = false,
-      // Widget close,
-    );
+        // bool barrierDismissible = false,
+        // Widget close,
+        );
   }
 
   void _showEmailVerificationPopup(BuildContext context, String email) {
@@ -178,9 +182,9 @@ class LoginController extends GetxController{
     popup.show(
       title: 'Almost there'.i18nApi,
       content:
-      'We have sent your an Email at %s, follow the link there to verify your account!'
-          .i18nApi
-          .fill([email]),
+          'We have sent your an Email at %s, follow the link there to verify your account!'
+              .i18nApi
+              .fill([email]),
       actions: [
         popup.button(
           label: 'Close'.i18nApi,
@@ -191,5 +195,4 @@ class LoginController extends GetxController{
       // Widget close,
     );
   }
-
 }
