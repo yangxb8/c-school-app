@@ -118,7 +118,7 @@ class LoginController extends GetxController{
     var result = await apiService.firebaseAuthApi.loginAnonymous();
     if (result == 'ok') {
       //TODO: change this, only for words-list test
-      await Get.offAllNamed('/review/words');
+      await Get.offAllNamed('/review/words/home');
     } else {
       _showErrorPopup('Something is wrong!'.i18n);
     }
@@ -161,7 +161,7 @@ class LoginController extends GetxController{
       )
     ];
     // TODO: get study daycount properly
-    final content = 'You have study for %d days!'.i18n.fill([100]);
+    final content = 'You have study for %d times!'.i18n.fill([AppStateService.systemInfo.startCount]);
 
     popup.show(title: 'Welcome Back!'.i18n, content: content, actions: actions,
         close: Container()

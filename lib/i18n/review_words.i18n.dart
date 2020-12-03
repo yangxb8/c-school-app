@@ -9,6 +9,10 @@ extension Localization on String {
       {
         'en': 'words',
         'ja_jp': '単語',
+      } +
+      {
+        'en': 'Empty',
+        'ja_jp': 'なし',
       } ;
 
   String get i18n => localize(this, _t);
