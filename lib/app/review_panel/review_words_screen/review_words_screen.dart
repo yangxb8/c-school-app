@@ -5,6 +5,7 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import './ui_view/words_flashcard.dart';
 import './ui_view/words_list.dart';
+import 'package:c_school_app/i18n/review_words.i18n.dart';
 
 class ReviewWords extends GetView<ReviewWordsController> {
   @override
@@ -72,18 +73,14 @@ class ReviewWords extends GetView<ReviewWordsController> {
               child: Obx(
                 () => Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: _buildSearchResult()
+                  children: controller.searchResult.isEmpty()
+                    ? ListTile(title: Text('Empty'.i18n,style: TextStyle(color: Colors.lightGray)))  
+                    : controller.searchResult
+                        .map((word) => ListTile(title:TextButton(child: Text(word.wordAsString), onPressed: ()=>controller.showSingleCard(word)))).toList();
                 ),
               ),
             ));
       },
     );
-  }
-
-  //TODO: distinguish empty keyword, not result, and there is result
-  List<Widget> _buildSearchResult() {
-    return controller.searchResult
-        .map((word) => Text(word.wordAsString))
-        .toList();
   }
 }

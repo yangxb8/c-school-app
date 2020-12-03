@@ -59,9 +59,7 @@ class _CSchoolClassListViewState extends State<CSchoolClassListView>
                   );
                   animationController.forward();
                   return CSchoolClassView(
-                    callback: () {
-                      widget.callBack();
-                    },
+                    callback: widget.callBack,
                     cschoolClass: allClasses[index],
                     animation: animation,
                     animationController: animationController,
@@ -92,7 +90,7 @@ class CSchoolClassView extends StatelessWidget {
       : super(key: key);
 
   static const DEFAULT_IMAGE = 'assets/discover_panel/interFace3.png';
-  final VoidCallback callback;
+  final Function callback;
   final CSchoolClass cschoolClass;
   final AnimationController animationController;
   final Animation<dynamic> animation;
@@ -110,7 +108,7 @@ class CSchoolClassView extends StatelessWidget {
             child: InkWell(
               splashColor: Colors.transparent,
               onTap: () {
-                callback();
+                callback(cschoolClass);
               },
               child: SizedBox(
                 height: 280,

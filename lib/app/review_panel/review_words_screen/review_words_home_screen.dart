@@ -50,18 +50,14 @@ class ReviewWordsHomeScreen extends StatelessWidget {
           ),
           Flexible(
             child: CSchoolClassListView(
-              callBack: () {
-                //TODO: for test, delete me
-                moveTo(CSchoolClass(id:'C0001'));
+              callBack: (CSchoolClass cschoolClass) {
+                Get.toNamed('/review/words?classId=${cschoolClass.classId}');
               },
             ),
           )
         ],
       ),
     );
-  }
-
-  void moveTo(CSchoolClass cschoolClass) {
-    Get.toNamed('/review/words?classId=${cschoolClass.classId}');
+  }    
   }
 }
