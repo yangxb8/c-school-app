@@ -71,7 +71,7 @@ class ReviewWordsController extends GetxController {
     classes = classService.findClassesById(Get.parameters['classId']);
     wordsList = classes.length == 1
         ? List.from(classes.single.words.reversed)
-        : ClassService.allWords;
+        : List.from(ClassService.allWords.reversed);
     pageFraction = (wordsList.length - 1.0).obs;
     pageController =
         PageController(initialPage: wordsList.length - 1);
