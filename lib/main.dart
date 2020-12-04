@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:c_school_app/service/class_service.dart';
 import 'package:c_school_app/service/user_service.dart';
+import 'package:catcher/catcher.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:splashscreen/splashscreen.dart';
 
@@ -26,7 +27,14 @@ void main() async {
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
   ]);
-  runApp(CSchoolApp());
+  /// Debug configuration with dialog report mode and console handler. It will show dialog and once user accepts it, error will be shown   /// in console.
+  CatcherOptions debugOptions =
+      CatcherOptions(DialogReportMode(), [ConsoleHandler()]);    
+  /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
+  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
+    EmailManualHandler(["yangxb10@gmail.com"])
+  ]);
+  Catcher(CSchoolApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
 }
 
 class CSchoolApp extends StatelessWidget {
@@ -45,6 +53,7 @@ class CSchoolApp extends StatelessWidget {
         child: GetMaterialApp(
             title: 'Chinese Classroom',
             debugShowCheckedModeBanner: false,
+            navigatorKey: Catcher.navigatorKey,
             theme: ThemeData(
               primarySwatch: Colors.blue,
               textTheme: AppTheme.textTheme,
