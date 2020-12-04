@@ -258,7 +258,9 @@ class _FirestoreApi {
       logger.e('fetchAppUser was called on null firebaseUser');
       return null;
     }
-    return await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
+    var user = await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
+    user.firebaseUser = firebaseUser;
+    return user;
   }
 
   /// User can have many trial for same fingerprint

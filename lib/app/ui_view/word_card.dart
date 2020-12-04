@@ -10,12 +10,14 @@ import '../models/word.dart';
 
 const cardAspectRatio = 12.0 / 22.0;
 const BUTTON_SIZE = 50.0;
+const verticalInset = 8.0;
 
 class WordCard extends StatelessWidget {
   final Word word;
+  final double delta;
   final WordCardController controller;
   final FlipController flipController = FlipController();
-  WordCard({@required this.word})
+  WordCard({@required this.word, this.delta = 0.0})
       : controller = Get.put(WordCardController(word));
 
   @override
@@ -33,49 +35,52 @@ class WordCard extends StatelessWidget {
     ));
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.0),
-      child: Container(
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [
-          BoxShadow(
-              color: Colors.black12, offset: Offset(3.0, 6.0), blurRadius: 10.0)
-        ]),
-        child: AspectRatio(
-          aspectRatio: cardAspectRatio,
-          child: Stack(
-            children: [
-              SimpleGestureDetector(
-                onTap: () => flipController.flip(),
-                child: Flip(
+      child: SimpleGestureDetector(
+        onTap: () => flipController.flip(),
+        child: Container(
+          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(3.0, 6.0),
+                blurRadius: 10.0)
+          ]),
+          child: AspectRatio(
+            aspectRatio: cardAspectRatio,
+            child: Stack(
+              children: [
+                Flip(
                   controller: flipController,
                   flipDirection: Axis.vertical,
                   flipDuration: Duration(milliseconds: 200),
-                  secondChild: buildBackCardContent(),
+                  secondChild: buildBackCardContent(delta: delta),
                   firstChild: frontCardContent,
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Obx(
-                    () => IconButton(
-                      splashRadius: 0.01,
-                      icon: Icon(Icons.favorite),
-                      // key: favoriteButtonKey,
-                      color: controller.isWordLiked.value
-                          ? Colors.redAccent
-                          : Colors.grey,
-                      iconSize: BUTTON_SIZE,
-                      onPressed: () => controller.toggleFavoriteCard(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Obx(
+                      () => IconButton(
+                        splashRadius: 0.01,
+                        icon: Icon(Icons.favorite),
+                        // key: favoriteButtonKey,
+                        color: controller.isWordLiked()
+                            ? Colors.redAccent
+                            : Colors.grey,
+                        iconSize: BUTTON_SIZE,
+                        onPressed: () => controller.toggleFavoriteCard(),
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-  Widget buildBackCardContent() {
+
+  Widget buildBackCardContent({double delta = 0.0}) {
     // Top hanzi part
     var partHanZi = <Widget>[
       ListTile(
@@ -83,22 +88,21 @@ class WordCard extends StatelessWidget {
           onTap: controller.playWord,
           child: Center(
             child: Table(
-                columnWidths:
-                calculateColumnWidthOfHanzi(word),
+                columnWidths: calculateColumnWidthOfHanzi(word),
                 children: [
                   TableRow(
                       children: word.pinyin
                           .map((e) => Center(
-                        child:
-                        Text(e, style: TextStyle(fontSize: 40.0)),
-                      ))
+                                child:
+                                    Text(e, style: TextStyle(fontSize: 40.0)),
+                              ))
                           .toList()),
                   TableRow(
                       children: word.word
                           .map((e) => Center(
-                        child:
-                        Text(e, style: TextStyle(fontSize: 40.0)),
-                      ))
+                                child:
+                                    Text(e, style: TextStyle(fontSize: 40.0)),
+                              ))
                           .toList()),
                 ]),
           ),
@@ -109,61 +113,66 @@ class WordCard extends StatelessWidget {
     // Second meaning part
     var partMeanings = word.wordMeanings
         .map((meaning) => Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Text(
-                '・${meaning.meaning}：',
-                style: TextStyle(fontSize: 30.0),
-              ),
-            ),
-          ],
-        ),
-      ] +
-          meaning.exampleAndAudios.entries
-              .map((exampleAndAudio) => Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 50.0),
-                child: SimpleGestureDetector(
-                  onTap: () => controller.playExample(
-                      string: exampleAndAudio.key,
-                      audio: exampleAndAudio.value),
-                  child: RichText(
-                    text: TextSpan(
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black),
-                        //TODO: give related words a link
-                        children: _divideExample([
-                          word.wordAsString,
-                          ...word.relatedWords
-                              .map((word) => word.word.join())
-                              .toList()
-                        ], exampleAndAudio.key)
-                            .map((part) => TextSpan(
-                            text: part,
-                            style: part ==
-                                word.wordAsString
-                                ? TextStyle(
-                                color: Colors.redAccent)
-                                : null))
-                            .toList()),
-                  ),
-                ),
-              ),
-            ],
-          ))
-              .toList(),
-    ))
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: Text(
+                              '・${meaning.meaning}：',
+                              style: TextStyle(fontSize: 30.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ] +
+                  meaning.exampleAndAudios.entries
+                      .map((exampleAndAudio) => Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 50.0,right: 20),
+                                  child: SimpleGestureDetector(
+                                    onTap: () => controller.playExample(
+                                        string: exampleAndAudio.key,
+                                        audio: exampleAndAudio.value),
+                                    child: RichText(
+                                      text: TextSpan(
+                                          style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.black),
+                                          //TODO: give related words a link
+                                          children: _divideExample([
+                                            word.wordAsString,
+                                            ...word.relatedWords
+                                                .map((word) => word.word.join())
+                                                .toList()
+                                          ], exampleAndAudio.key)
+                                              .map((part) => TextSpan(
+                                                  text: part,
+                                                  style: part ==
+                                                          word.wordAsString
+                                                      ? TextStyle(
+                                                          color:
+                                                              Colors.redAccent)
+                                                      : null))
+                                              .toList()),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ))
+                      .toList(),
+            ))
         .toList();
     return Column(
       children: <Widget>[
         SizedBox(
-          height: 200,
+          height: 200 + verticalInset * delta * 2,
           width: double.infinity,
           //TODO: Dummy image change this to word asset
           child: Image.asset('assets/review_panel/image_01.png',
@@ -180,11 +189,11 @@ class WordCard extends StatelessWidget {
   }
 
   Widget divider() => Divider(
-    height: 30.0,
-    indent: 30,
-    endIndent: 30,
-    color: Colors.lightBlueAccent,
-  );
+        height: 30.0,
+        indent: 30,
+        endIndent: 30,
+        color: Colors.lightBlueAccent,
+      );
 }
 
 /// Divide sentence into List of String by keyword(s)
@@ -192,14 +201,18 @@ List<String> _divideExample(dynamic keyword, dynamic example) {
   var exampleDivided = <String>[];
   // When we have multiple keyword
   if (keyword is List<String>) {
-    keyword.forEach((k) => exampleDivided.addAll(_divideExample(k, example)));
+    var keywordSet = keyword.toSet();
+    var exampleDivided = example;
+    keywordSet.forEach((k) => exampleDivided=_divideExample(k, exampleDivided));
     return exampleDivided;
   }
   // When the String is already divided before
   if (example is List<String>) {
     example.forEach((e) {
       if (e.contains(keyword)) {
-        exampleDivided.addAll(_divideExample(e, example));
+        exampleDivided.addAll(_divideExample(keyword, e));
+      } else {
+        exampleDivided.add(e);
       }
     });
     return exampleDivided;

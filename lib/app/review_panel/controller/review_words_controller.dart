@@ -73,8 +73,7 @@ class ReviewWordsController extends GetxController {
         ? List.from(classes.single.words.reversed)
         : List.from(ClassService.allWords.reversed);
     pageFraction = (wordsList.length - 1.0).obs;
-    pageController =
-        PageController(initialPage: wordsList.length - 1);
+    pageController = PageController(initialPage: wordsList.length - 1);
     await tts.setLanguage(LAN_CODE_CN);
     await tts.setSpeechRate(0.5);
     // worker to monitor search query change and fire search function
@@ -216,14 +215,19 @@ class ReviewWordsController extends GetxController {
             duration: 300.milliseconds, curve: Curves.easeInOut);
       });
     }
-    isAutoPlayMode.value=!isAutoPlayMode.value;
+    isAutoPlayMode.value = !isAutoPlayMode.value;
   }
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
     showDialog<void>(
         context: Get.context,
-        builder: (context) => SimpleDialog(children: [WordCard(word: word)]));
+        builder: (context) => SimpleDialog(
+              children: [WordCard(word: word)],
+              titlePadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.zero,
+              backgroundColor: Colors.transparent,
+            ));
   }
 
   /// Search card content, consider a match if word or meaning contains query

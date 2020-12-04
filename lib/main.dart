@@ -28,11 +28,11 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   /// Debug configuration with dialog report mode and console handler. It will show dialog and once user accepts it, error will be shown   /// in console.
-  CatcherOptions debugOptions =
-      CatcherOptions(DialogReportMode(), [ConsoleHandler()]);    
+  var debugOptions =
+      CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
   /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
-  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
-    EmailManualHandler(["yangxb10@gmail.com"])
+  var releaseOptions = CatcherOptions(DialogReportMode(), [
+    EmailManualHandler(['yangxb10@gmail.com'])
   ]);
   Catcher(CSchoolApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
 }
@@ -99,12 +99,12 @@ Future<void> initServices() async {
       () async => await LocalStorageService.getInstance());
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
+  await Get.putAsync<UserService>(() async => await UserService.getInstance());
   Get.put<LoggerService>(LoggerService());
   Get.put<AppStateService>(AppStateService.getInstance());
-  await Get.putAsync<UserService>(() async => await UserService.getInstance());
+  Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
   await Get.putAsync<ClassService>(
       () async => await ClassService.getInstance());
-  Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
   Logger.level =
       AppStateService.systemInfo.isDebugMode ? Level.debug : Level.error;
 }
