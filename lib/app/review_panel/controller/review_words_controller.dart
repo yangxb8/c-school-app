@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/models/class.dart';
 import 'package:c_school_app/model/user_word_history.dart';
 import 'package:c_school_app/service/class_service.dart';
-import 'package:c_school_app/app/review_panel/review_words_screen//ui_view/words_list.dart';
 import 'package:c_school_app/app/models/word.dart';
 import 'package:c_school_app/service/logger_service.dart';
 
@@ -107,21 +107,6 @@ class ReviewWordsController extends GetxController {
     wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
   }
 
-  /// Sections for words list
-  List<WordsSection> get sectionList {
-    var sectionList_ = <WordsSection>[];
-    // Get class id from wordId, and use classId to group words
-    classes.forEach((cschoolClass) {
-      var section = WordsSection();
-      section
-        ..expanded = true
-        ..header = cschoolClass.title
-        ..items = cschoolClass.words;
-      sectionList_.add(section);
-    });
-    return sectionList_;
-  }
-
   /// Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
     if (!primaryWordCardController.flipController.isFront) {
@@ -210,13 +195,17 @@ class ReviewWordsController extends GetxController {
     });
   }
 
-  /// Warning: primaryWordCardController could be null, but for now it's only
-  /// used in card mode, so it's safe to call it.
-  ///
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
-    if (isAutoPlayMode.value) return;
-    primaryWordCardController.showSingleCard(word);
+    Get.dialog(
+      SimpleDialog(
+        children: [WordCard(word: word)],
+        titlePadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+      ),
+      barrierColor: Get.isDialogOpen ? Colors.transparent : null,
+    );
   }
 
   /// Search card content, consider a match if word or meaning contains query

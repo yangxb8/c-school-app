@@ -1,89 +1,67 @@
-import 'package:flutter/material.dart';
 import 'package:c_school_app/app/models/word.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
+import 'package:styled_widget/styled_widget.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
-
-import '../review_words_theme.dart';
 
 class WordsList extends GetView<ReviewWordsController> {
   @override
   Widget build(BuildContext context) {
-    var sectionList = controller.sectionList;
     return Padding(
       padding: const EdgeInsets.only(top: 80.0),
-      child: ExpandableListView(
-        builder: SliverExpandableChildDelegate<Word, WordsSection>(
-            sectionList: sectionList,
-            headerBuilder: (context, sectionIndex, index) => Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6.0)),
-                        color: ReviewWordsTheme.nearlyBlue.withOpacity(0.7)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(sectionList[sectionIndex].header,
-                                style: TextStyle(fontSize: 25)),
-                          ),
-                        ],
-                      ),
-                    ),
+      child: StickyGroupedListView<Word, String>(
+        elements: controller.wordsList,
+        floatingHeader: true,
+        groupBy: (Word element) => element.cschoolClass.classId,
+        groupSeparatorBuilder: (Word element) =>
+            Text(element.cschoolClass.title)
+                .paddingAll(10.0)
+                .decorated(
+                  color: Colors.blue[300],
+                  border: Border.all(
+                    color: Colors.blue[300],
                   ),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                )
+                .paddingOnly(top: 10.0, bottom: 10.0),
+        itemBuilder: (_, Word word) => Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6.0),
+          ),
+          elevation: 8.0,
+          margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+          child: SimpleGestureDetector(
+            onTap: () => controller.showSingleCard(word),
+            child: ListTile(
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: IconButton(
+                  icon: Icon(FontAwesomeIcons.play),
+                  onPressed: () => controller.playWord(word: word),
                 ),
-            itemBuilder: (context, sectionIndex, itemIndex, index) {
-              var word = sectionList[sectionIndex].items[itemIndex];
-              return ListTile(
-                trailing: Padding(
-                  padding: const EdgeInsets.only(right:20.0),
-                  child: IconButton(
-                    icon: Icon(FontAwesomeIcons.play),
-                    onPressed: () => controller.playWord(word: word),
-                  ),
+              ),
+              title: Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Row(
+                  children: [
+                    Text('${word.wordAsString}       '),
+                    Text(word.pinyin.join(' '))
+                  ],
                 ),
-                title: SimpleGestureDetector(
-                  onTap: ()=>controller.showSingleCard(word),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Row(
-                      children: [
-                        Text('${word.wordAsString}       '),
-                        Text(word.pinyin.join(' '))
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }),
+              ),
+            ),
+          ),
+        ),
+        itemComparator: (element1, element2) =>
+            element1.wordId.compareTo(element2.wordId),
+        // optional
+        itemScrollController: GroupedItemScrollController(),
+        // optional
+        order: StickyGroupedListOrder.ASC, // optional
       ),
     );
-  }
-}
-
-class WordsSection implements ExpandableListSection<Word> {
-  bool expanded;
-  List<Word> items;
-  String header;
-
-  @override
-  List<Word> getItems() {
-    return items;
-  }
-
-  @override
-  bool isSectionExpanded() {
-    return expanded;
-  }
-
-  @override
-  void setSectionExpanded(bool expanded) {
-    this.expanded = expanded;
   }
 }

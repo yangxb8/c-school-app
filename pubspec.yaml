@@ -61,7 +61,7 @@ dependencies:
   flip: ^1.0.0
   simple_gesture_detector: ^0.1.4
   material_floating_search_bar: ^0.2.3
-  sticky_and_expandable_list: ^0.2.3
+  sticky_grouped_list: ^1.3.0
   flamingo: ^1.11.0
   flamingo_annotation: ^0.4.0
   flutter_tts: ^1.3.0
