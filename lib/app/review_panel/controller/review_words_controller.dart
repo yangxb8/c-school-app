@@ -48,10 +48,6 @@ class ReviewWordsController extends GetxController {
   /// Used to controller pagination of card
   RxDouble pageFraction;
 
-  var isFirstPage;
-
-  var isLastPage;
-
   RxBool isAutoPlayMode = false.obs;
 
   /// Null Timer means we are not in autoPlay mode
@@ -130,11 +126,6 @@ class ReviewWordsController extends GetxController {
     return sectionList_;
   }
 
-  void notifyPageChanged(int page) {
-    isLastPage = page + 1 == wordsList.length;
-    isFirstPage = page == 0;
-  }
-
   /// Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
     if (!primaryWordCardController.flipController.isFront) {
@@ -166,33 +157,36 @@ class ReviewWordsController extends GetxController {
   }
 
   void autoPlayPressed() async {
+    // Force using card mode
+    if (_mode.value == WordsReviewMode.LIST) {
+      changeMode();
+      // For re-render to happen, we set a timer and return from this call
+      Timer(0.3.seconds, ()=>autoPlayPressed());
+      return;
+    }
     // If already in autoPlay mode
     if (isAutoPlayMode.value) {
       _autoPlayTimer.cancel();
       _autoPlayTimer = null;
     } else {
-      // Force using card mode
-      if (_mode.value == WordsReviewMode.LIST) {
-        changeMode();
-      }
       // Play from beginning
       await pageController.animateToPage(pageController.initialPage,
-          duration: 2.seconds, curve: Curves.bounceInOut);
+          duration: 1.seconds, curve: Curves.easeInOut);
       _autoPlayTimer = Timer.periodic(2.seconds, (_) async {
-        // When user press button or we reach last card
-        if (!isAutoPlayMode.value ||
-            primaryWordOrdinal.value == wordsList.lastIndex) {
-          _autoPlayTimer.cancel();
-          _autoPlayTimer = null;
-          return;
-        }
         await Timer(500.milliseconds,
             () async => await primaryWordCardController.playMeaning());
-        flipBackPrimaryCard();
+        primaryWordCardController.flipController.flip();
         await Timer(500.milliseconds,
             () async => await primaryWordCardController.playWord());
-        await pageController.nextPage(
+        await pageController.previousPage(
             duration: 300.milliseconds, curve: Curves.easeInOut);
+        // When we reach the last card
+        if (primaryWordOrdinal.value == 0) {
+          _autoPlayTimer.cancel();
+          _autoPlayTimer = null;
+          isAutoPlayMode.value = false;
+          return;
+        }
       });
     }
     isAutoPlayMode.value = !isAutoPlayMode.value;

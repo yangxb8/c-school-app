@@ -29,9 +29,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
         await controller.pageController.previousPage(
             duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
       }
-      if (!controller.isFirstPage && !controller.isLastPage) {
-        controller.saveAndResetWordHistory(currentPrimaryWord);
-      }
+      controller.saveAndResetWordHistory(currentPrimaryWord);
     }
 
     return Padding(
@@ -45,7 +43,6 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                 // We only use this to control the controller.pageController behind screen
                 Positioned.fill(
                   child: PageView.builder(
-                    onPageChanged: controller.notifyPageChanged,
                     itemCount: controller.wordsList.length,
                     controller: controller.pageController,
                     reverse: true,
