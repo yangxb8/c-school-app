@@ -81,7 +81,7 @@ class WordCardController extends GetxController {
   Future<FlutterTts> _generateTts({String language = LAN_CODE_CN}) async {
     final tts = FlutterTts();
     await tts.setLanguage(language);
-    switch(language){
+    switch (language) {
       case LAN_CODE_JP:
         await tts.setSpeechRate(0.8);
         break;
@@ -96,14 +96,15 @@ class WordCardController extends GetxController {
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
-    showDialog<void>(
-        context: Get.context,
-        builder: (context) => SimpleDialog(
-          children: [WordCard(word: word)],
-          titlePadding: EdgeInsets.zero,
-          contentPadding: EdgeInsets.zero,
-          backgroundColor: Colors.transparent,
-        ));
+    Get.dialog(
+      SimpleDialog(
+        children: [WordCard(word: word)],
+        titlePadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+      ),
+      barrierColor: Get.isDialogOpen ? Colors.transparent : null,
+    );
   }
 
   @override

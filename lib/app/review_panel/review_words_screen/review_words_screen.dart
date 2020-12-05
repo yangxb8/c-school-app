@@ -74,15 +74,19 @@ class ReviewWords extends GetView<ReviewWordsController> {
                 () => Column(
                     mainAxisSize: MainAxisSize.min,
                     children: controller.searchResult.isEmpty
-                        ? [ListTile(
-                            title: Text('Empty'.i18n,
-                                style: TextStyle(color: Colors.grey)))]
+                        ? [
+                            ListTile(
+                                title: Text('Empty'.i18n,
+                                    style: TextStyle(color: Colors.grey)))
+                          ]
                         : controller.searchResult
                             .map((word) => ListTile(
                                 title: TextButton(
                                     child: Text(word.wordAsString),
-                                    onPressed: () =>
-                                        controller.showSingleCard(word))))
+                                    onPressed: () {
+                                      controller.searchBarController.close();
+                                      controller.showSingleCard(word);
+                                    })))
                             .toList()),
               ),
             ));

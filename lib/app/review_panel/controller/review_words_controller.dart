@@ -222,6 +222,10 @@ class ReviewWordsController extends GetxController {
   /// Search card content, consider a match if word or meaning contains query
   void search() {
     if (isAutoPlayMode.value) return;
+    if (searchQuery.value.isNullOrBlank) {
+      searchResult.clear();
+      return;
+    }
     var containKeyWord = (Word word) {
       return word.wordAsString.contains(searchQuery.value) ||
           word.wordMeanings.any((m) => m.meaning.contains(searchQuery.value));
