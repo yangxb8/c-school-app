@@ -1,5 +1,7 @@
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip/flip.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +13,14 @@ import '../models/word.dart';
 const cardAspectRatio = 12.0 / 22.0;
 const BUTTON_SIZE = 50.0;
 const verticalInset = 8.0;
+const DEFAULT_IMAGE = 'assets/review_panel/image_01.png';
 
 class WordCard extends StatelessWidget {
   final Word word;
   final double delta;
   final WordCardController controller;
-  final FlipController flipController = FlipController();
   WordCard({@required this.word, this.delta = 0.0})
-      : controller = Get.put(WordCardController(word));
+      : controller = Get.put(WordCardController(word), tag: word.wordId);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class WordCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.0),
       child: SimpleGestureDetector(
-        onTap: () => flipController.flip(),
+        onTap: () => controller.flipController.flip(),
         child: Container(
           decoration: BoxDecoration(color: Colors.white, boxShadow: [
             BoxShadow(
@@ -49,7 +51,7 @@ class WordCard extends StatelessWidget {
             child: Stack(
               children: [
                 Flip(
-                  controller: flipController,
+                  controller: controller.flipController,
                   flipDirection: Axis.vertical,
                   flipDuration: Duration(milliseconds: 200),
                   secondChild: buildBackCardContent(delta: delta),
@@ -134,7 +136,8 @@ class WordCard extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 50.0,right: 20),
+                                  padding: const EdgeInsets.only(
+                                      left: 50.0, right: 20),
                                   child: SimpleGestureDetector(
                                     onTap: () => controller.playExample(
                                         string: exampleAndAudio.key,
@@ -174,9 +177,27 @@ class WordCard extends StatelessWidget {
         SizedBox(
           height: 200 + verticalInset * delta * 2,
           width: double.infinity,
-          //TODO: Dummy image change this to word asset
-          child: Image.asset('assets/review_panel/image_01.png',
-              fit: BoxFit.cover),
+          child: word.pic?.url == null
+              ? Image.asset(
+                  DEFAULT_IMAGE,
+                  fit: BoxFit.cover,
+                )
+              : CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: word.pic.url,
+                  placeholder: (context, url) => SizedBox(
+                        width: 200.0,
+                        height: 100.0,
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          child: Container(),
+                        ),
+                      ),
+                  errorWidget: (context, url, error) => Image.asset(
+                        DEFAULT_IMAGE,
+                        fit: BoxFit.cover,
+                      )),
         ),
         Expanded(
           child: ListView(
@@ -203,7 +224,8 @@ List<String> _divideExample(dynamic keyword, dynamic example) {
   if (keyword is List<String>) {
     var keywordSet = keyword.toSet();
     var exampleDivided = example;
-    keywordSet.forEach((k) => exampleDivided=_divideExample(k, exampleDivided));
+    keywordSet
+        .forEach((k) => exampleDivided = _divideExample(k, exampleDivided));
     return exampleDivided;
   }
   // When the String is already divided before

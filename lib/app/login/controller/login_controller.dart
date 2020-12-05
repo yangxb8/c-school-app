@@ -159,7 +159,6 @@ class LoginController extends GetxController {
         },
       )
     ];
-    // TODO: get study daycount properly
     final content = 'You have study for %d times!'
         .i18n
         .fill([AppStateService.systemInfo.startCount]);

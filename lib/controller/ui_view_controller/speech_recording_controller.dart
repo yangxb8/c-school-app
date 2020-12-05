@@ -91,7 +91,7 @@ class SpeechRecordingController extends GetxController {
   @override
   void onClose() {
     if (_myPlayer != null) {
-      _myPlayer = null;
+      _myPlayer.dispose();
     }
     super.onClose();
   }

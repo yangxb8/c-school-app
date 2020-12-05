@@ -338,16 +338,6 @@ class _FirestoreApi {
     return [
       word1,
       word2,
-      word1,
-      word2,
-      word1,
-      word2,
-      word1,
-      word2,
-      word1,
-      word2,
-      word1,
-      word2
     ];
   }
 

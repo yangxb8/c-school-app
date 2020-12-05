@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flamingo/flamingo.dart';
-import 'package:flip/flip.dart';
+import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -18,27 +17,22 @@ import 'package:c_school_app/app/models/word.dart';
 import 'package:c_school_app/service/logger_service.dart';
 
 const LAN_CODE_CN = 'zh-cn';
-const LAN_CODE_JP = 'ja';
 
 class ReviewWordsController extends GetxController {
   final ClassService classService = Get.find();
   final logger = Get.find<LoggerService>().logger;
   final tts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
-  final flipController = FlipController();
   PageController pageController;
 
   /// Current primary word ordinal in _wordList
   final primaryWordOrdinal = 0.obs;
 
   /// List or card
-  final _mode = _WordsReviewModeWrapper().obs;
+  final _mode = WordsReviewMode.LIST.obs;
 
   /// Controller for search bar of review words screen
   final searchBarController = FloatingSearchBarController();
-
-  /// Words user favorite
-  RxList<String> _userLikedWordIds;
 
   /// WordsHistory of this user
   RxList<WordHistory> _userWordsHistory;
@@ -54,6 +48,10 @@ class ReviewWordsController extends GetxController {
   /// Used to controller pagination of card
   RxDouble pageFraction;
 
+  var isFirstPage;
+
+  var isLastPage;
+
   RxBool isAutoPlayMode = false.obs;
 
   /// Null Timer means we are not in autoPlay mode
@@ -66,7 +64,6 @@ class ReviewWordsController extends GetxController {
   @override
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
-    _userLikedWordIds = ClassService.userLikedWordIds_Rx;
     _userWordsHistory = ClassService.userWordsHistory_Rx;
     classes = classService.findClassesById(Get.parameters['classId']);
     wordsList = classes.length == 1
@@ -82,18 +79,16 @@ class ReviewWordsController extends GetxController {
   }
 
   /// Flashcard or List mode
-  WordsReviewMode get mode => _mode.value.wordsReviewMode;
+  WordsReviewMode get mode => _mode.value;
 
   /// PrimaryWord associated with primaryWordOrdinal
   Word get primaryWord => wordsList[primaryWordOrdinal.value];
 
+  WordCardController get primaryWordCardController =>
+      Get.find(tag: primaryWord.wordId);
+
   /// PrimaryWord.word to String for display
   String get primaryWordString => primaryWord.word.join();
-
-  bool isWordLiked(Word word) => _userLikedWordIds.contains(word.wordId);
-
-  void toggleFavoriteCard(int cardOrdinal) =>
-      classService.toggleWordLiked(wordsList[cardOrdinal]);
 
   int countWordMemoryStatusOfWordByStatus(
           {@required WordMemoryStatus status}) =>
@@ -135,14 +130,26 @@ class ReviewWordsController extends GetxController {
     return sectionList_;
   }
 
+  void notifyPageChanged(int page) {
+    isLastPage = page + 1 == wordsList.length;
+    isFirstPage = page == 0;
+  }
+
+  /// Make sure primary card is front side when slide
+  void flipBackPrimaryCard() {
+    if (!primaryWordCardController.flipController.isFront) {
+      primaryWordCardController.flipController.flip();
+    }
+  }
+
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
     if (isAutoPlayMode.value) return;
-    if (_mode.value.wordsReviewMode == WordsReviewMode.FLASH_CARD) {
-      _mode.update((mode) => mode.wordsReviewMode = WordsReviewMode.LIST);
+    if (_mode.value == WordsReviewMode.FLASH_CARD) {
+      _mode.value = WordsReviewMode.LIST;
       logger.i('Change to List Mode');
     } else {
-      _mode.update((mode) => mode.wordsReviewMode = WordsReviewMode.FLASH_CARD);
+      _mode.value = WordsReviewMode.FLASH_CARD;
       logger.i('Change to Card Mode');
     }
   }
@@ -158,35 +165,6 @@ class ReviewWordsController extends GetxController {
     }
   }
 
-  /// Play audio of the meanings one by one
-  Future<void> playMeaning({Word word}) async {
-    await tts.setLanguage(LAN_CODE_JP);
-    await tts.setSpeechRate(0.8);
-    if (word.isNull) word = primaryWord;
-    await word.wordMeanings.forEach((meaning) async {
-      await Timer(
-          500.milliseconds, () async => await tts.speak(meaning.meaning));
-    });
-    await tts.setLanguage(LAN_CODE_CN);
-    await tts.setSpeechRate(0.5);
-  }
-
-  /// Play audio of the examples
-  Future<void> playExample(
-      {@required String string, @required StorageFile audio}) async {
-    if (audio.isNull) {
-      await tts.speak(string);
-    } else {
-      await audioPlayer.play(audio.url);
-    }
-  }
-
-  @override
-  void onClose() {
-    classService.commitChange();
-    super.onClose();
-  }
-
   void autoPlayPressed() async {
     // If already in autoPlay mode
     if (isAutoPlayMode.value) {
@@ -194,7 +172,7 @@ class ReviewWordsController extends GetxController {
       _autoPlayTimer = null;
     } else {
       // Force using card mode
-      if (_mode.value.wordsReviewMode == WordsReviewMode.LIST) {
+      if (_mode.value == WordsReviewMode.LIST) {
         changeMode();
       }
       // Play from beginning
@@ -208,9 +186,11 @@ class ReviewWordsController extends GetxController {
           _autoPlayTimer = null;
           return;
         }
-        await Timer(500.milliseconds, () async => await playMeaning());
-        await flipController.flip();
-        await Timer(500.milliseconds, () async => await playWord());
+        await Timer(500.milliseconds,
+            () async => await primaryWordCardController.playMeaning());
+        flipBackPrimaryCard();
+        await Timer(500.milliseconds,
+            () async => await primaryWordCardController.playWord());
         await pageController.nextPage(
             duration: 300.milliseconds, curve: Curves.easeInOut);
       });
@@ -239,10 +219,13 @@ class ReviewWordsController extends GetxController {
     searchResult.clear();
     searchResult.addAll(wordsList.filter((word) => containKeyWord(word)));
   }
-}
 
-class _WordsReviewModeWrapper {
-  var wordsReviewMode = WordsReviewMode.LIST;
+  @override
+  void onClose() {
+    classService.commitChange();
+    audioPlayer.dispose();
+    super.onClose();
+  }
 }
 
 enum WordsReviewMode { LIST, FLASH_CARD }
