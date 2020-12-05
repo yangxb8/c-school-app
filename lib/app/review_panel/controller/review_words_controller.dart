@@ -5,7 +5,6 @@ import 'package:c_school_app/controller/ui_view_controller/word_card_controller.
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -49,9 +48,6 @@ class ReviewWordsController extends GetxController {
   RxDouble pageFraction;
 
   RxBool isAutoPlayMode = false.obs;
-
-  /// Null Timer means we are not in autoPlay mode
-  Timer _autoPlayTimer;
 
   RxString searchQuery = ''.obs;
 
@@ -135,7 +131,10 @@ class ReviewWordsController extends GetxController {
 
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
-    if (isAutoPlayMode.value) return;
+    // If in autoPlay mode, stop it
+    if (isAutoPlayMode.value) {
+      isAutoPlayMode.value = false;
+    }
     if (_mode.value == WordsReviewMode.FLASH_CARD) {
       _mode.value = WordsReviewMode.LIST;
       logger.i('Change to List Mode');
@@ -145,8 +144,12 @@ class ReviewWordsController extends GetxController {
     }
   }
 
+  /// Simplified version of same method in WordCard
+  /// As we might need to play from word list.
+  ///
   /// Play audio of the word
   Future<void> playWord({Word word}) async {
+    if (isAutoPlayMode.value) return;
     if (word.isNull) word = primaryWord;
     var wordAudio = word.wordAudio;
     if (wordAudio.isNull) {
@@ -156,56 +159,69 @@ class ReviewWordsController extends GetxController {
     }
   }
 
+  /// Handle autoPlay button pressed, will start play in card mode from beginning.
+  /// Or, if already in autoPlay mode, cancel it.
   void autoPlayPressed() async {
     // Force using card mode
     if (_mode.value == WordsReviewMode.LIST) {
       changeMode();
       // For re-render to happen, we set a timer and return from this call
-      Timer(0.3.seconds, ()=>autoPlayPressed());
+      Timer(0.3.seconds, () => autoPlayPressed());
       return;
     }
-    // If already in autoPlay mode
-    if (isAutoPlayMode.value) {
-      _autoPlayTimer.cancel();
-      _autoPlayTimer = null;
-    } else {
+    if (!isAutoPlayMode.value) {
+      isAutoPlayMode.value = true;
       // Play from beginning
       await pageController.animateToPage(pageController.initialPage,
-          duration: 1.seconds, curve: Curves.easeInOut);
-      _autoPlayTimer = Timer.periodic(2.seconds, (_) async {
-        await Timer(500.milliseconds,
-            () async => await primaryWordCardController.playMeaning());
-        primaryWordCardController.flipController.flip();
-        await Timer(500.milliseconds,
-            () async => await primaryWordCardController.playWord());
-        await pageController.previousPage(
-            duration: 300.milliseconds, curve: Curves.easeInOut);
-        // When we reach the last card
-        if (primaryWordOrdinal.value == 0) {
-          _autoPlayTimer.cancel();
-          _autoPlayTimer = null;
-          isAutoPlayMode.value = false;
-          return;
-        }
-      });
+          duration: 0.5.seconds, curve: Curves.easeInOut);
+      flipBackPrimaryCard();
+      _autoPlayCard();
+    } else {
+      isAutoPlayMode.value = false;
     }
-    isAutoPlayMode.value = !isAutoPlayMode.value;
   }
 
+  /// Tts package use listener to handler completion of speech
+  /// So we need to set logic after each tts speech inside a
+  /// callback function
+  ///
+  /// Also, we check isAutoPlayMode in multiple stage so user
+  /// can stop the play anytime
+  void _autoPlayCard() async {
+    if (!isAutoPlayMode.value) return;
+    await primaryWordCardController.playMeanings(completionCallBack: () async {
+      // after playMeanings
+      if (!isAutoPlayMode.value) return;
+      await Timer(0.5.seconds, primaryWordCardController.flipController.flip);
+      await Timer(0.5.seconds, () async {
+        if (!isAutoPlayMode.value) return;
+        await primaryWordCardController.playWord(completionCallBack: () async {
+          // after playWord
+          // When we reach the last card or autoPlay turn off
+          if (!isAutoPlayMode.value || primaryWordOrdinal.value == 0) {
+            isAutoPlayMode.value = false;
+          } else {
+            await pageController.previousPage(
+                duration: 300.milliseconds, curve: Curves.easeInOut);
+            Future.delayed(1.seconds, _autoPlayCard);
+          }
+        });
+      });
+    });
+  }
+
+  /// Warning: primaryWordCardController could be null, but for now it's only
+  /// used in card mode, so it's safe to call it.
+  ///
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
-    showDialog<void>(
-        context: Get.context,
-        builder: (context) => SimpleDialog(
-              children: [WordCard(word: word)],
-              titlePadding: EdgeInsets.zero,
-              contentPadding: EdgeInsets.zero,
-              backgroundColor: Colors.transparent,
-            ));
+    if (isAutoPlayMode.value) return;
+    primaryWordCardController.showSingleCard(word);
   }
 
   /// Search card content, consider a match if word or meaning contains query
   void search() {
+    if (isAutoPlayMode.value) return;
     var containKeyWord = (Word word) {
       return word.wordAsString.contains(searchQuery.value) ||
           word.wordMeanings.any((m) => m.meaning.contains(searchQuery.value));

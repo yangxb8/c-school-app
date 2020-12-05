@@ -1,6 +1,9 @@
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flamingo/src/model/storage_file.dart';
 import 'package:flip/flip.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:flutter/foundation.dart';
@@ -25,15 +28,18 @@ class WordCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var frontCardContent = Center(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: word.wordMeanings
-          .map((e) => Text(
-                e.meaning,
-                style: TextStyle(fontSize: 40.0),
-              ))
-          .toList(),
+        child: SimpleGestureDetector(
+      onTap: controller.playMeanings,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: word.wordMeanings
+            .map((e) => Text(
+                  e.meaning,
+                  style: TextStyle(fontSize: 40.0),
+                ))
+            .toList(),
+      ),
     ));
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.0),
@@ -132,43 +138,8 @@ class WordCard extends StatelessWidget {
                     ),
                   ] +
                   meaning.exampleAndAudios.entries
-                      .map((exampleAndAudio) => Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 50.0, right: 20),
-                                  child: SimpleGestureDetector(
-                                    onTap: () => controller.playExample(
-                                        string: exampleAndAudio.key,
-                                        audio: exampleAndAudio.value),
-                                    child: RichText(
-                                      text: TextSpan(
-                                          style: TextStyle(
-                                              fontSize: 20.0,
-                                              color: Colors.black),
-                                          //TODO: give related words a link
-                                          children: _divideExample([
-                                            word.wordAsString,
-                                            ...word.relatedWords
-                                                .map((word) => word.word.join())
-                                                .toList()
-                                          ], exampleAndAudio.key)
-                                              .map((part) => TextSpan(
-                                                  text: part,
-                                                  style: part ==
-                                                          word.wordAsString
-                                                      ? TextStyle(
-                                                          color:
-                                                              Colors.redAccent)
-                                                      : null))
-                                              .toList()),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ))
+                      .map((exampleAndAudio) =>
+                          _buildExampleRow(exampleAndAudio))
                       .toList(),
             ))
         .toList();
@@ -202,10 +173,62 @@ class WordCard extends StatelessWidget {
         Expanded(
           child: ListView(
             shrinkWrap: true,
-            children: partHanZi + partMeanings + [divider()],
+            children: [...partHanZi, ...partMeanings, divider()],
           ),
         ),
       ],
+    );
+  }
+
+  Row _buildExampleRow(MapEntry<String, StorageFile> exampleAndAudio) {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 50.0, right: 20),
+            child: SimpleGestureDetector(
+              onTap: () => controller.playExample(
+                  string: exampleAndAudio.key, audio: exampleAndAudio.value),
+              child: RichText(
+                text: TextSpan(
+                    style: TextStyle(fontSize: 20.0, color: Colors.black),
+                    //TODO: give related words a link
+                    children: _divideExample([
+                      word.wordAsString,
+                      ...word.relatedWords
+                          .map((word) => word.word.join())
+                          .toList()
+                    ], exampleAndAudio.key)
+                        .map((part) => _buildExampleTextSpan(part))
+                        .toList()),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  TextSpan _buildExampleTextSpan(String part) {
+    // If the word is our main word
+    if (part == word.wordAsString) {
+      return TextSpan(
+          text: part, style: TextStyle(fontWeight: FontWeight.bold));
+    }
+    // If the word is a related word
+    var relatedWord =
+        word.relatedWords.filter((word) => word.wordAsString == part);
+    if (relatedWord.isNotEmpty) {
+      return TextSpan(
+          text: part,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => controller.showSingleCard(relatedWord.single),
+          style: TextStyle(
+              decoration: TextDecoration.underline));
+    }
+    // Default
+    return TextSpan(
+      text: part,
     );
   }
 

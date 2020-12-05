@@ -54,7 +54,13 @@ class Word extends Document<Word> {
   @StorageField()
   StorageFile wordAudio;
 
-  List<Word> get relatedWords => classService.findWordsByIds(_relatedWordIDs);
+  List<Word> get relatedWords {
+    if (_relatedWordIDs.isNullOrBlank) {
+      return [];
+    } else {
+      return classService.findWordsByIds(_relatedWordIDs);
+    }
+  }
 
   set relatedWordIDs(List<String> relatedWordIDs) =>
       _relatedWordIDs = relatedWordIDs;
