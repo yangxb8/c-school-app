@@ -22,7 +22,7 @@ import '../model/user.dart';
 import './logger_service.dart';
 import '../i18n/api_service.i18n.dart';
 
-final logger = Get.find<LoggerService>().logger;
+final logger = LoggerService.logger;
 
 class ApiService extends GetxService {
   static ApiService _instance;

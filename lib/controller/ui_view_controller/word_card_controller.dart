@@ -23,7 +23,7 @@ class WordCardController extends GetxController {
 
   /// Words user favorite
   final RxList<String> _userLikedWordIds = ClassService.userLikedWordIds_Rx;
-  final logger = Get.find<LoggerService>().logger;
+  final logger = LoggerService.logger;
   final AudioPlayer audioPlayer = AudioPlayer();
 
   void toggleFavoriteCard() => classService.toggleWordLiked(word);

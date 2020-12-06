@@ -4,6 +4,7 @@ import 'package:c_school_app/service/class_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:catcher/catcher.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 import './service/app_state_service.dart';
@@ -50,26 +51,32 @@ class CSchoolApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
     return KeyboardDismisser(
-        child: GetMaterialApp(
-            title: 'Chinese Classroom',
-            debugShowCheckedModeBanner: false,
-            navigatorKey: Catcher.navigatorKey,
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              textTheme: AppTheme.textTheme,
-              platform: TargetPlatform.iOS,
-            ),
-            localizationsDelegates: [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en'),
-              const Locale('ja', 'JP'),
-            ],
-            getPages: AppRouter.setupRouter(),
-            home: Splash(),
+        child: Wiredash(
+          projectId: 'c-school-iysnrje',
+          secret: 'rbl6r14rthdvtkruhfu0lvlldp6rpq3pepclnowm1q6ui08u',
+          /// We use Catcher's navigatorKey here also for Wiredash
+          navigatorKey: Catcher.navigatorKey,
+          child: GetMaterialApp(
+              title: 'Chinese Classroom',
+              debugShowCheckedModeBanner: false,
+              navigatorKey: Catcher.navigatorKey,
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                textTheme: AppTheme.textTheme,
+                platform: TargetPlatform.iOS,
+              ),
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en'),
+                const Locale('ja', 'JP'),
+              ],
+              getPages: AppRouter.setupRouter(),
+              home: Splash(),
+          ),
         ));
   }
 }

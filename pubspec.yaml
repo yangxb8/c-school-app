@@ -71,6 +71,8 @@ dependencies:
   splashscreen: ^1.3.5
   catcher: ^0.3.23
   styled_widget: ^0.2.2
+  wiredash: ^0.3.0
+  animate_do: ^1.7.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

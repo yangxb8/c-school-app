@@ -1,5 +1,5 @@
+import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
@@ -49,12 +49,11 @@ class ReviewWords extends GetView<ReviewWordsController> {
         ),
         FloatingSearchBarAction(
           child: CircularButton(
-            icon: Obx(() => FaIcon(
-                  FontAwesomeIcons.play,
-                  color: controller.isAutoPlayMode.value
-                      ? Colors.lightBlue
-                      : Colors.grey,
-                )),
+            icon: AnimatedIcon(
+              icon: AnimatedIcons.play_pause,
+              color: Colors.grey,
+              progress: controller.searchBarPlayIconController,
+            ),
             onPressed: () => controller.autoPlayPressed(),
           ),
         )
@@ -62,6 +61,12 @@ class ReviewWords extends GetView<ReviewWordsController> {
       actions: [
         FloatingSearchBarAction.searchToClear(
           showIfClosed: false,
+        ),
+        FloatingSearchBarAction(
+          child: CircularButton(
+            icon: Icon(Icons.contact_support),
+            onPressed: () => UserService.showWireDash(),
+          ),
         ),
       ],
       builder: (context, transition) {

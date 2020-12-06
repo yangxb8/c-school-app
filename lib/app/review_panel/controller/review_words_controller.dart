@@ -17,12 +17,13 @@ import 'package:c_school_app/service/logger_service.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
-class ReviewWordsController extends GetxController {
+class ReviewWordsController extends GetxController with SingleGetTickerProviderMixin{
   final ClassService classService = Get.find();
-  final logger = Get.find<LoggerService>().logger;
+  final logger = LoggerService.logger;
   final tts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   PageController pageController;
+  AnimationController searchBarPlayIconController;
 
   /// Current primary word ordinal in _wordList
   final primaryWordOrdinal = 0.obs;
@@ -63,6 +64,7 @@ class ReviewWordsController extends GetxController {
         : List.from(ClassService.allWords.reversed);
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
+    searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
     await tts.setLanguage(LAN_CODE_CN);
     await tts.setSpeechRate(0.5);
     // worker to monitor search query change and fire search function
@@ -155,6 +157,7 @@ class ReviewWordsController extends GetxController {
       return;
     }
     if (!isAutoPlayMode.value) {
+      searchBarPlayIconController.forward();
       isAutoPlayMode.value = true;
       // Play from beginning
       await pageController.animateToPage(pageController.initialPage,
@@ -162,6 +165,7 @@ class ReviewWordsController extends GetxController {
       flipBackPrimaryCard();
       _autoPlayCard();
     } else {
+      searchBarPlayIconController.reverse();
       isAutoPlayMode.value = false;
     }
   }
@@ -229,6 +233,8 @@ class ReviewWordsController extends GetxController {
     audioPlayer.dispose();
     super.onClose();
   }
+
+  int calculateWordIndex(Word word) => wordsList.indexOf(word);
 }
 
 enum WordsReviewMode { LIST, FLASH_CARD }

@@ -121,7 +121,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
   final pageFraction;
   final padding = 10.0;
   final verticalInset = 8.0;
-  final logger = Get.find<LoggerService>().logger;
+  final logger = LoggerService.logger;
   static const MAX_CARDS_FRAME = 8;
 
   CardScrollWidget(this.pageFraction);
