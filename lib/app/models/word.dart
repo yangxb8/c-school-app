@@ -30,6 +30,9 @@ class Word extends Document<Word> {
   @Field()
   List<String> pinyin;
 
+  @Field()
+  String hint;
+
   /// 日语意思
   @ModelField()
   List<WordMeaning> wordMeanings;

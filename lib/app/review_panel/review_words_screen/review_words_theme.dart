@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supercharged/supercharged.dart';
 
 class ReviewWordsTheme {
   ReviewWordsTheme._();
@@ -18,6 +19,10 @@ class ReviewWordsTheme {
   static const Color chipBackground = Color(0xFFEEF1F3);
   static const Color spacer = Color(0xFFF2F2F2);
 
+  static Color lightBlue = '#B5D0FA'.toColor();
+  static Color darkBlue = '#484C75'.toColor();
+  static Color lightYellow = '#FBEB99'.toColor();
+
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
     headline5: headline,
@@ -26,6 +31,13 @@ class ReviewWordsTheme {
     bodyText1: body2,
     bodyText2: body1,
     caption: caption,
+  );
+
+  static TextStyle wordListTitle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 35,
+    letterSpacing: 0.27,
+    color: lightYellow,
   );
 
   static const TextStyle display1 = TextStyle(

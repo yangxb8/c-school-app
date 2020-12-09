@@ -188,6 +188,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
           // after playWord
           // When we reach the last card or autoPlay turn off
           if (!isAutoPlayMode.value || primaryWordOrdinal.value == 0) {
+            searchBarPlayIconController.reverse();
             isAutoPlayMode.value = false;
           } else {
             await pageController.previousPage(

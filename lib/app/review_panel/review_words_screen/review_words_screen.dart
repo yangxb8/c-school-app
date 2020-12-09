@@ -51,6 +51,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
           child: CircularButton(
             icon: AnimatedIcon(
               icon: AnimatedIcons.play_pause,
+              size: 30,
               color: Colors.grey,
               progress: controller.searchBarPlayIconController,
             ),
