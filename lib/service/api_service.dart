@@ -316,6 +316,7 @@ class _FirestoreApi {
       ..word = ['我', '们']
       ..pinyin = ['wo', 'men']
       ..tags = [WordTag.C0001]
+      ..hint = 'ヒントですよ'
       ..wordMeanings = [
         WordMeaning(
           meaning: '私達',
@@ -328,6 +329,7 @@ class _FirestoreApi {
       ..word = ['都', '是']
       ..pinyin = ['dou', 'shi']
       ..tags = [WordTag.C0001]
+      ..hint = 'ヒントですよ'
       ..wordMeanings = [
         WordMeaning(
           meaning: 'は..だ',

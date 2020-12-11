@@ -32,13 +32,13 @@ dependencies:
   device_info: ^1.0.0
   firebase_core: ^0.5.3
   firebase_analytics: ^6.3.0
-  firebase_auth: ^0.18.4
+  firebase_auth: ^0.18.4+1
 #  flutter_facebook_auth: "^0.2.3"
   flutter_twitter_login: ^1.1.0
   google_sign_in: ^4.5.6
   get: ^3.22.2
   i18n_extension: ^1.4.5
-  font_awesome_flutter: ^8.10.0
+  font_awesome_flutter: ^8.10.1
   shared_preferences: ">=0.5.10 <2.0.0"
   form_field_validator: ^1.0.1
   flutter_beautiful_popup: ^1.5.0
@@ -50,7 +50,7 @@ dependencies:
   uuid: 2.2.2
   enum_to_string: ^1.0.14
   convex_bottom_bar: ^2.6.0
-  settings_ui: ^0.4.0
+  settings_ui: ^0.5.0
   modal_bottom_sheet: ^1.0.0+1
   audioplayers: ^0.17.0
   permission_handler: ^5.0.1+1
@@ -60,19 +60,20 @@ dependencies:
   fl_chart: ^0.12.0
   flip: ^1.0.0
   simple_gesture_detector: ^0.1.4
-  material_floating_search_bar: ^0.2.3
+  material_floating_search_bar: ^0.2.4
   sticky_grouped_list: ^1.3.0
   flamingo: ^1.11.0
   flamingo_annotation: ^0.4.0
-  flutter_tts: ^1.3.0
+  flutter_tts: ^2.0.0
   cached_network_image: ^2.4.1
   shimmer: ^1.1.2
   keyboard_dismisser: ^1.0.2
   splashscreen: ^1.3.5
   catcher: ^0.3.23
   styled_widget: ^0.2.2
-  wiredash: ^0.3.0
+  wiredash: ^0.4.0
   animate_do: ^1.7.5
+  simple_tooltip: 0.1.16
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -83,7 +84,7 @@ dev_dependencies:
     sdk: flutter
 
   pedantic: ^1.9.2
-  build_runner: ^1.10.7
+  build_runner: ^1.10.9
   json_serializable: ^3.5.1
   test: ^1.15.7
   flamingo_generator: ^0.8.0

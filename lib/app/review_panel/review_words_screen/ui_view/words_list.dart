@@ -52,8 +52,8 @@ class WordsList extends GetView<ReviewWordsController> {
                   padding: const EdgeInsets.only(left: 15.0),
                   child: Row(
                     children: [
-                      Text('${word.wordAsString}       '),
-                      Text(word.pinyin.join(' '))
+                      Text('${word.wordAsString}       ',style: ReviewWordsTheme.wordListItem,),
+                      Text(word.pinyin.join(' '),style: ReviewWordsTheme.wordListItem)
                     ],
                   ),
                 ),

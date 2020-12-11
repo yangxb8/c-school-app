@@ -23,10 +23,14 @@ class WordCardController extends GetxController {
 
   /// Words user favorite
   final RxList<String> _userLikedWordIds = ClassService.userLikedWordIds_Rx;
+  /// Is hint shown under meaning
+  final isHintShown = false.obs;
   final logger = LoggerService.logger;
   final AudioPlayer audioPlayer = AudioPlayer();
 
   void toggleFavoriteCard() => classService.toggleWordLiked(word);
+
+  void toggleHint() => isHintShown.value = !isHintShown.value;
 
   bool isWordLiked() => _userLikedWordIds.contains(word.wordId);
 
@@ -113,4 +117,5 @@ class WordCardController extends GetxController {
     audioPlayer.dispose();
     super.onClose();
   }
+
 }

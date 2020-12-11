@@ -40,6 +40,56 @@ class ReviewWordsTheme {
     color: lightYellow,
   );
 
+  static TextStyle wordListItem = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: 25,
+    letterSpacing: 0.27,
+    color: darkBlue,
+  );
+
+  static TextStyle wordCardMeaning = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 45,
+    letterSpacing: 0.27,
+    color: darkBlue,
+  );
+
+  static TextStyle wordCardHint = TextStyle(
+      fontWeight: FontWeight.normal,
+      fontSize: 25,
+      letterSpacing: 0.27,
+      color: darkBlue,
+      decoration: TextDecoration.none
+  );
+
+  static TextStyle wordCardWord = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 55,
+    letterSpacing: 0.27,
+    color: darkBlue,
+  );
+
+  static TextStyle wordCardPinyin = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 50,
+    letterSpacing: 0.27,
+    color: darkBlue,
+  );
+
+  static TextStyle wordCardSubTitle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 35,
+    letterSpacing: 0.27,
+    color: darkBlue,
+  );
+
+  static TextStyle wordCardExample = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: 25,
+    letterSpacing: 0.27,
+    color: darkBlue,
+  );
+
   static const TextStyle display1 = TextStyle(
     // h4 -> display1
     fontFamily: 'WorkSans',

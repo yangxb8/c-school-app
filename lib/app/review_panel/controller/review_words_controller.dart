@@ -60,8 +60,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     _userWordsHistory = ClassService.userWordsHistory_Rx;
     classes = classService.findClassesById(Get.parameters['classId']);
     wordsList = classes.length == 1
-        ? List.from(classes.single.words.reversed)
-        : List.from(ClassService.allWords.reversed);
+        ? classes.single.words
+        : ClassService.allWords;
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
     searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);

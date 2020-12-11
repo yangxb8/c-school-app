@@ -12,12 +12,14 @@ class ReviewWords extends GetView<ReviewWordsController> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Stack(fit: StackFit.expand, children: [
-          Obx(() => controller.mode == WordsReviewMode.FLASH_CARD
-              ? WordsFlashcard()
-              : WordsList()),
-          _buildFloatingSearchBar(),
-        ]));
+        body: SafeArea(
+          child: Stack(fit: StackFit.expand, children: [
+            Obx(() => controller.mode == WordsReviewMode.FLASH_CARD
+                ? WordsFlashcard()
+                : WordsList()),
+            _buildFloatingSearchBar(),
+          ]),
+        ));
   }
 
   FloatingSearchBar _buildFloatingSearchBar() {
