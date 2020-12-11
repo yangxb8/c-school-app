@@ -19,8 +19,8 @@ extension Localization on String {
         'ja_jp': '【例文】',
       } +
       {
-        'en': 'My List',
-        'ja_jp': 'マイリスト',
+        'en': 'My Words',
+        'ja_jp': 'マイ単語',
       } +
       {
         'en': 'All words',

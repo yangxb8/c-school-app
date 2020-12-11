@@ -24,7 +24,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Text(
-              'My List'.i18n,
+              'My Words'.i18n,
               textAlign: TextAlign.left,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -98,7 +98,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
         Column(
           children: [
             IconButton(
-              icon: FaIcon(FontAwesomeIcons.globeAsia,
+              icon: FaIcon(FontAwesomeIcons.university,
                   size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: wordsListAll),

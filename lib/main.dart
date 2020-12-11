@@ -91,13 +91,9 @@ class Splash extends StatelessWidget {
   Widget build(BuildContext context) {
     return SplashScreen(
         navigateAfterFuture: _loadFromFuture(),
-        title: Text(
-          'C!School',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-        ),
-        image: Image.network('https://i.imgur.com/TyCSG9A.png'),
+        imageBackground: Image.asset('assets/splash/splash.png').image,
         photoSize: 100.0,
-        loaderColor: Colors.red);
+        useLoader: false,);
   }
 }
 

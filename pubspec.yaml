@@ -110,6 +110,7 @@ flutter:
     - assets/study_panel/
     - assets/review_panel/
     - assets/setting_panel/
+    - assets/splash/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
