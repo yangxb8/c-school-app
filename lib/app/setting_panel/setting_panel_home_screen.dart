@@ -18,7 +18,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
                   title: 'Language',
                   subtitle: 'English',
                   leading: Icon(Icons.language),
-                  onTap: () {},
+                  onTap: (){},
                 ),
                 SettingsTile.switchTile(
                   title: 'Use fingerprint',

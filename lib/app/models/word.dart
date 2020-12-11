@@ -39,7 +39,11 @@ class Word extends Document<Word> {
 
   /// related word in examples
   @Field()
-  List<String> _relatedWordIDs;
+  List<String> _relatedWordIds;
+  
+  /// Same word but with different meanings
+  @Field()
+  List<String> _otherMeaningIds;
 
   /// 拆字
   @Field()
@@ -58,15 +62,26 @@ class Word extends Document<Word> {
   StorageFile wordAudio;
 
   List<Word> get relatedWords {
-    if (_relatedWordIDs.isNullOrBlank) {
+    if (_relatedWordIds.isNullOrBlank) {
       return [];
     } else {
-      return classService.findWordsByIds(_relatedWordIDs);
+      return classService.findWordsByIds(_relatedWordIds);
     }
   }
 
   set relatedWordIDs(List<String> relatedWordIDs) =>
-      _relatedWordIDs = relatedWordIDs;
+      _relatedWordIds = relatedWordIDs;  
+  
+  List<Word> get otherMeanings {
+    if (_otherMeaningIds.isNullOrBlank) {
+      return [];
+    } else {
+      return classService.findWordsByIds(_otherMeaningIds);
+    }
+  }
+
+  set otherMeaningIds(List<String> otherMeaningIds) =>
+      _otherMeaningIds = otherMeaningIds;
 
   List<WordTag> get tags => EnumToString.fromList(WordTag.values, _tags);
 

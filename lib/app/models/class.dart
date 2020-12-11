@@ -21,6 +21,9 @@ class CSchoolClass extends Document<CSchoolClass> {
   String classId;
 
   @Field()
+  String _level;
+
+  @Field()
   String title;
 
   @Field()
@@ -35,6 +38,10 @@ class CSchoolClass extends Document<CSchoolClass> {
   StorageFile pic;
 
   List<ClassTag> get tags => EnumToString.fromList(ClassTag.values, _tags);
+  set tags(List<ClassTag> tags_) => _tags = EnumToString.toList(tags_);
+
+  ClassLevel get level => EnumToString.fromString(ClassLevel.values, _level);
+  set level(ClassLevel level_) => _level = EnumToString.convertToString(level_);
 
   /// Convert class Id to WordTag and find words related
   List<Word> get words => classService
@@ -42,7 +49,6 @@ class CSchoolClass extends Document<CSchoolClass> {
 
   int get classViewedCount => classService.classViewedCount(this);
 
-  set tags(List<ClassTag> tags_) => _tags = EnumToString.toList(tags_);
 
   @override
   Map<String, dynamic> toData() => _$toData(this);
@@ -52,3 +58,5 @@ class CSchoolClass extends Document<CSchoolClass> {
 }
 
 enum ClassTag { LEVEL1, LEVEL2, LEVEL3 }
+
+enum ClassLevel {LEVEL1, LEVEL2, LEVEL3}

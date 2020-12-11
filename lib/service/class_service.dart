@@ -15,39 +15,74 @@ import 'api_service.dart';
 class ClassService extends GetxService {
   static ClassService _instance;
   static final ApiService _apiService = Get.find();
+
   /// All classes available
   static List<CSchoolClass> allClasses;
+
   /// All words available
   static List<Word> allWords;
 
   /// Observable Liked words list for updating
   static RxList<String> userLikedWordIds_Rx;
+
   /// Observable Class History list for updating
   static RxList<ClassHistory> userClassesHistory_Rx;
+
   /// Observable Word History list for updating
   static RxList<WordHistory> userWordsHistory_Rx;
+
   static Future<ClassService> getInstance() async {
     if (_instance.isNull) {
       _instance = ClassService();
+
       /// All available words
       allWords = await _apiService.firestoreApi.fetchWords();
+
       /// All available Classes
       allClasses = await _apiService.firestoreApi.fetchClasses();
+
       /// This properties need to be observable and can be use to update AppUser
       userLikedWordIds_Rx = List<String>.of(UserService.user.likedWords).obs;
+
       /// This properties need to be observable and can be use to update AppUser
-      userClassesHistory_Rx = (List<ClassHistory>.of(UserService.user.reviewedClassHistory)).obs;
+      userClassesHistory_Rx =
+          (List<ClassHistory>.of(UserService.user.reviewedClassHistory)).obs;
+
       /// This properties need to be observable and can be use to update AppUser
-      userWordsHistory_Rx = (List<WordHistory>.of(UserService.user.reviewedWordHistory)).obs;
+      userWordsHistory_Rx =
+          (List<WordHistory>.of(UserService.user.reviewedWordHistory)).obs;
     }
 
     return _instance;
   }
 
-  /// If id is empty , get all
+  /// Get all words user liked
+  List<Word> get getLikedWords => findWordsByIds(userLikedWordIds_Rx);
+
+  List<Word> findWordsByConditions({WordMemoryStatus wordMemoryStatus, String classId}) {
+    if (wordMemoryStatus.isNull && classId.isNull) {
+      return [];
+    }
+    var latestReviewHistory = UserService.user.reviewedWordHistory
+        .filter((record) =>
+            record.isLatest);
+    var filteredHistory = latestReviewHistory.filter((record) {
+      if(wordMemoryStatus!=null && wordMemoryStatus!=record.wordMemoryStatus){
+        return false;
+      }
+      if(classId!=null && classId!=record.classId){
+        return false;
+      }
+      return true;
+    });
+    var wordIdsOfMemoryStatus =
+    filteredHistory.map((e) => e.wordId);
+    return findWordsByIds(wordIdsOfMemoryStatus.toList());
+  }
+
   List<Word> findWordsByIds(List<String> ids) {
     if (ids.isNullOrBlank) {
-      return allWords;
+      return [];
     } else {
       return allWords.filter((word) => ids.contains(word.wordId)).toList();
     }
@@ -139,17 +174,20 @@ class ClassService extends GetxService {
   /// Add record to reviewedClassHistory, won't overwrite it
   void addClassReviewedHistory(CSchoolClass cschoolClass) {
     // If have history, change it to not latest
-    var relatedClassHistory = userClassesHistory_Rx
-        .filter((history) =>
-            history.classId == cschoolClass.classId && history.isLatest);
-    if(relatedClassHistory.length==1){
-      relatedClassHistory.single.isLatest =false;
+    var relatedClassHistory = userClassesHistory_Rx.filter((history) =>
+        history.classId == cschoolClass.classId && history.isLatest);
+    if (relatedClassHistory.length == 1) {
+      relatedClassHistory.single.isLatest = false;
     }
     userClassesHistory_Rx.add(ClassHistory(
         classId: cschoolClass.classId,
         timestamp: Timestamp.now(),
         isLatest: true));
   }
+
+  /// Get how many times this class is reviewed
+  int getClassViewedCount(CSchoolClass cschoolClass) => userClassesHistory_Rx
+      .count((history) => history.classId == cschoolClass.classId);
 
   /// Commit any changed made to _appUserForUpdate
   void commitChange() {

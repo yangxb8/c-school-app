@@ -17,8 +17,31 @@ extension Localization on String {
       {
         'en': 'Example',
         'ja_jp': '【例文】',
-      } ;
+      } +
+      {
+        'en': 'My List',
+        'ja_jp': 'マイリスト',
+      } +
+      {
+        'en': 'All words',
+        'ja_jp': 'すべての単語',
+      } +
+      {
+        'en': 'Liked words',
+        'ja_jp': 'お気に入りの単語',
+      } +
+      {
+        'en': 'Forgotten words',
+        'ja_jp': '忘れた単語',
+      }+
+      {
+        'en': 'Close',
+        'ja_jp': '閉じる',
+      }+
+      {
+        'en': 'Oops, No words here',
+        'ja_jp': 'あら、ここに単語がないみたい',
+      };
 
   String get i18n => localize(this, _t);
-
 }

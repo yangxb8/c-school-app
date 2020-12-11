@@ -353,6 +353,7 @@ class _FirestoreApi {
     //TODO: Test data, replace me
     var class1 = CSchoolClass(id: 'C0001');
     class1.title = 'Test class';
+    class1.level = ClassLevel.LEVEL1;
     await Timer(Duration(seconds: 1), () {});
     return [class1];
   }

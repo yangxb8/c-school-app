@@ -22,6 +22,7 @@ class ReviewWordsTheme {
   static Color lightBlue = '#B5D0FA'.toColor();
   static Color darkBlue = '#484C75'.toColor();
   static Color lightYellow = '#FBEB99'.toColor();
+  static Color lightGreen = '#21B2BB'.toColor();
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
@@ -31,6 +32,34 @@ class ReviewWordsTheme {
     bodyText1: body2,
     bodyText2: body1,
     caption: caption,
+  );
+
+  static TextStyle classCardLevel = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 20,
+    letterSpacing: 0.27,
+    color: lightGreen,
+  );
+
+  static TextStyle classCardTitle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 25,
+    letterSpacing: 0.27,
+    color: darkBlue,
+  );
+
+  static TextStyle classCardMeta = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 14,
+    letterSpacing: 0.27,
+    color: ReviewWordsTheme.darkBlue,
+  );
+
+  static TextStyle wordCardWord = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 55,
+    letterSpacing: 0.27,
+    color: darkBlue,
   );
 
   static TextStyle wordListTitle = TextStyle(
@@ -60,13 +89,6 @@ class ReviewWordsTheme {
       letterSpacing: 0.27,
       color: darkBlue,
       decoration: TextDecoration.none
-  );
-
-  static TextStyle wordCardWord = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 55,
-    letterSpacing: 0.27,
-    color: darkBlue,
   );
 
   static TextStyle wordCardPinyin = TextStyle(

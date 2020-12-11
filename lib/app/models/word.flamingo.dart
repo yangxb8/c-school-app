@@ -12,7 +12,8 @@ enum WordKey {
   word,
   pinyin,
   hint,
-  _relatedWordIDs,
+  _relatedWordIds,
+  _otherMeaningIds,
   breakdowns,
   _tags,
   wordMeanings,
@@ -31,8 +32,10 @@ extension WordKeyExtension on WordKey {
         return 'pinyin';
       case WordKey.hint:
         return 'hint';
-      case WordKey._relatedWordIDs:
-        return '_relatedWordIDs';
+      case WordKey._relatedWordIds:
+        return '_relatedWordIds';
+      case WordKey._otherMeaningIds:
+        return '_otherMeaningIds';
       case WordKey.breakdowns:
         return 'breakdowns';
       case WordKey._tags:
@@ -56,7 +59,8 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, 'word', doc.word);
   Helper.writeNotNull(data, 'pinyin', doc.pinyin);
   Helper.writeNotNull(data, 'hint', doc.hint);
-  Helper.writeNotNull(data, '_relatedWordIDs', doc._relatedWordIDs);
+  Helper.writeNotNull(data, '_relatedWordIds', doc._relatedWordIds);
+  Helper.writeNotNull(data, '_otherMeaningIds', doc._otherMeaningIds);
   Helper.writeNotNull(data, 'breakdowns', doc.breakdowns);
   Helper.writeNotNull(data, '_tags', doc._tags);
 
@@ -74,8 +78,10 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   doc.word = Helper.valueListFromKey<String>(data, 'word');
   doc.pinyin = Helper.valueListFromKey<String>(data, 'pinyin');
   doc.hint = Helper.valueFromKey<String>(data, 'hint');
-  doc._relatedWordIDs =
-      Helper.valueListFromKey<String>(data, '_relatedWordIDs');
+  doc._relatedWordIds =
+      Helper.valueListFromKey<String>(data, '_relatedWordIds');
+  doc._otherMeaningIds =
+      Helper.valueListFromKey<String>(data, '_otherMeaningIds');
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
   doc._tags = Helper.valueListFromKey<String>(data, '_tags');
 

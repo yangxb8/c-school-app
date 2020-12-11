@@ -105,189 +105,207 @@ class CSchoolClassView extends StatelessWidget {
           child: Transform(
             transform: Matrix4.translationValues(
                 0.0, 50 * (1.0 - animation.value), 0.0),
-            child: InkWell(
-              splashColor: Colors.transparent,
-              onTap: () {
-                callback(cschoolClass);
-              },
-              child: SizedBox(
-                height: 280,
-                child: Stack(
-                  alignment: AlignmentDirectional.bottomCenter,
-                  children: <Widget>[
-                    Container(
+            child: ClassCard(callback: callback, cschoolClass: cschoolClass, DEFAULT_IMAGE: DEFAULT_IMAGE),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ClassCard extends StatelessWidget {
+  const ClassCard({
+    Key key,
+    @required this.callback,
+    @required this.cschoolClass,
+    @required this.DEFAULT_IMAGE,
+  }) : super(key: key);
+
+  final Function callback;
+  final CSchoolClass cschoolClass;
+  final String DEFAULT_IMAGE;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      onTap: () {
+        callback(cschoolClass);
+      },
+      child: SizedBox(
+        height: 280,
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
+          children: <Widget>[
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: '#F8FAFB'.toColor(),
+                        borderRadius: const BorderRadius.all(
+                            Radius.circular(16.0)),
+                        // border: new Border.all(
+                        //     color: DesignCourseAppTheme.notWhite),
+                      ),
                       child: Column(
                         children: <Widget>[
                           Expanded(
                             child: Container(
-                              decoration: BoxDecoration(
-                                color: '#F8FAFB'.toColor(),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(16.0)),
-                                // border: new Border.all(
-                                //     color: DesignCourseAppTheme.notWhite),
-                              ),
                               child: Column(
                                 children: <Widget>[
-                                  Expanded(
-                                    child: Container(
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 16, left: 16, right: 16),
-                                            child: Text(
-                                              cschoolClass.title,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                                letterSpacing: 0.27,
-                                                color:
-                                                    ReviewWordsTheme.darkerText,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 8,
-                                                left: 16,
-                                                right: 16,
-                                                bottom: 8),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      '${cschoolClass.words.length}',
-                                                      textAlign: TextAlign.left,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w200,
-                                                        fontSize: 12,
-                                                        letterSpacing: 0.27,
-                                                        color: ReviewWordsTheme
-                                                            .grey,
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 6.0),
-                                                      child: Icon(
-                                                        Icons.menu_book,
-                                                        color: ReviewWordsTheme
-                                                            .nearlyBlue,
-                                                        size: 20,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                Container(
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        '100',
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w200,
-                                                          fontSize: 14,
-                                                          letterSpacing: 0.27,
-                                                          color:
-                                                              ReviewWordsTheme
-                                                                  .grey,
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 6.0),
-                                                        child: Icon(
-                                                          Icons.remove_red_eye,
-                                                          color:
-                                                              ReviewWordsTheme
-                                                                  .nearlyBlue,
-                                                          size: 20,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 16, left: 16, right: 16),
+                                    child: Text(
+                                      cschoolClass.title,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        letterSpacing: 0.27,
+                                        color:
+                                            ReviewWordsTheme.darkerText,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 48,
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8,
+                                        left: 16,
+                                        right: 16,
+                                        bottom: 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment
+                                              .spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${cschoolClass.words.length}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                fontWeight:
+                                                    FontWeight.w200,
+                                                fontSize: 12,
+                                                letterSpacing: 0.27,
+                                                color: ReviewWordsTheme
+                                                    .grey,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.only(
+                                                      left: 6.0),
+                                              child: Icon(
+                                                Icons.menu_book,
+                                                color: ReviewWordsTheme
+                                                    .nearlyBlue,
+                                                size: 20,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Container(
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(
+                                                '100',
+                                                textAlign:
+                                                    TextAlign.left,
+                                                style: TextStyle(
+                                                  fontWeight:
+                                                      FontWeight.w200,
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.27,
+                                                  color:
+                                                      ReviewWordsTheme
+                                                          .grey,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets
+                                                            .only(
+                                                        left: 6.0),
+                                                child: Icon(
+                                                  Icons.remove_red_eye,
+                                                  color:
+                                                      ReviewWordsTheme
+                                                          .nearlyBlue,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
                           const SizedBox(
-                            height: 48,
+                            width: 48,
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(top: 24, right: 16, left: 16),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16.0)),
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                  color: ReviewWordsTheme.grey.withOpacity(0.2),
-                                  offset: const Offset(0.0, 0.0),
-                                  blurRadius: 6.0),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16.0)),
-                            child: AspectRatio(
-                                aspectRatio: 1.28,
-                                child: cschoolClass.pic?.url == null
-                                    ? Image.asset(DEFAULT_IMAGE)
-                                    : CachedNetworkImage(
-                                        imageUrl: cschoolClass.pic.url,
-                                        placeholder: (context, url) => SizedBox(
-                                              width: 200.0,
-                                              height: 100.0,
-                                              child: Shimmer.fromColors(
-                                                baseColor: Colors.grey[300],
-                                                highlightColor:
-                                                    Colors.grey[100],
-                                                child: Container(),
-                                              ),
-                                            ),
-                                        errorWidget: (context, url, error) =>
-                                            Image.asset(DEFAULT_IMAGE))),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                  const SizedBox(
+                    height: 48,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(top: 24, right: 16, left: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(16.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: ReviewWordsTheme.grey.withOpacity(0.2),
+                          offset: const Offset(0.0, 0.0),
+                          blurRadius: 6.0),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(16.0)),
+                    child: AspectRatio(
+                        aspectRatio: 1.28,
+                        child: cschoolClass.pic?.url == null
+                            ? Image.asset(DEFAULT_IMAGE)
+                            : CachedNetworkImage(
+                                imageUrl: cschoolClass.pic.url,
+                                placeholder: (context, url) => SizedBox(
+                                      width: 200.0,
+                                      height: 100.0,
+                                      child: Shimmer.fromColors(
+                                        baseColor: Colors.grey[300],
+                                        highlightColor:
+                                            Colors.grey[100],
+                                        child: Container(),
+                                      ),
+                                    ),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(DEFAULT_IMAGE))),
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 }

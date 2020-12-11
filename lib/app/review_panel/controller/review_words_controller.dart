@@ -17,7 +17,8 @@ import 'package:c_school_app/service/logger_service.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
-class ReviewWordsController extends GetxController with SingleGetTickerProviderMixin{
+class ReviewWordsController extends GetxController
+    with SingleGetTickerProviderMixin {
   final ClassService classService = Get.find();
   final logger = LoggerService.logger;
   final tts = FlutterTts();
@@ -62,17 +63,26 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     // As our cards are stack from bottom to top, reverse the words order
     _userWordsHistory = ClassService.userWordsHistory_Rx;
     classes = classService.findClassesById(Get.parameters['classId']);
-    wordsList = classes.length == 1
-        ? classes.single.words
-        : ClassService.allWords;
+    if (Get.arguments == null) {
+      wordsList =
+          classes.length == 1 ? classes.single.words : ClassService.allWords;
+      // If wordsList is provided, use it
+    } else if (Get.arguments is List<Word>) {
+      wordsList = Get.arguments;
+    }
     reversedWordsList = wordsList.reversed.toList();
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
-    searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
+    searchBarPlayIconController =
+        AnimationController(vsync: this, duration: 0.3.seconds);
     await tts.setLanguage(LAN_CODE_CN);
     await tts.setSpeechRate(0.5);
     // worker to monitor search query change and fire search function
     debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
+    // If is a specific class, add it to history
+    if (classes.length == 1) {
+      classService.addClassReviewedHistory(classes.single);
+    }
     super.onInit();
   }
 
@@ -131,7 +141,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       logger.i('Change to List Mode');
     } else {
       _mode.value = WordsReviewMode.FLASH_CARD;
-      if(pageController.hasClients){
+      if (pageController.hasClients) {
         _animateToFirstPage();
       }
       logger.i('Change to Card Mode');
