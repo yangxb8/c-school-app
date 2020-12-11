@@ -131,6 +131,9 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       logger.i('Change to List Mode');
     } else {
       _mode.value = WordsReviewMode.FLASH_CARD;
+      if(pageController.hasClients){
+        _animateToFirstPage();
+      }
       logger.i('Change to Card Mode');
     }
   }
@@ -164,8 +167,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       searchBarPlayIconController.forward();
       isAutoPlayMode.value = true;
       // Play from beginning
-      await pageController.animateToPage(pageController.initialPage,
-          duration: 0.5.seconds, curve: Curves.easeInOut);
+      await _animateToFirstPage();
       flipBackPrimaryCard();
       _autoPlayCard();
     } else {
@@ -230,6 +232,11 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     };
     searchResult.clear();
     searchResult.addAll(wordsList.filter((word) => containKeyWord(word)));
+  }
+
+  Future _animateToFirstPage() async {
+    await pageController.animateToPage(pageController.initialPage,
+        duration: 0.5.seconds, curve: Curves.easeInOut);
   }
 
   @override

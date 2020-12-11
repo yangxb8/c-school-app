@@ -13,6 +13,10 @@ extension Localization on String {
       {
         'en': 'Empty',
         'ja_jp': 'なし',
+      } +
+      {
+        'en': 'Example',
+        'ja_jp': '【例文】',
       } ;
 
   String get i18n => localize(this, _t);

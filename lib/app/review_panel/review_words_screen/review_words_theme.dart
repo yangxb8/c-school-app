@@ -78,7 +78,7 @@ class ReviewWordsTheme {
 
   static TextStyle wordCardSubTitle = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 35,
+    fontSize: 25,
     letterSpacing: 0.27,
     color: darkBlue,
   );

@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import '../models/word.dart';
+import '../../i18n/review_words.i18n.dart';
 
 const cardAspectRatio = 12.0 / 22.0;
 const BUTTON_SIZE = 25.0;
@@ -44,8 +45,11 @@ class WordCard extends StatelessWidget {
             borderColor: Colors.transparent,
             show: controller.isHintShown.value,
             ballonPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            maxWidth: Get.width*0.7,
-            content: Text(word.hint,style: ReviewWordsTheme.wordCardHint,),
+            maxWidth: Get.width * 0.7,
+            content: Text(
+              word.hint,
+              style: ReviewWordsTheme.wordCardHint,
+            ),
             child: FaIcon(FontAwesomeIcons.lightbulb,
                 color: controller.isHintShown.value
                     ? ReviewWordsTheme.lightYellow
@@ -178,22 +182,7 @@ class WordCard extends StatelessWidget {
           .toList();
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Text(
-                    '${meaning.meaning}：',
-                    style: ReviewWordsTheme.wordCardSubTitle,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          ...partExample,
-        ],
+        children: partExample,
       );
     }).toList();
     return Column(
@@ -213,11 +202,15 @@ class WordCard extends StatelessWidget {
   Widget _buildExampleRow(MapEntry<String, StorageFile> exampleAndAudio) {
     return Column(
       children: [
+        Text(
+          'Example'.i18n,
+          style: ReviewWordsTheme.wordCardSubTitle,
+        ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
         Row(
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 50.0, right: 20),
+                padding: const EdgeInsets.only(left: 20.0, right: 20),
                 child: SimpleGestureDetector(
                   onTap: () => controller.playExample(
                       string: exampleAndAudio.key,

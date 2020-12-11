@@ -19,6 +19,16 @@ class ReviewWordsHomeScreen extends StatelessWidget {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: <Widget>[
+                  Text(
+                    'All Course'.i18n,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 22,
+                      letterSpacing: 0.27,
+                      color: ReviewWordsTheme.darkerText,
+                    ),
+                  ),
                   Flexible(
                     child: getAllClassesUI(),
                   ),
@@ -38,16 +48,6 @@ class ReviewWordsHomeScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            'All Course'.i18n,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 22,
-              letterSpacing: 0.27,
-              color: ReviewWordsTheme.darkerText,
-            ),
-          ),
           Flexible(
             child: CSchoolClassListView(
               callBack: (CSchoolClass cschoolClass) {
