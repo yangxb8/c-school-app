@@ -43,6 +43,9 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// WordsList for this class(es)
   List<Word> wordsList = [];
 
+  /// Reversed Words List for flashCard
+  List<Word> reversedWordsList = [];
+
   Rx<WordMemoryStatus> wordMemoryStatus = WordMemoryStatus.NOT_REVIEWED.obs;
 
   /// Used to controller pagination of card
@@ -62,6 +65,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     wordsList = classes.length == 1
         ? classes.single.words
         : ClassService.allWords;
+    reversedWordsList = wordsList.reversed.toList();
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
     searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
@@ -76,7 +80,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   WordsReviewMode get mode => _mode.value;
 
   /// PrimaryWord associated with primaryWordOrdinal
-  Word get primaryWord => wordsList[primaryWordOrdinal.value];
+  Word get primaryWord => reversedWordsList[primaryWordOrdinal.value];
 
   WordCardController get primaryWordCardController =>
       Get.find(tag: primaryWord.wordId);

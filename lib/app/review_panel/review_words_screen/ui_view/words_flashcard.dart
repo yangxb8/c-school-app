@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,83 +35,85 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
       controller.saveAndResetWordHistory(currentPrimaryWord);
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 90.0),
-      child: SimpleGestureDetector(
-        onHorizontalSwipe: _onHorizontalSwipe,
-        child: Column(
-          children: [
-            Stack(
-              children: <Widget>[
-                // We only use this to control the controller.pageController behind screen
-                Positioned.fill(
-                  child: PageView.builder(
-                    itemCount: controller.wordsList.length,
-                    controller: controller.pageController,
-                    reverse: true,
-                    itemBuilder: (context, index) {
-                      return Container();
-                    },
-                  ),
-                ),
-                Obx(() => CardScrollWidget(controller.pageFraction.value)),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  IconButton(
-                    splashRadius: 0.01,
-                    icon: Obx(
-                      () => FaIcon(
-                        FontAwesomeIcons.laughBeam,
-                        color: controller.wordMemoryStatus.value ==
-                                WordMemoryStatus.REMEMBERED
-                            ? Colors.yellowAccent
-                            : Colors.blueGrey,
-                        size: BUTTON_SIZE,
-                      ),
+    return FadeIn(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 90.0),
+        child: SimpleGestureDetector(
+          onHorizontalSwipe: _onHorizontalSwipe,
+          child: Column(
+            children: [
+              Stack(
+                children: <Widget>[
+                  // We only use this to control the controller.pageController behind screen
+                  Positioned.fill(
+                    child: PageView.builder(
+                      itemCount: controller.reversedWordsList.length,
+                      controller: controller.pageController,
+                      reverse: true,
+                      itemBuilder: (context, index) {
+                        return Container();
+                      },
                     ),
-                    onPressed: () => controller.handWordMemoryStatusPressed(
-                        WordMemoryStatus.REMEMBERED),
                   ),
-                  IconButton(
-                    splashRadius: 0.01,
-                    icon: Obx(
-                      () => FaIcon(
-                        FontAwesomeIcons.frownOpen,
-                        color: controller.wordMemoryStatus.value ==
-                                WordMemoryStatus.NORMAL
-                            ? Colors.yellowAccent
-                            : Colors.blueGrey,
-                        size: BUTTON_SIZE,
-                      ),
-                    ),
-                    onPressed: () => controller
-                        .handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
-                  ),
-                  IconButton(
-                    splashRadius: 0.01,
-                    icon: Obx(
-                      () => FaIcon(
-                        FontAwesomeIcons.sadCry,
-                        color: controller.wordMemoryStatus.value ==
-                                WordMemoryStatus.FORGOT
-                            ? Colors.yellowAccent
-                            : Colors.blueGrey,
-                        size: BUTTON_SIZE,
-                      ),
-                    ),
-                    onPressed: () => controller
-                        .handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
-                  ),
+                  Obx(() => CardScrollWidget(controller.pageFraction.value)),
                 ],
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    IconButton(
+                      splashRadius: 0.01,
+                      icon: Obx(
+                        () => FaIcon(
+                          FontAwesomeIcons.laughBeam,
+                          color: controller.wordMemoryStatus.value ==
+                                  WordMemoryStatus.REMEMBERED
+                              ? Colors.yellowAccent
+                              : Colors.blueGrey,
+                          size: BUTTON_SIZE,
+                        ),
+                      ),
+                      onPressed: () => controller.handWordMemoryStatusPressed(
+                          WordMemoryStatus.REMEMBERED),
+                    ),
+                    IconButton(
+                      splashRadius: 0.01,
+                      icon: Obx(
+                        () => FaIcon(
+                          FontAwesomeIcons.frownOpen,
+                          color: controller.wordMemoryStatus.value ==
+                                  WordMemoryStatus.NORMAL
+                              ? Colors.yellowAccent
+                              : Colors.blueGrey,
+                          size: BUTTON_SIZE,
+                        ),
+                      ),
+                      onPressed: () => controller
+                          .handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
+                    ),
+                    IconButton(
+                      splashRadius: 0.01,
+                      icon: Obx(
+                        () => FaIcon(
+                          FontAwesomeIcons.sadCry,
+                          color: controller.wordMemoryStatus.value ==
+                                  WordMemoryStatus.FORGOT
+                              ? Colors.yellowAccent
+                              : Colors.blueGrey,
+                          size: BUTTON_SIZE,
+                        ),
+                      ),
+                      onPressed: () => controller
+                          .handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -145,7 +148,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
 
         var cardList = <Widget>[];
 
-        for (var i = 0; i < controller.wordsList.length; i++) {
+        for (var i = 0; i < controller.reversedWordsList.length; i++) {
           var delta = i - pageFraction;
           var isPrimaryCard = delta.toInt() == 0;
           // If card is not visible, don't build it
@@ -168,7 +171,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
             bottom: padding + verticalInset * max(-delta, 0.0),
             start: start,
             textDirection: TextDirection.rtl,
-            child: WordCard(word: controller.wordsList[i], delta: delta),
+            child: WordCard(word: controller.reversedWordsList[i], delta: delta),
           );
           cardList.add(cardItem);
         }
