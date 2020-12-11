@@ -5,7 +5,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'controller/login_controller.dart';
-import 'style/theme.dart' as theme;
+import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
 import '../../i18n/login_page.i18n.dart';
 
