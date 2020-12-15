@@ -59,6 +59,7 @@ class CSchoolApp extends StatelessWidget {
           child: GetMaterialApp(
               title: 'Chinese Classroom',
               debugShowCheckedModeBanner: false,
+              defaultTransition: Transition.fade,
               navigatorKey: Catcher.navigatorKey,
               theme: ThemeData(
                 primarySwatch: Colors.blue,
@@ -84,6 +85,27 @@ class CSchoolApp extends StatelessWidget {
 class Splash extends StatelessWidget {
   Future<void> _loadFromFuture() async {
     await initServices();
+    // TODO: Only for development, might need a proper way to upload our clas
+    if(Get.find<AppStateService>().isDebug){
+      Get.dialog(
+        AlertDialog(
+          title: Text('Upload assets to firebase?'),
+          content: Text('Upload assets/upload to firebase (words only now)'),
+          actions: [
+            FlatButton(
+              textColor: Color(0xFF6200EE),
+              onPressed: () => Get.back,
+              child: Text('CANCEL'),
+            ),
+            FlatButton(
+              textColor: Color(0xFF6200EE),
+              onPressed: () => Get.find<ApiService>().uploadWordsFromCsv,
+              child: Text('DO IT'),
+            ),
+          ],
+        )
+      );
+    }
     await Get.toNamed(UserService.user.isLogin() ? '/review/words/home' : '/login');
   }
 
