@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:c_school_app/util/functions.dart';
+import 'package:csv/csv.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+import 'package:supercharged/supercharged.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -258,7 +262,8 @@ class _FirestoreApi {
       logger.e('fetchAppUser was called on null firebaseUser');
       return null;
     }
-    var user = await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
+    var user =
+        await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
     user.firebaseUser = firebaseUser;
     return user;
   }
@@ -274,9 +279,7 @@ class _FirestoreApi {
   /// Update App User using flamingo, appUserForUpdate should contain
   /// only updated values
   void updateAppUser(AppUser appUserForUpdate, Function refreshAppUser) {
-    _documentAccessor
-        .update(appUserForUpdate)
-        .then((_) => refreshAppUser());
+    _documentAccessor.update(appUserForUpdate).then((_) => refreshAppUser());
   }
 
   /// Return the specific speech data as Uint8List
@@ -303,6 +306,103 @@ class _FirestoreApi {
     });
   }
 
+  /// Upload words to firestore and cloud storage
+  void uploadWordsByCsv() async {
+    final COLUMN_WORD_ID = 1;
+    final COLUMN_MEANING = 3;
+    final COLUMN_WORD = 4;
+    final COLUMN_PINYIN = 5;
+    final COLUMN_HINT = 6;
+    final COLUMN_EXAMPLE = 9;
+    final COLUMN_EXAMPLE_MEANING = 10;
+    final COLUMN_EXAMPLE_PINYIN = 11;
+    final COLUMN_RELATED_WORD_ID = 12;
+    final COLUMN_OTHER_MEANING_ID = 13;
+    final COLUMN_PART_OF_SENTENCE = 14;
+    final SEPARATOR = '/';
+
+    final storage = Storage()..fetch();
+    final documentAccessor = DocumentAccessor();
+
+    // Build Word from csv
+    var csv = CsvToListConverter()
+        .convert(await rootBundle.loadString('assets/upload/words.csv'));
+    var words = csv
+        .map((row) => Word(id: row[COLUMN_WORD_ID])
+          ..word = row[COLUMN_WORD].split('')
+          ..pinyin = row[COLUMN_PINYIN].split(SEPARATOR)
+          ..partOfSentence = row[COLUMN_PART_OF_SENTENCE]
+          ..wordMeanings = [
+            WordMeaning(
+                meaning: row[COLUMN_MEANING].replace(SEPARATOR, ','),
+                examples: row[COLUMN_EXAMPLE].split(SEPARATOR),
+                exampleMeanings: row[COLUMN_EXAMPLE_MEANING].split(SEPARATOR),
+                examplePinyins: row[COLUMN_EXAMPLE_PINYIN].split(SEPARATOR))
+          ]
+          ..hint = row[COLUMN_HINT]
+          ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].split(SEPARATOR)
+          ..otherMeaningIds = row[COLUMN_OTHER_MEANING_ID].split(SEPARATOR))
+        .toList();
+
+    // Checking status
+    storage.uploader.listen((data) {
+      print('total: ${data.totalBytes} transferred: ${data.bytesTransferred}');
+    });
+    // Upload file to cloud storage and save reference
+    await words.forEach((word) async {
+      // Word image
+      final pathWordPic =
+          '${word.documentPath}/${EnumToString.convertToString(WordKey.pic)}';
+      final wordPic = await getFileFromAssets('upload/${word.wordId}.png');
+      word.pic = await storage.save(pathWordPic, wordPic,
+          filename: '${word.wordId}.png',
+          mimeType: mimeTypePng,
+          metadata: {'newPost': 'true'});
+
+      // Word Audio
+      final pathWordAudio =
+          '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudio)}';
+      final wordAudioFileMale =
+          await getFileFromAssets('upload/${word.wordId}-W-M.mp3');
+      final wordAudioFileFemale =
+          await getFileFromAssets('upload/${word.wordId}-W-F.mp3');
+      word.wordAudioMale = await storage.save(pathWordAudio, wordAudioFileMale,
+          filename: '${word.wordId}-W-M.mp3',
+          mimeType: mimeTypeMpeg,
+          metadata: {'newPost': 'true'});
+      word.wordAudioFemale = await storage.save(pathWordAudio, wordAudioFileFemale,
+          filename: '${word.wordId}-W-F.mp3',
+          mimeType: mimeTypeMpeg,
+          metadata: {'newPost': 'true'});
+
+      // Examples Audio
+      // Each meaning
+      await word.wordMeanings.forEach((meaning) async {
+        var maleAudios = [];
+        var femaleAudios = [];
+        // Each example
+        await meaning.examples.forEachIndexed((index, _) async {
+          maleAudios.add(await storage.save(pathWordAudio, wordAudioFileMale,
+              filename: '${word.wordId}-E${index}-M.mp3',
+              mimeType: mimeTypeMpeg,
+              metadata: {'newPost': 'true'}));
+        });
+        meaning.exampleAudios = audios;
+      });
+
+      // Finally, save the word
+      await documentAccessor.save(word);
+    });
+
+// Checking status
+    storage.uploader.listen((data) {
+      print('total: ${data.totalBytes} transferred: ${data.bytesTransferred}');
+    });
+
+// Dispose uploader stream
+    storage.dispose();
+  }
+
   Future<List<Word>> fetchWords({List<String> tags}) async {
     // final collectionPaging = CollectionPaging<Word>(
     //   query: Word().collectionRef.orderBy('wordId', descending: true),
@@ -319,9 +419,10 @@ class _FirestoreApi {
       ..hint = 'ヒントですよ'
       ..wordMeanings = [
         WordMeaning(
-          meaning: '私達',
-          examples: {'我们都是好学生。': null, '我们都是好战士': null},
-        )
+            meaning: '私達',
+            examples: ['我们都是好学生。', '我们都是好战士'],
+            exampleMeanings: ['私達はいい生徒', '私達はいい戦士'],
+            examplePinyins: ['hao xue sheng', 'hao zhang shi'])
       ]
       ..relatedWordIDs = ['C0001-0002'];
     var word2 = Word(id: 'C0001-0002');
@@ -332,9 +433,10 @@ class _FirestoreApi {
       ..hint = 'ヒントですよ'
       ..wordMeanings = [
         WordMeaning(
-          meaning: 'は..だ',
-          examples: {'我们都是猪。': null, '你才是猪': null},
-        )
+            meaning: 'は..だ',
+            examples: ['我们都是猪。', '你才是猪'],
+            exampleMeanings: ['私達はいい生徒', '私達はいい戦士'],
+            examplePinyins: ['hao xue sheng', 'hao zhang shi'])
       ];
     await Timer(Duration(seconds: 1), () {});
     return [

@@ -2,15 +2,20 @@ import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:flutter/foundation.dart';
 
+import 'word_example.dart';
+
 part 'word_meaning.flamingo.dart';
 
 class WordMeaning extends Model {
   WordMeaning({
     @required this.meaning,
-    @required Map<String, StorageFile> examples,
+    @required List<String> examples,
+    @required List<String> exampleMeanings,
+    @required List<String> examplePinyins,
     Map<String, dynamic> values,
-  })  : _examples = examples.keys.toList(),
-        _exampleAudios = examples.values.toList(),
+  })  : _examples = examples,
+        _exampleMeanings = exampleMeanings,
+        _examplePinyins = examplePinyins,
         super(values: values);
 
   @Field()
@@ -20,18 +25,40 @@ class WordMeaning extends Model {
   // ignore: prefer_final_fields
   List<String> _examples;
 
+  @Field()
+  // ignore: prefer_final_fields
+  List<String> _exampleMeanings;
+
+  @Field()
+  // ignore: prefer_final_fields
+  List<String> _examplePinyins;
+
   /// Example ordinal : audio file
   @StorageField()
   // ignore: prefer_final_fields
-  List<StorageFile> _exampleAudios;
+  List<StorageFile> _exampleMaleAudios;
 
-  Map<String, StorageFile> get exampleAndAudios {
-    var exampleAndAudios_ = <String, StorageFile>{};
+  /// Example ordinal : audio file
+  @StorageField()
+  // ignore: prefer_final_fields
+  List<StorageFile> _exampleFemaleAudios;
+
+  List<WordExample> get examples {
+    var examples = [];
     for (var i = 0; i < _examples.length; i++) {
-      exampleAndAudios_[_examples[i]] = _exampleAudios[i];
+      examples.add(WordExample(
+          example: _examples[i],
+          meaning: _exampleMeanings[i],
+          pinyin: _examplePinyins[i],
+          audioMale: _exampleMaleAudios[i],
+          audioFemale: _exampleFemaleAudios[i]
+      ));
     }
-    return exampleAndAudios_;
+    return examples;
   }
+
+  set exampleMaleAudios(List<StorageFile> files) => _exampleMaleAudios = files;
+  set exampleFemaleAudios(List<StorageFile> files) => _exampleFemaleAudios = files;
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

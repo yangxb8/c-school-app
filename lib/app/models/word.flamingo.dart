@@ -11,6 +11,7 @@ enum WordKey {
   wordId,
   word,
   pinyin,
+  partOfSentence,
   hint,
   _relatedWordIds,
   _otherMeaningIds,
@@ -30,6 +31,8 @@ extension WordKeyExtension on WordKey {
         return 'word';
       case WordKey.pinyin:
         return 'pinyin';
+      case WordKey.partOfSentence:
+        return 'partOfSentence';
       case WordKey.hint:
         return 'hint';
       case WordKey._relatedWordIds:
@@ -58,6 +61,7 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, 'wordId', doc.wordId);
   Helper.writeNotNull(data, 'word', doc.word);
   Helper.writeNotNull(data, 'pinyin', doc.pinyin);
+  Helper.writeNotNull(data, 'partOfSentence', doc.partOfSentence);
   Helper.writeNotNull(data, 'hint', doc.hint);
   Helper.writeNotNull(data, '_relatedWordIds', doc._relatedWordIds);
   Helper.writeNotNull(data, '_otherMeaningIds', doc._otherMeaningIds);
@@ -77,6 +81,7 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   doc.wordId = Helper.valueFromKey<String>(data, 'wordId');
   doc.word = Helper.valueListFromKey<String>(data, 'word');
   doc.pinyin = Helper.valueListFromKey<String>(data, 'pinyin');
+  doc.partOfSentence = Helper.valueFromKey<String>(data, 'partOfSentence');
   doc.hint = Helper.valueFromKey<String>(data, 'hint');
   doc._relatedWordIds =
       Helper.valueListFromKey<String>(data, '_relatedWordIds');

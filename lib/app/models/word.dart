@@ -31,6 +31,9 @@ class Word extends Document<Word> {
   List<String> pinyin;
 
   @Field()
+  String partOfSentence;
+
+  @Field()
   String hint;
 
   /// 日语意思
@@ -59,7 +62,10 @@ class Word extends Document<Word> {
 
   /// If the word has wordAudio in cloud storage
   @StorageField()
-  StorageFile wordAudio;
+  StorageFile wordAudioMale;
+
+  @StorageField()
+  StorageFile wordAudioFemale;
 
   List<Word> get relatedWords {
     if (_relatedWordIds.isNullOrBlank) {

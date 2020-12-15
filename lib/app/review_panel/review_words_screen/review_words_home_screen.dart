@@ -148,7 +148,7 @@ class ClassCard extends StatelessWidget {
 
   static const DEFAULT_IMAGE = 'assets/discover_panel/interFace3.png';
   final CSchoolClass cschoolClass;
-  ClassService classService = Get.find();
+  final ClassService classService = Get.find();
 
   @override
   Widget build(BuildContext context) {

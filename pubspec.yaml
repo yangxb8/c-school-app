@@ -90,6 +90,7 @@ dev_dependencies:
   test: ^1.15.7
   flamingo_generator: ^0.8.0
   change_app_package_name: ^0.1.2
+  csv: ^4.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -111,6 +112,7 @@ flutter:
     - assets/review_panel/
     - assets/setting_panel/
     - assets/splash/
+    - assets/upload/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
