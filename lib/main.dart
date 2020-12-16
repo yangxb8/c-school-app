@@ -83,6 +83,9 @@ class CSchoolApp extends StatelessWidget {
 }
 
 class Splash extends StatelessWidget {
+    void navigateToHome() async{
+        await Get.toNamed(UserService.user.isLogin() ? '/review/words/home' : '/login')
+    }
   Future<void> _loadFromFuture() async {
     await initServices();
     // TODO: Only for development, might need a proper way to upload our clas
@@ -94,19 +97,23 @@ class Splash extends StatelessWidget {
           actions: [
             FlatButton(
               textColor: Color(0xFF6200EE),
-              onPressed: () => Get.back,
+              onPressed: () async => await navigateToHome(),
               child: Text('CANCEL'),
             ),
             FlatButton(
               textColor: Color(0xFF6200EE),
-              onPressed: () => Get.find<ApiService>().uploadWordsFromCsv,
+              onPressed: () async {
+                await Get.find<ApiService>().firestoreService.uploadWordsFromCsv();
+                await navigateToHome;
+              } 
               child: Text('DO IT'),
             ),
           ],
         )
       );
+    } else{
+        await navigateToHome();
     }
-    await Get.toNamed(UserService.user.isLogin() ? '/review/words/home' : '/login');
   }
 
   @override

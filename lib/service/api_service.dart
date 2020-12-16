@@ -382,12 +382,20 @@ class _FirestoreApi {
         var femaleAudios = [];
         // Each example
         await meaning.examples.forEachIndexed((index, _) async {
-          maleAudios.add(await storage.save(pathWordAudio, wordAudioFileMale,
+            final pathExampleAudio = '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudio)}';
+            final exampleAudioFileMale = await getFileFromAssets('upload/${word.wordId}-E${index}-M.mp3');
+            final exampleAudioFileFemale = await getFileFromAssets('upload/${word.wordId}-E${index}-F.mp3');
+          maleAudios.add(await storage.save(pathExampleAudio, exampleAudioFileMale,
               filename: '${word.wordId}-E${index}-M.mp3',
               mimeType: mimeTypeMpeg,
               metadata: {'newPost': 'true'}));
+          femaleAudios.add(await storage.save(pathExampleAudio, exampleAudioFileFemale,
+              filename: '${word.wordId}-E${index}-F.mp3',
+              mimeType: mimeTypeMpeg,
+              metadata: {'newPost': 'true'}));
         });
-        meaning.exampleAudios = audios;
+        meaning.exampleMaleAudios = maleAudios;
+        meaning.exampleFemaleAudios = femaleAudios;
       });
 
       // Finally, save the word
