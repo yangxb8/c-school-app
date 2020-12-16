@@ -36,7 +36,7 @@ class WordCardController extends GetxController {
 
   /// Play audio of the word
   Future<void> playWord({Function completionCallBack}) async {
-    var wordAudio = word.wordAudio;
+    var wordAudio = word.wordAudioMale;
     if (wordAudio.isNull) {
       final tts = await _generateTts();
       tts.setCompletionHandler(completionCallBack);

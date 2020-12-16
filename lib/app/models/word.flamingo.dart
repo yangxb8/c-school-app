@@ -19,7 +19,8 @@ enum WordKey {
   _tags,
   wordMeanings,
   pic,
-  wordAudio,
+  wordAudioMale,
+  wordAudioFemale,
 }
 
 extension WordKeyExtension on WordKey {
@@ -47,8 +48,10 @@ extension WordKeyExtension on WordKey {
         return 'wordMeanings';
       case WordKey.pic:
         return 'pic';
-      case WordKey.wordAudio:
-        return 'wordAudio';
+      case WordKey.wordAudioMale:
+        return 'wordAudioMale';
+      case WordKey.wordAudioFemale:
+        return 'wordAudioFemale';
       default:
         return null;
     }
@@ -71,7 +74,10 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeModelListNotNull(data, 'wordMeanings', doc.wordMeanings);
 
   Helper.writeStorageNotNull(data, 'pic', doc.pic, isSetNull: true);
-  Helper.writeStorageNotNull(data, 'wordAudio', doc.wordAudio, isSetNull: true);
+  Helper.writeStorageNotNull(data, 'wordAudioMale', doc.wordAudioMale,
+      isSetNull: true);
+  Helper.writeStorageNotNull(data, 'wordAudioFemale', doc.wordAudioFemale,
+      isSetNull: true);
 
   return data;
 }
@@ -102,5 +108,6 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   }
 
   doc.pic = Helper.storageFile(data, 'pic');
-  doc.wordAudio = Helper.storageFile(data, 'wordAudio');
+  doc.wordAudioMale = Helper.storageFile(data, 'wordAudioMale');
+  doc.wordAudioFemale = Helper.storageFile(data, 'wordAudioFemale');
 }

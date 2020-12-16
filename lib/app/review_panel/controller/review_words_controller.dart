@@ -155,7 +155,7 @@ class ReviewWordsController extends GetxController
   Future<void> playWord({Word word}) async {
     if (isAutoPlayMode.value) return;
     if (word.isNull) word = primaryWord;
-    var wordAudio = word.wordAudio;
+    var wordAudio = word.wordAudioMale;
     if (wordAudio.isNull) {
       await tts.speak(word.wordAsString);
     } else {

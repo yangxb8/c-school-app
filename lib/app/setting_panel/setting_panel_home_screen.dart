@@ -18,7 +18,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
                   title: 'Language',
                   subtitle: 'English',
                   leading: Icon(Icons.language),
-                  onTap: (){},
+                  onPressed: (BuildContext context) {},
                 ),
                 SettingsTile.switchTile(
                   title: 'Use fingerprint',
@@ -42,7 +42,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
             title: 'Recorder dialog',
             leading: Icon(Icons.mic),
             //TODO: fetch exam properly
-            onTap: () => showSpeechExamBottomSheet(
+            onPressed: (BuildContext _)  => showSpeechExamBottomSheet(
                 exam: SpeechExam(
                     questionVoiceData: null,
                     examId: null,

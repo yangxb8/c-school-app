@@ -84,13 +84,13 @@ class CSchoolApp extends StatelessWidget {
 
 class Splash extends StatelessWidget {
     void navigateToHome() async{
-        await Get.toNamed(UserService.user.isLogin() ? '/review/words/home' : '/login')
+        await Get.toNamed(UserService.user.isLogin() ? '/review/words/home' : '/login');
     }
   Future<void> _loadFromFuture() async {
     await initServices();
     // TODO: Only for development, might need a proper way to upload our clas
     if(Get.find<AppStateService>().isDebug){
-      Get.dialog(
+      await Get.dialog(
         AlertDialog(
           title: Text('Upload assets to firebase?'),
           content: Text('Upload assets/upload to firebase (words only now)'),
@@ -103,9 +103,9 @@ class Splash extends StatelessWidget {
             FlatButton(
               textColor: Color(0xFF6200EE),
               onPressed: () async {
-                await Get.find<ApiService>().firestoreService.uploadWordsFromCsv();
+                await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
                 await navigateToHome;
-              } 
+              },
               child: Text('DO IT'),
             ),
           ],

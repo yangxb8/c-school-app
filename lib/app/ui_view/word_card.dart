@@ -1,9 +1,9 @@
 import 'dart:math';
 
+import 'package:c_school_app/app/models/word_example.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flamingo/src/model/storage_file.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -177,8 +177,8 @@ class WordCard extends StatelessWidget {
     );
     // Second meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
-      var partExample = meaning.exampleAndAudios.entries
-          .map((exampleAndAudio) => _buildExampleRow(exampleAndAudio))
+      var partExample = meaning.examples
+          .map((wordExample) => _buildExampleRow(wordExample))
           .toList();
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -199,7 +199,7 @@ class WordCard extends StatelessWidget {
     ).backgroundColor(ReviewWordsTheme.lightBlue);
   }
 
-  Widget _buildExampleRow(MapEntry<String, StorageFile> exampleAndAudio) {
+  Widget _buildExampleRow(WordExample wordExample) {
     return Column(
       children: [
         Text(
@@ -213,17 +213,17 @@ class WordCard extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 20.0, right: 20),
                 child: SimpleGestureDetector(
                   onTap: () => controller.playExample(
-                      string: exampleAndAudio.key,
-                      audio: exampleAndAudio.value),
+                      string: wordExample.example,
+                      audio: wordExample.audioMale),
                   child: RichText(
                     text: TextSpan(
                         style: ReviewWordsTheme.wordCardExample,
                         children: _divideExample([
                           word.wordAsString,
                           ...word.relatedWords
-                              .map((word) => word.word.join())
+                              .map((word) => word.wordAsString)
                               .toList()
-                        ], exampleAndAudio.key)
+                        ], wordExample.example)
                             .map((part) => _buildExampleTextSpan(part))
                             .toList()),
                   ),

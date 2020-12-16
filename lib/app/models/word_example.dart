@@ -1,6 +1,7 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/foundation.dart';
 
+/// Represent a single example of word
 class WordExample {
   final String example;
   final String meaning;

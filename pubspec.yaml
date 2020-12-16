@@ -22,7 +22,6 @@ environment:
 
 scripts:
   build: flutter pub run build_runner build --delete-conflicting-outputs
-  serve: flutter run -d chrome -t "lib/main.web.dart"
 
 dependencies:
   flutter:
