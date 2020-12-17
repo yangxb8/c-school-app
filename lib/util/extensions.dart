@@ -5,3 +5,17 @@ extension DateTimeExtension on DateTime{
     return '$this.year$mm$dd';
   }
 }
+
+RegExp singleHanziRegExp = new RegExp(
+    r'[\u4e00-\u9fa5]{1}',
+    caseSensitive: false,
+    multiLine: false,
+    unicode: true
+);
+
+extension HanziUtil on String {
+  bool get isSingleHanzi {
+    assert(this.length == 1);
+    return singleHanziRegExp.hasMatch(this);
+  }
+}
