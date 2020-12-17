@@ -9,12 +9,12 @@ part of 'word_meaning.dart';
 /// Field value key
 enum WordMeaningKey {
   meaning,
-  _examples,
-  _exampleMeanings,
-  _examplePinyins,
+  examples,
+  exampleMeanings,
+  examplePinyins,
 
-  _exampleMaleAudios,
-  _exampleFemaleAudios,
+  exampleMaleAudios,
+  exampleFemaleAudios,
 }
 
 extension WordMeaningKeyExtension on WordMeaningKey {

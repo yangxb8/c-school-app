@@ -159,7 +159,7 @@ class WordCard extends StatelessWidget {
       onTap: controller.playWord,
       child: Center(
         child:
-            Table(columnWidths: IntrinsicColumnWidth(), children: [
+            Table(defaultColumnWidth: IntrinsicColumnWidth(), children: [
           TableRow(
               children: word.pinyin
                   .map((e) => Center(
@@ -234,7 +234,7 @@ class WordCard extends StatelessWidget {
         ),
         Row(
             children:[
-                Text(wordExample.meaning, style: ReviewWordTheme.exampleMeaningStyle).paddingOnly(left: 10)
+                Text(wordExample.meaning, style: ReviewWordsTheme.exampleMeaning).paddingOnly(left: 10)
             ]
         ),
         divider()

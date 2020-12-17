@@ -360,17 +360,19 @@ class _FirestoreApi {
           metadata: {'newPost': 'true'});
 
       // Word Audio
-      final pathWordAudio =
-          '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudio)}';
+      final pathWordAudioMale =
+          '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioMale)}';
+      final pathWordAudioFemale =
+          '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioMale)}';
       final wordAudioFileMale =
           await getFileFromAssets('upload/${word.wordId}-W-M.mp3');
       final wordAudioFileFemale =
           await getFileFromAssets('upload/${word.wordId}-W-F.mp3');
-      word.wordAudioMale = await storage.save(pathWordAudio, wordAudioFileMale,
+      word.wordAudioMale = await storage.save(pathWordAudioMale, wordAudioFileMale,
           filename: '${word.wordId}-W-M.mp3',
           mimeType: mimeTypeMpeg,
           metadata: {'newPost': 'true'});
-      word.wordAudioFemale = await storage.save(pathWordAudio, wordAudioFileFemale,
+      word.wordAudioFemale = await storage.save(pathWordAudioFemale, wordAudioFileFemale,
           filename: '${word.wordId}-W-F.mp3',
           mimeType: mimeTypeMpeg,
           metadata: {'newPost': 'true'});
@@ -382,14 +384,15 @@ class _FirestoreApi {
         var femaleAudios = [];
         // Each example
         await meaning.examples.forEachIndexed((index, _) async {
-            final pathExampleAudio = '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudio)}';
+            final pathExampleMaleAudio = '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleMaleAudios)}';
+            final pathExampleFemaleAudio = '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleFemaleAudios)}';
             final exampleAudioFileMale = await getFileFromAssets('upload/${word.wordId}-E${index}-M.mp3');
             final exampleAudioFileFemale = await getFileFromAssets('upload/${word.wordId}-E${index}-F.mp3');
-          maleAudios.add(await storage.save(pathExampleAudio, exampleAudioFileMale,
+          maleAudios.add(await storage.save(pathExampleMaleAudio, exampleAudioFileMale,
               filename: '${word.wordId}-E${index}-M.mp3',
               mimeType: mimeTypeMpeg,
               metadata: {'newPost': 'true'}));
-          femaleAudios.add(await storage.save(pathExampleAudio, exampleAudioFileFemale,
+          femaleAudios.add(await storage.save(pathExampleFemaleAudio, exampleAudioFileFemale,
               filename: '${word.wordId}-E${index}-F.mp3',
               mimeType: mimeTypeMpeg,
               metadata: {'newPost': 'true'}));

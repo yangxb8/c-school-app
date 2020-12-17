@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ReviewWordsTheme {
+
   ReviewWordsTheme._();
 
   static const Color notWhite = Color(0xFFEDF0F2);
@@ -81,6 +82,13 @@ class ReviewWordsTheme {
     fontSize: 45,
     letterSpacing: 0.27,
     color: darkBlue,
+  );
+
+  static TextStyle exampleMeaning = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: 30,
+    letterSpacing: 0.27,
+    color: Colors.grey,
   );
 
   static TextStyle wordCardHint = TextStyle(
