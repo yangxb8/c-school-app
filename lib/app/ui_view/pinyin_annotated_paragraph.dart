@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:supercharged/supercharged.dart';
 import '../models/word.dart';
-import '../../util/extensions.dart'
+import '../../service/class_service.dart';
+import '../../util/extensions.dart';
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
   final String paragraph;
@@ -30,44 +31,103 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<PinyinAnnotatedHanzi> hanzis = _generateHanzis();
-    return Wrap(children: List<Widget>.generate(hanzis.length,(hanziIdx)=>
-        _buildSingleHanzi(hanzis[hanziIdx]);
-    ));
+    final hanzis = _generateHanzis();
+    return Wrap(
+        spacing: 3,
+        runSpacing: 2,
+        children: hanzis
+            .map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi))
+            .toList());
   }
 
-  Widget _buildSingleHanzi({@required PinyinAnnotatedHanzi paragraphHanzi}) {
+  Widget _buildSingleHanzi(
+      {@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
     final inner = IntrinsicWidth(
       child: Column(
         children: [
-            Text(paragraphHanzi.pinyin,style: pinyinTextStyle),
-            Text(paragraphHanzi.hanzi,style: textStyle),
+          Text(pinyinAnnotatedHanzi.pinyin,
+              style: pinyinAnnotatedHanzi.pinyinStyle),
+          Text(pinyinAnnotatedHanzi.hanzi,
+              style: pinyinAnnotatedHanzi.hanziStyle),
         ],
       ),
     );
-    if(hanziType != ParagraphHanziType.linked){
-        return inner;
+    if (pinyinAnnotatedHanzi.type != ParagraphHanziType.linked) {
+      return inner;
     } else {
-        return SimpleGestureDetector(
-            onTap: Get.find<ClassService>().showSingleWordCard(linkedWord),
-            child: inner
-        )
+      return SimpleGestureDetector(
+          onTap: () => Get.find<ClassService>()
+              .showSingleWordCard(pinyinAnnotatedHanzi.linkedWord),
+          child: inner);
     }
   }
 
   List<PinyinAnnotatedHanzi> _generateHanzis() {
-    var textStyle;
-    switch(hanziType){
-    case ParagraphHanziType.linked:
-        textStyle = linkedWordTextStyle?? defaultTextStyle;
-        break;
-    case ParagraphHanziType.center:
-        textStyle = centerWordTextStyle?? defaultTextStyle;
-        break;
-    default:
-        textStyle = defaultTextStyle;
-        break;    
-    }
+    // Divide paragraph by center word and linked word
+    final keywordsSeparatedParagraph = _divideExample([
+      centerWord.wordAsString,
+      ...linkedWords.map((w) => w.wordAsString).toList()
+    ], paragraph);
+    // There will be punctuation in paragraph but not in pinyins,
+    // so we need a separate pinyinIdx
+    var pinyinIdx = 0;
+    return List<PinyinAnnotatedHanzi>.generate(paragraph.length, (idx) {
+      final hanzi = paragraph[idx];
+      var pinyin = '';
+      if (hanzi.isSingleHanzi) {
+        pinyin = pinyins[pinyinIdx];
+        pinyinIdx++;
+      }
+      final hanziTypeAndRelatedWord = _calculateHanziType(
+          hanziIdx: idx,
+          keywordsSeparatedParagraph: keywordsSeparatedParagraph);
+      final hanziType = hanziTypeAndRelatedWord.keys.single;
+      final linkedWord = hanziTypeAndRelatedWord.values.single;
+      var hanziStyle;
+      switch (hanziType) {
+        case ParagraphHanziType.linked:
+          hanziStyle = linkedWordTextStyle ?? defaultTextStyle;
+          break;
+        case ParagraphHanziType.center:
+          hanziStyle = centerWordTextStyle ?? defaultTextStyle;
+          break;
+        default:
+          hanziStyle = defaultTextStyle;
+          break;
+      }
+      return PinyinAnnotatedHanzi(
+          hanzi: hanzi,
+          pinyin: pinyin,
+          hanziStyle: hanziStyle,
+          pinyinStyle: pinyinTextStyle,
+          type: hanziType,
+          linkedWord: linkedWord);
+    });
+  }
+
+  Map<ParagraphHanziType, Word> _calculateHanziType(
+      {@required int hanziIdx,
+      @required List<String> keywordsSeparatedParagraph}) {
+    var totalIdx = 0;
+    keywordsSeparatedParagraph.forEach((part) {
+      // Target hanzi is in range of this part of paragraph
+      final linkedWordList = linkedWords.filter((w) => w.wordAsString == part);
+      if (totalIdx + part.length > hanziIdx) {
+        if (centerWord.wordAsString == part) {
+          return {ParagraphHanziType.center: null};
+        } else if (linkedWordList.isNotEmpty) {
+          return {ParagraphHanziType.linked: linkedWordList.single};
+        } else {
+          return {ParagraphHanziType.normal: null};
+        }
+      }
+      // If hanziIdx is not found within this part, add totalIdx and move to next part
+      else {
+        totalIdx += part.length;
+      }
+    });
+    // Impossible
+    return null;
   }
 
   /// Divide sentence into List of String by keyword(s)
@@ -103,31 +163,24 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     }
     return null;
   }
-
-  bool _isCenterWord(String word) => centerWord.wordAsString == word;
-
-  bool _isLinkedWord(String word) => linkedWords.count((word)=>word.wordAsString == word)>0;
 }
 
 class PinyinAnnotatedHanzi {
-    final String hanzi;
-    final String pinyin;
-    final TextStyle hanziStyle;
-    final TextStyle pinyinStyle;
-    final ParagraphHanziType type;
-    final Word linkedWord;
+  final String hanzi;
+  final String pinyin;
+  final TextStyle hanziStyle;
+  final TextStyle pinyinStyle;
+  final ParagraphHanziType type;
+  final Word linkedWord;
 
-    const PinyinAnnotatedHanzi(
+  const PinyinAnnotatedHanzi(
       {Key key,
       @required this.hanzi,
       @required this.pinyin,
       @required this.hanziStyle,
       @required this.pinyinStyle,
       @required this.type,
-      @required this.linkedWord})
-      : super(key: key);
+      @required this.linkedWord});
 }
 
-enum ParagraphHanziType{
-    normal, linked, center
-}
+enum ParagraphHanziType { normal, linked, center }

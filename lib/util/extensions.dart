@@ -6,7 +6,7 @@ extension DateTimeExtension on DateTime{
   }
 }
 
-RegExp singleHanziRegExp = new RegExp(
+RegExp singleHanziRegExp = RegExp(
     r'[\u4e00-\u9fa5]{1}',
     caseSensitive: false,
     multiLine: false,
@@ -15,7 +15,7 @@ RegExp singleHanziRegExp = new RegExp(
 
 extension HanziUtil on String {
   bool get isSingleHanzi {
-    assert(this.length == 1);
+    assert(length == 1);
     return singleHanziRegExp.hasMatch(this);
   }
 }
