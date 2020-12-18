@@ -34,6 +34,11 @@ class WordCardController extends GetxController {
 
   bool isWordLiked() => _userLikedWordIds.contains(word.wordId);
 
+  /// Show a single word card from dialog
+  void showSingleCard(Word word) {
+    classService.showSingleWordCard(word);
+  }
+
   /// Play audio of the word
   Future<void> playWord({Function completionCallBack}) async {
     var wordAudio = word.wordAudioMale;
@@ -96,19 +101,6 @@ class WordCardController extends GetxController {
         await tts.setSpeechRate(0.8);
     }
     return tts;
-  }
-
-  /// Show a single word card from dialog
-  void showSingleCard(Word word) {
-    Get.dialog(
-      SimpleDialog(
-        children: [WordCard(word: word)],
-        titlePadding: EdgeInsets.zero,
-        contentPadding: EdgeInsets.zero,
-        backgroundColor: Colors.transparent,
-      ),
-      barrierColor: Get.isDialogOpen ? Colors.transparent : null,
-    );
   }
 
   @override
