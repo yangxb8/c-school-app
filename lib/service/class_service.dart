@@ -197,4 +197,17 @@ class ClassService extends GetxService {
       ..reviewedWordHistory = userWordsHistory_Rx.toList();
     UserService.commitChange();
   }
+
+    /// Show a single word card from dialog
+  void showSingleWordCard(Word word) {
+    Get.dialog(
+      SimpleDialog(
+        children: [WordCard(word: word)],
+        titlePadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+      ),
+      barrierColor: Get.isDialogOpen ? Colors.transparent : null,
+    );
+  }
 }

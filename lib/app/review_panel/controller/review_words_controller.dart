@@ -218,15 +218,7 @@ class ReviewWordsController extends GetxController
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
-    Get.dialog(
-      SimpleDialog(
-        children: [WordCard(word: word)],
-        titlePadding: EdgeInsets.zero,
-        contentPadding: EdgeInsets.zero,
-        backgroundColor: Colors.transparent,
-      ),
-      barrierColor: Get.isDialogOpen ? Colors.transparent : null,
-    );
+    classService.showSingleWordCard(word);
   }
 
   /// Search card content, consider a match if word or meaning contains query
