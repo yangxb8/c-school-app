@@ -36,12 +36,12 @@ class WordMeaning extends Model {
   /// Example ordinal : audio file
   @StorageField()
   // ignore: prefer_final_fields
-  List<StorageFile> _exampleMaleAudios;
+  List<StorageFile> exampleMaleAudios;
 
   /// Example ordinal : audio file
   @StorageField()
   // ignore: prefer_final_fields
-  List<StorageFile> _exampleFemaleAudios;
+  List<StorageFile> exampleFemaleAudios;
 
   List<WordExample> get examples {
     var examples = [];
@@ -50,15 +50,13 @@ class WordMeaning extends Model {
           example: _examples[i],
           meaning: _exampleMeanings[i],
           pinyin: _examplePinyins[i],
-          audioMale: _exampleMaleAudios[i],
-          audioFemale: _exampleFemaleAudios[i]
+          audioMale: exampleMaleAudios[i],
+          audioFemale: exampleFemaleAudios[i]
       ));
     }
     return examples;
   }
 
-  set exampleMaleAudios(List<StorageFile> files) => _exampleMaleAudios = files;
-  set exampleFemaleAudios(List<StorageFile> files) => _exampleFemaleAudios = files;
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

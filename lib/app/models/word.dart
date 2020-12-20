@@ -30,6 +30,10 @@ class Word extends Document<Word> {
   @Field()
   List<String> pinyin;
 
+  /// Usage and other information about this word
+  @Field()
+  String detail;
+
   @Field()
   String partOfSentence;
 

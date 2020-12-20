@@ -308,40 +308,53 @@ class _FirestoreApi {
 
   /// Upload words to firestore and cloud storage
   void uploadWordsByCsv() async {
-    final COLUMN_WORD_ID = 1;
+    final EXTENSION_AUDIO = 'mp3';
+    final EXTENSION_IMAGE = 'jpg';
+    final COLUMN_WORD_ID = 0;
+    final COLUMN_WORD = 1;
+    final COLUMN_PART_OF_SENTENCE = 2;
     final COLUMN_MEANING = 3;
-    final COLUMN_WORD = 4;
     final COLUMN_PINYIN = 5;
     final COLUMN_HINT = 6;
+    final COLUMN_OTHER_MEANING_ID = 7;
+    final COLUMN_DETAIL = 8;
     final COLUMN_EXAMPLE = 9;
     final COLUMN_EXAMPLE_MEANING = 10;
     final COLUMN_EXAMPLE_PINYIN = 11;
-    final COLUMN_RELATED_WORD_ID = 12;
-    final COLUMN_OTHER_MEANING_ID = 13;
-    final COLUMN_PART_OF_SENTENCE = 14;
+    final COLUMN_RELATED_WORD_ID = 14;
+    final COLUMN_NOT_TO_UPLOAD = 18;
+    final WORD_PROCESS_STATUS_NEW = 0;
     final SEPARATOR = '/';
 
     final storage = Storage()..fetch();
     final documentAccessor = DocumentAccessor();
 
     // Build Word from csv
-    var csv = CsvToListConverter()
+    final rawCsv = CsvToListConverter()
         .convert(await rootBundle.loadString('assets/upload/words.csv'));
+    final csv = rawCsv.removeAt(0)
+      ..removeWhere((w) =>
+      WORD_PROCESS_STATUS_NEW != w[COLUMN_NOT_TO_UPLOAD] || w[COLUMN_WORD].isNullOrBlank);
     var words = csv
+        .removeAt(0) // remove firest line (column name)
         .map((row) => Word(id: row[COLUMN_WORD_ID])
-          ..word = row[COLUMN_WORD].split('')
-          ..pinyin = row[COLUMN_PINYIN].split(SEPARATOR)
-          ..partOfSentence = row[COLUMN_PART_OF_SENTENCE]
+          ..word = row[COLUMN_WORD].trim().split('')
+          ..pinyin = row[COLUMN_PINYIN].trim().split(SEPARATOR)
+          ..partOfSentence = row[COLUMN_PART_OF_SENTENCE].trim()
+          ..detail = row[COLUMN_DETAIL].trim()
           ..wordMeanings = [
             WordMeaning(
-                meaning: row[COLUMN_MEANING].replace(SEPARATOR, ','),
-                examples: row[COLUMN_EXAMPLE].split(SEPARATOR),
-                exampleMeanings: row[COLUMN_EXAMPLE_MEANING].split(SEPARATOR),
-                examplePinyins: row[COLUMN_EXAMPLE_PINYIN].split(SEPARATOR))
+                meaning: row[COLUMN_MEANING].replace(SEPARATOR, ',').trim(),
+                examples: row[COLUMN_EXAMPLE].trim().split(SEPARATOR),
+                exampleMeanings:
+                    row[COLUMN_EXAMPLE_MEANING].trim().split(SEPARATOR),
+                examplePinyins:
+                    row[COLUMN_EXAMPLE_PINYIN].trim().split(SEPARATOR))
           ]
-          ..hint = row[COLUMN_HINT]
-          ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].split(SEPARATOR)
-          ..otherMeaningIds = row[COLUMN_OTHER_MEANING_ID].split(SEPARATOR))
+          ..hint = row[COLUMN_HINT].trim()
+          ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].trim().split(SEPARATOR)
+          ..otherMeaningIds =
+              row[COLUMN_OTHER_MEANING_ID].trim().split(SEPARATOR))
         .toList();
 
     // Checking status
@@ -353,27 +366,34 @@ class _FirestoreApi {
       // Word image
       final pathWordPic =
           '${word.documentPath}/${EnumToString.convertToString(WordKey.pic)}';
-      final wordPic = await getFileFromAssets('upload/${word.wordId}.png');
-      word.pic = await storage.save(pathWordPic, wordPic,
-          filename: '${word.wordId}.png',
-          mimeType: mimeTypePng,
-          metadata: {'newPost': 'true'});
+      try{
+        final wordPic =
+        await getFileFromAssets('upload/${word.wordId}.${EXTENSION_IMAGE}');
+        word.pic = await storage.save(pathWordPic, wordPic,
+            filename: '${word.wordId}.${EXTENSION_IMAGE}',
+            mimeType: mimeTypeJpeg,
+            metadata: {'newPost': 'true'});
+      } on Exception catch (e, _){
+        logger.i('Not image found for ${word.wordAsString}, will skip');
+      }
 
       // Word Audio
       final pathWordAudioMale =
           '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioMale)}';
       final pathWordAudioFemale =
           '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioMale)}';
-      final wordAudioFileMale =
-          await getFileFromAssets('upload/${word.wordId}-W-M.mp3');
-      final wordAudioFileFemale =
-          await getFileFromAssets('upload/${word.wordId}-W-F.mp3');
-      word.wordAudioMale = await storage.save(pathWordAudioMale, wordAudioFileMale,
-          filename: '${word.wordId}-W-M.mp3',
+      final wordAudioFileMale = await getFileFromAssets(
+          'upload/${word.wordId}-W-M.${EXTENSION_AUDIO}');
+      final wordAudioFileFemale = await getFileFromAssets(
+          'upload/${word.wordId}-W-F.${EXTENSION_AUDIO}');
+      word.wordAudioMale = await storage.save(
+          pathWordAudioMale, wordAudioFileMale,
+          filename: '${word.wordId}-W-M.${EXTENSION_AUDIO}',
           mimeType: mimeTypeMpeg,
           metadata: {'newPost': 'true'});
-      word.wordAudioFemale = await storage.save(pathWordAudioFemale, wordAudioFileFemale,
-          filename: '${word.wordId}-W-F.mp3',
+      word.wordAudioFemale = await storage.save(
+          pathWordAudioFemale, wordAudioFileFemale,
+          filename: '${word.wordId}-W-F.${EXTENSION_AUDIO}',
           mimeType: mimeTypeMpeg,
           metadata: {'newPost': 'true'});
 
@@ -384,16 +404,22 @@ class _FirestoreApi {
         var femaleAudios = [];
         // Each example
         await meaning.examples.forEachIndexed((index, _) async {
-            final pathExampleMaleAudio = '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleMaleAudios)}';
-            final pathExampleFemaleAudio = '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleFemaleAudios)}';
-            final exampleAudioFileMale = await getFileFromAssets('upload/${word.wordId}-E${index}-M.mp3');
-            final exampleAudioFileFemale = await getFileFromAssets('upload/${word.wordId}-E${index}-F.mp3');
-          maleAudios.add(await storage.save(pathExampleMaleAudio, exampleAudioFileMale,
-              filename: '${word.wordId}-E${index}-M.mp3',
+          final pathExampleMaleAudio =
+              '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleMaleAudios)}';
+          final pathExampleFemaleAudio =
+              '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleFemaleAudios)}';
+          final exampleAudioFileMale = await getFileFromAssets(
+              'upload/${word.wordId}-E${index}-M.${EXTENSION_AUDIO}');
+          final exampleAudioFileFemale = await getFileFromAssets(
+              'upload/${word.wordId}-E${index}-F.${EXTENSION_AUDIO}');
+          maleAudios.add(await storage.save(
+              pathExampleMaleAudio, exampleAudioFileMale,
+              filename: '${word.wordId}-E${index}-M.${EXTENSION_AUDIO}',
               mimeType: mimeTypeMpeg,
               metadata: {'newPost': 'true'}));
-          femaleAudios.add(await storage.save(pathExampleFemaleAudio, exampleAudioFileFemale,
-              filename: '${word.wordId}-E${index}-F.mp3',
+          femaleAudios.add(await storage.save(
+              pathExampleFemaleAudio, exampleAudioFileFemale,
+              filename: '${word.wordId}-E${index}-F.${EXTENSION_AUDIO}',
               mimeType: mimeTypeMpeg,
               metadata: {'newPost': 'true'}));
         });

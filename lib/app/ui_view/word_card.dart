@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:c_school_app/app/models/word_example.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
+import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -158,21 +159,10 @@ class WordCard extends StatelessWidget {
     var partHanZi = SimpleGestureDetector(
       onTap: controller.playWord,
       child: Center(
-        child:
-            Table(defaultColumnWidth: IntrinsicColumnWidth(), children: [
-          TableRow(
-              children: word.pinyin
-                  .map((e) => Center(
-                        child: Text(e, style: ReviewWordsTheme.wordCardPinyin),
-                      ))
-                  .toList()),
-          TableRow(
-              children: word.word
-                  .map((e) => Center(
-                        child: Text(e, style: ReviewWordsTheme.wordCardWord),
-                      ))
-                  .toList()),
-        ]),
+        child: PinyinAnnotatedParagraph(
+            paragraph: word.wordAsString,
+            pinyins: word.pinyin,
+            defaultTextStyle: ReviewWordsTheme.wordCardWord),
       ),
     );
     // Second meaning part

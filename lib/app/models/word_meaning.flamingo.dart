@@ -9,9 +9,9 @@ part of 'word_meaning.dart';
 /// Field value key
 enum WordMeaningKey {
   meaning,
-  examples,
-  exampleMeanings,
-  examplePinyins,
+  _examples,
+  _exampleMeanings,
+  _examplePinyins,
 
   exampleMaleAudios,
   exampleFemaleAudios,
@@ -28,10 +28,10 @@ extension WordMeaningKeyExtension on WordMeaningKey {
         return '_exampleMeanings';
       case WordMeaningKey._examplePinyins:
         return '_examplePinyins';
-      case WordMeaningKey._exampleMaleAudios:
-        return '_exampleMaleAudios';
-      case WordMeaningKey._exampleFemaleAudios:
-        return '_exampleFemaleAudios';
+      case WordMeaningKey.exampleMaleAudios:
+        return 'exampleMaleAudios';
+      case WordMeaningKey.exampleFemaleAudios:
+        return 'exampleFemaleAudios';
       default:
         return null;
     }
@@ -47,10 +47,10 @@ Map<String, dynamic> _$toData(WordMeaning doc) {
   Helper.writeNotNull(data, '_examplePinyins', doc._examplePinyins);
 
   Helper.writeStorageListNotNull(
-      data, '_exampleMaleAudios', doc._exampleMaleAudios,
+      data, 'exampleMaleAudios', doc.exampleMaleAudios,
       isSetNull: true);
   Helper.writeStorageListNotNull(
-      data, '_exampleFemaleAudios', doc._exampleFemaleAudios,
+      data, 'exampleFemaleAudios', doc.exampleFemaleAudios,
       isSetNull: true);
 
   return data;
@@ -65,6 +65,6 @@ void _$fromData(WordMeaning doc, Map<String, dynamic> data) {
   doc._examplePinyins =
       Helper.valueListFromKey<String>(data, '_examplePinyins');
 
-  doc._exampleMaleAudios = Helper.storageFiles(data, '_exampleMaleAudios');
-  doc._exampleFemaleAudios = Helper.storageFiles(data, '_exampleFemaleAudios');
+  doc.exampleMaleAudios = Helper.storageFiles(data, 'exampleMaleAudios');
+  doc.exampleFemaleAudios = Helper.storageFiles(data, 'exampleFemaleAudios');
 }
