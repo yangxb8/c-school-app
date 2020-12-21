@@ -109,7 +109,8 @@ class Splash extends StatelessWidget {
               child: Text('DO IT'),
             ),
           ],
-        )
+        ),
+          barrierDismissible: false
       );
     } else{
         await navigateToHome();

@@ -336,9 +336,8 @@ class _FirestoreApi {
           ..removeAt(0)
           ..removeWhere((w) =>
               WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
-              w[COLUMN_WORD].isNullOrBlank);
+              w[COLUMN_WORD] == null);
     var words = csv
-        .removeAt(0) // remove firest line (column name)
         .map((row) => Word(id: row[COLUMN_WORD_ID])
           ..word = row[COLUMN_WORD].trim().split('')
           ..pinyin = row[COLUMN_PINYIN].trim().split(PINYIN_SEPARATOR)
@@ -346,14 +345,12 @@ class _FirestoreApi {
           ..detail = row[COLUMN_DETAIL].trim()
           ..wordMeanings = [
             WordMeaning(
-                meaning: row[COLUMN_MEANING].replace(SEPARATOR, ',').trim(),
+                meaning: row[COLUMN_MEANING].trim().replaceAll(SEPARATOR, ','),
                 examples: row[COLUMN_EXAMPLE].trim().split(SEPARATOR),
                 exampleMeanings:
                     row[COLUMN_EXAMPLE_MEANING].trim().split(SEPARATOR),
-                examplePinyins: row[COLUMN_EXAMPLE_PINYIN]
-                    .trim()
-                    .split(SEPARATOR)
-                    .toList())
+                examplePinyins:
+                    row[COLUMN_EXAMPLE_PINYIN].trim().split(SEPARATOR).toList())
           ]
           ..hint = row[COLUMN_HINT].trim()
           ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].trim().split(SEPARATOR)
