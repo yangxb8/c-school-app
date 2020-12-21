@@ -6,6 +6,8 @@ import 'word_example.dart';
 
 part 'word_meaning.flamingo.dart';
 
+const PINYIN_SEPARATOR = '-';
+
 class WordMeaning extends Model {
   WordMeaning({
     @required this.meaning,
@@ -30,6 +32,7 @@ class WordMeaning extends Model {
   List<String> _exampleMeanings;
 
   @Field()
+  /// Pinyin for each examples, pinyin is separated by '-' like 'wo-men'
   // ignore: prefer_final_fields
   List<String> _examplePinyins;
 
@@ -49,7 +52,7 @@ class WordMeaning extends Model {
       examples.add(WordExample(
           example: _examples[i],
           meaning: _exampleMeanings[i],
-          pinyin: _examplePinyins[i],
+          pinyin: _examplePinyins[i].split(PINYIN_SEPARATOR),
           audioMale: exampleMaleAudios[i],
           audioFemale: exampleFemaleAudios[i]
       ));

@@ -120,6 +120,19 @@ class ReviewWordsTheme {
     color: darkBlue,
   );
 
+  static TextStyle wordCardExamplePinyin = wordCardExample.copyWith(
+    fontSize: 20,
+    letterSpacing: 0.2,
+  );
+
+  static TextStyle wordCardExampleCenterWord = wordCardExample.copyWith(
+    fontWeight: FontWeight.bold,
+  );
+
+  static TextStyle wordCardExampleLinkedWord = wordCardExample.copyWith(
+    decoration: TextDecoration.underline,
+  );
+
   static const TextStyle display1 = TextStyle(
     // h4 -> display1
     fontFamily: 'WorkSans',

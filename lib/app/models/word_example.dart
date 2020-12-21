@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 class WordExample {
   final String example;
   final String meaning;
-  final String pinyin;
+  final List<String> pinyin;
   final StorageFile audioMale;
   final StorageFile audioFemale;
   WordExample(
