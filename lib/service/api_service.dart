@@ -322,24 +322,26 @@ class _FirestoreApi {
     final COLUMN_EXAMPLE_MEANING = 10;
     final COLUMN_EXAMPLE_PINYIN = 11;
     final COLUMN_RELATED_WORD_ID = 14;
-    final COLUMN_NOT_TO_UPLOAD = 18;
+    final COLUMN_WORD_PROCESS_STATUS = 18;
     final WORD_PROCESS_STATUS_NEW = 0;
     final SEPARATOR = '/';
+    final PINYIN_SEPARATOR = '-';
 
     final storage = Storage()..fetch();
     final documentAccessor = DocumentAccessor();
 
     // Build Word from csv
-    final rawCsv = CsvToListConverter()
-        .convert(await rootBundle.loadString('assets/upload/words.csv'));
-    final csv = rawCsv.removeAt(0)
-      ..removeWhere((w) =>
-      WORD_PROCESS_STATUS_NEW != w[COLUMN_NOT_TO_UPLOAD] || w[COLUMN_WORD].isNullOrBlank);
+    final csv = CsvToListConverter()
+        .convert(await rootBundle.loadString('assets/upload/words.csv'))
+          ..removeAt(0)
+          ..removeWhere((w) =>
+              WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
+              w[COLUMN_WORD].isNullOrBlank);
     var words = csv
         .removeAt(0) // remove firest line (column name)
         .map((row) => Word(id: row[COLUMN_WORD_ID])
           ..word = row[COLUMN_WORD].trim().split('')
-          ..pinyin = row[COLUMN_PINYIN].trim().split(SEPARATOR)
+          ..pinyin = row[COLUMN_PINYIN].trim().split(PINYIN_SEPARATOR)
           ..partOfSentence = row[COLUMN_PART_OF_SENTENCE].trim()
           ..detail = row[COLUMN_DETAIL].trim()
           ..wordMeanings = [
@@ -348,8 +350,10 @@ class _FirestoreApi {
                 examples: row[COLUMN_EXAMPLE].trim().split(SEPARATOR),
                 exampleMeanings:
                     row[COLUMN_EXAMPLE_MEANING].trim().split(SEPARATOR),
-                examplePinyins:
-                    row[COLUMN_EXAMPLE_PINYIN].trim().split(SEPARATOR))
+                examplePinyins: row[COLUMN_EXAMPLE_PINYIN]
+                    .trim()
+                    .split(SEPARATOR)
+                    .toList())
           ]
           ..hint = row[COLUMN_HINT].trim()
           ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].trim().split(SEPARATOR)
@@ -366,14 +370,14 @@ class _FirestoreApi {
       // Word image
       final pathWordPic =
           '${word.documentPath}/${EnumToString.convertToString(WordKey.pic)}';
-      try{
+      try {
         final wordPic =
-        await getFileFromAssets('upload/${word.wordId}.${EXTENSION_IMAGE}');
+            await getFileFromAssets('upload/${word.wordId}.${EXTENSION_IMAGE}');
         word.pic = await storage.save(pathWordPic, wordPic,
             filename: '${word.wordId}.${EXTENSION_IMAGE}',
             mimeType: mimeTypeJpeg,
             metadata: {'newPost': 'true'});
-      } on Exception catch (e, _){
+      } on Exception catch (e, _) {
         logger.i('Not image found for ${word.wordAsString}, will skip');
       }
 

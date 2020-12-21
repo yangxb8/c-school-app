@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:c_school_app/app/models/word_example.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
@@ -12,7 +10,6 @@ import 'package:flip/flip.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -196,61 +193,23 @@ class WordCard extends StatelessWidget {
           'Example'.i18n,
           style: ReviewWordsTheme.wordCardSubTitle,
         ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
-        Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20),
-                child: SimpleGestureDetector(
-                  onTap: () => controller.playExample(
-                      string: wordExample.example,
-                      audio: wordExample.audioMale),
-                  child: RichText(
-                    text: TextSpan(
-                        style: ReviewWordsTheme.wordCardExample,
-                        children: _divideExample([
-                          word.wordAsString,
-                          ...word.relatedWords
-                              .map((word) => word.wordAsString)
-                              .toList()
-                        ], wordExample.example)
-                            .map((part) => _buildExampleTextSpan(part))
-                            .toList()),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Row(
-            children:[
-                Text(wordExample.meaning, style: ReviewWordsTheme.exampleMeaning).paddingOnly(left: 10)
-            ]
-        ),
+        PinyinAnnotatedParagraph(
+                paragraph: wordExample.example,
+                pinyins: wordExample.pinyin,
+                defaultTextStyle: ReviewWordsTheme.wordCardExample,
+                pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
+                centerWord: word,
+                centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
+                linkedWords: word.relatedWords,
+                linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,)
+            .alignment(Alignment.centerLeft)
+            .paddingOnly(left: 10),
+        Row(children: [
+          Text(wordExample.meaning, style: ReviewWordsTheme.exampleMeaning)
+              .paddingOnly(left: 10)
+        ]),
         divider()
       ],
-    );
-  }
-
-  TextSpan _buildExampleTextSpan(String part) {
-    // If the word is our main word
-    if (part == word.wordAsString) {
-      return TextSpan(
-          text: part, style: TextStyle(fontWeight: FontWeight.bold));
-    }
-    // If the word is a related word
-    var relatedWord =
-        word.relatedWords.filter((word) => word.wordAsString == part);
-    if (relatedWord.isNotEmpty) {
-      return TextSpan(
-          text: part,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () => controller.showSingleCard(relatedWord.single),
-          style: TextStyle(decoration: TextDecoration.underline));
-    }
-    // Default
-    return TextSpan(
-      text: part,
     );
   }
 
@@ -261,48 +220,4 @@ class WordCard extends StatelessWidget {
         endIndent: 20,
         color: ReviewWordsTheme.lightYellow,
       );
-}
-
-/// Divide sentence into List of String by keyword(s)
-List<String> _divideExample(dynamic keyword, dynamic example) {
-  var exampleDivided = <String>[];
-  // When we have multiple keyword
-  if (keyword is List<String>) {
-    var keywordSet = keyword.toSet();
-    var exampleDivided = example;
-    keywordSet
-        .forEach((k) => exampleDivided = _divideExample(k, exampleDivided));
-    return exampleDivided;
-  }
-  // When the String is already divided before
-  if (example is List<String>) {
-    example.forEach((e) {
-      if (e.contains(keyword)) {
-        exampleDivided.addAll(_divideExample(keyword, e));
-      } else {
-        exampleDivided.add(e);
-      }
-    });
-    return exampleDivided;
-  } else if (example is String) {
-    example.split(keyword).forEachIndexed((index, part) {
-      exampleDivided.add(part);
-      exampleDivided.add(keyword);
-    });
-    // Remove the last null we add
-    exampleDivided.removeLast();
-    exampleDivided.removeWhere((currentValue) => currentValue.isEmpty);
-    return exampleDivided;
-  }
-  return null;
-}
-
-//TODO: need to calculate width properly, we might have words of 3~4 hanzi
-Map<int, TableColumnWidth> calculateColumnWidthOfHanzi(Word word) {
-  const HANZI_WIDTH = 50.0;
-  const PINYIN_WIDTH = 40.0;
-  return word.word.asMap().map((key, value) => MapEntry(
-      key,
-      FixedColumnWidth(
-          max(HANZI_WIDTH, word.pinyin[key].length * PINYIN_WIDTH))));
 }
