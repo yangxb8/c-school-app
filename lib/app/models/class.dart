@@ -33,6 +33,10 @@ class CSchoolClass extends Document<CSchoolClass> {
   @Field()
   List<String> _tags;
 
+  /// Hash of class pic for display by blurhash
+  @Field()
+  String picHash;
+
   /// If the Class has pic in cloud storage
   @StorageField()
   StorageFile pic;

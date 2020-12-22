@@ -60,6 +60,10 @@ class Word extends Document<Word> {
   @Field()
   List<String> _tags;
 
+  /// Hash of word pic for display by blurhash
+  @Field()
+  String picHash;
+
   /// If the word has pic in cloud storage
   @StorageField()
   StorageFile pic;
