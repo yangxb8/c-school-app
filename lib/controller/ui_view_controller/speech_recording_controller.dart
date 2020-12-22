@@ -32,7 +32,7 @@ class SpeechRecordingController extends GetxController {
   Future<void> onInit() async {
     // Reuse player
     _myPlayer = await AudioPlayer(playerId: 'SINGLETON');
-    AudioPlayer.logEnabled = Get.find<AppStateService>().isDebug;
+    AudioPlayer.logEnabled = AppStateService.isDebug;
     super.onInit();
   }
 
