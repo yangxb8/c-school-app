@@ -18,6 +18,7 @@ enum WordKey {
   _otherMeaningIds,
   breakdowns,
   _tags,
+  picHash,
   wordMeanings,
   pic,
   wordAudioMale,
@@ -47,6 +48,8 @@ extension WordKeyExtension on WordKey {
         return 'breakdowns';
       case WordKey._tags:
         return '_tags';
+      case WordKey.picHash:
+        return 'picHash';
       case WordKey.wordMeanings:
         return 'wordMeanings';
       case WordKey.pic:
@@ -74,6 +77,7 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, '_otherMeaningIds', doc._otherMeaningIds);
   Helper.writeNotNull(data, 'breakdowns', doc.breakdowns);
   Helper.writeNotNull(data, '_tags', doc._tags);
+  Helper.writeNotNull(data, 'picHash', doc.picHash);
 
   Helper.writeModelListNotNull(data, 'wordMeanings', doc.wordMeanings);
 
@@ -100,6 +104,7 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
       Helper.valueListFromKey<String>(data, '_otherMeaningIds');
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
   doc._tags = Helper.valueListFromKey<String>(data, '_tags');
+  doc.picHash = Helper.valueFromKey<String>(data, 'picHash');
 
   final _wordMeanings =
       Helper.valueMapListFromKey<String, dynamic>(data, 'wordMeanings');

@@ -13,6 +13,7 @@ enum CSchoolClassKey {
   title,
   description,
   _tags,
+  picHash,
 
   pic,
 }
@@ -30,6 +31,8 @@ extension CSchoolClassKeyExtension on CSchoolClassKey {
         return 'description';
       case CSchoolClassKey._tags:
         return '_tags';
+      case CSchoolClassKey.picHash:
+        return 'picHash';
       case CSchoolClassKey.pic:
         return 'pic';
       default:
@@ -46,6 +49,7 @@ Map<String, dynamic> _$toData(CSchoolClass doc) {
   Helper.writeNotNull(data, 'title', doc.title);
   Helper.writeNotNull(data, 'description', doc.description);
   Helper.writeNotNull(data, '_tags', doc._tags);
+  Helper.writeNotNull(data, 'picHash', doc.picHash);
 
   Helper.writeStorageNotNull(data, 'pic', doc.pic, isSetNull: true);
 
@@ -59,6 +63,7 @@ void _$fromData(CSchoolClass doc, Map<String, dynamic> data) {
   doc.title = Helper.valueFromKey<String>(data, 'title');
   doc.description = Helper.valueFromKey<String>(data, 'description');
   doc._tags = Helper.valueListFromKey<String>(data, '_tags');
+  doc.picHash = Helper.valueFromKey<String>(data, 'picHash');
 
   doc.pic = Helper.storageFile(data, 'pic');
 }

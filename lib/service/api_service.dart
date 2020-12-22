@@ -332,12 +332,12 @@ class _FirestoreApi {
     final documentAccessor = DocumentAccessor();
 
     // Build Word from csv
-    final csv = List<List<String>>.from(CsvToListConverter()
+    final csv = CsvToListConverter()
         .convert(await rootBundle.loadString('assets/upload/words.csv'))
           ..removeAt(0)
           ..removeWhere((w) =>
               WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
-              w[COLUMN_WORD] == null));
+              w[COLUMN_WORD] == null);
     var words = csv
         .map((row) => Word(id: row[COLUMN_WORD_ID])
           ..word = row[COLUMN_WORD].trim().split('')
@@ -384,7 +384,7 @@ class _FirestoreApi {
       final pathWordAudioMale =
           '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioMale)}';
       final pathWordAudioFemale =
-          '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioMale)}';
+          '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioFemale)}';
       final wordAudioFileMale = await getFileFromAssets(
           'upload/${word.wordId}-W-M.${EXTENSION_AUDIO}');
       final wordAudioFileFemale = await getFileFromAssets(
@@ -444,45 +444,12 @@ class _FirestoreApi {
   }
 
   Future<List<Word>> fetchWords({List<String> tags}) async {
-    // final collectionPaging = CollectionPaging<Word>(
-    //   query: Word().collectionRef.orderBy('wordId', descending: true),
-    //   limit: 10000,
-    //   decode: (snap) => Word(snapshot: snap),
-    // );
-    // return await collectionPaging.load();
-    //TODO: Test data, replace me
-    var word1 = Word(id: 'C0001-0001');
-    word1
-      ..word = ['我', '们']
-      ..pinyin = ['wo', 'men']
-      ..tags = [WordTag.C0001]
-      ..hint = 'ヒントですよ'
-      ..wordMeanings = [
-        WordMeaning(
-            meaning: '私達',
-            examples: ['我们都是好学生。', '我们都是好战士'],
-            exampleMeanings: ['私達はいい生徒', '私達はいい戦士'],
-            examplePinyins: ['hao xue sheng', 'hao zhang shi'])
-      ]
-      ..relatedWordIDs = ['C0001-0002'];
-    var word2 = Word(id: 'C0001-0002');
-    word2
-      ..word = ['都', '是']
-      ..pinyin = ['dou', 'shi']
-      ..tags = [WordTag.C0001]
-      ..hint = 'ヒントですよ'
-      ..wordMeanings = [
-        WordMeaning(
-            meaning: 'は..だ',
-            examples: ['我们都是猪。', '你才是猪'],
-            exampleMeanings: ['私達はいい生徒', '私達はいい戦士'],
-            examplePinyins: ['hao xue sheng', 'hao zhang shi'])
-      ];
-    await Timer(Duration(seconds: 1), () {});
-    return [
-      word1,
-      word2,
-    ];
+    final collectionPaging = CollectionPaging<Word>(
+      query: Word().collectionRef.orderBy('wordId', descending: true),
+      limit: 10000,
+      decode: (snap) => Word(snapshot: snap),
+    );
+    return await collectionPaging.load();
   }
 
   Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async {
@@ -493,7 +460,7 @@ class _FirestoreApi {
     // );
     // return await collectionPaging.load();
     //TODO: Test data, replace me
-    var class1 = CSchoolClass(id: 'C0001');
+    var class1 = CSchoolClass(id: 'C0003');
     class1.title = 'Test class';
     class1.level = ClassLevel.LEVEL1;
     await Timer(Duration(seconds: 1), () {});
