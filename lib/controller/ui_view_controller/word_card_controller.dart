@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flip/flip.dart';
 import 'package:flutter/foundation.dart';

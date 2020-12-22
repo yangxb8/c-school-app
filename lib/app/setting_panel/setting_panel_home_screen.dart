@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:c_school_app/app/models/exams.dart';
 import 'package:c_school_app/service/app_state_service.dart';
@@ -29,7 +28,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
               ],
             ),
           ] +
-          (Get.find<AppStateService>().isDebug ? _getDebugSection() : []),
+          (AppStateService.isDebug ? _getDebugSection() : []),
     );
   }
 

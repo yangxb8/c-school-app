@@ -161,7 +161,7 @@ class LoginController extends GetxController {
     ];
     final content = 'You have study for %d times!'
         .i18n
-        .fill([AppStateService.systemInfo.startCount]);
+        .fill([AppStateService.startCount]);
 
     popup.show(
         title: 'Welcome Back!'.i18n,

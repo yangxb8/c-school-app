@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'localstorage_service.dart';
-import '../model/system_info.dart';
 
 /*
 * This class provide AppState from firebase/shared_preference/others
@@ -8,21 +7,11 @@ import '../model/system_info.dart';
 * This service use ApiService and LocalStorageService so they must be
 * initialized first!
 */
-class AppStateService extends GetxService {
-  static AppStateService _instance;
-  static SystemInfo systemInfo;
+class AppStateService {
   static final LocalStorageService _localStorageService = Get.find();
+  static final startCount = _localStorageService.getStartCountAndIncrease();
 
-  static AppStateService getInstance() {
-    if (_instance == null) {
-      _instance = AppStateService();
-      systemInfo = SystemInfo(
-          startCount: _localStorageService.getStartCountAndIncrease());
-    }
-    return _instance;
-  }
-
-  bool get isDebug {
+  static bool get isDebug {
     var debugMode = false;
     assert(debugMode = true);
     return debugMode;
