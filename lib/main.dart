@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:c_school_app/service/class_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:catcher/catcher.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -56,27 +57,30 @@ class CSchoolApp extends StatelessWidget {
           secret: 'rbl6r14rthdvtkruhfu0lvlldp6rpq3pepclnowm1q6ui08u',
           /// We use Catcher's navigatorKey here also for Wiredash
           navigatorKey: Catcher.navigatorKey,
-          child: GetMaterialApp(
-              title: 'Chinese Classroom',
-              debugShowCheckedModeBanner: false,
-              defaultTransition: Transition.fade,
-              navigatorKey: Catcher.navigatorKey,
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                textTheme: AppTheme.textTheme,
-                platform: TargetPlatform.iOS,
-              ),
-              localizationsDelegates: [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en'),
-                const Locale('ja', 'JP'),
-              ],
-              getPages: AppRouter.setupRouter(),
-              home: Splash(),
+          child: ScreenUtilInit(
+            designSize: Size(1080, 2220),
+            child: GetMaterialApp(
+                title: 'Chinese Classroom',
+                debugShowCheckedModeBanner: false,
+                defaultTransition: Transition.fade,
+                navigatorKey: Catcher.navigatorKey,
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                  textTheme: AppTheme.textTheme,
+                  platform: TargetPlatform.iOS,
+                ),
+                localizationsDelegates: [
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en'),
+                  const Locale('ja', 'JP'),
+                ],
+                getPages: AppRouter.setupRouter(),
+                home: Splash(),
+            ),
           ),
         ));
   }
@@ -89,7 +93,7 @@ class Splash extends StatelessWidget {
   Future<void> _loadFromFuture() async {
     await initServices();
     // TODO: Only for development, might need a proper way to upload our clas
-    if(Get.find<AppStateService>().isDebug){
+    if(AppStateService.isDebug){
       await Get.dialog(
         AlertDialog(
           title: Text('Upload assets to firebase?'),
@@ -122,7 +126,7 @@ class Splash extends StatelessWidget {
     return SplashScreen(
         navigateAfterFuture: _loadFromFuture(),
         imageBackground: Image.asset('assets/splash/splash.png').image,
-        photoSize: 100.0,
+        photoSize: 100.0.r,
         useLoader: false,);
   }
 }
@@ -133,11 +137,9 @@ Future<void> initServices() async {
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
-  Get.put<LoggerService>(LoggerService());
-  Get.put<AppStateService>(AppStateService.getInstance());
   Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
   await Get.putAsync<ClassService>(
       () async => await ClassService.getInstance());
   Logger.level =
-      AppStateService.systemInfo.isDebugMode ? Level.debug : Level.error;
+      AppStateService.isDebug ? Level.debug : Level.error;
 }

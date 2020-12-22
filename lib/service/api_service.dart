@@ -323,6 +323,7 @@ class _FirestoreApi {
     final COLUMN_EXAMPLE_PINYIN = 11;
     final COLUMN_RELATED_WORD_ID = 14;
     final COLUMN_WORD_PROCESS_STATUS = 18;
+    final COLUMN_PIC_HASH = 19;
     final WORD_PROCESS_STATUS_NEW = 0;
     final SEPARATOR = '/';
     final PINYIN_SEPARATOR = '-';
@@ -331,18 +332,19 @@ class _FirestoreApi {
     final documentAccessor = DocumentAccessor();
 
     // Build Word from csv
-    final csv = CsvToListConverter()
+    final csv = List<List<String>>.from(CsvToListConverter()
         .convert(await rootBundle.loadString('assets/upload/words.csv'))
           ..removeAt(0)
           ..removeWhere((w) =>
               WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
-              w[COLUMN_WORD] == null);
+              w[COLUMN_WORD] == null));
     var words = csv
         .map((row) => Word(id: row[COLUMN_WORD_ID])
           ..word = row[COLUMN_WORD].trim().split('')
           ..pinyin = row[COLUMN_PINYIN].trim().split(PINYIN_SEPARATOR)
           ..partOfSentence = row[COLUMN_PART_OF_SENTENCE].trim()
           ..detail = row[COLUMN_DETAIL].trim()
+          ..picHash = row[COLUMN_PIC_HASH]
           ..wordMeanings = [
             WordMeaning(
                 meaning: row[COLUMN_MEANING].trim().replaceAll(SEPARATOR, ','),

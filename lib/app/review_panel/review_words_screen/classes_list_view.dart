@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:c_school_app/app/models/class.dart';
 import 'package:c_school_app/service/class_service.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:supercharged/supercharged.dart';
 import './review_words_theme.dart';
 
@@ -105,7 +105,10 @@ class CSchoolClassView extends StatelessWidget {
           child: Transform(
             transform: Matrix4.translationValues(
                 0.0, 50 * (1.0 - animation.value), 0.0),
-            child: ClassCard(callback: callback, cschoolClass: cschoolClass, DEFAULT_IMAGE: DEFAULT_IMAGE),
+            child: ClassCard(
+                callback: callback,
+                cschoolClass: cschoolClass,
+                DEFAULT_IMAGE: DEFAULT_IMAGE),
           ),
         );
       },
@@ -144,8 +147,8 @@ class ClassCard extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: '#F8FAFB'.toColor(),
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(16.0)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(16.0)),
                         // border: new Border.all(
                         //     color: DesignCourseAppTheme.notWhite),
                       ),
@@ -165,21 +168,16 @@ class ClassCard extends StatelessWidget {
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         letterSpacing: 0.27,
-                                        color:
-                                            ReviewWordsTheme.darkerText,
+                                        color: ReviewWordsTheme.darkerText,
                                       ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 8,
-                                        left: 16,
-                                        right: 16,
-                                        bottom: 8),
+                                        top: 8, left: 16, right: 16, bottom: 8),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
@@ -189,22 +187,19 @@ class ClassCard extends StatelessWidget {
                                               '${cschoolClass.words.length}',
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
-                                                fontWeight:
-                                                    FontWeight.w200,
+                                                fontWeight: FontWeight.w200,
                                                 fontSize: 12,
                                                 letterSpacing: 0.27,
-                                                color: ReviewWordsTheme
-                                                    .grey,
+                                                color: ReviewWordsTheme.grey,
                                               ),
                                             ),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.only(
-                                                      left: 6.0),
+                                              padding: const EdgeInsets.only(
+                                                  left: 6.0),
                                               child: Icon(
                                                 Icons.menu_book,
-                                                color: ReviewWordsTheme
-                                                    .nearlyBlue,
+                                                color:
+                                                    ReviewWordsTheme.nearlyBlue,
                                                 size: 20,
                                               ),
                                             )
@@ -215,28 +210,21 @@ class ClassCard extends StatelessWidget {
                                             children: <Widget>[
                                               Text(
                                                 '100',
-                                                textAlign:
-                                                    TextAlign.left,
+                                                textAlign: TextAlign.left,
                                                 style: TextStyle(
-                                                  fontWeight:
-                                                      FontWeight.w200,
+                                                  fontWeight: FontWeight.w200,
                                                   fontSize: 14,
                                                   letterSpacing: 0.27,
-                                                  color:
-                                                      ReviewWordsTheme
-                                                          .grey,
+                                                  color: ReviewWordsTheme.grey,
                                                 ),
                                               ),
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets
-                                                            .only(
-                                                        left: 6.0),
+                                                padding: const EdgeInsets.only(
+                                                    left: 6.0),
                                                 child: Icon(
                                                   Icons.remove_red_eye,
-                                                  color:
-                                                      ReviewWordsTheme
-                                                          .nearlyBlue,
+                                                  color: ReviewWordsTheme
+                                                      .nearlyBlue,
                                                   size: 20,
                                                 ),
                                               ),
@@ -265,12 +253,10 @@ class ClassCard extends StatelessWidget {
             ),
             Container(
               child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 24, right: 16, left: 16),
+                padding: const EdgeInsets.only(top: 24, right: 16, left: 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(16.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                     boxShadow: <BoxShadow>[
                       BoxShadow(
                           color: ReviewWordsTheme.grey.withOpacity(0.2),
@@ -279,8 +265,7 @@ class ClassCard extends StatelessWidget {
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(16.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                     child: AspectRatio(
                         aspectRatio: 1.28,
                         child: cschoolClass.pic?.url == null
@@ -290,12 +275,8 @@ class ClassCard extends StatelessWidget {
                                 placeholder: (context, url) => SizedBox(
                                       width: 200.0,
                                       height: 100.0,
-                                      child: Shimmer.fromColors(
-                                        baseColor: Colors.grey[300],
-                                        highlightColor:
-                                            Colors.grey[100],
-                                        child: Container(),
-                                      ),
+                                      child:
+                                          BlurHash(hash: cschoolClass.picHash),
                                     ),
                                 errorWidget: (context, url, error) =>
                                     Image.asset(DEFAULT_IMAGE))),
