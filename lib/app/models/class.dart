@@ -1,3 +1,4 @@
+import 'package:c_school_app/app/models/class_entity_interface.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:enum_to_string/enum_to_string.dart';
@@ -7,7 +8,7 @@ import 'package:c_school_app/service/class_service.dart';
 
 part 'class.flamingo.dart';
 
-class CSchoolClass extends Document<CSchoolClass> {
+class CSchoolClass extends Document<CSchoolClass> implements ClassEntityInterface{
   static ClassService classService = Get.find<ClassService>();
 
   CSchoolClass({
