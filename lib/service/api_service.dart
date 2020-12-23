@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:c_school_app/app/models/class_entity_interface.dart';
 import 'package:c_school_app/util/functions.dart';
 import 'package:csv/csv.dart';
 import 'package:enum_to_string/enum_to_string.dart';
@@ -338,13 +339,14 @@ class _FirestoreApi {
           ..removeWhere((w) =>
               WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
               w[COLUMN_WORD] == null);
+
     var words = csv
         .map((row) => Word(id: row[COLUMN_WORD_ID])
           ..word = row[COLUMN_WORD].trim().split('')
           ..pinyin = row[COLUMN_PINYIN].trim().split(PINYIN_SEPARATOR)
           ..partOfSentence = row[COLUMN_PART_OF_SENTENCE].trim()
           ..detail = row[COLUMN_DETAIL].trim()
-          ..picHash = row[COLUMN_PIC_HASH]
+          ..picHash = row[COLUMN_PIC_HASH].trim()
           ..wordMeanings = [
             WordMeaning(
                 meaning: row[COLUMN_MEANING].trim().replaceAll(SEPARATOR, ','),
@@ -443,6 +445,67 @@ class _FirestoreApi {
     storage.dispose();
   }
 
+  void uploadClassesByCsv() async {
+    final EXTENSION_IMAGE = 'jpg';
+    final COLUMN_ID = 0;
+    final COLUMN_LEVEL = 1;
+    final COLUMN_TITLE = 2;
+    final COLUMN_DESCRIPTION = 3;
+    final COLUMN_PROCESS_STATUS = 5;
+    final COLUMN_PIC_HASH = 6;
+    final WORD_PROCESS_STATUS_NEW = 0;
+
+    final storage = Storage()..fetch();
+    final documentAccessor = DocumentAccessor();
+
+    // Build Word from csv
+    final csv = CsvToListConverter()
+        .convert(await rootBundle.loadString('assets/upload/classes.csv'))
+          ..removeAt(0)
+          ..removeWhere((w) =>
+              WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
+              w[COLUMN_TITLE] == null);
+
+    var cschoolClasses = csv
+        .map((row) => CSchoolClass(id: row[COLUMN_ID])
+          ..level = EnumToString.fromString(ClassLevel.values, row[COLUMN_LEVEL].trim())
+          ..title = row[COLUMN_TITLE].trim()
+          ..description = row[COLUMN_DESCRIPTION].trim()
+          ..picHash = row[COLUMN_PIC_HASH].trim());
+
+    // Checking status
+    storage.uploader.listen((data) {
+      print('total: ${data.totalBytes} transferred: ${data.bytesTransferred}');
+    });
+    // Upload file to cloud storage and save reference
+    await cschoolClasses.forEach((cschoolClass) async {
+      // Word image
+      final pathClassPic =
+          '${cschoolClass.documentPath}/${EnumToString.convertToString(CSchoolClassKey.pic)}';
+      try {
+        final classPic =
+            await getFileFromAssets('upload/${cschoolClass.classId}.${EXTENSION_IMAGE}');
+        cschoolClass.pic = await storage.save(pathClassPic, classPic,
+            filename: '${cschoolClass.classId}.${EXTENSION_IMAGE}',
+            mimeType: mimeTypeJpeg,
+            metadata: {'newPost': 'true'});
+      } on Exception catch (e, _) {
+        logger.i('Not image found for ${cschoolClass.title}, will skip');
+      }
+
+      // Finally, save the word
+      await documentAccessor.save(cschoolClass);
+    });
+
+// Checking status
+    storage.uploader.listen((data) {
+      print('total: ${data.totalBytes} transferred: ${data.bytesTransferred}');
+    });
+
+// Dispose uploader stream
+    storage.dispose();
+  }
+
   Future<List<Word>> fetchWords({List<String> tags}) async {
     final collectionPaging = CollectionPaging<Word>(
       query: Word().collectionRef.orderBy('wordId', descending: true),
@@ -452,19 +515,22 @@ class _FirestoreApi {
     return await collectionPaging.load();
   }
 
+  Future<List<Word>> fetchClassEntities<T implements>({List<String> tags}) async {
+    final collectionPaging = CollectionPaging<Word>(
+      query: Word().collectionRef.orderBy('wordId', descending: true),
+      limit: 10000,
+      decode: (snap) => Word(snapshot: snap),
+    );
+    return await collectionPaging.load();
+  }
+
   Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async {
-    // final collectionPaging = CollectionPaging<CSchoolClass>(
-    //   query: CSchoolClass().collectionRef.orderBy('classId', descending: true),
-    //   limit: 10000,
-    //   decode: (snap) => CSchoolClass(snapshot: snap),
-    // );
-    // return await collectionPaging.load();
-    //TODO: Test data, replace me
-    var class1 = CSchoolClass(id: 'C0003');
-    class1.title = 'Test class';
-    class1.level = ClassLevel.LEVEL1;
-    await Timer(Duration(seconds: 1), () {});
-    return [class1];
+    final collectionPaging = CollectionPaging<CSchoolClass>(
+      query: CSchoolClass().collectionRef.orderBy('classId', descending: true),
+      limit: 10000,
+      decode: (snap) => CSchoolClass(snapshot: snap),
+    );
+    return await collectionPaging.load();
   }
 
   // Setup emulator for firestore ONLY in debug mode
