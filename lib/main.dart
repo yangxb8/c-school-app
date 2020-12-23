@@ -22,7 +22,6 @@ import 'package:flamingo/flamingo.dart';
 
 import 'service/api_service.dart';
 import 'service/localstorage_service.dart';
-import 'service/logger_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -107,6 +106,7 @@ class Splash extends StatelessWidget {
             FlatButton(
               textColor: Color(0xFF6200EE),
               onPressed: () async {
+                await Get.find<ApiService>().firestoreApi.uploadClassesByCsv();
                 await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
                 await navigateToHome;
               },

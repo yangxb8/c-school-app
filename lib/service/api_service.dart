@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:c_school_app/app/models/class_entity_interface.dart';
 import 'package:c_school_app/util/functions.dart';
 import 'package:csv/csv.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:supercharged/supercharged.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -333,12 +331,17 @@ class _FirestoreApi {
     final documentAccessor = DocumentAccessor();
 
     // Build Word from csv
-    final csv = CsvToListConverter()
-        .convert(await rootBundle.loadString('assets/upload/words.csv'))
-          ..removeAt(0)
-          ..removeWhere((w) =>
-              WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
-              w[COLUMN_WORD] == null);
+    var csv;
+    try {
+      csv = CsvToListConverter()
+              .convert(await rootBundle.loadString('assets/upload/words.csv'))
+                ..removeAt(0)
+                ..removeWhere((w) =>
+                    WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
+                    w[COLUMN_WORD] == null);
+    } on Exception catch (_) {
+      print('No words.csv found, will skip!');
+    }
 
     var words = csv
         .map((row) => Word(id: row[COLUMN_WORD_ID])
@@ -459,12 +462,17 @@ class _FirestoreApi {
     final documentAccessor = DocumentAccessor();
 
     // Build Word from csv
-    final csv = CsvToListConverter()
-        .convert(await rootBundle.loadString('assets/upload/classes.csv'))
-          ..removeAt(0)
-          ..removeWhere((w) =>
-              WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
-              w[COLUMN_TITLE] == null);
+    var csv;
+    try {
+      csv = CsvToListConverter()
+              .convert(await rootBundle.loadString('assets/upload/classes.csv'))
+                ..removeAt(0)
+                ..removeWhere((w) =>
+                    WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
+                    w[COLUMN_TITLE] == null);
+    } on Exception catch (_) {
+      print('No classes.csv found, will skip!');
+    }
 
     var cschoolClasses = csv
         .map((row) => CSchoolClass(id: row[COLUMN_ID])
@@ -507,15 +515,6 @@ class _FirestoreApi {
   }
 
   Future<List<Word>> fetchWords({List<String> tags}) async {
-    final collectionPaging = CollectionPaging<Word>(
-      query: Word().collectionRef.orderBy('wordId', descending: true),
-      limit: 10000,
-      decode: (snap) => Word(snapshot: snap),
-    );
-    return await collectionPaging.load();
-  }
-
-  Future<List<Word>> fetchClassEntities<T implements>({List<String> tags}) async {
     final collectionPaging = CollectionPaging<Word>(
       query: Word().collectionRef.orderBy('wordId', descending: true),
       limit: 10000,
