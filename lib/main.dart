@@ -91,34 +91,12 @@ class Splash extends StatelessWidget {
     }
   Future<void> _loadFromFuture() async {
     await initServices();
-    // TODO: Only for development, might need a proper way to upload our clas
+    // TODO: Only for development, might need a proper way to upload our class
     if(AppStateService.isDebug){
-      await Get.dialog(
-        AlertDialog(
-          title: Text('Upload assets to firebase?'),
-          content: Text('Upload assets/upload to firebase (words only now)'),
-          actions: [
-            FlatButton(
-              textColor: Color(0xFF6200EE),
-              onPressed: () async => await navigateToHome(),
-              child: Text('CANCEL'),
-            ),
-            FlatButton(
-              textColor: Color(0xFF6200EE),
-              onPressed: () async {
-                await Get.find<ApiService>().firestoreApi.uploadClassesByCsv();
-                await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
-                await navigateToHome;
-              },
-              child: Text('DO IT'),
-            ),
-          ],
-        ),
-          barrierDismissible: false
-      );
-    } else{
-        await navigateToHome();
+      await Get.find<ApiService>().firestoreApi.uploadClassesByCsv();
+      await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
     }
+    await navigateToHome();
   }
 
   @override

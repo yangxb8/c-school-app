@@ -9,10 +9,10 @@ part of 'class.dart';
 /// Field value key
 enum CSchoolClassKey {
   classId,
-  _level,
+  level,
   title,
   description,
-  _tags,
+  tags,
   picHash,
 
   pic,
@@ -23,14 +23,14 @@ extension CSchoolClassKeyExtension on CSchoolClassKey {
     switch (this) {
       case CSchoolClassKey.classId:
         return 'classId';
-      case CSchoolClassKey._level:
-        return '_level';
+      case CSchoolClassKey.level:
+        return 'level';
       case CSchoolClassKey.title:
         return 'title';
       case CSchoolClassKey.description:
         return 'description';
-      case CSchoolClassKey._tags:
-        return '_tags';
+      case CSchoolClassKey.tags:
+        return 'tags';
       case CSchoolClassKey.picHash:
         return 'picHash';
       case CSchoolClassKey.pic:
@@ -45,10 +45,10 @@ extension CSchoolClassKeyExtension on CSchoolClassKey {
 Map<String, dynamic> _$toData(CSchoolClass doc) {
   final data = <String, dynamic>{};
   Helper.writeNotNull(data, 'classId', doc.classId);
-  Helper.writeNotNull(data, '_level', doc._level);
+  Helper.writeNotNull(data, 'level', doc.level);
   Helper.writeNotNull(data, 'title', doc.title);
   Helper.writeNotNull(data, 'description', doc.description);
-  Helper.writeNotNull(data, '_tags', doc._tags);
+  Helper.writeNotNull(data, 'tags', doc.tags);
   Helper.writeNotNull(data, 'picHash', doc.picHash);
 
   Helper.writeStorageNotNull(data, 'pic', doc.pic, isSetNull: true);
@@ -59,10 +59,10 @@ Map<String, dynamic> _$toData(CSchoolClass doc) {
 /// For load data
 void _$fromData(CSchoolClass doc, Map<String, dynamic> data) {
   doc.classId = Helper.valueFromKey<String>(data, 'classId');
-  doc._level = Helper.valueFromKey<String>(data, '_level');
+  doc.level = Helper.valueFromKey<int>(data, 'level');
   doc.title = Helper.valueFromKey<String>(data, 'title');
   doc.description = Helper.valueFromKey<String>(data, 'description');
-  doc._tags = Helper.valueListFromKey<String>(data, '_tags');
+  doc.tags = Helper.valueListFromKey<String>(data, 'tags');
   doc.picHash = Helper.valueFromKey<String>(data, 'picHash');
 
   doc.pic = Helper.storageFile(data, 'pic');

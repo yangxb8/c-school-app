@@ -2,8 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:c_school_app/app/models/word.dart';
 import 'package:c_school_app/service/class_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:enum_to_string/enum_to_string.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import '../../../i18n/review_words.i18n.dart';
 
 class ReviewWordsHomeScreen extends StatelessWidget {
   final ClassService classService = Get.find();
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +49,20 @@ class ReviewWordsHomeScreen extends StatelessWidget {
                 .paddingOnly(left: 20, top: 20)
                 .alignment(Alignment.centerLeft),
             ListView.builder(
+                controller: _scrollController,
                 itemCount: ClassService.allClasses.length,
                 itemBuilder: (BuildContext context, int index) => FadeInRight(
                     duration: 0.5.seconds,
-                    delay: (0.3 * index).seconds,
-                    child: ClassCard(
-                        cschoolClass:
-                            ClassService.allClasses[index]))).expanded(flex: 5),
+                    // Only when the first time top 5 elements are shown
+                    // Delay the animation to create a staggered effect
+                    delay: index < 5 &&
+                            _scrollController.position.userScrollDirection ==
+                                ScrollDirection.reverse
+                        ? (0.3 * index).seconds
+                        : 0.seconds,
+                    child:
+                        ClassCard(cschoolClass: ClassService.allClasses[index])
+                            .paddingOnly(bottom: 5))).expanded(flex: 5),
           ],
         ),
       ),
@@ -61,7 +70,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
   }
 
   Widget _buildSpecialClassCard() {
-    final bigIconSize = 60.0;
+    final bigIconSize = 50.0;
     var wordsListLiked = classService.getLikedWords;
     var wordsListForgotten = classService.findWordsByConditions(
         wordMemoryStatus: WordMemoryStatus.FORGOT);
@@ -69,7 +78,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
 
     return Row(
       mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Column(
           children: [
@@ -109,7 +118,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
         ),
       ],
     )
-        .paddingOnly(top: 3)
+        .paddingOnly(top: 3, right: 20)
         .card(
           color: ReviewWordsTheme.lightBlue,
           shape: RoundedRectangleBorder(
@@ -157,92 +166,99 @@ class ClassCard extends StatelessWidget {
         classId: cschoolClass.classId);
     return SimpleGestureDetector(
       onTap: () => navigateToReviewWordScreen(cschoolClass: cschoolClass),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            child: cschoolClass.pic?.url == null
-                ? Image.asset(DEFAULT_IMAGE)
-                : CachedNetworkImage(
-                    imageUrl: cschoolClass.pic.url,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(DEFAULT_IMAGE)),
-            flex: 3,
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                EnumToString.convertToString(cschoolClass.level),
-                style: ReviewWordsTheme.classCardLevel,
-              ),
-              Text(
-                cschoolClass.classId,
-                style: ReviewWordsTheme.classCardTitle,
-              ),
-              Text(cschoolClass.title, style: ReviewWordsTheme.classCardTitle),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        classService
-                            .getClassViewedCount(cschoolClass)
-                            .toString(),
-                        textAlign: TextAlign.left,
-                        style: ReviewWordsTheme.classCardMeta,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Icon(
-                          Icons.remove_red_eye,
-                          color: ReviewWordsTheme.lightYellow,
-                          size: 20,
+      child: SizedBox(
+        height: 120,
+        child: Row(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                cschoolClass.pic?.url == null
+                    ? Image.asset(DEFAULT_IMAGE)
+                    : CachedNetworkImage(
+                        imageUrl: cschoolClass.pic.url,
+                        errorWidget: (context, url, error) =>
+                            Image.asset(DEFAULT_IMAGE),
+                        fit: BoxFit.cover,
+                      ).expanded(),
+              ],
+            ).expanded(flex: 3),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  cschoolClass.levelForDisplay,
+                  style: ReviewWordsTheme.classCardLevel,
+                ).paddingOnly(bottom: 5),
+                AutoSizeText(
+                  cschoolClass.title,
+                  style: ReviewWordsTheme.classCardTitle,
+                  maxLines: 1,
+                ).paddingOnly(right: 10,bottom: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          classService
+                              .getClassViewedCount(cschoolClass)
+                              .toString(),
+                          textAlign: TextAlign.left,
+                          style: ReviewWordsTheme.classCardMeta,
                         ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${cschoolClass.words.length}',
-                        textAlign: TextAlign.left,
-                        style: ReviewWordsTheme.classCardMeta,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Icon(
-                          Icons.menu_book,
-                          color: ReviewWordsTheme.lightYellow,
-                          size: 20,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: Icon(
+                            Icons.remove_red_eye,
+                            color: ReviewWordsTheme.lightYellow,
+                            size: 20,
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '${cschoolClass.words.length}',
+                          textAlign: TextAlign.left,
+                          style: ReviewWordsTheme.classCardMeta,
                         ),
-                      ),
-                    ],
-                  ).paddingOnly(left: 20),
-                  Row(
-                    children: [
-                      Text(
-                        forgottenWords.length.toString(),
-                        textAlign: TextAlign.left,
-                        style: ReviewWordsTheme.classCardMeta,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: FaIcon(
-                          FontAwesomeIcons.sadCry,
-                          color: ReviewWordsTheme.lightYellow,
-                          size: 20,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: Icon(
+                            Icons.menu_book,
+                            color: ReviewWordsTheme.lightYellow,
+                            size: 20,
+                          ),
                         ),
-                      ),
-                    ],
-                  ).paddingOnly(left: 20)
-                ],
-              )
-            ],
-          ).paddingOnly(left: 20).expanded(flex: 4)
-        ],
+                      ],
+                    ).paddingOnly(left: 20),
+                    Row(
+                      children: [
+                        Text(
+                          forgottenWords.length.toString(),
+                          textAlign: TextAlign.left,
+                          style: ReviewWordsTheme.classCardMeta,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: FaIcon(
+                            FontAwesomeIcons.sadCry,
+                            color: ReviewWordsTheme.lightYellow,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ).paddingOnly(left: 20)
+                  ],
+                )
+              ],
+            ).paddingOnly(left: 20).expanded(flex: 4)
+          ],
+        ),
       )
           .card(
             color: ReviewWordsTheme.lightBlue,

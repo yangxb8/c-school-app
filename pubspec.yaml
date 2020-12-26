@@ -74,6 +74,7 @@ dependencies:
   animate_do: ^1.7.5
   simple_tooltip: 0.1.16
   flutter_screenutil: ^4.0.2+1
+  auto_size_text: ^2.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

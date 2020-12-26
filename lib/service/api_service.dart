@@ -263,8 +263,13 @@ class _FirestoreApi {
     }
     var user =
         await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
-    user.firebaseUser = firebaseUser;
-    return user;
+    if (user.isNull) {
+      logger.e('user ${firebaseUser.uid} not found in firestore, return empty user');
+      return AppUser();
+    } else {
+      user.firebaseUser = firebaseUser;
+      return user;
+    }
   }
 
   /// User can have many trial for same fingerprint
@@ -334,12 +339,11 @@ class _FirestoreApi {
     var csv;
     try {
       csv = CsvToListConverter()
-              .convert(await rootBundle.loadString('assets/upload/words.csv'))
-                ..removeAt(0)
-                ..removeWhere((w) =>
-                    WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
-                    w[COLUMN_WORD] == null);
-    } on Exception catch (_) {
+          .convert(await rootBundle.loadString('assets/upload/words.csv'))
+            ..removeWhere((w) =>
+                WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
+                w[COLUMN_WORD] == null);
+    } catch (_) {
       print('No words.csv found, will skip!');
     }
 
@@ -381,7 +385,7 @@ class _FirestoreApi {
             filename: '${word.wordId}.${EXTENSION_IMAGE}',
             mimeType: mimeTypeJpeg,
             metadata: {'newPost': 'true'});
-      } on Exception catch (e, _) {
+      } catch (e, _) {
         logger.i('Not image found for ${word.wordAsString}, will skip');
       }
 
@@ -465,21 +469,19 @@ class _FirestoreApi {
     var csv;
     try {
       csv = CsvToListConverter()
-              .convert(await rootBundle.loadString('assets/upload/classes.csv'))
-                ..removeAt(0)
-                ..removeWhere((w) =>
-                    WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
-                    w[COLUMN_TITLE] == null);
-    } on Exception catch (_) {
+          .convert(await rootBundle.loadString('assets/upload/classes.csv'))
+            ..removeWhere((w) =>
+                WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
+                w[COLUMN_TITLE] == null);
+    } catch (_) {
       print('No classes.csv found, will skip!');
     }
 
     var cschoolClasses = csv
-        .map((row) => CSchoolClass(id: row[COLUMN_ID])
-          ..level = EnumToString.fromString(ClassLevel.values, row[COLUMN_LEVEL].trim())
-          ..title = row[COLUMN_TITLE].trim()
-          ..description = row[COLUMN_DESCRIPTION].trim()
-          ..picHash = row[COLUMN_PIC_HASH].trim());
+        .map((row) => CSchoolClass(id: row[COLUMN_ID], level: row[COLUMN_LEVEL])
+          ..title = row[COLUMN_TITLE].trim() // Title should not be null
+          ..description = row[COLUMN_DESCRIPTION]?.trim()
+          ..picHash = row[COLUMN_PIC_HASH]?.trim());
 
     // Checking status
     storage.uploader.listen((data) {
@@ -491,13 +493,13 @@ class _FirestoreApi {
       final pathClassPic =
           '${cschoolClass.documentPath}/${EnumToString.convertToString(CSchoolClassKey.pic)}';
       try {
-        final classPic =
-            await getFileFromAssets('upload/${cschoolClass.classId}.${EXTENSION_IMAGE}');
+        final classPic = await getFileFromAssets(
+            'upload/${cschoolClass.classId}.${EXTENSION_IMAGE}');
         cschoolClass.pic = await storage.save(pathClassPic, classPic,
             filename: '${cschoolClass.classId}.${EXTENSION_IMAGE}',
             mimeType: mimeTypeJpeg,
             metadata: {'newPost': 'true'});
-      } on Exception catch (e, _) {
+      } catch (e, _) {
         logger.i('Not image found for ${cschoolClass.title}, will skip');
       }
 
@@ -516,7 +518,7 @@ class _FirestoreApi {
 
   Future<List<Word>> fetchWords({List<String> tags}) async {
     final collectionPaging = CollectionPaging<Word>(
-      query: Word().collectionRef.orderBy('wordId', descending: true),
+      query: Word().collectionRef.orderBy('wordId'),
       limit: 10000,
       decode: (snap) => Word(snapshot: snap),
     );
@@ -525,7 +527,7 @@ class _FirestoreApi {
 
   Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async {
     final collectionPaging = CollectionPaging<CSchoolClass>(
-      query: CSchoolClass().collectionRef.orderBy('classId', descending: true),
+      query: CSchoolClass().collectionRef.orderBy('classId'),
       limit: 10000,
       decode: (snap) => CSchoolClass(snapshot: snap),
     );

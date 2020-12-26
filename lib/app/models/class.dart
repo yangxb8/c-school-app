@@ -1,7 +1,6 @@
 import 'package:c_school_app/app/models/class_entity_interface.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/app/models/word.dart';
 import 'package:c_school_app/service/class_service.dart';
@@ -9,20 +8,25 @@ import 'package:c_school_app/service/class_service.dart';
 part 'class.flamingo.dart';
 
 class CSchoolClass extends Document<CSchoolClass> implements ClassEntityInterface{
+  static const levelPrefix = 'Level';
   static ClassService classService = Get.find<ClassService>();
 
   CSchoolClass({
     String id,
+    int level,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
   })  : classId = id,
+        level = level,
+        tags = id.isNull? []:['$levelPrefix$level'],
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
   String classId;
 
+  /// For display
   @Field()
-  String _level;
+  int level;
 
   @Field()
   String title;
@@ -32,7 +36,7 @@ class CSchoolClass extends Document<CSchoolClass> implements ClassEntityInterfac
 
   /// Converted from ClassTag enum
   @Field()
-  List<String> _tags;
+  List<String> tags;
 
   /// Hash of class pic for display by blurhash
   @Field()
@@ -42,18 +46,11 @@ class CSchoolClass extends Document<CSchoolClass> implements ClassEntityInterfac
   @StorageField()
   StorageFile pic;
 
-  List<ClassTag> get tags => EnumToString.fromList(ClassTag.values, _tags);
-  set tags(List<ClassTag> tags_) => _tags = EnumToString.toList(tags_);
-
-  ClassLevel get level => EnumToString.fromString(ClassLevel.values, _level);
-  set level(ClassLevel level_) => _level = EnumToString.convertToString(level_);
-
   /// Convert class Id to WordTag and find words related
   List<Word> get words => classService
-      .findWordsByTags([EnumToString.fromString(WordTag.values, classId)]);
-
+      .findWordsByTags([classId]);
   int get classViewedCount => classService.classViewedCount(this);
-
+  String get levelForDisplay => '$levelPrefix$level';
 
   @override
   Map<String, dynamic> toData() => _$toData(this);
@@ -61,7 +58,3 @@ class CSchoolClass extends Document<CSchoolClass> implements ClassEntityInterfac
   @override
   void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }
-
-enum ClassTag { LEVEL1, LEVEL2, LEVEL3 }
-
-enum ClassLevel {LEVEL1, LEVEL2, LEVEL3}

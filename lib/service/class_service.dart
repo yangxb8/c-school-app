@@ -91,7 +91,7 @@ class ClassService extends GetxService {
   }
 
   /// If id is empty , get all
-  List<Word> findWordsByTags(List<WordTag> tags) {
+  List<Word> findWordsByTags(List<String> tags) {
     if (tags.isNullOrBlank) {
       return allWords;
     } else {
@@ -113,7 +113,7 @@ class ClassService extends GetxService {
   }
 
   /// If id is empty , get all
-  List<CSchoolClass> findClassesByTags(List<ClassTag> tags) {
+  List<CSchoolClass> findClassesByTags(List<String> tags) {
     if (tags.isNullOrBlank) {
       return allClasses;
     } else {

@@ -2,7 +2,6 @@ import 'package:c_school_app/app/models/class_entity_interface.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:c_school_app/app/models/word_meaning.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/app/models/class.dart';
 import 'package:c_school_app/service/class_service.dart';
@@ -18,6 +17,7 @@ class Word extends Document<Word> implements ClassEntityInterface{
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
   })  : wordId = id,
+        tags = id.isNull? []:[id.split('-').first], // Assign classId to tags
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
@@ -59,7 +59,7 @@ class Word extends Document<Word> implements ClassEntityInterface{
 
   /// Converted from WordTag enum
   @Field()
-  List<String> _tags;
+  List<String> tags;
 
   /// Hash of word pic for display by blurhash
   @Field()
@@ -98,12 +98,10 @@ class Word extends Document<Word> implements ClassEntityInterface{
   set otherMeaningIds(List<String> otherMeaningIds) =>
       _otherMeaningIds = otherMeaningIds;
 
-  List<WordTag> get tags => EnumToString.fromList(WordTag.values, _tags);
-
-  set tags(List<WordTag> tags_) => _tags = EnumToString.toList(tags_);
-
   CSchoolClass get cschoolClass =>
       classService.findClassesById(id.split('-').first).single;
+
+  String get cschoolClassId => id.split('-').first;
 
   int get viewedCount => classService.wordViewedCount(this);
 
@@ -118,24 +116,6 @@ class Word extends Document<Word> implements ClassEntityInterface{
 
   @override
   void fromData(Map<String, dynamic> data) => _$fromData(this, data);
-}
-
-enum WordTag {
-  // C = Class
-  C0001,
-  C0002,
-  C0003,
-  C0004,
-  C0005,
-  C0006,
-  C0007,
-  C0008,
-  C0009,
-  C0010,
-  HSK1,
-  HSK2,
-  HSK3,
-  HSK4
 }
 
 enum WordMemoryStatus { REMEMBERED, NORMAL, FORGOT, NOT_REVIEWED }

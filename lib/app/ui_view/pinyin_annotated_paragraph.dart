@@ -68,16 +68,9 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       centerWord.wordAsString,
       ...linkedWords.map((w) => w.wordAsString).toList()
     ], paragraph);
-    // There will be punctuation in paragraph but not in pinyins,
-    // so we need a separate pinyinIdx
-    var pinyinIdx = 0;
     return List<PinyinAnnotatedHanzi>.generate(paragraph.length, (idx) {
       final hanzi = paragraph[idx];
-      var pinyin = '';
-      if (hanzi.isSingleHanzi) {
-        pinyin = pinyins[pinyinIdx];
-        pinyinIdx++;
-      }
+      var pinyin = hanzi.isSingleHanzi ? pinyins[idx] : '';
       final hanziTypeAndRelatedWord = _calculateHanziType(
           hanziIdx: idx,
           keywordsSeparatedParagraph: keywordsSeparatedParagraph);

@@ -37,7 +37,7 @@ class ReviewWordsTheme {
 
   static TextStyle classCardLevel = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 20,
+    fontSize: 15,
     letterSpacing: 0.27,
     color: lightGreen,
   );
@@ -51,7 +51,7 @@ class ReviewWordsTheme {
 
   static TextStyle classCardMeta = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 14,
+    fontSize: 19,
     letterSpacing: 0.27,
     color: ReviewWordsTheme.darkBlue,
   );

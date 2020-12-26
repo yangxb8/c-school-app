@@ -1,3 +1,2 @@
-abstract class ClassEntityInterface{
-  List<String> _tags;
-}
+/// All Entity related to class should implement this interface
+abstract class ClassEntityInterface{}
