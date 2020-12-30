@@ -24,6 +24,8 @@ class SpeechRecordingController extends GetxController {
   SpeechExam exam;
   /// Used to play question and user speech
   AudioPlayer _myPlayer;
+  /// TencentApi
+  final tencentApi = Get.find<ApiService>().tencentApi;
 
   /// Return last speech by user
   UserSpeech get lastSpeech => userSpeeches.isEmpty? null: userSpeeches.last;
@@ -53,13 +55,13 @@ class SpeechRecordingController extends GetxController {
     var newSpeech = await UserSpeech.forExam(exam: exam).init();
     userSpeeches.add(newSpeech);
     // Call native method
-    await Get.find<ApiService>().tencentApi.soeStartRecord(exam);
+    await tencentApi.soeStartRecord(exam);
   }
 
   void stopRecordAndEvaluate() async {
     recordingStatus(RecordingStatus.EVALUATING);
     // Call native method and save result to latest userSpeech instance
-    var result = await Get.find<ApiService>().tencentApi.soeStopRecordAndEvaluate();
+    var result = await tencentApi.soeStopRecordAndEvaluate();
     userSpeeches.last.speechData = result['speechData'];
     userSpeeches.last.evaluationResult = result['evaluationResult'];
     // Save result to firestore
