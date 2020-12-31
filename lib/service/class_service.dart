@@ -5,8 +5,8 @@ import 'package:c_school_app/model/user_class_history.dart';
 import 'package:c_school_app/model/user_word_history.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:c_school_app/app/models/class.dart';
-import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/app/model/class.dart';
+import 'package:c_school_app/app/model/word.dart';
 import 'api_service.dart';
 import '../app/ui_view/word_card.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/service/user_service.dart';
 
-import '../../app/models/exams.dart';
+import '../../app/model/exams.dart';
 import '../../service/api_service.dart';
 import 'speech_evaluation_result.dart';
 

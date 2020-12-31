@@ -1,13 +1,12 @@
-import 'package:c_school_app/app/models/class_entity_interface.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/class_service.dart';
 
 part 'class.flamingo.dart';
 
-class CSchoolClass extends Document<CSchoolClass> implements ClassEntityInterface{
+class CSchoolClass extends Document<CSchoolClass>{
   static const levelPrefix = 'Level';
   static ClassService classService = Get.find<ClassService>();
 

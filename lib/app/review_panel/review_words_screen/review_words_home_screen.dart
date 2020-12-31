@@ -1,5 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/class_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:c_school_app/app/models/class.dart';
+import 'package:c_school_app/app/model/class.dart';
 import 'review_words_theme.dart';
 import '../../../i18n/review_words.i18n.dart';
 

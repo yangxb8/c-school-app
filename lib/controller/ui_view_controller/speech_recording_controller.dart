@@ -7,8 +7,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:c_school_app/exceptions/sound_exceptions.dart';
 import 'package:c_school_app/service/app_state_service.dart';
 
-import '../../app/models/exams.dart';
-import '../../app/models/user_speech.dart';
+import '../../app/model/exams.dart';
+import '../../app/model/user_speech.dart';
 import '../../service/api_service.dart';
 
 class SpeechRecordingController extends GetxController {

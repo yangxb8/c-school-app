@@ -1,15 +1,14 @@
-import 'package:c_school_app/app/models/class_entity_interface.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:c_school_app/app/models/word_meaning.dart';
+import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/app/models/class.dart';
+import 'package:c_school_app/app/model/class.dart';
 import 'package:c_school_app/service/class_service.dart';
 
 part 'word.flamingo.dart';
 
 /// id is used as primary key for any word
-class Word extends Document<Word> implements ClassEntityInterface{
+class Word extends Document<Word>{
   static ClassService classService = Get.find<ClassService>();
 
   Word({

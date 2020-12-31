@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-import '../../app/models/exams.dart';
+import '../../app/model/exams.dart';
 import '../../controller/ui_view_controller/speech_recording_controller.dart';
 
 class FloatBottomSheetContainer extends StatelessWidget {

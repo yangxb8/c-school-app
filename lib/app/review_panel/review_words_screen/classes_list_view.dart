@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:c_school_app/app/models/class.dart';
+import 'package:c_school_app/app/model/class.dart';
 import 'package:c_school_app/service/class_service.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:supercharged/supercharged.dart';

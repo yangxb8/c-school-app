@@ -1,4 +1,4 @@
-import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

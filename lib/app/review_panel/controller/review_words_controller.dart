@@ -1,23 +1,27 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
+import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:c_school_app/app/models/class.dart';
+import 'package:c_school_app/app/model/class.dart';
 import 'package:c_school_app/model/user_word_history.dart';
 import 'package:c_school_app/service/class_service.dart';
-import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:c_school_app/service/logger_service.dart';
+import 'package:c_school_app/controller/tracked_controller_interface.dart';
+import 'review_words_controller_track.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
 class ReviewWordsController extends GetxController
-    with SingleGetTickerProviderMixin {
+    with SingleGetTickerProviderMixin
+    implements TrackableController {
   final ClassService classService = Get.find();
   final logger = LoggerService.logger;
   final tts = FlutterTts();
@@ -141,7 +145,7 @@ class ReviewWordsController extends GetxController
     } else {
       _mode.value = WordsReviewMode.FLASH_CARD;
       if (pageController.hasClients) {
-        _animateToFirstPage();
+        _animateToWordById(controllerTrack.trackedWordId);
       }
       logger.i('Change to Card Mode');
     }
@@ -176,7 +180,7 @@ class ReviewWordsController extends GetxController
       searchBarPlayIconController.forward();
       isAutoPlayMode.value = true;
       // Play from beginning
-      await _animateToFirstPage();
+      await _animateToFirstWord();
       flipBackPrimaryCard();
       _autoPlayCard();
     } else {
@@ -235,19 +239,41 @@ class ReviewWordsController extends GetxController
     searchResult.addAll(wordsList.filter((word) => containKeyWord(word)));
   }
 
-  Future _animateToFirstPage() async {
+  Future<void> _animateToFirstWord() async {
     await pageController.animateToPage(pageController.initialPage,
         duration: 0.5.seconds, curve: Curves.easeInOut);
   }
 
+  Future<void> _animateToWordById(String wordId) async {
+    var index = wordsList.indexWhere((word) => word.wordId == wordId);
+    // If couldn't find the wordId, go to first word
+    if (index == -1) {
+      await _animateToFirstWord();
+    } else {
+      await pageController.animateToPage(index,
+          duration: 0.5.seconds, curve: Curves.easeInOut);
+    }
+  }
+
+  int calculateWordIndex(Word word) => wordsList.indexOf(word);
+
+  @override
+  void updateTrack() {
+    controllerTrack.trackedWordId = primaryWord.wordId;
+  }
+
+  @override
+  ReviewWordsControllerTrack get controllerTrack =>
+      UserService.user.getControllerTrack<ReviewWordsControllerTrack>() ??
+      ReviewWordsControllerTrack();
+
   @override
   void onClose() {
+    updateTrack();
     classService.commitChange();
     audioPlayer.dispose();
     super.onClose();
   }
-
-  int calculateWordIndex(Word word) => wordsList.indexOf(word);
 }
 
 enum WordsReviewMode { LIST, FLASH_CARD }

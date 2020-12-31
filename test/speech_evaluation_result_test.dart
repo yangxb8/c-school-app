@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:c_school_app/app/models/speech_evaluation_result.dart';
+import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 
 void main() {
   test('Speech evaluation result can be cast', () {

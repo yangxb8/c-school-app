@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/service/class_service.dart';
-import 'package:c_school_app/app/models/word.dart';
+import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/logger_service.dart';
 
 const LAN_CODE_CN = 'zh-cn';
