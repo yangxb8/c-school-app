@@ -48,7 +48,7 @@ class WordMeaning extends Model {
   List<StorageFile> exampleFemaleAudios = [];
 
   List<WordExample> get examples {
-    var examples = [];
+    var examples = <WordExample>[];
     for (var i = 0; i < _examples.length; i++) {
       examples.add(WordExample(
           example: _examples[i],

@@ -65,8 +65,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   List<PinyinAnnotatedHanzi> _generateHanzis() {
     // Divide paragraph by center word and linked word
     final keywordsSeparatedParagraph = _divideExample([
-      centerWord.wordAsString,
-      ...linkedWords.map((w) => w.wordAsString).toList()
+      centerWord?.wordAsString?? '',
+      ...linkedWords?.map((w) => w.wordAsString)?? []
     ], paragraph);
     return List<PinyinAnnotatedHanzi>.generate(paragraph.length, (idx) {
       final hanzi = paragraph[idx];

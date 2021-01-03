@@ -412,11 +412,11 @@ class _FirestoreApi {
 
       // Examples Audio
       // Each meaning
-      await word.wordMeanings.forEach((meaning) async {
+      await Future.forEach(word.wordMeanings, (meaning) async {
         var maleAudios = <StorageFile>[];
         var femaleAudios = <StorageFile>[];
         // Each example
-        await List.generate(meaning.exampleCount, (i)=>i).forEach ((index) async {
+        await Future.forEach(List.generate(meaning.exampleCount, (i)=>i), (index) async {
           final pathExampleMaleAudio =
               '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleMaleAudios)}';
           final pathExampleFemaleAudio =
@@ -425,16 +425,18 @@ class _FirestoreApi {
               'upload/${word.wordId}-E${index}-M.${EXTENSION_AUDIO}');
           final exampleAudioFileFemale = await getFileFromAssets(
               'upload/${word.wordId}-E${index}-F.${EXTENSION_AUDIO}');
-          maleAudios.add(await storage.save(
+          final maleAudio = await storage.save(
               pathExampleMaleAudio, exampleAudioFileMale,
               filename: '${word.wordId}-E${index}-M.${EXTENSION_AUDIO}',
               mimeType: mimeTypeMpeg,
-              metadata: {'newPost': 'true'}));
-          femaleAudios.add(await storage.save(
+              metadata: {'newPost': 'true'});
+          maleAudios.add(maleAudio);
+          final femaleAudio = await storage.save(
               pathExampleFemaleAudio, exampleAudioFileFemale,
               filename: '${word.wordId}-E${index}-F.${EXTENSION_AUDIO}',
               mimeType: mimeTypeMpeg,
-              metadata: {'newPost': 'true'}));
+              metadata: {'newPost': 'true'});
+          femaleAudios.add(femaleAudio);
         });
         meaning.exampleMaleAudios = maleAudios;
         meaning.exampleFemaleAudios = femaleAudios;
