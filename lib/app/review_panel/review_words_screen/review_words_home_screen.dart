@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_home_screen_controller.dart';
 import 'package:c_school_app/service/lecture_service.dart';
@@ -174,12 +175,16 @@ class LectureCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 lecture.pic?.url == null
-                    ? Image.asset(DEFAULT_IMAGE)
+                    ? Image.asset(DEFAULT_IMAGE, fit: BoxFit.fitWidth)
                     : CachedNetworkImage(
                         imageUrl: lecture.pic.url,
+                        placeholder: (context, url) => FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: BlurHash(hash: lecture.picHash),
+                        ),
                         errorWidget: (context, url, error) =>
                             Image.asset(DEFAULT_IMAGE),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fitWidth,
                       ).expanded(),
               ],
             ).expanded(flex: 3),

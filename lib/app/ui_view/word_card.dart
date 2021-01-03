@@ -89,19 +89,18 @@ class WordCard extends StatelessWidget {
             child: word.pic?.url == null
                 ? Image.asset(
                     DEFAULT_IMAGE,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fitWidth,
                   )
                 : CachedNetworkImage(
                     fit: BoxFit.cover,
                     imageUrl: word.pic.url,
-                    placeholder: (context, url) => SizedBox(
-                          width: 200.0.w,
-                          height: 100.0.h,
+                    placeholder: (context, url) => FittedBox(
+                          fit: BoxFit.fitWidth,
                           child: BlurHash(hash: word.picHash),
                         ),
                     errorWidget: (context, url, error) => Image.asset(
                           DEFAULT_IMAGE,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fitWidth,
                         )),
             flex: 10)
       ],
