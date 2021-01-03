@@ -15,7 +15,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:c_school_app/app/model/class.dart';
+import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/app/model/exams.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/app/model/user_speech.dart';
@@ -345,6 +345,7 @@ class _FirestoreApi {
                 w[COLUMN_WORD] == null);
     } catch (_) {
       print('No words.csv found, will skip!');
+      return;
     }
 
     var words = csv
@@ -412,10 +413,10 @@ class _FirestoreApi {
       // Examples Audio
       // Each meaning
       await word.wordMeanings.forEach((meaning) async {
-        var maleAudios = [];
-        var femaleAudios = [];
+        var maleAudios = <StorageFile>[];
+        var femaleAudios = <StorageFile>[];
         // Each example
-        await meaning.examples.forEachIndexed((index, _) async {
+        await List.generate(meaning.exampleCount, (i)=>i).forEach ((index) async {
           final pathExampleMaleAudio =
               '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleMaleAudios)}';
           final pathExampleFemaleAudio =
@@ -452,7 +453,7 @@ class _FirestoreApi {
     storage.dispose();
   }
 
-  void uploadClassesByCsv() async {
+  void uploadLecturesByCsv() async {
     final EXTENSION_IMAGE = 'jpg';
     final COLUMN_ID = 0;
     final COLUMN_LEVEL = 1;
@@ -469,16 +470,17 @@ class _FirestoreApi {
     var csv;
     try {
       csv = CsvToListConverter()
-          .convert(await rootBundle.loadString('assets/upload/classes.csv'))
+          .convert(await rootBundle.loadString('assets/upload/lectures.csv'))
             ..removeWhere((w) =>
                 WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
                 w[COLUMN_TITLE] == null);
     } catch (_) {
-      print('No classes.csv found, will skip!');
+      print('No lectures.csv found, will skip!');
+      return;
     }
 
-    var cschoolClasses = csv
-        .map((row) => CSchoolClass(id: row[COLUMN_ID], level: row[COLUMN_LEVEL])
+    var lectures = csv
+        .map((row) => Lecture(id: row[COLUMN_ID], level: row[COLUMN_LEVEL])
           ..title = row[COLUMN_TITLE].trim() // Title should not be null
           ..description = row[COLUMN_DESCRIPTION]?.trim()
           ..picHash = row[COLUMN_PIC_HASH]?.trim());
@@ -488,23 +490,23 @@ class _FirestoreApi {
       print('total: ${data.totalBytes} transferred: ${data.bytesTransferred}');
     });
     // Upload file to cloud storage and save reference
-    await cschoolClasses.forEach((cschoolClass) async {
+    await lectures.forEach((lecture) async {
       // Word image
       final pathClassPic =
-          '${cschoolClass.documentPath}/${EnumToString.convertToString(CSchoolClassKey.pic)}';
+          '${lecture.documentPath}/${EnumToString.convertToString(LectureKey.pic)}';
       try {
-        final classPic = await getFileFromAssets(
-            'upload/${cschoolClass.classId}.${EXTENSION_IMAGE}');
-        cschoolClass.pic = await storage.save(pathClassPic, classPic,
-            filename: '${cschoolClass.classId}.${EXTENSION_IMAGE}',
+        final lecturePic = await getFileFromAssets(
+            'upload/${lecture.lectureId}.${EXTENSION_IMAGE}');
+        lecture.pic = await storage.save(pathClassPic, lecturePic,
+            filename: '${lecture.lectureId}.${EXTENSION_IMAGE}',
             mimeType: mimeTypeJpeg,
             metadata: {'newPost': 'true'});
       } catch (e, _) {
-        logger.i('Not image found for ${cschoolClass.title}, will skip');
+        logger.i('Not image found for ${lecture.title}, will skip');
       }
 
       // Finally, save the word
-      await documentAccessor.save(cschoolClass);
+      await documentAccessor.save(lecture);
     });
 
 // Checking status
@@ -525,11 +527,11 @@ class _FirestoreApi {
     return await collectionPaging.load();
   }
 
-  Future<List<CSchoolClass>> fetchClasses({List<String> tags}) async {
-    final collectionPaging = CollectionPaging<CSchoolClass>(
-      query: CSchoolClass().collectionRef.orderBy('classId'),
+  Future<List<Lecture>> fetchLectures({List<String> tags}) async {
+    final collectionPaging = CollectionPaging<Lecture>(
+      query: Lecture().collectionRef.orderBy('lectureId'),
       limit: 10000,
-      decode: (snap) => CSchoolClass(snapshot: snap),
+      decode: (snap) => Lecture(snapshot: snap),
     );
     return await collectionPaging.load();
   }

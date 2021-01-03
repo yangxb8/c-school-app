@@ -156,7 +156,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
             continue;
           }
           if (isPrimaryCard) {
-            controller.primaryWordOrdinal.value = i;
+            controller.primaryWordIndex.value = i;
           }
           var isOnRight = delta > 0;
 

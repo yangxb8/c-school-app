@@ -2,21 +2,21 @@ import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/app/model/class.dart';
-import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 
 part 'word.flamingo.dart';
 
 /// id is used as primary key for any word
 class Word extends Document<Word>{
-  static ClassService classService = Get.find<ClassService>();
+  static LectureService lectureService = Get.find<LectureService>();
 
   Word({
     String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
   })  : wordId = id,
-        tags = id.isNull? []:[id.split('-').first], // Assign classId to tags
+        tags = id.isNull? []:[id.split('-').first], // Assign lectureId to tags
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
@@ -79,7 +79,7 @@ class Word extends Document<Word>{
     if (_relatedWordIds.isNullOrBlank) {
       return [];
     } else {
-      return classService.findWordsByIds(_relatedWordIds);
+      return lectureService.findWordsByIds(_relatedWordIds);
     }
   }
 
@@ -90,25 +90,25 @@ class Word extends Document<Word>{
     if (_otherMeaningIds.isNullOrBlank) {
       return [];
     } else {
-      return classService.findWordsByIds(_otherMeaningIds);
+      return lectureService.findWordsByIds(_otherMeaningIds);
     }
   }
 
   set otherMeaningIds(List<String> otherMeaningIds) =>
       _otherMeaningIds = otherMeaningIds;
 
-  CSchoolClass get cschoolClass =>
-      classService.findClassesById(id.split('-').first).single;
+  Lecture get lecture =>
+      lectureService.findLecturesById(id.split('-').first).single;
 
-  String get cschoolClassId => id.split('-').first;
+  String get lectureId => id.split('-').first;
 
-  int get viewedCount => classService.wordViewedCount(this);
+  int get viewedCount => lectureService.wordViewedCount(this);
 
-  bool get isLiked => classService.isWordLiked(this);
+  bool get isLiked => lectureService.isWordLiked(this);
 
   String get wordAsString => word.join();
 
-  WordMemoryStatus get statue => classService.getMemoryStatusOfWord(this);
+  WordMemoryStatus get statue => lectureService.getMemoryStatusOfWord(this);
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

@@ -2,26 +2,26 @@ import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 
-part 'class.flamingo.dart';
+part 'lecture.flamingo.dart';
 
-class CSchoolClass extends Document<CSchoolClass>{
+class Lecture extends Document<Lecture>{
   static const levelPrefix = 'Level';
-  static ClassService classService = Get.find<ClassService>();
+  static LectureService lectureService = Get.find<LectureService>();
 
-  CSchoolClass({
+  Lecture({
     String id,
     int level,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
-  })  : classId = id,
+  })  : lectureId = id,
         level = level,
         tags = id.isNull? []:['$levelPrefix$level'],
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
-  String classId;
+  String lectureId;
 
   /// For display
   @Field()
@@ -37,18 +37,18 @@ class CSchoolClass extends Document<CSchoolClass>{
   @Field()
   List<String> tags;
 
-  /// Hash of class pic for display by blurhash
+  /// Hash of lecture pic for display by blurhash
   @Field()
   String picHash;
 
-  /// If the Class has pic in cloud storage
+  /// If the lecture has pic in cloud storage
   @StorageField()
   StorageFile pic;
 
-  /// Convert class Id to WordTag and find words related
-  List<Word> get words => classService
-      .findWordsByTags([classId]);
-  int get classViewedCount => classService.classViewedCount(this);
+  /// Convert lecture Id to WordTag and find words related
+  List<Word> get words => lectureService
+      .findWordsByTags([lectureId]);
+  int get lectureViewedCount => lectureService.lectureViewedCount(this);
   String get levelForDisplay => '$levelPrefix$level';
 
   @override

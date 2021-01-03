@@ -32,6 +32,7 @@ class WordMeaning extends Model {
   List<String> _exampleMeanings;
 
   @Field()
+
   /// Pinyin for each examples, pinyin is separated by '-' like 'wo-men'
   // ignore: prefer_final_fields
   List<String> _examplePinyins;
@@ -39,12 +40,12 @@ class WordMeaning extends Model {
   /// Example ordinal : audio file
   @StorageField()
   // ignore: prefer_final_fields
-  List<StorageFile> exampleMaleAudios;
+  List<StorageFile> exampleMaleAudios = [];
 
   /// Example ordinal : audio file
   @StorageField()
   // ignore: prefer_final_fields
-  List<StorageFile> exampleFemaleAudios;
+  List<StorageFile> exampleFemaleAudios = [];
 
   List<WordExample> get examples {
     var examples = [];
@@ -54,12 +55,12 @@ class WordMeaning extends Model {
           meaning: _exampleMeanings[i],
           pinyin: _examplePinyins[i].split(PINYIN_SEPARATOR),
           audioMale: exampleMaleAudios[i],
-          audioFemale: exampleFemaleAudios[i]
-      ));
+          audioFemale: exampleFemaleAudios[i]));
     }
     return examples;
   }
 
+  int get exampleCount => _examples.length;
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

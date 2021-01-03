@@ -1,10 +1,10 @@
-import 'package:c_school_app/controller/tracked_controller_interface.dart';
+import 'package:c_school_app/controller/trackable_controller_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:c_school_app/model/user_class_history.dart';
+import 'package:c_school_app/model/user_lecture_history.dart';
 import 'package:c_school_app/model/user_memo.dart';
 import 'package:c_school_app/model/user_rank.dart';
 import 'package:c_school_app/model/user_word_history.dart';
@@ -30,17 +30,17 @@ class AppUser extends Document<AppUser> {
   @ModelField()
   List<UserRank> rankHistory = [];
   @ModelField()
-  List<ClassHistory> reviewedClassHistory = [];
+  List<LectureHistory> reviewedClassHistory = [];
   @ModelField()
   List<WordHistory> reviewedWordHistory = [];
   @Field()
-  List<String> likedClasses = [];
+  List<String> likedLectures = [];
   @Field()
   List<String> likedWords = [];
   @ModelField()
   List<UserMemo> userMemos = [];
   @ModelField()
-  List<ControllerTrackInterface> controllerTracks = [];
+  List<ControllerTrack> controllerTracks = [];
   User firebaseUser;
 
   set membershipTypes(List<MembershipType> types) =>
@@ -59,7 +59,7 @@ class AppUser extends Document<AppUser> {
   double get userScoreCoeff => userRankNow.toDouble();
 
   /// Get track by named ControllerTrackInterface. if nothing found, return null
-  T getControllerTrack<T extends ControllerTrackInterface>() {
+  T getControllerTrack<T extends ControllerTrack>() {
     var tracks = controllerTracks.whereType<T>();
     if (tracks.isNotEmpty) {
       return tracks.single;

@@ -1,20 +1,22 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:c_school_app/service/app_state_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:c_school_app/app/model/class.dart';
+import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/model/user_word_history.dart';
-import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:c_school_app/service/logger_service.dart';
-import 'package:c_school_app/controller/tracked_controller_interface.dart';
+import 'package:c_school_app/controller/trackable_controller_interface.dart';
 import 'review_words_controller_track.dart';
 
 const LAN_CODE_CN = 'zh-cn';
@@ -22,7 +24,7 @@ const LAN_CODE_CN = 'zh-cn';
 class ReviewWordsController extends GetxController
     with SingleGetTickerProviderMixin
     implements TrackableController {
-  final ClassService classService = Get.find();
+  final LectureService lectureService = Get.find();
   final logger = LoggerService.logger;
   final tts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -30,7 +32,7 @@ class ReviewWordsController extends GetxController
   AnimationController searchBarPlayIconController;
 
   /// Current primary word ordinal in _wordList
-  final primaryWordOrdinal = 0.obs;
+  final primaryWordIndex = 0.obs;
 
   /// List or card
   final _mode = WordsReviewMode.LIST.obs;
@@ -38,13 +40,16 @@ class ReviewWordsController extends GetxController
   /// Controller for search bar of review words screen
   final searchBarController = FloatingSearchBarController();
 
+  /// Controller for words list
+  final groupedItemScrollController = GroupedItemScrollController();
+
   /// WordsHistory of this user
   RxList<WordHistory> _userWordsHistory;
 
-  /// If all words mode, there will be multiple classes associated
-  List<CSchoolClass> classes;
+  /// If all words mode, there will be multiple lectures associated
+  List<Lecture> lectures;
 
-  /// WordsList for this class(es)
+  /// WordsList for this lecture(s)
   List<Word> wordsList = [];
 
   /// Reversed Words List for flashCard
@@ -64,11 +69,12 @@ class ReviewWordsController extends GetxController
   @override
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
-    _userWordsHistory = ClassService.userWordsHistory_Rx;
-    classes = classService.findClassesById(Get.parameters['classId']);
+    _userWordsHistory = LectureService.userWordsHistory_Rx;
+    lectures = lectureService.findLecturesById(Get.parameters['lectureId']);
     if (Get.arguments == null) {
-      wordsList =
-          classes.length == 1 ? classes.single.words : ClassService.allWords;
+      wordsList = lectures.length == 1
+          ? lectures.single.words
+          : LectureService.allWords;
       // If wordsList is provided, use it
     } else if (Get.arguments is List<Word>) {
       wordsList = Get.arguments;
@@ -82,9 +88,14 @@ class ReviewWordsController extends GetxController
     await tts.setSpeechRate(0.5);
     // worker to monitor search query change and fire search function
     debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
-    // If is a specific class, add it to history
-    if (classes.length == 1) {
-      classService.addClassReviewedHistory(classes.single);
+    // worker to update track whenever it change
+    ever(primaryWordIndex, (_) => updateTrack());
+    // If is a specific lecture, add it to history
+    if (lectures.length == 1) {
+      lectureService.addLectureReviewedHistory(lectures.single);
+    }
+    if (AppStateService.isDebug) {
+      AudioPlayer.logEnabled = true;
     }
     super.onInit();
   }
@@ -92,14 +103,11 @@ class ReviewWordsController extends GetxController
   /// Flashcard or List mode
   WordsReviewMode get mode => _mode.value;
 
-  /// PrimaryWord associated with primaryWordOrdinal
-  Word get primaryWord => reversedWordsList[primaryWordOrdinal.value];
+  /// PrimaryWord associated with primaryWordIndex
+  Word get primaryWord => reversedWordsList[primaryWordIndex.value];
 
   WordCardController get primaryWordCardController =>
       Get.find(tag: primaryWord.wordId);
-
-  /// PrimaryWord.word to String for display
-  String get primaryWordString => primaryWord.word.join();
 
   int countWordMemoryStatusOfWordByStatus(
           {@required WordMemoryStatus status}) =>
@@ -122,7 +130,7 @@ class ReviewWordsController extends GetxController
     if (wordMemoryStatus.value == WordMemoryStatus.NOT_REVIEWED) {
       wordMemoryStatus.value = WordMemoryStatus.NORMAL;
     }
-    classService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
+    lectureService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
     wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
   }
 
@@ -206,7 +214,7 @@ class ReviewWordsController extends GetxController
         await primaryWordCardController.playWord(completionCallBack: () async {
           // after playWord
           // When we reach the last card or autoPlay turn off
-          if (!isAutoPlayMode.value || primaryWordOrdinal.value == 0) {
+          if (!isAutoPlayMode.value || primaryWordIndex.value == 0) {
             searchBarPlayIconController.reverse();
             isAutoPlayMode.value = false;
           } else {
@@ -221,7 +229,7 @@ class ReviewWordsController extends GetxController
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
-    classService.showSingleWordCard(word);
+    lectureService.showSingleWordCard(word);
   }
 
   /// Search card content, consider a match if word or meaning contains query
@@ -233,7 +241,9 @@ class ReviewWordsController extends GetxController
     }
     var containKeyWord = (Word word) {
       return word.wordAsString.contains(searchQuery.value) ||
-          word.wordMeanings.any((m) => m.meaning.contains(searchQuery.value));
+          word.wordMeanings.any((m) =>
+              m.meaning.contains(searchQuery.value) ||
+              word.tags.contains(searchQuery.value));
     };
     searchResult.clear();
     searchResult.addAll(wordsList.filter((word) => containKeyWord(word)));
@@ -244,6 +254,7 @@ class ReviewWordsController extends GetxController
         duration: 0.5.seconds, curve: Curves.easeInOut);
   }
 
+  /// If we didn't find word id or its null, will go to first word
   Future<void> _animateToWordById(String wordId) async {
     var index = wordsList.indexWhere((word) => word.wordId == wordId);
     // If couldn't find the wordId, go to first word
@@ -255,7 +266,7 @@ class ReviewWordsController extends GetxController
     }
   }
 
-  int calculateWordIndex(Word word) => wordsList.indexOf(word);
+  int indexOfWord(Word word) => wordsList.indexOf(word);
 
   @override
   void updateTrack() {
@@ -269,8 +280,11 @@ class ReviewWordsController extends GetxController
 
   @override
   void onClose() {
-    updateTrack();
-    classService.commitChange();
+    // If we have are at last card, clear track
+    if (primaryWordIndex.value == wordsList.length - 1) {
+      controllerTrack.trackedWordId = null;
+    }
+    lectureService.commitChange();
     audioPlayer.dispose();
     super.onClose();
   }

@@ -35,21 +35,21 @@ class ReviewWordsTheme {
     caption: caption,
   );
 
-  static TextStyle classCardLevel = TextStyle(
+  static TextStyle lectureCardLevel = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 15,
     letterSpacing: 0.27,
     color: lightGreen,
   );
 
-  static TextStyle classCardTitle = TextStyle(
+  static TextStyle lectureCardTitle = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 25,
     letterSpacing: 0.27,
     color: darkBlue,
   );
 
-  static TextStyle classCardMeta = TextStyle(
+  static TextStyle lectureCardMeta = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 19,
     letterSpacing: 0.27,

@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_home_screen_controller.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +11,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:c_school_app/app/model/class.dart';
+import 'package:c_school_app/app/model/lecture.dart';
 import 'review_words_theme.dart';
 import '../../../i18n/review_words.i18n.dart';
 
-class ReviewWordsHomeScreen extends StatelessWidget {
-  final ClassService classService = Get.find();
+class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
   final _scrollController = ScrollController();
 
   @override
@@ -36,7 +36,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
                 color: ReviewWordsTheme.darkerText,
               ),
             ).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
-            _buildSpecialClassCard().expanded(flex: 1),
+            _buildSpecialLectureCard().expanded(flex: 1),
             Text('All Course'.i18n,
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -50,7 +50,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
                 .alignment(Alignment.centerLeft),
             ListView.builder(
                 controller: _scrollController,
-                itemCount: ClassService.allClasses.length,
+                itemCount: LectureService.allLectures.length,
                 itemBuilder: (BuildContext context, int index) => FadeInRight(
                     duration: 0.5.seconds,
                     // Only when the first time top 5 elements are shown
@@ -61,7 +61,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
                         ? (0.3 * index).seconds
                         : 0.seconds,
                     child:
-                        ClassCard(cschoolClass: ClassService.allClasses[index])
+                        LectureCard(lecture: LectureService.allLectures[index])
                             .paddingOnly(bottom: 5))).expanded(flex: 5),
           ],
         ),
@@ -69,12 +69,12 @@ class ReviewWordsHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecialClassCard() {
+  Widget _buildSpecialLectureCard() {
     final bigIconSize = 50.0;
-    var wordsListLiked = classService.getLikedWords;
-    var wordsListForgotten = classService.findWordsByConditions(
+    var wordsListLiked = controller.lectureService.getLikedWords;
+    var wordsListForgotten = controller.lectureService.findWordsByConditions(
         wordMemoryStatus: WordMemoryStatus.FORGOT);
-    var wordsListAll = ClassService.allWords;
+    var wordsListAll = LectureService.allWords;
 
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -135,7 +135,7 @@ class ReviewWordsHomeScreen extends StatelessWidget {
           Text(
             '$words',
             textAlign: TextAlign.left,
-            style: ReviewWordsTheme.classCardMeta,
+            style: ReviewWordsTheme.lectureCardMeta,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
@@ -149,23 +149,23 @@ class ReviewWordsHomeScreen extends StatelessWidget {
       ).paddingOnly(top: 25, left: 15);
 }
 
-class ClassCard extends StatelessWidget {
-  ClassCard({
+class LectureCard extends StatelessWidget {
+  LectureCard({
     Key key,
-    @required this.cschoolClass,
+    @required this.lecture,
   }) : super(key: key);
 
   static const DEFAULT_IMAGE = 'assets/discover_panel/interFace3.png';
-  final CSchoolClass cschoolClass;
-  final ClassService classService = Get.find();
+  final Lecture lecture;
+  final LectureService lectureService = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    var forgottenWords = classService.findWordsByConditions(
+    var forgottenWords = lectureService.findWordsByConditions(
         wordMemoryStatus: WordMemoryStatus.FORGOT,
-        classId: cschoolClass.classId);
+        lectureId: lecture.lectureId);
     return SimpleGestureDetector(
-      onTap: () => navigateToReviewWordScreen(cschoolClass: cschoolClass),
+      onTap: () => navigateToReviewWordScreen(lecture: lecture),
       child: SizedBox(
         height: 120,
         child: Row(
@@ -173,10 +173,10 @@ class ClassCard extends StatelessWidget {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                cschoolClass.pic?.url == null
+                lecture.pic?.url == null
                     ? Image.asset(DEFAULT_IMAGE)
                     : CachedNetworkImage(
-                        imageUrl: cschoolClass.pic.url,
+                        imageUrl: lecture.pic.url,
                         errorWidget: (context, url, error) =>
                             Image.asset(DEFAULT_IMAGE),
                         fit: BoxFit.cover,
@@ -189,12 +189,12 @@ class ClassCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  cschoolClass.levelForDisplay,
-                  style: ReviewWordsTheme.classCardLevel,
+                  lecture.levelForDisplay,
+                  style: ReviewWordsTheme.lectureCardLevel,
                 ).paddingOnly(bottom: 5),
                 AutoSizeText(
-                  cschoolClass.title,
-                  style: ReviewWordsTheme.classCardTitle,
+                  lecture.title,
+                  style: ReviewWordsTheme.lectureCardTitle,
                   maxLines: 1,
                 ).paddingOnly(right: 10,bottom: 5),
                 Row(
@@ -203,11 +203,11 @@ class ClassCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          classService
-                              .getClassViewedCount(cschoolClass)
+                          lectureService
+                              .getLectureViewedCount(lecture)
                               .toString(),
                           textAlign: TextAlign.left,
-                          style: ReviewWordsTheme.classCardMeta,
+                          style: ReviewWordsTheme.lectureCardMeta,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
@@ -222,9 +222,9 @@ class ClassCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '${cschoolClass.words.length}',
+                          '${lecture.words.length}',
                           textAlign: TextAlign.left,
-                          style: ReviewWordsTheme.classCardMeta,
+                          style: ReviewWordsTheme.lectureCardMeta,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
@@ -241,7 +241,7 @@ class ClassCard extends StatelessWidget {
                         Text(
                           forgottenWords.length.toString(),
                           textAlign: TextAlign.left,
-                          style: ReviewWordsTheme.classCardMeta,
+                          style: ReviewWordsTheme.lectureCardMeta,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
@@ -273,11 +273,11 @@ class ClassCard extends StatelessWidget {
   }
 }
 
-/// ReviewWordsController will find words by classId so wordsList if optional,
+/// ReviewWordsController will find words by lectureId so wordsList if optional,
 /// if both provided, will use wordsList
 void navigateToReviewWordScreen(
-    {CSchoolClass cschoolClass, List<Word> wordsList}) {
-  if (cschoolClass.isNull && wordsList.isNullOrBlank) {
+    {Lecture lecture, List<Word> wordsList}) {
+  if (lecture.isNull && wordsList.isNullOrBlank) {
     final popup = BeautifulPopup(
       context: Get.context,
       template: TemplateNotification,
@@ -287,11 +287,11 @@ void navigateToReviewWordScreen(
       barrierDismissible: true,
       content: Text(
         'Oops, No words here'.i18n,
-        style: ReviewWordsTheme.classCardTitle,
+        style: ReviewWordsTheme.lectureCardTitle,
       ).paddingOnly(top: 10),
     );
   } else {
-    Get.toNamed('/review/words?classId=${cschoolClass?.classId ?? ''}',
+    Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}',
         arguments: wordsList);
   }
 }

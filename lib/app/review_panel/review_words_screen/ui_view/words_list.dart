@@ -18,10 +18,11 @@ class WordsList extends GetView<ReviewWordsController> {
       padding: const EdgeInsets.only(top: 80.0),
       child: StickyGroupedListView<Word, String>(
         elements: controller.wordsList,
+        itemScrollController: controller.groupedItemScrollController,
         floatingHeader: true,
-        groupBy: (Word element) => element.cschoolClass.classId,
+        groupBy: (Word element) => element.lecture.lectureId,
         groupSeparatorBuilder: (Word element) =>
-            Text(element.cschoolClass.title, style: ReviewWordsTheme.wordListTitle,)
+            Text(element.lecture.title, style: ReviewWordsTheme.wordListTitle,)
                 .paddingOnly(left: 30, right:30, top: 10.0, bottom: 10)
                 .decorated(
                   color: ReviewWordsTheme.darkBlue,
@@ -30,7 +31,7 @@ class WordsList extends GetView<ReviewWordsController> {
                 .paddingOnly(top: 10.0, bottom: 10.0),
         itemBuilder: (_, Word word) => FadeInRight(
           duration: 0.5.seconds,
-          delay: (0.3 * controller.calculateWordIndex(word)).seconds,
+          delay: (0.3 * controller.indexOfWord(word)).seconds,
           child: Card(
             color: ReviewWordsTheme.lightBlue,
             shape: RoundedRectangleBorder(
@@ -63,8 +64,6 @@ class WordsList extends GetView<ReviewWordsController> {
         ),
         itemComparator: (element1, element2) =>
             element1.wordId.compareTo(element2.wordId),
-        // optional
-        itemScrollController: GroupedItemScrollController(),
         // optional
         order: StickyGroupedListOrder.ASC, // optional
       ),

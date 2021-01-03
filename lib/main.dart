@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:catcher/catcher.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,7 +35,7 @@ void main() async {
   var releaseOptions = CatcherOptions(DialogReportMode(), [
     EmailManualHandler(['yangxb10@gmail.com'])
   ]);
-  Catcher(CSchoolApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
+  Catcher(rootWidget: CSchoolApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
 }
 
 class CSchoolApp extends StatelessWidget {
@@ -59,7 +59,7 @@ class CSchoolApp extends StatelessWidget {
           child: ScreenUtilInit(
             designSize: Size(1080, 2220),
             child: GetMaterialApp(
-                title: 'Chinese Classroom',
+                title: 'CSchool',
                 debugShowCheckedModeBanner: false,
                 defaultTransition: Transition.fade,
                 navigatorKey: Catcher.navigatorKey,
@@ -93,7 +93,7 @@ class Splash extends StatelessWidget {
     await initServices();
     // TODO: Only for development, might need a proper way to upload our class
     if(AppStateService.isDebug){
-      await Get.find<ApiService>().firestoreApi.uploadClassesByCsv();
+      await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
       await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
     }
     await navigateToHome();
@@ -116,8 +116,8 @@ Future<void> initServices() async {
   await Flamingo.initializeApp();
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
   Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
-  await Get.putAsync<ClassService>(
-      () async => await ClassService.getInstance());
+  await Get.putAsync<LectureService>(
+      () async => await LectureService.getInstance());
   Logger.level =
       AppStateService.isDebug ? Level.debug : Level.error;
 }

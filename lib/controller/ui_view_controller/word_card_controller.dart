@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/logger_service.dart';
 
@@ -18,16 +18,16 @@ class WordCardController extends GetxController {
   WordCardController(this.word);
   final Word word;
   final FlipController flipController = FlipController();
-  final ClassService classService = Get.find();
+  final LectureService lectureService = Get.find();
 
   /// Words user favorite
-  final RxList<String> _userLikedWordIds = ClassService.userLikedWordIds_Rx;
+  final RxList<String> _userLikedWordIds = LectureService.userLikedWordIds_Rx;
   /// Is hint shown under meaning
   final isHintShown = false.obs;
   final logger = LoggerService.logger;
   final AudioPlayer audioPlayer = AudioPlayer();
 
-  void toggleFavoriteCard() => classService.toggleWordLiked(word);
+  void toggleFavoriteCard() => lectureService.toggleWordLiked(word);
 
   void toggleHint() => isHintShown.value = !isHintShown.value;
 
@@ -35,7 +35,7 @@ class WordCardController extends GetxController {
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
-    classService.showSingleWordCard(word);
+    lectureService.showSingleWordCard(word);
   }
 
   /// Play audio of the word
@@ -104,7 +104,7 @@ class WordCardController extends GetxController {
 
   @override
   void onClose() {
-    classService.commitChange();
+    lectureService.commitChange();
     audioPlayer.dispose();
     super.onClose();
   }

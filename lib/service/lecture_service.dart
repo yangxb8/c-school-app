@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/model/user_class_history.dart';
+import 'package:c_school_app/model/user_lecture_history.dart';
 import 'package:c_school_app/model/user_word_history.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:c_school_app/app/model/class.dart';
+import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'api_service.dart';
 import '../app/ui_view/word_card.dart';
@@ -14,12 +14,12 @@ import '../app/ui_view/word_card.dart';
 * This class provide service related to Class, like fetching class,
 * words, etc.
 */
-class ClassService extends GetxService {
-  static ClassService _instance;
+class LectureService extends GetxService {
+  static LectureService _instance;
   static final ApiService _apiService = Get.find();
 
   /// All classes available
-  static List<CSchoolClass> allClasses;
+  static List<Lecture> allLectures;
 
   /// All words available
   static List<Word> allWords;
@@ -28,27 +28,27 @@ class ClassService extends GetxService {
   static RxList<String> userLikedWordIds_Rx;
 
   /// Observable Class History list for updating
-  static RxList<ClassHistory> userClassesHistory_Rx;
+  static RxList<LectureHistory> userLecturesHistory_Rx;
 
   /// Observable Word History list for updating
   static RxList<WordHistory> userWordsHistory_Rx;
 
-  static Future<ClassService> getInstance() async {
+  static Future<LectureService> getInstance() async {
     if (_instance.isNull) {
-      _instance = ClassService();
+      _instance = LectureService();
 
       /// All available words
       allWords = await _apiService.firestoreApi.fetchWords();
 
-      /// All available Classes
-      allClasses = await _apiService.firestoreApi.fetchClasses();
+      /// All available Lectures
+      allLectures = await _apiService.firestoreApi.fetchLectures();
 
       /// This properties need to be observable and can be use to update AppUser
       userLikedWordIds_Rx = List<String>.of(UserService.user.likedWords).obs;
 
       /// This properties need to be observable and can be use to update AppUser
-      userClassesHistory_Rx =
-          (List<ClassHistory>.of(UserService.user.reviewedClassHistory)).obs;
+      userLecturesHistory_Rx =
+          (List<LectureHistory>.of(UserService.user.reviewedClassHistory)).obs;
 
       /// This properties need to be observable and can be use to update AppUser
       userWordsHistory_Rx =
@@ -61,8 +61,8 @@ class ClassService extends GetxService {
   /// Get all words user liked
   List<Word> get getLikedWords => findWordsByIds(userLikedWordIds_Rx);
 
-  List<Word> findWordsByConditions({WordMemoryStatus wordMemoryStatus, String classId}) {
-    if (wordMemoryStatus.isNull && classId.isNull) {
+  List<Word> findWordsByConditions({WordMemoryStatus wordMemoryStatus, String lectureId}) {
+    if (wordMemoryStatus.isNull && lectureId.isNull) {
       return [];
     }
     var latestReviewHistory = UserService.user.reviewedWordHistory
@@ -72,7 +72,7 @@ class ClassService extends GetxService {
       if(wordMemoryStatus!=null && wordMemoryStatus!=record.wordMemoryStatus){
         return false;
       }
-      if(classId!=null && classId!=record.classId){
+      if(lectureId!=null && lectureId!=record.lectureId){
         return false;
       }
       return true;
@@ -90,10 +90,9 @@ class ClassService extends GetxService {
     }
   }
 
-  /// If id is empty , get all
   List<Word> findWordsByTags(List<String> tags) {
     if (tags.isNullOrBlank) {
-      return allWords;
+      return [];
     } else {
       return allWords
           .filter((word) => tags.every((tag) => word.tags.contains(tag)))
@@ -101,25 +100,23 @@ class ClassService extends GetxService {
     }
   }
 
-  /// If id is empty , get all
-  List<CSchoolClass> findClassesById(String id) {
+  List<Lecture> findLecturesById(String id) {
     if (id.isNullOrBlank) {
-      return allClasses;
+      return [];
     } else {
       return [
-        allClasses.filter((cschoolClass) => id == cschoolClass.classId).single
+        allLectures.filter((lecture) => id == lecture.lectureId).single
       ];
     }
   }
 
-  /// If id is empty , get all
-  List<CSchoolClass> findClassesByTags(List<String> tags) {
+  List<Lecture> findLecturesByTags(List<String> tags) {
     if (tags.isNullOrBlank) {
-      return allClasses;
+      return [];
     } else {
-      return allClasses
-          .filter((cschoolClass) =>
-              tags.every((tag) => cschoolClass.tags.contains(tag)))
+      return allLectures
+          .filter((lecture) =>
+              tags.every((tag) => lecture.tags.contains(tag)))
           .toList();
     }
   }
@@ -145,9 +142,9 @@ class ClassService extends GetxService {
       .length;
 
   /// Return how many times the class is reviewed in words review mode
-  int classViewedCount(CSchoolClass cschoolClass) =>
+  int lectureViewedCount(Lecture lecture) =>
       UserService.user.reviewedClassHistory
-          .filter((record) => record.classId == cschoolClass.classId)
+          .filter((record) => record.lectureId == lecture.lectureId)
           .length;
 
   /// Like or unlike the word,
@@ -174,28 +171,28 @@ class ClassService extends GetxService {
   }
 
   /// Add record to reviewedClassHistory, won't overwrite it
-  void addClassReviewedHistory(CSchoolClass cschoolClass) {
+  void addLectureReviewedHistory(Lecture lecture) {
     // If have history, change it to not latest
-    var relatedClassHistory = userClassesHistory_Rx.filter((history) =>
-        history.classId == cschoolClass.classId && history.isLatest);
+    var relatedClassHistory = userLecturesHistory_Rx.filter((history) =>
+        history.lectureId == lecture.lectureId && history.isLatest);
     if (relatedClassHistory.length == 1) {
       relatedClassHistory.single.isLatest = false;
     }
-    userClassesHistory_Rx.add(ClassHistory(
-        classId: cschoolClass.classId,
+    userLecturesHistory_Rx.add(LectureHistory(
+        lectureId: lecture.lectureId,
         timestamp: Timestamp.now(),
         isLatest: true));
   }
 
-  /// Get how many times this class is reviewed
-  int getClassViewedCount(CSchoolClass cschoolClass) => userClassesHistory_Rx
-      .count((history) => history.classId == cschoolClass.classId);
+  /// Get how many times this lecture is reviewed
+  int getLectureViewedCount(Lecture lecture) => userLecturesHistory_Rx
+      .count((history) => history.lectureId == lecture.lectureId);
 
   /// Commit any changed made to _appUserForUpdate
   void commitChange() {
     UserService.user
       ..likedWords = userLikedWordIds_Rx.toList()
-      ..reviewedClassHistory = userClassesHistory_Rx.toList()
+      ..reviewedClassHistory = userLecturesHistory_Rx.toList()
       ..reviewedWordHistory = userWordsHistory_Rx.toList();
     UserService.commitChange();
   }

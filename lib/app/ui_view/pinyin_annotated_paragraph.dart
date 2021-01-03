@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:supercharged/supercharged.dart';
 import '../model/word.dart';
-import '../../service/class_service.dart';
+import '../../service/lecture_service.dart';
 import '../../util/extensions.dart';
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
@@ -56,7 +56,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       return inner;
     } else {
       return SimpleGestureDetector(
-          onTap: () => Get.find<ClassService>()
+          onTap: () => Get.find<LectureService>()
               .showSingleWordCard(pinyinAnnotatedHanzi.linkedWord),
           child: inner);
     }

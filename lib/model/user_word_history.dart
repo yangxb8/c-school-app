@@ -29,7 +29,7 @@ class WordHistory extends Model {
   WordMemoryStatus get wordMemoryStatus =>
       EnumToString.fromString(WordMemoryStatus.values, _wordMemoryStatus);
 
-  String get classId => wordId.split('-').first;
+  String get lectureId => wordId.split('-').first;
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

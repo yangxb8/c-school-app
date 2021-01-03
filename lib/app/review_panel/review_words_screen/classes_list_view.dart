@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:c_school_app/app/model/class.dart';
-import 'package:c_school_app/service/class_service.dart';
+import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:supercharged/supercharged.dart';
 import './review_words_theme.dart';
 
-class CSchoolClassListView extends StatefulWidget {
-  const CSchoolClassListView({Key key, this.callBack}) : super(key: key);
+class LectureListView extends StatefulWidget {
+  const LectureListView({Key key, this.callBack}) : super(key: key);
 
   final Function callBack;
   @override
-  _CSchoolClassListViewState createState() => _CSchoolClassListViewState();
+  _LectureListViewState createState() => _LectureListViewState();
 }
 
-class _CSchoolClassListViewState extends State<CSchoolClassListView>
+class _LectureListViewState extends State<LectureListView>
     with TickerProviderStateMixin {
   AnimationController animationController;
-  List<CSchoolClass> allClasses;
+  List<Lecture> allLectures;
 
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
-    allClasses = ClassService.allClasses;
+    allLectures = LectureService.allLectures;
     super.initState();
   }
 
@@ -47,9 +47,9 @@ class _CSchoolClassListViewState extends State<CSchoolClassListView>
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               children: List<Widget>.generate(
-                allClasses.length,
+                allLectures.length,
                 (int index) {
-                  final count = allClasses.length;
+                  final count = allLectures.length;
                   final animation = Tween<double>(begin: 0.0, end: 1.0).animate(
                     CurvedAnimation(
                       parent: animationController,
@@ -58,9 +58,9 @@ class _CSchoolClassListViewState extends State<CSchoolClassListView>
                     ),
                   );
                   animationController.forward();
-                  return CSchoolClassView(
+                  return LectureView(
                     callback: widget.callBack,
-                    cschoolClass: allClasses[index],
+                    lecture: allLectures[index],
                     animation: animation,
                     animationController: animationController,
                   );
@@ -80,10 +80,10 @@ class _CSchoolClassListViewState extends State<CSchoolClassListView>
   }
 }
 
-class CSchoolClassView extends StatelessWidget {
-  const CSchoolClassView(
+class LectureView extends StatelessWidget {
+  const LectureView(
       {Key key,
-      this.cschoolClass,
+      this.lecture,
       this.animationController,
       this.animation,
       this.callback})
@@ -91,7 +91,7 @@ class CSchoolClassView extends StatelessWidget {
 
   static const DEFAULT_IMAGE = 'assets/discover_panel/interFace3.png';
   final Function callback;
-  final CSchoolClass cschoolClass;
+  final Lecture lecture;
   final AnimationController animationController;
   final Animation<dynamic> animation;
 
@@ -105,9 +105,9 @@ class CSchoolClassView extends StatelessWidget {
           child: Transform(
             transform: Matrix4.translationValues(
                 0.0, 50 * (1.0 - animation.value), 0.0),
-            child: ClassCard(
+            child: LectureCard(
                 callback: callback,
-                cschoolClass: cschoolClass,
+                lecture: lecture,
                 DEFAULT_IMAGE: DEFAULT_IMAGE),
           ),
         );
@@ -116,16 +116,16 @@ class CSchoolClassView extends StatelessWidget {
   }
 }
 
-class ClassCard extends StatelessWidget {
-  const ClassCard({
+class LectureCard extends StatelessWidget {
+  const LectureCard({
     Key key,
     @required this.callback,
-    @required this.cschoolClass,
+    @required this.lecture,
     @required this.DEFAULT_IMAGE,
   }) : super(key: key);
 
   final Function callback;
-  final CSchoolClass cschoolClass;
+  final Lecture lecture;
   final String DEFAULT_IMAGE;
 
   @override
@@ -133,7 +133,7 @@ class ClassCard extends StatelessWidget {
     return InkWell(
       splashColor: Colors.transparent,
       onTap: () {
-        callback(cschoolClass);
+        callback(lecture);
       },
       child: SizedBox(
         height: 280,
@@ -162,7 +162,7 @@ class ClassCard extends StatelessWidget {
                                     padding: const EdgeInsets.only(
                                         top: 16, left: 16, right: 16),
                                     child: Text(
-                                      cschoolClass.title,
+                                      lecture.title,
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
@@ -184,7 +184,7 @@ class ClassCard extends StatelessWidget {
                                         Row(
                                           children: [
                                             Text(
-                                              '${cschoolClass.words.length}',
+                                              '${lecture.words.length}',
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w200,
@@ -268,15 +268,15 @@ class ClassCard extends StatelessWidget {
                     borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                     child: AspectRatio(
                         aspectRatio: 1.28,
-                        child: cschoolClass.pic?.url == null
+                        child: lecture.pic?.url == null
                             ? Image.asset(DEFAULT_IMAGE)
                             : CachedNetworkImage(
-                                imageUrl: cschoolClass.pic.url,
+                                imageUrl: lecture.pic.url,
                                 placeholder: (context, url) => SizedBox(
                                       width: 200.0,
                                       height: 100.0,
                                       child:
-                                          BlurHash(hash: cschoolClass.picHash),
+                                          BlurHash(hash: lecture.picHash),
                                     ),
                                 errorWidget: (context, url, error) =>
                                     Image.asset(DEFAULT_IMAGE))),

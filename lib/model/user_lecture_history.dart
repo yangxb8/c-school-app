@@ -2,18 +2,18 @@ import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:flutter/cupertino.dart';
 
-part 'user_class_history.flamingo.dart';
+part 'user_lecture_history.flamingo.dart';
 
-class ClassHistory extends Model {
-  ClassHistory({
-    @required this.classId,
+class LectureHistory extends Model {
+  LectureHistory({
+    @required this.lectureId,
     @required this.timestamp,
     @required this.isLatest,
     Map<String, dynamic> values,
   }) : super(values: values);
 
   @Field()
-  String classId;
+  String lectureId;
   @Field()
   Timestamp timestamp;
   @Field()

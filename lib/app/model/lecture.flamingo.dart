@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'class.dart';
+part of 'lecture.dart';
 
 // **************************************************************************
 // FieldValueGenerator
 // **************************************************************************
 
 /// Field value key
-enum CSchoolClassKey {
-  classId,
+enum LectureKey {
+  lectureId,
   level,
   title,
   description,
@@ -18,22 +18,22 @@ enum CSchoolClassKey {
   pic,
 }
 
-extension CSchoolClassKeyExtension on CSchoolClassKey {
+extension LectureKeyExtension on LectureKey {
   String get value {
     switch (this) {
-      case CSchoolClassKey.classId:
-        return 'classId';
-      case CSchoolClassKey.level:
+      case LectureKey.lectureId:
+        return 'lectureId';
+      case LectureKey.level:
         return 'level';
-      case CSchoolClassKey.title:
+      case LectureKey.title:
         return 'title';
-      case CSchoolClassKey.description:
+      case LectureKey.description:
         return 'description';
-      case CSchoolClassKey.tags:
+      case LectureKey.tags:
         return 'tags';
-      case CSchoolClassKey.picHash:
+      case LectureKey.picHash:
         return 'picHash';
-      case CSchoolClassKey.pic:
+      case LectureKey.pic:
         return 'pic';
       default:
         return null;
@@ -42,9 +42,9 @@ extension CSchoolClassKeyExtension on CSchoolClassKey {
 }
 
 /// For save data
-Map<String, dynamic> _$toData(CSchoolClass doc) {
+Map<String, dynamic> _$toData(Lecture doc) {
   final data = <String, dynamic>{};
-  Helper.writeNotNull(data, 'classId', doc.classId);
+  Helper.writeNotNull(data, 'lectureId', doc.lectureId);
   Helper.writeNotNull(data, 'level', doc.level);
   Helper.writeNotNull(data, 'title', doc.title);
   Helper.writeNotNull(data, 'description', doc.description);
@@ -57,8 +57,8 @@ Map<String, dynamic> _$toData(CSchoolClass doc) {
 }
 
 /// For load data
-void _$fromData(CSchoolClass doc, Map<String, dynamic> data) {
-  doc.classId = Helper.valueFromKey<String>(data, 'classId');
+void _$fromData(Lecture doc, Map<String, dynamic> data) {
+  doc.lectureId = Helper.valueFromKey<String>(data, 'lectureId');
   doc.level = Helper.valueFromKey<int>(data, 'level');
   doc.title = Helper.valueFromKey<String>(data, 'title');
   doc.description = Helper.valueFromKey<String>(data, 'description');
