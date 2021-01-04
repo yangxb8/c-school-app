@@ -136,9 +136,7 @@ class ReviewWordsController extends GetxController
 
   /// Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if (!primaryWordCardController.flipController.isFront) {
-      primaryWordCardController.flipController.flip();
-    }
+    primaryWordCardController.isFlipped.value = false;
   }
 
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
@@ -208,7 +206,7 @@ class ReviewWordsController extends GetxController
     await primaryWordCardController.playMeanings(completionCallBack: () async {
       // after playMeanings
       if (!isAutoPlayMode.value) return;
-      await Timer(0.5.seconds, primaryWordCardController.flipController.flip);
+      await Timer(0.5.seconds, primaryWordCardController.flipCard);
       await Timer(0.5.seconds, () async {
         if (!isAutoPlayMode.value) return;
         await primaryWordCardController.playWord(completionCallBack: () async {
