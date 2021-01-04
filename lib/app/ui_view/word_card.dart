@@ -8,7 +8,7 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:flip/flip.dart';
+import 'package:flippable_box/flippable_box.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
@@ -125,7 +125,7 @@ class WordCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.0.r),
       child: SimpleGestureDetector(
-        onTap: () => controller.flipController.flip(),
+        onTap: controller.flipCard,
         child: Container(
           decoration: BoxDecoration(color: Colors.white, boxShadow: [
             BoxShadow(
@@ -135,13 +135,18 @@ class WordCard extends StatelessWidget {
           ]),
           child: AspectRatio(
             aspectRatio: cardAspectRatio,
-            child: Flip(
-              controller: controller.flipController,
-              flipDirection: Axis.vertical,
-              flipDuration: Duration(milliseconds: 200),
-              secondChild: Stack(
-                  children: [buildBackCardContent(delta: delta), favoriteIcon]),
-              firstChild: Stack(children: [frontCardContent, favoriteIcon]),
+            child: Obx(()=>
+              FlippableBox(
+                isFlipped: controller.isFlipped.value,
+                flipVt: true,
+                duration: 0.5,
+                curve: Curves.easeOut,
+                back: Container(
+                  child: Stack(
+                      children: [buildBackCardContent(delta: delta), favoriteIcon]),
+                ),
+                front: Container(child: Stack(children: [frontCardContent, favoriteIcon])),
+              ),
             ),
           ),
         ),

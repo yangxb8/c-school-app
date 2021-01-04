@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flamingo/flamingo.dart';
-import 'package:flip/flip.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -16,14 +15,19 @@ const LAN_CODE_JP = 'ja';
 
 class WordCardController extends GetxController {
   WordCardController(this.word);
+
   final Word word;
-  final FlipController flipController = FlipController();
   final LectureService lectureService = Get.find();
 
   /// Words user favorite
   final RxList<String> _userLikedWordIds = LectureService.userLikedWordIds_Rx;
+
   /// Is hint shown under meaning
   final isHintShown = false.obs;
+
+  /// Is the card flipped
+  final isFlipped = false.obs;
+
   final logger = LoggerService.logger;
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -32,6 +36,11 @@ class WordCardController extends GetxController {
   void toggleHint() => isHintShown.value = !isHintShown.value;
 
   bool isWordLiked() => _userLikedWordIds.contains(word.wordId);
+
+  /// Flip our card
+  void flipCard() {
+    isFlipped.value = !isFlipped.value;
+  }
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
@@ -108,5 +117,4 @@ class WordCardController extends GetxController {
     audioPlayer.dispose();
     super.onClose();
   }
-
 }
