@@ -1,4 +1,4 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:c_school_app/app/model/word_example.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
@@ -19,12 +19,13 @@ import '../model/word.dart';
 import '../../i18n/review_words.i18n.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
-final BUTTON_SIZE = 25.0.r;
-final verticalInset = 8.0.w;
+final BUTTON_SIZE = 25.0;
+final verticalInset = 8.0;
 final DEFAULT_IMAGE = 'assets/review_panel/image_01.png';
 
 class WordCard extends StatelessWidget {
   final Word word;
+  //TODO: delta is not been used, delete it!
   final double delta;
   final WordCardController controller;
   WordCard({Key key, @required this.word, this.delta = 0.0})
@@ -45,11 +46,12 @@ class WordCard extends StatelessWidget {
             borderColor: Colors.transparent,
             show: controller.isHintShown.value,
             ballonPadding:
-                EdgeInsets.symmetric(vertical: 10.r, horizontal: 10.r),
+                EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             maxWidth: Get.width * 0.7,
-            content: Text(
+            content: AutoSizeText(
               word.hint,
               style: ReviewWordsTheme.wordCardHint,
+              maxLines: 1,
             ),
             child: FaIcon(FontAwesomeIcons.lightbulb,
                 color: controller.isHintShown.value
@@ -74,9 +76,10 @@ class WordCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     ...word.wordMeanings
-                        .map((e) => Text(
+                        .map((e) => AutoSizeText(
                               e.meaning,
                               style: ReviewWordsTheme.wordCardMeaning,
+                              maxLines: 1,
                             ))
                         .toList(),
                     if (!word.hint.isNullOrBlank) hint else Container()
@@ -110,7 +113,7 @@ class WordCard extends StatelessWidget {
       children: [
         Obx(
           () => IconButton(
-            splashRadius: 0.01.r,
+            splashRadius: 0.01,
             icon: FaIcon(FontAwesomeIcons.solidHeart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked()
@@ -118,20 +121,20 @@ class WordCard extends StatelessWidget {
                 : Colors.grey,
             iconSize: BUTTON_SIZE * 1.2,
             onPressed: () => controller.toggleFavoriteCard(),
-          ).paddingOnly(top: 10.h, right: 10.w),
+          ).paddingOnly(top: 10, right: 10),
         ),
       ],
     );
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16.0.r),
+      borderRadius: BorderRadius.circular(16.0),
       child: SimpleGestureDetector(
         onTap: controller.flipCard,
         child: Container(
           decoration: BoxDecoration(color: Colors.white, boxShadow: [
             BoxShadow(
                 color: Colors.black12,
-                offset: Offset(3.0.w, 6.0.h),
-                blurRadius: 10.0.r)
+                offset: Offset(3.0, 6.0),
+                blurRadius: 10.0)
           ]),
           child: AspectRatio(
             aspectRatio: cardAspectRatio,
@@ -195,7 +198,7 @@ class WordCard extends StatelessWidget {
         Text(
           'Example'.i18n,
           style: ReviewWordsTheme.wordCardSubTitle,
-        ).alignment(Alignment.centerLeft).paddingOnly(left: 10.w),
+        ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
         PinyinAnnotatedParagraph(
           paragraph: wordExample.example,
           pinyins: wordExample.pinyin,
@@ -205,10 +208,10 @@ class WordCard extends StatelessWidget {
           centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
           linkedWords: word.relatedWords,
           linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-        ).alignment(Alignment.centerLeft).paddingOnly(left: 10.w),
+        ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
         Row(children: [
-          Text(wordExample.meaning, style: ReviewWordsTheme.exampleMeaning)
-              .paddingOnly(left: 10.w)
+          AutoSizeText(wordExample.meaning, style: ReviewWordsTheme.exampleMeaning, maxLines: 2,)
+              .paddingOnly(left: 10)
         ]),
         divider()
       ],
@@ -216,10 +219,10 @@ class WordCard extends StatelessWidget {
   }
 
   Widget divider() => Divider(
-        thickness: 1.h,
-        height: 30.0.h,
-        indent: 20.w,
-        endIndent: 20.w,
+        thickness: 1,
+        height: 30.0,
+        indent: 20,
+        endIndent: 20,
         color: ReviewWordsTheme.lightYellow,
       );
 }
