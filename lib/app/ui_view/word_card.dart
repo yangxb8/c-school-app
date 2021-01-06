@@ -25,10 +25,8 @@ final DEFAULT_IMAGE = 'assets/review_panel/image_01.png';
 
 class WordCard extends StatelessWidget {
   final Word word;
-  //TODO: delta is not been used, delete it!
-  final double delta;
   final WordCardController controller;
-  WordCard({Key key, @required this.word, this.delta = 0.0})
+  WordCard({Key key, @required this.word})
       : controller = Get.put(WordCardController(word), tag: word.wordId),
         super(key: key);
 
@@ -82,7 +80,7 @@ class WordCard extends StatelessWidget {
                               maxLines: 1,
                             ))
                         .toList(),
-                    if (!word.hint.isNullOrBlank) hint else Container()
+                    if (!word.hint.isBlank) hint else Container()
                   ],
                 ),
               ],
@@ -146,7 +144,7 @@ class WordCard extends StatelessWidget {
                 curve: Curves.easeOut,
                 back: Container(
                   child: Stack(
-                      children: [buildBackCardContent(delta: delta), favoriteIcon]),
+                      children: [buildBackCardContent(), favoriteIcon]),
                 ),
                 front: Container(child: Stack(children: [frontCardContent, favoriteIcon])),
               ),
@@ -157,7 +155,7 @@ class WordCard extends StatelessWidget {
     );
   }
 
-  Widget buildBackCardContent({double delta = 0.0}) {
+  Widget buildBackCardContent() {
     // Top hanzi part
     var partHanZi = SimpleGestureDetector(
       onTap: controller.playWord,

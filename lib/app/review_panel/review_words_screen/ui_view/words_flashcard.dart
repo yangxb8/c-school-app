@@ -171,7 +171,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
             bottom: padding + verticalInset * max(-delta, 0.0),
             start: start,
             textDirection: TextDirection.rtl,
-            child: WordCard(word: controller.reversedWordsList[i], delta: delta),
+            child: WordCard(word: controller.reversedWordsList[i]),
           );
           cardList.add(cardItem);
         }
