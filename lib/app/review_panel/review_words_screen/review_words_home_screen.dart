@@ -114,7 +114,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                   navigateToReviewWordScreen(wordsList: wordsListAll),
               tooltip: 'All words'.i18n,
             ),
-            _buildWordsCount(wordsListAll.length)
+            _buildWordsCount(wordsListAll?.length?? 0)
           ],
         ),
       ],
@@ -173,18 +173,16 @@ class LectureCard extends StatelessWidget {
           children: [
             Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 lecture.pic?.url == null
-                    ? Image.asset(DEFAULT_IMAGE, fit: BoxFit.fitWidth)
+                    ? Image.asset(DEFAULT_IMAGE, fit: BoxFit.cover)
                     : CachedNetworkImage(
                         imageUrl: lecture.pic.url,
-                        placeholder: (context, url) => FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: BlurHash(hash: lecture.picHash),
-                        ),
+                        placeholder: (context, url) => BlurHash(hash: lecture.picHash),
                         errorWidget: (context, url, error) =>
                             Image.asset(DEFAULT_IMAGE),
-                        fit: BoxFit.fitWidth,
+                        fit: BoxFit.cover,
                       ).expanded(),
               ],
             ).expanded(flex: 3),
@@ -282,7 +280,7 @@ class LectureCard extends StatelessWidget {
 /// if both provided, will use wordsList
 void navigateToReviewWordScreen(
     {Lecture lecture, List<Word> wordsList}) {
-  if (lecture.isNull && wordsList.isNullOrBlank) {
+  if (lecture == null && wordsList.isBlank) {
     final popup = BeautifulPopup(
       context: Get.context,
       template: TemplateNotification,
