@@ -102,8 +102,8 @@ class SpeechExamBottomSheet extends GetView<SpeechRecordingController> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                controller.lastSpeech.isNull
-                    ? null
+                controller.lastSpeech == null
+                    ? Container()
                     : RadarChart(
                         data: [
                           [
@@ -126,8 +126,8 @@ class SpeechExamBottomSheet extends GetView<SpeechRecordingController> {
                         ],
                         ticks: [0, 50, 100],
                       ),
-                controller.lastSpeech.isNull
-                    ? null
+                controller.lastSpeech ==null
+                    ? Container()
                     : BarChart(
                         //TODO: make bar chart properly
                         null,

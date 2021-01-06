@@ -43,7 +43,7 @@ class SpeechRecordingController extends GetxController {
   }
 
   void startRecord() async {
-    assert(!exam.isNull);
+    assert(exam!= null);
     // Verify permission
     if (recordingStatus.value != RecordingStatus.IDLE) return;
     var status = await Permission.microphone.request();

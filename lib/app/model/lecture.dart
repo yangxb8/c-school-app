@@ -17,7 +17,7 @@ class Lecture extends Document<Lecture>{
     Map<String, dynamic> values,
   })  : lectureId = id,
         level = level,
-        tags = id.isNull? []:['$levelPrefix$level'],
+        tags = id == null ? []:['$levelPrefix$level'],
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()

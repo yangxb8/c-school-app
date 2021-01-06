@@ -27,7 +27,7 @@ class UserService extends GetxService {
   /// Return Empty AppUser if firebase user is null, otherwise,
   /// return AppUser fetched from firestore
   static Future<AppUser> _getCurrentUser() async {
-    if (_apiService.firebaseAuthApi.currentUser.isNull) {
+    if (_apiService.firebaseAuthApi.currentUser == null) {
       return AppUser();
     } else {
       return await _apiService.firestoreApi
@@ -40,7 +40,7 @@ class UserService extends GetxService {
   }
 
   static void commitChange() {
-    if(user.isNull){
+    if(user == null){
       logger.e('AppUser is not initialized! Commit is canceled');
       return;
     }

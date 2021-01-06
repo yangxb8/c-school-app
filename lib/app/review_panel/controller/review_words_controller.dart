@@ -163,9 +163,9 @@ class ReviewWordsController extends GetxController
   /// Play audio of the word
   Future<void> playWord({Word word}) async {
     if (isAutoPlayMode.value) return;
-    if (word.isNull) word = primaryWord;
+    word ??= primaryWord;
     var wordAudio = word.wordAudioMale;
-    if (wordAudio.isNull) {
+    if (wordAudio == null) {
       await tts.speak(word.wordAsString);
     } else {
       await audioPlayer.play(wordAudio.url);
@@ -233,7 +233,7 @@ class ReviewWordsController extends GetxController
   /// Search card content, consider a match if word or meaning contains query
   void search() {
     if (isAutoPlayMode.value) return;
-    if (searchQuery.value.isNullOrBlank) {
+    if (searchQuery.value.isBlank) {
       searchResult.clear();
       return;
     }

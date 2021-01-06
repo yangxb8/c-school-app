@@ -73,7 +73,6 @@ dependencies:
   wiredash: ^0.4.0
   animate_do: ^1.7.5
   simple_tooltip: 0.1.16
-  flutter_screenutil: ^4.0.2+2
   auto_size_text: ^2.1.0
   after_layout: ^1.0.7+2
   responsive_framework: ^0.0.14

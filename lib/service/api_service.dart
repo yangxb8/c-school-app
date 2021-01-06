@@ -93,7 +93,6 @@ class _FirebaseAuthApi {
   // ignore: missing_return
   Future<String> signUpWithEmail(
       String email, String password, String nickname) async {
-    //TODO: Several accounts per email is allowed for debug, disable it on firebase
     try {
       var userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -159,7 +158,7 @@ class _FirebaseAuthApi {
       // If the user is not in our DB, create it
       if (_firestoreApi
           .fetchAppUser(firebaseUser: userCredential.user)
-          .isNull) {
+          == null) {
         _firestoreApi._registerAppUser(
             firebaseUser: userCredential.user,
             nickname: googleUser.displayName);
@@ -257,14 +256,15 @@ class _FirestoreApi {
 
   Future<AppUser> fetchAppUser({User firebaseUser}) async {
     firebaseUser ??= _currentUser;
-    if (firebaseUser.isNull) {
+    if (firebaseUser == null) {
       logger.e('fetchAppUser was called on null firebaseUser');
       return null;
     }
     var user =
         await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
-    if (user.isNull) {
-      logger.e('user ${firebaseUser.uid} not found in firestore, return empty user');
+    if (user == null) {
+      logger.e(
+          'user ${firebaseUser.uid} not found in firestore, return empty user');
       return AppUser();
     } else {
       user.firebaseUser = firebaseUser;
@@ -416,7 +416,8 @@ class _FirestoreApi {
         var maleAudios = <StorageFile>[];
         var femaleAudios = <StorageFile>[];
         // Each example
-        await Future.forEach(List.generate(meaning.exampleCount, (i)=>i), (index) async {
+        await Future.forEach(List.generate(meaning.exampleCount, (i) => i),
+            (index) async {
           final pathExampleMaleAudio =
               '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleMaleAudios)}';
           final pathExampleFemaleAudio =
@@ -481,8 +482,8 @@ class _FirestoreApi {
       return;
     }
 
-    var lectures = csv
-        .map((row) => Lecture(id: row[COLUMN_ID], level: row[COLUMN_LEVEL])
+    var lectures =
+        csv.map((row) => Lecture(id: row[COLUMN_ID], level: row[COLUMN_LEVEL])
           ..title = row[COLUMN_TITLE].trim() // Title should not be null
           ..description = row[COLUMN_DESCRIPTION]?.trim()
           ..picHash = row[COLUMN_PIC_HASH]?.trim());

@@ -96,7 +96,7 @@ class CSchoolApp extends StatelessWidget {
 }
 
 class Splash extends StatelessWidget {
-  void navigateToHome() async {
+  Future<void> navigateToHome() async {
     await Get.toNamed(
         UserService.user.isLogin() ? '/review/words/home' : '/login');
   }
@@ -104,10 +104,10 @@ class Splash extends StatelessWidget {
   Future<void> _loadFromFuture() async {
     await initServices();
     // TODO: Only for development, might need a proper way to upload our class
-    if (AppStateService.isDebug) {
-      await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
-      await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
-    }
+    // if (AppStateService.isDebug) {
+    //   await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
+    //   await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
+    // }
     await navigateToHome();
   }
 

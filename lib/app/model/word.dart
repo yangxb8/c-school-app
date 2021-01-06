@@ -16,7 +16,7 @@ class Word extends Document<Word>{
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
   })  : wordId = id,
-        tags = id.isNull? []:[id.split('-').first], // Assign lectureId to tags
+        tags = id == null? []:[id.split('-').first], // Assign lectureId to tags
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
@@ -76,7 +76,7 @@ class Word extends Document<Word>{
   StorageFile wordAudioFemale;
 
   List<Word> get relatedWords {
-    if (_relatedWordIds.isNullOrBlank) {
+    if (_relatedWordIds.isBlank) {
       return [];
     } else {
       return lectureService.findWordsByIds(_relatedWordIds);
@@ -87,7 +87,7 @@ class Word extends Document<Word>{
       _relatedWordIds = relatedWordIDs;  
   
   List<Word> get otherMeanings {
-    if (_otherMeaningIds.isNullOrBlank) {
+    if (_otherMeaningIds.isBlank) {
       return [];
     } else {
       return lectureService.findWordsByIds(_otherMeaningIds);

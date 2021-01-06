@@ -34,7 +34,7 @@ class LectureService extends GetxService {
   static RxList<WordHistory> userWordsHistory_Rx;
 
   static Future<LectureService> getInstance() async {
-    if (_instance.isNull) {
+    if (_instance == null) {
       _instance = LectureService();
 
       /// All available words
@@ -62,7 +62,7 @@ class LectureService extends GetxService {
   List<Word> get getLikedWords => findWordsByIds(userLikedWordIds_Rx);
 
   List<Word> findWordsByConditions({WordMemoryStatus wordMemoryStatus, String lectureId}) {
-    if (wordMemoryStatus.isNull && lectureId.isNull) {
+    if (wordMemoryStatus == null && lectureId == null) {
       return [];
     }
     var latestReviewHistory = UserService.user.reviewedWordHistory
@@ -83,7 +83,7 @@ class LectureService extends GetxService {
   }
 
   List<Word> findWordsByIds(List<String> ids) {
-    if (ids.isNullOrBlank) {
+    if (ids.isBlank) {
       return [];
     } else {
       return allWords.filter((word) => ids.contains(word.wordId)).toList();
@@ -91,7 +91,7 @@ class LectureService extends GetxService {
   }
 
   List<Word> findWordsByTags(List<String> tags) {
-    if (tags.isNullOrBlank) {
+    if (tags.isBlank) {
       return [];
     } else {
       return allWords
@@ -101,7 +101,7 @@ class LectureService extends GetxService {
   }
 
   List<Lecture> findLecturesById(String id) {
-    if (id.isNullOrBlank) {
+    if (id.isBlank) {
       return [];
     } else {
       return [
@@ -111,7 +111,7 @@ class LectureService extends GetxService {
   }
 
   List<Lecture> findLecturesByTags(List<String> tags) {
-    if (tags.isNullOrBlank) {
+    if (tags.isBlank) {
       return [];
     } else {
       return allLectures

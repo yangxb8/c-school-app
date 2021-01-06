@@ -50,13 +50,13 @@ class WordCardController extends GetxController {
   /// Play audio of the word
   Future<void> playWord({Function completionCallBack}) async {
     var wordAudio = word.wordAudioMale;
-    if (wordAudio.isNull) {
+    if (wordAudio == null) {
       final tts = await _generateTts();
       tts.setCompletionHandler(completionCallBack);
       await tts.speak(word.wordAsString);
     } else {
       await audioPlayer.play(wordAudio.url);
-      if (!completionCallBack.isNull) {
+      if (completionCallBack!= null) {
         await completionCallBack();
       }
     }
@@ -84,12 +84,12 @@ class WordCardController extends GetxController {
       {@required String string,
       @required StorageFile audio,
       Function completionCallBack}) async {
-    if (audio.isNull) {
+    if (audio == null) {
       final tts = await _generateTts();
       await tts.speak(string);
     } else {
       await audioPlayer.play(audio.url);
-      if (!completionCallBack.isNull) {
+      if (completionCallBack != null) {
         await completionCallBack();
       }
     }
