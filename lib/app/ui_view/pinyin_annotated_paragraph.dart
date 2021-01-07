@@ -64,9 +64,11 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
 
   List<PinyinAnnotatedHanzi> _generateHanzis() {
     // Divide paragraph by center word and linked word
-    final dividerWords = [];
-    if(centerWord != null) dividerWords.add(centerWord.wordAsString);
-    if(linkedWords != null) dividerWords.addAll(linkedWords.map((w) => w.wordAsString));
+    final dividerWords = <String>[];
+    if (centerWord != null) dividerWords.add(centerWord.wordAsString);
+    if (linkedWords != null) {
+      dividerWords.addAll(linkedWords.map((w) => w.wordAsString));
+    }
     final keywordsSeparatedParagraph = _divideExample(dividerWords, paragraph);
     return List<PinyinAnnotatedHanzi>.generate(paragraph.length, (idx) {
       final hanzi = paragraph[idx];
@@ -102,16 +104,17 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       {@required int hanziIdx,
       @required List<String> keywordsSeparatedParagraph}) {
     var totalIdx = 0;
+    var result = null;
     keywordsSeparatedParagraph.forEach((part) {
       // Target hanzi is in range of this part of paragraph
-      final linkedWordList = linkedWords.filter((w) => w.wordAsString == part);
+      final linkedWordList = linkedWords?.filter((w) => w.wordAsString == part)?? [];
       if (totalIdx + part.length > hanziIdx) {
-        if (centerWord.wordAsString == part) {
-          return {ParagraphHanziType.center: null};
+        if (centerWord?.wordAsString == part) {
+          result = {ParagraphHanziType.center: null};
         } else if (linkedWordList.isNotEmpty) {
-          return {ParagraphHanziType.linked: linkedWordList.single};
+          result = {ParagraphHanziType.linked: linkedWordList.single};
         } else {
-          return {ParagraphHanziType.normal: null};
+          result = {ParagraphHanziType.normal: null};
         }
       }
       // If hanziIdx is not found within this part, add totalIdx and move to next part
@@ -119,12 +122,12 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
         totalIdx += part.length;
       }
     });
-    // Impossible
-    return null;
+    return result;
   }
 
   /// Divide sentence into List of String by keyword(s)
   List<String> _divideExample(dynamic keyword, dynamic example) {
+    if (keyword == null || keyword.length == 0) return [example];
     var exampleDivided = <String>[];
     // When we have multiple keyword
     if (keyword is List<String>) {

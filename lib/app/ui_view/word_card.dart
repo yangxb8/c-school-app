@@ -8,7 +8,7 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:flippable_box/flippable_box.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
@@ -43,8 +43,7 @@ class WordCard extends StatelessWidget {
             tooltipDirection: TooltipDirection.down,
             borderColor: Colors.transparent,
             show: controller.isHintShown.value,
-            ballonPadding:
-                EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            ballonPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             maxWidth: Get.width * 0.7,
             content: AutoSizeText(
               word.hint,
@@ -86,24 +85,23 @@ class WordCard extends StatelessWidget {
               ],
             ).backgroundColor(ReviewWordsTheme.lightBlue),
             flex: 11),
-        Expanded(
-            child: word.pic?.url == null
+        Row(
+          children: [
+            word.pic?.url == null
                 ? Image.asset(
                     DEFAULT_IMAGE,
-                    fit: BoxFit.fitWidth,
-                  )
+                    fit: BoxFit.cover,
+                  ).expanded()
                 : CachedNetworkImage(
                     fit: BoxFit.cover,
                     imageUrl: word.pic.url,
-                    placeholder: (context, url) => FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: BlurHash(hash: word.picHash),
-                        ),
+                    placeholder: (context, url) => BlurHash(hash: word.picHash),
                     errorWidget: (context, url, error) => Image.asset(
                           DEFAULT_IMAGE,
-                          fit: BoxFit.fitWidth,
-                        )),
-            flex: 10)
+                          fit: BoxFit.cover,
+                        )).expanded(),
+          ],
+        ).expanded(flex: 10)
       ],
     );
     var favoriteIcon = Row(
@@ -136,23 +134,19 @@ class WordCard extends StatelessWidget {
           ]),
           child: AspectRatio(
             aspectRatio: cardAspectRatio,
-            child: Obx(()=>
-              FlippableBox(
-                isFlipped: controller.isFlipped.value,
-                flipVt: true,
-                duration: 0.5,
-                curve: Curves.easeOut,
-                back: Container(
-                  child: Stack(
-                      children: [buildBackCardContent(), favoriteIcon]),
-                ),
-                front: Container(child: Stack(children: [frontCardContent, favoriteIcon])),
+            child: SimpleGestureDetector(
+              onTap: controller.flipCard,
+              child: FlipCard(
+                key: controller.cardKey,
+                flipOnTouch: false,
+                back: Stack(children: [buildBackCardContent(), favoriteIcon]),
+                front: Stack(children: [frontCardContent, favoriteIcon]),
               ),
             ),
           ),
         ),
       ),
-    );
+    ).backgroundColor(Colors.transparent);
   }
 
   Widget buildBackCardContent() {
@@ -197,19 +191,26 @@ class WordCard extends StatelessWidget {
           'Example'.i18n,
           style: ReviewWordsTheme.wordCardSubTitle,
         ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
-        PinyinAnnotatedParagraph(
-          paragraph: wordExample.example,
-          pinyins: wordExample.pinyin,
-          defaultTextStyle: ReviewWordsTheme.wordCardExample,
-          pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
-          centerWord: word,
-          centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
-          linkedWords: word.relatedWords,
-          linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-        ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
+        SimpleGestureDetector(
+          onTap: () => controller.playExample(
+              string: wordExample.meaning, audio: wordExample.audioMale),
+          child: PinyinAnnotatedParagraph(
+            paragraph: wordExample.example,
+            pinyins: wordExample.pinyin,
+            defaultTextStyle: ReviewWordsTheme.wordCardExample,
+            pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
+            centerWord: word,
+            centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
+            linkedWords: word.relatedWords,
+            linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
+          ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
+        ),
         Row(children: [
-          AutoSizeText(wordExample.meaning, style: ReviewWordsTheme.exampleMeaning, maxLines: 2,)
-              .paddingOnly(left: 10)
+          AutoSizeText(
+            wordExample.meaning,
+            style: ReviewWordsTheme.exampleMeaning,
+            maxLines: 2,
+          ).paddingOnly(left: 10)
         ]),
         divider()
       ],

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flamingo/flamingo.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -25,8 +26,8 @@ class WordCardController extends GetxController {
   /// Is hint shown under meaning
   final isHintShown = false.obs;
 
-  /// Is the card flipped
-  final isFlipped = false.obs;
+  /// Card key
+  final cardKey = GlobalKey<FlipCardState>();
 
   final logger = LoggerService.logger;
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -39,7 +40,7 @@ class WordCardController extends GetxController {
 
   /// Flip our card
   void flipCard() {
-    isFlipped.value = !isFlipped.value;
+    cardKey.currentState.toggleCard();
   }
 
   /// Show a single word card from dialog

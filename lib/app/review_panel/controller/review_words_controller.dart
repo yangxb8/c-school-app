@@ -136,7 +136,9 @@ class ReviewWordsController extends GetxController
 
   /// Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    primaryWordCardController.isFlipped.value = false;
+    if(primaryWordCardController.cardKey.currentState.isFront) {
+      primaryWordCardController.flipCard();
+    }
   }
 
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
