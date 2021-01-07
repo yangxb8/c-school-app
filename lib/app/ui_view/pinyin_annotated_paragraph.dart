@@ -104,7 +104,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       {@required int hanziIdx,
       @required List<String> keywordsSeparatedParagraph}) {
     var totalIdx = 0;
-    var result = null;
+    var result;
     keywordsSeparatedParagraph.forEach((part) {
       // Target hanzi is in range of this part of paragraph
       final linkedWordList = linkedWords?.filter((w) => w.wordAsString == part)?? [];

@@ -136,7 +136,7 @@ class ReviewWordsController extends GetxController
 
   /// Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if(primaryWordCardController.cardKey.currentState.isFront) {
+    if(primaryWordCardController.isCardFlipped.isTrue) {
       primaryWordCardController.flipCard();
     }
   }

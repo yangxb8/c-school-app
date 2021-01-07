@@ -449,13 +449,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.0"
-  flip_card:
+  flippable_box:
     dependency: "direct main"
     description:
-      name: flip_card
+      name: flippable_box
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.4"
+    version: "1.0.6"
   flutter:
     dependency: "direct main"
     description: flutter

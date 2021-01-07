@@ -4,12 +4,11 @@ import 'package:c_school_app/app/review_panel/review_words_screen/review_words_t
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flippable_box/flippable_box.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:flip_card/flip_card.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +76,8 @@ class WordCard extends StatelessWidget {
                               e.meaning,
                               style: ReviewWordsTheme.wordCardMeaning,
                               maxLines: 1,
-                            ))
+                              overflow: TextOverflow.fade,
+                            ).paddingSymmetric(vertical: 10))
                         .toList(),
                     if (!word.hint.isBlank) hint else Container()
                   ],
@@ -123,30 +123,26 @@ class WordCard extends StatelessWidget {
     );
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.0),
-      child: SimpleGestureDetector(
-        onTap: controller.flipCard,
-        child: Container(
-          decoration: BoxDecoration(color: Colors.white, boxShadow: [
-            BoxShadow(
-                color: Colors.black12,
-                offset: Offset(3.0, 6.0),
-                blurRadius: 10.0)
-          ]),
-          child: AspectRatio(
-            aspectRatio: cardAspectRatio,
-            child: SimpleGestureDetector(
-              onTap: controller.flipCard,
-              child: FlipCard(
-                key: controller.cardKey,
-                flipOnTouch: false,
-                back: Stack(children: [buildBackCardContent(), favoriteIcon]),
-                front: Stack(children: [frontCardContent, favoriteIcon]),
-              ),
+      child: AspectRatio(
+        aspectRatio: cardAspectRatio,
+        child: SimpleGestureDetector(
+          onTap: controller.flipCard,
+          child: Obx(
+            () => FlippableBox(
+              isFlipped: controller.isCardFlipped.value,
+              curve: Curves.easeOut,
+              back: Container(
+                  constraints: BoxConstraints.expand(),
+                  child:
+                      Stack(children: [buildBackCardContent(), favoriteIcon])),
+              front: Container(
+                  constraints: BoxConstraints.expand(),
+                  child: Stack(children: [frontCardContent, favoriteIcon])),
             ),
           ),
         ),
       ),
-    ).backgroundColor(Colors.transparent);
+    );
   }
 
   Widget buildBackCardContent() {
@@ -205,13 +201,10 @@ class WordCard extends StatelessWidget {
             linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
           ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
         ),
-        Row(children: [
-          AutoSizeText(
-            wordExample.meaning,
-            style: ReviewWordsTheme.exampleMeaning,
-            maxLines: 2,
-          ).paddingOnly(left: 10)
-        ]),
+        AutoSizeText(
+          wordExample.meaning,
+          style: ReviewWordsTheme.exampleMeaning,
+        ).paddingOnly(left: 10),
         divider()
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:supercharged/supercharged.dart';
 
 import 'word_example.dart';
 
@@ -51,11 +52,11 @@ class WordMeaning extends Model {
     var examples = <WordExample>[];
     for (var i = 0; i < _examples.length; i++) {
       examples.add(WordExample(
-          example: _examples[i],
-          meaning: _exampleMeanings[i],
-          pinyin: _examplePinyins[i].split(PINYIN_SEPARATOR),
-          audioMale: exampleMaleAudios[i],
-          audioFemale: exampleFemaleAudios[i]));
+          example: _examples.elementAtOrElse(i, () => ''),
+          meaning: _exampleMeanings.elementAtOrElse(i, () => ''),
+          pinyin: _examplePinyins.elementAtOrElse(i,()=>'').split(PINYIN_SEPARATOR),
+          audioMale: exampleMaleAudios.elementAtOrNull(i),
+          audioFemale: exampleFemaleAudios.elementAtOrNull(i)));
     }
     return examples;
   }
