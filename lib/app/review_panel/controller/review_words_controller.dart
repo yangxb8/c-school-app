@@ -5,7 +5,9 @@ import 'package:c_school_app/service/app_state_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
@@ -42,6 +44,9 @@ class ReviewWordsController extends GetxController
 
   /// Controller for words list
   final groupedItemScrollController = GroupedItemScrollController();
+
+  /// ScrollDirection of words_list
+  SwipeDirection wordsListSwipeDirection;
 
   /// WordsHistory of this user
   RxList<WordHistory> _userWordsHistory;

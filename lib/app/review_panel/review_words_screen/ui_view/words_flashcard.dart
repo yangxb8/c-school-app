@@ -14,6 +14,8 @@ const cardAspectRatio = 12.0 / 22.0;
 const widgetAspectRatio = cardAspectRatio * 1.2;
 
 class WordsFlashcard extends GetView<ReviewWordsController> {
+  WordsFlashcard({key}):super(key:key);
+
   @override
   Widget build(BuildContext context) {
     controller.pageController.addListener(() {

@@ -84,13 +84,6 @@ class ReviewWordsTheme {
     color: darkBlue,
   );
 
-  static TextStyle exampleMeaning = TextStyle(
-    fontWeight: FontWeight.normal,
-    fontSize: 30,
-    letterSpacing: 0.27,
-    color: Colors.grey,
-  );
-
   static TextStyle wordCardHint = TextStyle(
       fontWeight: FontWeight.normal,
       fontSize: 25,
@@ -101,7 +94,7 @@ class ReviewWordsTheme {
 
   static TextStyle wordCardPinyin = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 50,
+    fontSize: 40,
     letterSpacing: 0.27,
     color: darkBlue,
   );
@@ -131,6 +124,11 @@ class ReviewWordsTheme {
 
   static TextStyle wordCardExampleLinkedWord = wordCardExample.copyWith(
     decoration: TextDecoration.underline,
+  );
+
+  static TextStyle exampleMeaning = wordCardExample.copyWith(
+    fontSize: 20,
+    color: Colors.grey,
   );
 
   static const TextStyle display1 = TextStyle(

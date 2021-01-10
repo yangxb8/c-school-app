@@ -149,13 +149,13 @@ class WordCard extends StatelessWidget {
     // Top hanzi part
     var partHanZi = SimpleGestureDetector(
       onTap: controller.playWord,
-      child: Center(
-        child: PinyinAnnotatedParagraph(
-            paragraph: word.wordAsString,
-            pinyins: word.pinyin,
-            defaultTextStyle: ReviewWordsTheme.wordCardWord),
-      ),
-    );
+      behavior: HitTestBehavior.opaque,
+      child: PinyinAnnotatedParagraph(
+          paragraph: word.wordAsString,
+          pinyins: word.pinyin,
+          defaultTextStyle: ReviewWordsTheme.wordCardWord,
+          pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,),
+    ).center();
     // Second meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
       var partExample = meaning.examples
@@ -190,6 +190,7 @@ class WordCard extends StatelessWidget {
         SimpleGestureDetector(
           onTap: () => controller.playExample(
               string: wordExample.meaning, audio: wordExample.audioMale),
+          behavior: HitTestBehavior.opaque,
           child: PinyinAnnotatedParagraph(
             paragraph: wordExample.example,
             pinyins: wordExample.pinyin,
@@ -204,7 +205,7 @@ class WordCard extends StatelessWidget {
         AutoSizeText(
           wordExample.meaning,
           style: ReviewWordsTheme.exampleMeaning,
-        ).paddingOnly(left: 10),
+        ).alignment(Alignment.centerLeft).paddingOnly(left: 20),
         divider()
       ],
     );
