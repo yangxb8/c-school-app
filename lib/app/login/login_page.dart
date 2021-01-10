@@ -1,7 +1,7 @@
 import 'package:c_school_app/app/ui_view/separator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage>
                             child: GestureDetector(
                               onTap: c.handleAnonymousLogin,
                               child: Icon(
-                                FontAwesomeIcons.times,
+                                FontAwesome.times,
                                 color: Colors.white,
                               ),
                             ),
@@ -266,7 +266,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.envelope,
+                              FontAwesome.envelope,
                               color: Colors.black,
                               size: 22.0,
                             ),
@@ -299,7 +299,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              FontAwesome.lock,
                               size: 22.0,
                               color: Colors.black,
                             ),
@@ -310,8 +310,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleLogin,
                               child: Icon(
                                 _obscureTextLogin
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? FontAwesome.eye
+                                    : FontAwesome.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -428,7 +428,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.facebookF,
+              FontAwesome.facebook_f,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -445,7 +445,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.twitter,
+              FontAwesome.twitter,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -462,7 +462,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.google,
+              FontAwesome.google,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -481,7 +481,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.apple,
+              FontAwesome.apple,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -531,7 +531,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.user,
+                              FontAwesome.user,
                               color: Colors.black,
                             ),
                             hintText: 'Name'.i18n,
@@ -561,7 +561,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.envelope,
+                              FontAwesome.envelope,
                               color: Colors.black,
                             ),
                             hintText: 'Email Address'.i18n,
@@ -592,7 +592,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              FontAwesome.lock,
                               color: Colors.black,
                             ),
                             hintText: 'Password'.i18n,
@@ -602,8 +602,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignup,
                               child: Icon(
                                 _obscureTextSignup
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? FontAwesome.eye
+                                    : FontAwesome.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -633,7 +633,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              FontAwesome.lock,
                               color: Colors.black,
                             ),
                             hintText: 'Confirmation'.i18n,
@@ -643,8 +643,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignupConfirm,
                               child: Icon(
                                 _obscureTextSignupConfirm
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? FontAwesome.eye
+                                    : FontAwesome.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),

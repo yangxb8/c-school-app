@@ -1,6 +1,6 @@
 import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
@@ -64,8 +64,8 @@ class ReviewWords extends GetView<ReviewWordsController> {
         FloatingSearchBarAction(
           child: CircularButton(
             icon: Obx(() => controller.speakerGender.value == SpeakerGender.male
-                ? Icon(FontAwesomeIcons.male)
-                : Icon(FontAwesomeIcons.female)),
+                ? Icon(Ionicons.md_male)
+                : Icon(Ionicons.md_female)),
             onPressed: () => controller.toggleSpeakerGender(),
           ),
         ),

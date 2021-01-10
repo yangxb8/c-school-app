@@ -8,7 +8,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_beautiful_popup/main.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -84,7 +84,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              icon: FaIcon(FontAwesomeIcons.sadCry,
+              icon: Icon(FontAwesome5.sad_cry,
                   size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: wordsListForgotten),
@@ -98,7 +98,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             IconButton(
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: wordsListLiked),
-              icon: FaIcon(FontAwesomeIcons.solidHeart,
+              icon: Icon(FontAwesome.heart,
                   size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               tooltip: 'Liked words'.i18n,
             ),
@@ -108,7 +108,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              icon: FaIcon(FontAwesomeIcons.university,
+              icon: Icon(FontAwesome.university,
                   size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: wordsListAll),
@@ -248,8 +248,8 @@ class LectureCard extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
-                          child: FaIcon(
-                            FontAwesomeIcons.sadCry,
+                          child: Icon(
+                            FontAwesome5.sad_cry,
                             color: ReviewWordsTheme.lightYellow,
                             size: 20,
                           ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -69,9 +69,9 @@ class SpeechExamBottomSheet extends GetView<SpeechRecordingController> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Icon(FontAwesomeIcons.commentDots),
+                Icon(FontAwesome5.comment_dots),
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.timesCircle),
+                  icon: Icon(FontAwesome.times_circle),
                   onPressed: () => Get.back(),
                 )
               ],
@@ -81,7 +81,7 @@ class SpeechExamBottomSheet extends GetView<SpeechRecordingController> {
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               leading: IconButton(
-                icon: Icon(FontAwesomeIcons.playCircle),
+                icon: Icon(FontAwesome.play_circle),
                 onPressed: () => controller.playQuestion,
               ),
               title: Row(
@@ -138,7 +138,7 @@ class SpeechExamBottomSheet extends GetView<SpeechRecordingController> {
           ),
           Center(
             child: IconButton(
-              icon: Icon(FontAwesomeIcons.microphone),
+              icon: Icon(FontAwesome.microphone),
               onPressed: () => controller.handleRecordButtonPressed(),
               iconSize: 35.0,
             ),

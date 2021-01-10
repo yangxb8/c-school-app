@@ -6,7 +6,7 @@ import 'package:c_school_app/controller/ui_view_controller/word_card_controller.
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flippable_box/flippable_box.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:flutter/widgets.dart';
@@ -49,7 +49,7 @@ class WordCard extends StatelessWidget {
               style: ReviewWordsTheme.wordCardHint,
               maxLines: 1,
             ),
-            child: FaIcon(FontAwesomeIcons.lightbulb,
+            child: Icon(FontAwesome5.lightbulb,
                 color: controller.isHintShown.value
                     ? ReviewWordsTheme.lightYellow
                     : ReviewWordsTheme.lightBlue,
@@ -110,7 +110,7 @@ class WordCard extends StatelessWidget {
         Obx(
           () => IconButton(
             splashRadius: 0.01,
-            icon: FaIcon(FontAwesomeIcons.solidHeart),
+            icon: Icon(FontAwesome.heart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked()
                 ? ReviewWordsTheme.lightYellow

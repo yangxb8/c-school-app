@@ -2,7 +2,7 @@ import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -58,7 +58,7 @@ class WordsList extends GetView<ReviewWordsController> {
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: IconButton(
-                      icon: Icon(FontAwesomeIcons.playCircle),
+                      icon: Icon(FontAwesome.play_circle),
                       iconSize: BUTTON_SIZE,
                       onPressed: () => controller.playWord(word: word),
                     ),

@@ -1,8 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
@@ -69,8 +69,8 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                     IconButton(
                       splashRadius: 0.01,
                       icon: Obx(
-                        () => FaIcon(
-                          FontAwesomeIcons.laughBeam,
+                        () => Icon(
+                          FontAwesome5.laugh_beam,
                           color: controller.wordMemoryStatus.value ==
                                   WordMemoryStatus.REMEMBERED
                               ? Colors.yellowAccent
@@ -84,8 +84,8 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                     IconButton(
                       splashRadius: 0.01,
                       icon: Obx(
-                        () => FaIcon(
-                          FontAwesomeIcons.frownOpen,
+                        () => Icon(
+                          FontAwesome5.frown_open,
                           color: controller.wordMemoryStatus.value ==
                                   WordMemoryStatus.NORMAL
                               ? Colors.yellowAccent
@@ -99,8 +99,8 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                     IconButton(
                       splashRadius: 0.01,
                       icon: Obx(
-                        () => FaIcon(
-                          FontAwesomeIcons.sadCry,
+                        () => Icon(
+                          FontAwesome5.sad_cry,
                           color: controller.wordMemoryStatus.value ==
                                   WordMemoryStatus.FORGOT
                               ? Colors.yellowAccent
