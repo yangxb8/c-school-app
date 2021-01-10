@@ -26,7 +26,7 @@ class WordCard extends StatelessWidget {
   final Word word;
   final WordCardController controller;
   WordCard({Key key, @required this.word})
-      : controller = Get.put(WordCardController(word), tag: word.wordId),
+      : controller = WordCardController(word),
         super(key: key);
 
   @override

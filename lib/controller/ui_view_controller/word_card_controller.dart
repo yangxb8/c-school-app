@@ -57,6 +57,7 @@ class WordCardController extends GetxController {
       await tts.speak(word.wordAsString);
     } else {
       await audioPlayer.play(wordAudio.url);
+      await audioPlayer.onPlayerCompletion.first;
       if (completionCallBack!= null) {
         await completionCallBack();
       }

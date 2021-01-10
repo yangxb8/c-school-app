@@ -157,9 +157,6 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           if (delta.abs() > MAX_CARDS_FRAME) {
             continue;
           }
-          if (isPrimaryCard) {
-            controller.primaryWordIndex.value = i;
-          }
           var isOnRight = delta > 0;
 
           var start = padding +
@@ -167,13 +164,18 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                   primaryCardLeft -
                       horizontalInset * -delta * (isOnRight ? 40 : 1),
                   0.0);
-
+          var wordCard = WordCard(word: controller.reversedWordsList[i]);
+          // Set primary card controller
+          if (isPrimaryCard) {
+            controller.primaryWordIndex.value = i;
+            controller.primaryWordCardController = wordCard.controller;
+          }
           var cardItem = Positioned.directional(
             top: padding + verticalInset * max(-delta, 0.0),
             bottom: padding + verticalInset * max(-delta, 0.0),
             start: start,
             textDirection: TextDirection.rtl,
-            child: WordCard(word: controller.reversedWordsList[i]),
+            child: wordCard,
           );
           cardList.add(cardItem);
         }

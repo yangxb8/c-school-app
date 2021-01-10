@@ -36,6 +36,9 @@ class ReviewWordsController extends GetxController
   /// Current primary word ordinal in _wordList
   final primaryWordIndex = 0.obs;
 
+  /// Controller of primary card
+  WordCardController primaryWordCardController;
+
   /// List or card
   final _mode = WordsReviewMode.LIST.obs;
 
@@ -110,9 +113,6 @@ class ReviewWordsController extends GetxController
 
   /// PrimaryWord associated with primaryWordIndex
   Word get primaryWord => reversedWordsList[primaryWordIndex.value];
-
-  WordCardController get primaryWordCardController =>
-      Get.find(tag: primaryWord.wordId);
 
   int countWordMemoryStatusOfWordByStatus(
           {@required WordMemoryStatus status}) =>
@@ -209,17 +209,17 @@ class ReviewWordsController extends GetxController
   /// Also, we check isAutoPlayMode in multiple stage so user
   /// can stop the play anytime
   void _autoPlayCard() async {
-    if (!isAutoPlayMode.value) return;
+    if (isAutoPlayMode.isfalse) return;
     await primaryWordCardController.playMeanings(completionCallBack: () async {
       // after playMeanings
-      if (!isAutoPlayMode.value) return;
+      if (isAutoPlayMode.isfalse) return;
       await Timer(0.5.seconds, primaryWordCardController.flipCard);
       await Timer(0.5.seconds, () async {
-        if (!isAutoPlayMode.value) return;
+        if (isAutoPlayMode.isfalse) return;
         await primaryWordCardController.playWord(completionCallBack: () async {
           // after playWord
           // When we reach the last card or autoPlay turn off
-          if (!isAutoPlayMode.value || primaryWordIndex.value == 0) {
+          if (isAutoPlayMode.isfalse || primaryWordIndex.value == 0) {
             searchBarPlayIconController.reverse();
             isAutoPlayMode.value = false;
           } else {
