@@ -188,8 +188,7 @@ class WordCard extends StatelessWidget {
           style: ReviewWordsTheme.wordCardSubTitle,
         ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
         SimpleGestureDetector(
-          onTap: () => controller.playExample(
-              string: wordExample.meaning, audio: wordExample.audioMale),
+          onTap: () => controller.playExample(wordExample: wordExample),
           behavior: HitTestBehavior.opaque,
           child: PinyinAnnotatedParagraph(
             paragraph: wordExample.example,

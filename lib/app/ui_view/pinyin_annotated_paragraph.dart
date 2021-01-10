@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:styled_widget/styled_widget.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:supercharged/supercharged.dart';

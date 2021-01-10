@@ -1,5 +1,6 @@
 import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
@@ -14,7 +15,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Stack(fit: StackFit.expand, children: [
-            Obx(() => controller.mode == WordsReviewMode.FLASH_CARD
+            Obx(() => controller.mode == WordsReviewMode.flash_card
                 ? WordsFlashcard()
                 : WordsList()),
             _buildFloatingSearchBar(),
@@ -43,7 +44,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
       leadingActions: [
         FloatingSearchBarAction(
           child: CircularButton(
-            icon: Obx(() => controller.mode == WordsReviewMode.LIST
+            icon: Obx(() => controller.mode == WordsReviewMode.list
                 ? Icon(Icons.credit_card)
                 : Icon(Icons.list)),
             onPressed: () => controller.changeMode(),
@@ -59,7 +60,15 @@ class ReviewWords extends GetView<ReviewWordsController> {
             ),
             onPressed: () => controller.autoPlayPressed(),
           ),
-        )
+        ),
+        FloatingSearchBarAction(
+          child: CircularButton(
+            icon: Obx(() => controller.speakerGender.value == SpeakerGender.male
+                ? Icon(FontAwesomeIcons.male)
+                : Icon(FontAwesomeIcons.female)),
+            onPressed: () => controller.toggleSpeakerGender(),
+          ),
+        ),
       ],
       actions: [
         FloatingSearchBarAction.searchToClear(

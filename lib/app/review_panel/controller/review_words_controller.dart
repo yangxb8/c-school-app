@@ -5,7 +5,6 @@ import 'package:c_school_app/service/app_state_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -40,7 +39,7 @@ class ReviewWordsController extends GetxController
   WordCardController primaryWordCardController;
 
   /// List or card
-  final _mode = WordsReviewMode.LIST.obs;
+  final _mode = WordsReviewMode.list.obs;
 
   /// Controller for search bar of review words screen
   final searchBarController = FloatingSearchBarController();
@@ -73,6 +72,8 @@ class ReviewWordsController extends GetxController
   RxString searchQuery = ''.obs;
 
   RxList<Word> searchResult = <Word>[].obs;
+
+  Rx<SpeakerGender> speakerGender = SpeakerGender.male.obs;
 
   @override
   Future<void> onInit() async {
@@ -141,7 +142,7 @@ class ReviewWordsController extends GetxController
 
   /// Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if(primaryWordCardController.isCardFlipped.isTrue) {
+    if (primaryWordCardController.isCardFlipped.isTrue) {
       primaryWordCardController.flipCard();
     }
   }
@@ -152,16 +153,24 @@ class ReviewWordsController extends GetxController
     if (isAutoPlayMode.value) {
       isAutoPlayMode.value = false;
     }
-    if (_mode.value == WordsReviewMode.FLASH_CARD) {
-      _mode.value = WordsReviewMode.LIST;
+    if (_mode.value == WordsReviewMode.flash_card) {
+      _mode.value = WordsReviewMode.list;
       logger.i('Change to List Mode');
     } else {
-      _mode.value = WordsReviewMode.FLASH_CARD;
+      _mode.value = WordsReviewMode.flash_card;
       if (pageController.hasClients) {
         _animateToWordById(controllerTrack.trackedWordId);
       }
       logger.i('Change to Card Mode');
     }
+  }
+
+  /// Male or Female
+  void toggleSpeakerGender() {
+    speakerGender.value =
+        speakerGender.value == SpeakerGender.male
+            ? SpeakerGender.female
+            : SpeakerGender.male;
   }
 
   /// Simplified version of same method in WordCard
@@ -171,7 +180,9 @@ class ReviewWordsController extends GetxController
   Future<void> playWord({Word word}) async {
     if (isAutoPlayMode.value) return;
     word ??= primaryWord;
-    var wordAudio = word.wordAudioMale;
+    var wordAudio = speakerGender.value == SpeakerGender.male
+        ? word.wordAudioMale
+        : word.wordAudioFemale;
     if (wordAudio == null) {
       await tts.speak(word.wordAsString);
     } else {
@@ -183,7 +194,7 @@ class ReviewWordsController extends GetxController
   /// Or, if already in autoPlay mode, cancel it.
   void autoPlayPressed() async {
     // Force using card mode
-    if (_mode.value == WordsReviewMode.LIST) {
+    if (_mode.value == WordsReviewMode.list) {
       changeMode();
       // For re-render to happen, we set a timer and return from this call
       Timer(0.3.seconds, () => autoPlayPressed());
@@ -295,4 +306,6 @@ class ReviewWordsController extends GetxController
   }
 }
 
-enum WordsReviewMode { LIST, FLASH_CARD }
+enum WordsReviewMode { list, flash_card }
+
+enum SpeakerGender { male, female }

@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flamingo/flamingo.dart';
+import 'package:c_school_app/app/model/word_example.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -14,7 +15,6 @@ const LAN_CODE_CN = 'zh-cn';
 const LAN_CODE_JP = 'ja';
 
 class WordCardController extends GetxController {
-
   WordCardController(this.word);
 
   final Word word;
@@ -50,7 +50,9 @@ class WordCardController extends GetxController {
 
   /// Play audio of the word
   Future<void> playWord({Function completionCallBack}) async {
-    var wordAudio = word.wordAudioMale;
+    var wordAudio = reviewWordSpeakerGender == SpeakerGender.male
+        ? word.wordAudioMale
+        : word.wordAudioFemale;
     if (wordAudio == null) {
       final tts = await _generateTts();
       tts.setCompletionHandler(completionCallBack);
@@ -58,7 +60,7 @@ class WordCardController extends GetxController {
     } else {
       await audioPlayer.play(wordAudio.url);
       await audioPlayer.onPlayerCompletion.first;
-      if (completionCallBack!= null) {
+      if (completionCallBack != null) {
         await completionCallBack();
       }
     }
@@ -83,19 +85,27 @@ class WordCardController extends GetxController {
 
   /// Play audio of the examples
   Future<void> playExample(
-      {@required String string,
-      @required StorageFile audio,
-      Function completionCallBack}) async {
+      {@required WordExample wordExample, Function completionCallBack}) async {
+    var audio = reviewWordSpeakerGender == SpeakerGender.male
+        ? wordExample.audioMale
+        : wordExample.audioFemale;
     if (audio == null) {
       final tts = await _generateTts();
-      await tts.speak(string);
+      await tts.speak(wordExample.example);
     } else {
       await audioPlayer.play(audio.url);
+      await audioPlayer.onPlayerCompletion.first;
       if (completionCallBack != null) {
         await completionCallBack();
       }
     }
   }
+
+  /// Default to Male
+  SpeakerGender get reviewWordSpeakerGender =>
+      Get.isRegistered<ReviewWordsController>()
+          ? Get.find<ReviewWordsController>().speakerGender.value
+          : SpeakerGender.male;
 
   Future<FlutterTts> _generateTts({String language = LAN_CODE_CN}) async {
     final tts = FlutterTts();
