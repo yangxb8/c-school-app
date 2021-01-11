@@ -54,8 +54,8 @@ extension Localization on String {
         'ja_jp': 'お帰りなさい！',
       }+
       {
-        'en': 'You have study for %d days!',
-        'ja_jp': '%d日目の勉強を頑張りましょう！',
+        'en': 'You have study for %d times!',
+        'ja_jp': '%d回目の勉強を頑張りましょう！',
       };
 
   String get i18n => localize(this, _t);

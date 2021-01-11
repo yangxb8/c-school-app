@@ -1,11 +1,12 @@
+import 'package:c_school_app/app/ui_view/separator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import '../../controller/login_controller.dart';
-import 'style/theme.dart' as theme;
+import 'controller/login_controller.dart';
+import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
 import '../../i18n/login_page.i18n.dart';
 
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage>
                             child: GestureDetector(
                               onTap: c.handleAnonymousLogin,
                               child: Icon(
-                                FontAwesomeIcons.times,
+                                FontAwesome.times,
                                 color: Colors.white,
                               ),
                             ),
@@ -95,7 +96,7 @@ class _LoginPageState extends State<LoginPage>
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 45.0),
+                        padding: EdgeInsets.only(top: 35.0),
                         child: Image(
                             width: 250.0,
                             height: 191.0,
@@ -265,7 +266,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.envelope,
+                              FontAwesome.envelope,
                               color: Colors.black,
                               size: 22.0,
                             ),
@@ -298,7 +299,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              FontAwesome.lock,
                               size: 22.0,
                               color: Colors.black,
                             ),
@@ -309,8 +310,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleLogin,
                               child: Icon(
                                 _obscureTextLogin
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? FontAwesome.eye
+                                    : FontAwesome.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -325,7 +326,7 @@ class _LoginPageState extends State<LoginPage>
             ],
           ),
           Padding(
-              padding: EdgeInsets.only(top: 1.0),
+              padding: EdgeInsets.only(top: 20.0),
               child: Container(
                 // margin: EdgeInsets.only(top: 170.0),
                 decoration: BoxDecoration(
@@ -392,50 +393,17 @@ class _LoginPageState extends State<LoginPage>
           ),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [
-                          Colors.white10,
-                          Colors.white,
-                        ],
-                        begin: const FractionalOffset(0.0, 0.0),
-                        end: const FractionalOffset(1.0, 1.0),
-                        stops: [0.0, 1.0],
-                        tileMode: TileMode.clamp),
-                  ),
-                  width: 100.0,
-                  height: 1.0,
+            child: FancySeparator(
+              middleWidget: Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                child: Text(
+                  'Or',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontFamily: 'WorkSansMedium'),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Text(
-                    'Or',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontFamily: 'WorkSansMedium'),
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [
-                          Colors.white,
-                          Colors.white10,
-                        ],
-                        begin: const FractionalOffset(0.0, 0.0),
-                        end: const FractionalOffset(1.0, 1.0),
-                        stops: [0.0, 1.0],
-                        tileMode: TileMode.clamp),
-                  ),
-                  width: 100.0,
-                  height: 1.0,
-                ),
-              ],
+              ),
             ),
           ),
           Row(
@@ -460,7 +428,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.facebookF,
+              FontAwesome.facebook_f,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -477,7 +445,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.twitter,
+              FontAwesome.twitter,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -494,7 +462,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.google,
+              FontAwesome.google,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -513,7 +481,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesomeIcons.apple,
+              FontAwesome.apple,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -563,7 +531,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.user,
+                              FontAwesome.user,
                               color: Colors.black,
                             ),
                             hintText: 'Name'.i18n,
@@ -593,7 +561,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.envelope,
+                              FontAwesome.envelope,
                               color: Colors.black,
                             ),
                             hintText: 'Email Address'.i18n,
@@ -624,7 +592,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              FontAwesome.lock,
                               color: Colors.black,
                             ),
                             hintText: 'Password'.i18n,
@@ -634,8 +602,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignup,
                               child: Icon(
                                 _obscureTextSignup
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? FontAwesome.eye
+                                    : FontAwesome.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -665,7 +633,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              FontAwesome.lock,
                               color: Colors.black,
                             ),
                             hintText: 'Confirmation'.i18n,
@@ -675,8 +643,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignupConfirm,
                               child: Icon(
                                 _obscureTextSignupConfirm
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? FontAwesome.eye
+                                    : FontAwesome.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),

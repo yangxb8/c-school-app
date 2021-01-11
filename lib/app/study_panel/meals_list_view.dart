@@ -1,5 +1,5 @@
 import '../my_progress_theme.dart';
-import '../models/meals_list_data.dart';
+import '../model/meals_list_data.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:flutter/material.dart';
 

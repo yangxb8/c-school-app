@@ -4,11 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:spoken_chinese/exceptions/sound_exceptions.dart';
-import 'package:spoken_chinese/service/app_state_service.dart';
+import 'package:c_school_app/exceptions/sound_exceptions.dart';
+import 'package:c_school_app/service/app_state_service.dart';
 
-import '../../app/models/exams.dart';
-import '../../app/models/user_speech.dart';
+import '../../app/model/exams.dart';
+import '../../app/model/user_speech.dart';
 import '../../service/api_service.dart';
 
 class SpeechRecordingController extends GetxController {
@@ -24,6 +24,8 @@ class SpeechRecordingController extends GetxController {
   SpeechExam exam;
   /// Used to play question and user speech
   AudioPlayer _myPlayer;
+  /// TencentApi
+  final tencentApi = Get.find<ApiService>().tencentApi;
 
   /// Return last speech by user
   UserSpeech get lastSpeech => userSpeeches.isEmpty? null: userSpeeches.last;
@@ -32,7 +34,7 @@ class SpeechRecordingController extends GetxController {
   Future<void> onInit() async {
     // Reuse player
     _myPlayer = await AudioPlayer(playerId: 'SINGLETON');
-    AudioPlayer.logEnabled = Get.find<AppStateService>().isDebug;
+    AudioPlayer.logEnabled = AppStateService.isDebug;
     super.onInit();
   }
 
@@ -41,7 +43,7 @@ class SpeechRecordingController extends GetxController {
   }
 
   void startRecord() async {
-    assert(!exam.isNull);
+    assert(exam!= null);
     // Verify permission
     if (recordingStatus.value != RecordingStatus.IDLE) return;
     var status = await Permission.microphone.request();
@@ -53,13 +55,13 @@ class SpeechRecordingController extends GetxController {
     var newSpeech = await UserSpeech.forExam(exam: exam).init();
     userSpeeches.add(newSpeech);
     // Call native method
-    await Get.find<ApiService>().tencentApi.soeStartRecord(exam);
+    await tencentApi.soeStartRecord(exam);
   }
 
   void stopRecordAndEvaluate() async {
     recordingStatus(RecordingStatus.EVALUATING);
     // Call native method and save result to latest userSpeech instance
-    var result = await Get.find<ApiService>().tencentApi.soeStopRecordAndEvaluate();
+    var result = await tencentApi.soeStopRecordAndEvaluate();
     userSpeeches.last.speechData = result['speechData'];
     userSpeeches.last.evaluationResult = result['evaluationResult'];
     // Save result to firestore
@@ -91,7 +93,7 @@ class SpeechRecordingController extends GetxController {
   @override
   void onClose() {
     if (_myPlayer != null) {
-      _myPlayer = null;
+      _myPlayer.dispose();
     }
     super.onClose();
   }

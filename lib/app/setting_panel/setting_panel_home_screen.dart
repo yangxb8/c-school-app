@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:spoken_chinese/app/models/exams.dart';
-import 'package:spoken_chinese/service/app_state_service.dart';
+import 'package:c_school_app/app/model/exams.dart';
+import 'package:c_school_app/service/app_state_service.dart';
 import '../ui_view/speech_exam_bottom_sheet.dart';
 
 class SettingPanelHomeScreen extends StatelessWidget {
@@ -18,7 +17,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
                   title: 'Language',
                   subtitle: 'English',
                   leading: Icon(Icons.language),
-                  onTap: () {},
+                  onPressed: (BuildContext context) {},
                 ),
                 SettingsTile.switchTile(
                   title: 'Use fingerprint',
@@ -29,7 +28,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
               ],
             ),
           ] +
-          (Get.find<AppStateService>().isDebug ? _getDebugSection() : []),
+          (AppStateService.isDebug ? _getDebugSection() : []),
     );
   }
 
@@ -42,7 +41,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
             title: 'Recorder dialog',
             leading: Icon(Icons.mic),
             //TODO: fetch exam properly
-            onTap: () => showSpeechExamBottomSheet(
+            onPressed: (BuildContext _)  => showSpeechExamBottomSheet(
                 exam: SpeechExam(
                     questionVoiceData: null,
                     examId: null,
