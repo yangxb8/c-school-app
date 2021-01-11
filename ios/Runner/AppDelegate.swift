@@ -17,7 +17,7 @@ import Flutter
         let refText = args["refText"] as? String
         let scoreCoeff = args["scoreCoeff"] as? Double
         let mode = args["mode"] as? String
-        let error = soeDelegate?.soeStartRecord()
+        soeDelegate?.soeStartRecord(refText,scoreCoeff,mode)
       } else if call.method == "soeStopRecordAndEvaluate" {
         let error = soeDelegate?.soeStopRecordAndEvaluate()
       } else {
@@ -31,7 +31,9 @@ import Flutter
 }
 
 class SoeDelegate : UIViewController {
-    @IBAction func onRecord(sender:AnyObject!) {
+    let oralEvaluation = TAIOralEvaluation()
+    
+    @IBAction func onRecord(refText:String, scoreCoeff:Double,mode:String,result:FlutterResult) {
         if self.oralEvaluation().isRecording() {
             weak var ws:SoeDelegate! = self
             self.oralEvaluation().stopRecordAndEvaluation({ (error:TAIError!) in
