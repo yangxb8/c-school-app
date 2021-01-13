@@ -7,6 +7,7 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:c_school_app/service/logger_service.dart';
+import '../../../../util/extensions.dart';
 import 'dart:math';
 
 const BUTTON_SIZE = 50.0;
@@ -118,7 +119,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
           ),
         ),
       ),
-    );
+    ).afterFirstLayout(controller.animateToTrackedWord);
   }
 }
 
