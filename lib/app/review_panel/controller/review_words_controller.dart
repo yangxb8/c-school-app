@@ -158,9 +158,6 @@ class ReviewWordsController extends GetxController
       logger.i('Change to List Mode');
     } else {
       _mode.value = WordsReviewMode.flash_card;
-      if (pageController.hasClients) {
-        _animateToWordById(controllerTrack.trackedWordId);
-      }
       logger.i('Change to Card Mode');
     }
   }
@@ -280,6 +277,11 @@ class ReviewWordsController extends GetxController
       await pageController.animateToPage(index,
           duration: 0.5.seconds, curve: Curves.easeInOut);
     }
+  }
+
+  /// Animate to word in track
+  Future<void> animateToTrackedWord() async{
+    await _animateToWordById(controllerTrack.trackedWordId);
   }
 
   int indexOfWord(Word word) => wordsList.indexOf(word);
