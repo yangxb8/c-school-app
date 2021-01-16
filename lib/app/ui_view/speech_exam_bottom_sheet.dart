@@ -81,12 +81,8 @@ class SpeechExamBottomSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
-              leading: IconButton(
-                icon: Icon(FontAwesome.play_circle),
-                onPressed: () => controller.playQuestion,
-              ),
               title: Row(
-                children: exam.question.split('').asMap().entries.map((entry) {
+                children: exam.refText.split('').asMap().entries.map((entry) {
                   var idx = entry.key;
                   var word = entry.value;
                   TextButton(

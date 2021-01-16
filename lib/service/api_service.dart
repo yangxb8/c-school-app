@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
+import 'package:c_school_app/app/model/exam_base.dart';
+import 'package:c_school_app/service/user_service.dart';
 import 'package:c_school_app/util/functions.dart';
 import 'package:csv/csv.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:pedantic/pedantic.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,9 +19,8 @@ import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/app/model/exams.dart';
+import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
-import 'package:c_school_app/app/model/user_speech.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
 import '../model/user.dart';
@@ -156,9 +158,8 @@ class _FirebaseAuthApi {
       // Once signed in, return the UserCredential
       var userCredential = await _firebaseAuth.signInWithCredential(credential);
       // If the user is not in our DB, create it
-      if (_firestoreApi
-          .fetchAppUser(firebaseUser: userCredential.user)
-          == null) {
+      if (_firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
+          null) {
         _firestoreApi._registerAppUser(
             firebaseUser: userCredential.user,
             nickname: googleUser.displayName);
@@ -227,10 +228,12 @@ class _FirebaseAuthApi {
 }
 
 class _FirestoreApi {
+  static const extension_audio = 'mp3';
+  static const extension_image = 'jpg';
+  static const extension_json = 'json';
   static _FirestoreApi _instance;
   static FirebaseFirestore _firestore;
   static DocumentAccessor _documentAccessor;
-  static CollectionReference _userSpeechCollection;
   static User _currentUser;
 
   static _FirestoreApi getInstance() {
@@ -239,7 +242,6 @@ class _FirestoreApi {
       _firestore = FirebaseFirestore.instance;
       _documentAccessor = DocumentAccessor();
       _setupEmulator();
-      _userSpeechCollection = _firestore.collection('user_speeches');
       _currentUser = _FirebaseAuthApi().currentUser;
     }
 
@@ -272,48 +274,42 @@ class _FirestoreApi {
     }
   }
 
-  /// User can have many trial for same fingerprint
-  Future<int> countUserSpeechByFingerprint(String fingerprint) async {
-    return await _userSpeechCollection
-        .where('fingerprint', isEqualTo: fingerprint)
-        .get()
-        .then((QuerySnapshot snapshot) => snapshot.size);
-  }
-
   /// Update App User using flamingo, appUserForUpdate should contain
   /// only updated values
   void updateAppUser(AppUser appUserForUpdate, Function refreshAppUser) {
     _documentAccessor.update(appUserForUpdate).then((_) => refreshAppUser());
   }
 
-  /// Return the specific speech data as Uint8List
-  Future<Uint8List> getUserSpeechByFingerprintAndTrial(
-      {@required String fingerPrint, @required int trial}) async {
-    return await _userSpeechCollection
-        .where('fingerprint', isEqualTo: fingerPrint)
-        .where('trial', isEqualTo: trial)
-        .get()
-        .then(
-            (QuerySnapshot snapshot) => snapshot.docs.first.get('speechData'));
-  }
+  /// Save User speech, usually we won't await this.
+  Future<void> saveUserSpeech(
+      {@required File speechData,
+      @required String sentenceInfo,
+      SpeechExam exam}) async {
+    final storage = Storage()..fetch();
+    final userId = UserService.user.userId;
 
-  /// Save speech data. We won't wait for this
-  void saveUserSpeechResult(UserSpeech speech) {
-    _userSpeechCollection.add({
-      'fingerprint': speech.speechFingerprint,
-      'userId': speech.userId,
-      'lectureId': speech.lectureId,
-      'examId': speech.examId,
-      'trial': speech.trial,
-      'speechData': speech.speechData,
-      'evaluationResult': jsonEncode(speech.evaluationResult.toJson())
-    });
+    // Save speech data
+    final speechDataPath = '/user_generated/speech_data';
+    final data = await storage.save(speechDataPath, speechData,
+        filename: '${userId}_${exam.examId}.${extension_audio}',
+        mimeType: mimeTypeMpeg,
+        metadata: {'newPost': 'true'});
+    final result = SpeechEvaluationResult(
+        userId: userId,
+        examId: exam.examId ?? 'freeSpeech',
+        speechDataPath: data.path,
+        sentenceInfo: SentenceInfo.fromJson(jsonDecode(sentenceInfo)));
+    // Save evaluation result
+    final evaluationResultPath = '/user_generated/evaluation_result';
+    await storage.save(
+        speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
+        filename: '${userId}_${exam.examId}.${extension_json}',
+        mimeType: 'application/json',
+        metadata: {'newPost': 'true'});
   }
 
   /// Upload words to firestore and cloud storage
   void uploadWordsByCsv() async {
-    final EXTENSION_AUDIO = 'mp3';
-    final EXTENSION_IMAGE = 'jpg';
     final COLUMN_WORD_ID = 0;
     final COLUMN_WORD = 1;
     final COLUMN_PART_OF_SENTENCE = 2;
@@ -333,7 +329,6 @@ class _FirestoreApi {
     final PINYIN_SEPARATOR = '-';
 
     final storage = Storage()..fetch();
-    final documentAccessor = DocumentAccessor();
 
     // Build Word from csv
     var csv;
@@ -380,10 +375,10 @@ class _FirestoreApi {
       final pathWordPic =
           '${word.documentPath}/${EnumToString.convertToString(WordKey.pic)}';
       try {
-        final wordPic =
-            await getFileFromAssets('upload/${word.wordId}.${EXTENSION_IMAGE}');
+        final wordPic = await createFileFromAssets(
+            'upload/${word.wordId}.${extension_image}');
         word.pic = await storage.save(pathWordPic, wordPic,
-            filename: '${word.wordId}.${EXTENSION_IMAGE}',
+            filename: '${word.wordId}.${extension_image}',
             mimeType: mimeTypeJpeg,
             metadata: {'newPost': 'true'});
       } catch (e, _) {
@@ -395,18 +390,18 @@ class _FirestoreApi {
           '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioMale)}';
       final pathWordAudioFemale =
           '${word.documentPath}/${EnumToString.convertToString(WordKey.wordAudioFemale)}';
-      final wordAudioFileMale = await getFileFromAssets(
-          'upload/${word.wordId}-W-M.${EXTENSION_AUDIO}');
-      final wordAudioFileFemale = await getFileFromAssets(
-          'upload/${word.wordId}-W-F.${EXTENSION_AUDIO}');
+      final wordAudioFileMale = await createFileFromAssets(
+          'upload/${word.wordId}-W-M.${extension_audio}');
+      final wordAudioFileFemale = await createFileFromAssets(
+          'upload/${word.wordId}-W-F.${extension_audio}');
       word.wordAudioMale = await storage.save(
           pathWordAudioMale, wordAudioFileMale,
-          filename: '${word.wordId}-W-M.${EXTENSION_AUDIO}',
+          filename: '${word.wordId}-W-M.${extension_audio}',
           mimeType: mimeTypeMpeg,
           metadata: {'newPost': 'true'});
       word.wordAudioFemale = await storage.save(
           pathWordAudioFemale, wordAudioFileFemale,
-          filename: '${word.wordId}-W-F.${EXTENSION_AUDIO}',
+          filename: '${word.wordId}-W-F.${extension_audio}',
           mimeType: mimeTypeMpeg,
           metadata: {'newPost': 'true'});
 
@@ -422,19 +417,19 @@ class _FirestoreApi {
               '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleMaleAudios)}';
           final pathExampleFemaleAudio =
               '${word.documentPath}/${EnumToString.convertToString(WordMeaningKey.exampleFemaleAudios)}';
-          final exampleAudioFileMale = await getFileFromAssets(
-              'upload/${word.wordId}-E${index}-M.${EXTENSION_AUDIO}');
-          final exampleAudioFileFemale = await getFileFromAssets(
-              'upload/${word.wordId}-E${index}-F.${EXTENSION_AUDIO}');
+          final exampleAudioFileMale = await createFileFromAssets(
+              'upload/${word.wordId}-E${index}-M.${extension_audio}');
+          final exampleAudioFileFemale = await createFileFromAssets(
+              'upload/${word.wordId}-E${index}-F.${extension_audio}');
           final maleAudio = await storage.save(
               pathExampleMaleAudio, exampleAudioFileMale,
-              filename: '${word.wordId}-E${index}-M.${EXTENSION_AUDIO}',
+              filename: '${word.wordId}-E${index}-M.${extension_audio}',
               mimeType: mimeTypeMpeg,
               metadata: {'newPost': 'true'});
           maleAudios.add(maleAudio);
           final femaleAudio = await storage.save(
               pathExampleFemaleAudio, exampleAudioFileFemale,
-              filename: '${word.wordId}-E${index}-F.${EXTENSION_AUDIO}',
+              filename: '${word.wordId}-E${index}-F.${extension_audio}',
               mimeType: mimeTypeMpeg,
               metadata: {'newPost': 'true'});
           femaleAudios.add(femaleAudio);
@@ -444,7 +439,7 @@ class _FirestoreApi {
       });
 
       // Finally, save the word
-      await documentAccessor.save(word);
+      await _documentAccessor.save(word);
     });
 
 // Checking status
@@ -457,7 +452,6 @@ class _FirestoreApi {
   }
 
   void uploadLecturesByCsv() async {
-    final EXTENSION_IMAGE = 'jpg';
     final COLUMN_ID = 0;
     final COLUMN_LEVEL = 1;
     final COLUMN_TITLE = 2;
@@ -498,10 +492,10 @@ class _FirestoreApi {
       final pathClassPic =
           '${lecture.documentPath}/${EnumToString.convertToString(LectureKey.pic)}';
       try {
-        final lecturePic = await getFileFromAssets(
-            'upload/${lecture.lectureId}.${EXTENSION_IMAGE}');
+        final lecturePic = await createFileFromAssets(
+            'upload/${lecture.lectureId}.${extension_image}');
         lecture.pic = await storage.save(pathClassPic, lecturePic,
-            filename: '${lecture.lectureId}.${EXTENSION_IMAGE}',
+            filename: '${lecture.lectureId}.${extension_image}',
             mimeType: mimeTypeJpeg,
             metadata: {'newPost': 'true'});
       } catch (e, _) {
@@ -512,9 +506,61 @@ class _FirestoreApi {
       await documentAccessor.save(lecture);
     });
 
-// Checking status
+// Dispose uploader stream
+    storage.dispose();
+  }
+
+  void uploadSpeechExamsByCsv() async {
+    final column_id = 0;
+    final column_title = 2;
+    final column_question = 3;
+    final column_ref_text = 4;
+    final column_process_statue = 5;
+    final process_status_new = 0;
+
+    final storage = Storage()..fetch();
+    final documentAccessor = DocumentAccessor();
+
+    // Build Word from csv
+    var csv;
+    try {
+      csv = CsvToListConverter()
+          .convert(await rootBundle.loadString('assets/upload/speechExams.csv'))
+            ..removeWhere((w) =>
+                process_status_new != w[column_process_statue] ||
+                w[column_title] == null);
+    } catch (_) {
+      print('No speechExams.csv found, will skip!');
+      return;
+    }
+
+    var exams = csv.map((row) => SpeechExam(id: row[column_id])
+      ..title = row[column_title].trim() // Title should not be null
+      ..question = row[column_question]?.trim()
+      ..refText = row[column_ref_text]?.trim());
+
+    // Checking status
     storage.uploader.listen((data) {
       print('total: ${data.totalBytes} transferred: ${data.bytesTransferred}');
+    });
+    // Upload file to cloud storage and save reference
+    await exams.forEach((exam) async {
+      // Word image
+      final pathRefAudio =
+          '${exam.documentPath}/${EnumToString.convertToString(SpeechExamKey.refAudio)}';
+      try {
+        final refAudio =
+            await createFileFromAssets('upload/${exam.id}.${extension_audio}');
+        exam.pic = await storage.save(pathRefAudio, refAudio,
+            filename: '${exam.id}.${extension_audio}',
+            mimeType: mimeTypeMpeg,
+            metadata: {'newPost': 'true'});
+      } catch (e, _) {
+        logger.i('Not image found for ${exam.title}, will skip');
+      }
+
+      // Finally, save the word
+      await documentAccessor.save(exam);
     });
 
 // Dispose uploader stream
@@ -526,6 +572,16 @@ class _FirestoreApi {
       query: Word().collectionRef.orderBy('wordId'),
       limit: 10000,
       decode: (snap) => Word(snapshot: snap),
+    );
+    return await collectionPaging.load();
+  }
+
+  /// Fetch all entities extends exam
+  Future<List<Exam>> fetchExams({List<String> tags}) async {
+    final collectionPaging = CollectionPaging<Exam>(
+      query: Exam().collectionRef.orderBy('examId'),
+      limit: 10000,
+      decode: (snap) => Exam.fromSnapshot(snap), // don't use Exam()
     );
     return await collectionPaging.load();
   }
@@ -603,14 +659,20 @@ class _TencentApi {
   Future<Map<String, dynamic>> soeStopRecordAndEvaluate() async {
     var result = {};
     try {
-      result = await soeChannel.invokeMapMethod('soeStopRecordAndEvaluate');
-      result['evaluationResult'] = SpeechEvaluationResult.fromJson(
-          jsonDecode(result['evaluationResult']));
+      final resultRaw =
+          await soeChannel.invokeMapMethod('soeStopRecordAndEvaluate');
+      result['evaluationResult'] =
+          SentenceInfo.fromJson(jsonDecode(resultRaw['evaluationResult']));
+      result['dataPath'] = resultRaw['dataPath'];
+      // Save result to cloud storage, but won't await it
+      unawaited(Get.find<ApiService>().firestoreApi.saveUserSpeech(
+          speechData: File(result['dataPath']),
+          sentenceInfo: resultRaw['evaluationResult']));
       logger.i('soe stop recording and get evaluation result succeed!');
     } on PlatformException catch (e, t) {
       logger.e('Error calling native soe stop method', e, t);
-      result['speechData'] = null;
       result['evaluationResult'] = null;
+      result['data'] = null;
     } finally {
       return result;
     }

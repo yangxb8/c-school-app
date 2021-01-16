@@ -9,36 +9,55 @@ part of 'speech_evaluation_result.dart';
 SpeechEvaluationResult _$SpeechEvaluationResultFromJson(
     Map<String, dynamic> json) {
   return SpeechEvaluationResult(
-    (json['SuggestedScore'] as num)?.toDouble(),
-    (json['PronAccuracy'] as num)?.toDouble(),
-    (json['PronFluency'] as num)?.toDouble(),
-    (json['PronCompletion'] as num)?.toDouble(),
-    (json['Words'] as List)
-        ?.map((e) =>
-            e == null ? null : WordInfo.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    json['SessionId'] as String,
+    userId: json['userId'] as String,
+    examId: json['examId'] as String,
+    speechDataPath: json['speechDataPath'] as String,
+    sentenceInfo: json['sentenceInfo'] == null
+        ? null
+        : SentenceInfo.fromJson(json['sentenceInfo'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$SpeechEvaluationResultToJson(
         SpeechEvaluationResult instance) =>
     <String, dynamic>{
-      'SuggestedScore': instance.SuggestedScore,
-      'PronAccuracy': instance.PronAccuracy,
-      'PronFluency': instance.PronFluency,
-      'PronCompletion': instance.PronCompletion,
-      'Words': instance.Words,
-      'SessionId': instance.SessionId,
+      'userId': instance.userId,
+      'examId': instance.examId,
+      'speechDataPath': instance.speechDataPath,
+      'sentenceInfo': instance.sentenceInfo,
+    };
+
+SentenceInfo _$SentenceInfoFromJson(Map<String, dynamic> json) {
+  return SentenceInfo(
+    suggestedScore: (json['SuggestedScore'] as num)?.toDouble(),
+    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
+    pronFluency: (json['PronFluency'] as num)?.toDouble(),
+    pronCompletion: (json['PronCompletion'] as num)?.toDouble(),
+    words: (json['Words'] as List)
+        ?.map((e) =>
+            e == null ? null : WordInfo.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    sessionId: json['SessionId'] as String,
+  );
+}
+
+Map<String, dynamic> _$SentenceInfoToJson(SentenceInfo instance) =>
+    <String, dynamic>{
+      'SuggestedScore': instance.suggestedScore,
+      'PronAccuracy': instance.pronAccuracy,
+      'PronFluency': instance.pronFluency,
+      'PronCompletion': instance.pronCompletion,
+      'Words': instance.words,
+      'SessionId': instance.sessionId,
     };
 
 WordInfo _$WordInfoFromJson(Map<String, dynamic> json) {
   return WordInfo(
-    (json['PronAccuracy'] as num)?.toDouble(),
-    (json['PronFluency'] as num)?.toDouble(),
-    json['Word'] as String,
-    MatchResultUtil.fromInt(json['MatchTag'] as int),
-    (json['PhoneInfos'] as List)
+    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
+    pronFluency: (json['PronFluency'] as num)?.toDouble(),
+    word: json['Word'] as String,
+    matchResult: MatchResultUtil.fromInt(json['MatchTag'] as int),
+    phoneInfos: (json['PhoneInfos'] as List)
         ?.map((e) =>
             e == null ? null : PhoneInfo.fromJson(e as Map<String, dynamic>))
         ?.toList(),
@@ -55,12 +74,12 @@ Map<String, dynamic> _$WordInfoToJson(WordInfo instance) => <String, dynamic>{
 
 PhoneInfo _$PhoneInfoFromJson(Map<String, dynamic> json) {
   return PhoneInfo(
-    (json['PronAccuracy'] as num)?.toDouble(),
-    json['DetectedStress'] as bool,
-    json['Stress'] as bool,
-    json['Phone'] as String,
-    json['ReferencePhone'] as String,
-    MatchResultUtil.fromInt(json['MatchTag'] as int),
+    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
+    detectedStress: json['DetectedStress'] as bool,
+    refStress: json['Stress'] as bool,
+    detectedPhone: json['Phone'] as String,
+    refPhone: json['ReferencePhone'] as String,
+    matchResult: MatchResultUtil.fromInt(json['MatchTag'] as int),
   );
 }
 

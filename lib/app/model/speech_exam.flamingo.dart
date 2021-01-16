@@ -10,6 +10,8 @@ part of 'speech_exam.dart';
 enum SpeechExamKey {
   refText,
   _mode,
+
+  refAudio,
 }
 
 extension SpeechExamKeyExtension on SpeechExamKey {
@@ -19,6 +21,8 @@ extension SpeechExamKeyExtension on SpeechExamKey {
         return 'refText';
       case SpeechExamKey._mode:
         return '_mode';
+      case SpeechExamKey.refAudio:
+        return 'refAudio';
       default:
         return null;
     }
@@ -31,6 +35,8 @@ Map<String, dynamic> _$toData(SpeechExam doc) {
   Helper.writeNotNull(data, 'refText', doc.refText);
   Helper.writeNotNull(data, '_mode', doc._mode);
 
+  Helper.writeStorageNotNull(data, 'refAudio', doc.refAudio, isSetNull: true);
+
   return data;
 }
 
@@ -38,4 +44,6 @@ Map<String, dynamic> _$toData(SpeechExam doc) {
 void _$fromData(SpeechExam doc, Map<String, dynamic> data) {
   doc.refText = Helper.valueFromKey<String>(data, 'refText');
   doc._mode = Helper.valueFromKey<String>(data, '_mode');
+
+  doc.refAudio = Helper.storageFile(data, 'refAudio');
 }

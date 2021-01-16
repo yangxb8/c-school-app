@@ -13,8 +13,13 @@ class SpeechExam extends Exam<SpeechExam>{
     Map<String, dynamic> values,
   })  : super(id: id, snapshot: snapshot, values: values);
 
+  /// Audio data for the original speech
+  @StorageField()
+  StorageFile refAudio;
+  /// Text version of refAudio
   @Field()
   String refText;
+  /// Speech Evaluation mode
   @Field()
   String _mode;
 

@@ -12,7 +12,7 @@ enum ExamKey {
   title,
   question,
   tags,
-  examType,
+  _examType,
 }
 
 extension ExamKeyExtension on ExamKey {
@@ -26,8 +26,8 @@ extension ExamKeyExtension on ExamKey {
         return 'question';
       case ExamKey.tags:
         return 'tags';
-      case ExamKey.examType:
-        return 'examType';
+      case ExamKey._examType:
+        return '_examType';
       default:
         return null;
     }
@@ -41,7 +41,7 @@ Map<String, dynamic> _$toData(Exam doc) {
   Helper.writeNotNull(data, 'title', doc.title);
   Helper.writeNotNull(data, 'question', doc.question);
   Helper.writeNotNull(data, 'tags', doc.tags);
-  Helper.writeNotNull(data, 'examType', doc._examType);
+  Helper.writeNotNull(data, '_examType', doc._examType);
 
   return data;
 }
@@ -52,5 +52,5 @@ void _$fromData(Exam doc, Map<String, dynamic> data) {
   doc.title = Helper.valueFromKey<String>(data, 'title');
   doc.question = Helper.valueFromKey<String>(data, 'question');
   doc.tags = Helper.valueListFromKey<String>(data, 'tags');
-  doc._examType = Helper.valueFromKey<String>(data, 'examType');
+  doc._examType = Helper.valueFromKey<String>(data, '_examType');
 }
