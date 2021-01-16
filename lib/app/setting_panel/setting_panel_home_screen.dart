@@ -38,11 +38,14 @@ class SettingPanelHomeScreen extends StatelessWidget {
         title: 'Debug Section',
         tiles: [
           SettingsTile(
-            title: 'Recorder dialog',
-            leading: Icon(Icons.mic),
-            //TODO: fetch exam properly
-            onPressed: (BuildContext _)  => showSpeechExamBottomSheet(
-                exam: SpeechExam()))
+              title: 'Recorder dialog',
+              leading: Icon(Icons.mic),
+              //TODO: fetch exam properly
+              onPressed: (BuildContext _) => showSpeechExamBottomSheet(
+                  exam: SpeechExam()
+                    ..refText = '大家好才是真的好。'
+                    ..question = 'TEST'
+                    ..title = 'TEST'))
         ],
       ),
     ];

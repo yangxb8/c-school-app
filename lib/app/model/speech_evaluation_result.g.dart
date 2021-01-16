@@ -29,35 +29,36 @@ Map<String, dynamic> _$SpeechEvaluationResultToJson(
 
 SentenceInfo _$SentenceInfoFromJson(Map<String, dynamic> json) {
   return SentenceInfo(
-    suggestedScore: (json['SuggestedScore'] as num)?.toDouble(),
-    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
-    pronFluency: (json['PronFluency'] as num)?.toDouble(),
-    pronCompletion: (json['PronCompletion'] as num)?.toDouble(),
-    words: (json['Words'] as List)
+    suggestedScore: (json['suggestedScore'] as num)?.toDouble(),
+    pronAccuracy: (json['pronAccuracy'] as num)?.toDouble(),
+    pronFluency: (json['pronFluency'] as num)?.toDouble(),
+    pronCompletion: (json['pronCompletion'] as num)?.toDouble(),
+    words: (json['words'] as List)
         ?.map((e) =>
             e == null ? null : WordInfo.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    sessionId: json['SessionId'] as String,
   );
 }
 
 Map<String, dynamic> _$SentenceInfoToJson(SentenceInfo instance) =>
     <String, dynamic>{
-      'SuggestedScore': instance.suggestedScore,
-      'PronAccuracy': instance.pronAccuracy,
-      'PronFluency': instance.pronFluency,
-      'PronCompletion': instance.pronCompletion,
-      'Words': instance.words,
-      'SessionId': instance.sessionId,
+      'suggestedScore': instance.suggestedScore,
+      'pronAccuracy': instance.pronAccuracy,
+      'pronFluency': instance.pronFluency,
+      'pronCompletion': instance.pronCompletion,
+      'words': instance.words,
     };
 
 WordInfo _$WordInfoFromJson(Map<String, dynamic> json) {
   return WordInfo(
-    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
-    pronFluency: (json['PronFluency'] as num)?.toDouble(),
-    word: json['Word'] as String,
-    matchResult: MatchResultUtil.fromInt(json['MatchTag'] as int),
-    phoneInfos: (json['PhoneInfos'] as List)
+    beginTime: json['beginTime'] as int,
+    endTime: json['endTime'] as int,
+    referenceWord: json['referenceWord'] as String,
+    pronAccuracy: (json['pronAccuracy'] as num)?.toDouble(),
+    pronFluency: (json['pronFluency'] as num)?.toDouble(),
+    word: json['word'] as String,
+    matchTag: MatchResultUtil.fromInt(json['matchTag'] as int),
+    phoneInfos: (json['phoneInfos'] as List)
         ?.map((e) =>
             e == null ? null : PhoneInfo.fromJson(e as Map<String, dynamic>))
         ?.toList(),
@@ -65,29 +66,34 @@ WordInfo _$WordInfoFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$WordInfoToJson(WordInfo instance) => <String, dynamic>{
-      'PronAccuracy': instance.pronAccuracy,
-      'PronFluency': instance.pronFluency,
-      'Word': instance.word,
-      'MatchTag': MatchResultUtil.toInt(instance.matchResult),
-      'PhoneInfos': instance.phoneInfos,
+      'beginTime': instance.beginTime,
+      'endTime': instance.endTime,
+      'pronAccuracy': instance.pronAccuracy,
+      'pronFluency': instance.pronFluency,
+      'word': instance.word,
+      'matchTag': MatchResultUtil.toInt(instance.matchTag),
+      'phoneInfos': instance.phoneInfos,
+      'referenceWord': instance.referenceWord,
     };
 
 PhoneInfo _$PhoneInfoFromJson(Map<String, dynamic> json) {
   return PhoneInfo(
-    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
-    detectedStress: json['DetectedStress'] as bool,
-    refStress: json['Stress'] as bool,
-    detectedPhone: json['Phone'] as String,
-    refPhone: json['ReferencePhone'] as String,
-    matchResult: MatchResultUtil.fromInt(json['MatchTag'] as int),
+    beginTime: json['beginTime'] as int,
+    endTime: json['endTime'] as int,
+    referenceStress: json['stress'] as bool,
+    referencePhone: json['referencePhone'] as String,
+    pronAccuracy: (json['pronAccuracy'] as num)?.toDouble(),
+    detectedStress: json['detectedStress'] as bool,
+    detectedPhone: json['phone'] as String,
   );
 }
 
 Map<String, dynamic> _$PhoneInfoToJson(PhoneInfo instance) => <String, dynamic>{
-      'PronAccuracy': instance.pronAccuracy,
-      'DetectedStress': instance.detectedStress,
-      'Stress': instance.refStress,
-      'Phone': instance.detectedPhone,
-      'ReferencePhone': instance.refPhone,
-      'MatchTag': MatchResultUtil.toInt(instance.matchResult),
+      'beginTime': instance.beginTime,
+      'endTime': instance.endTime,
+      'pronAccuracy': instance.pronAccuracy,
+      'detectedStress': instance.detectedStress,
+      'stress': instance.referenceStress,
+      'phone': instance.detectedPhone,
+      'referencePhone': instance.referencePhone,
     };

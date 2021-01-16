@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../my_progress_theme.dart';
 
@@ -69,7 +70,8 @@ class _AreaListViewState extends State<AreaListView>
                       );
                       animationController.forward();
                       return AreaView(
-                        imagepath: areaListData[index],
+                        imagePath: areaListData[index],
+                        onTap: () async => await Get.toNamed('/review/words/home'),
                         animation: animation,
                         animationController: animationController,
                       );
@@ -94,12 +96,14 @@ class _AreaListViewState extends State<AreaListView>
 class AreaView extends StatelessWidget {
   const AreaView({
     Key key,
-    this.imagepath,
+    this.imagePath,
+    this.onTap,
     this.animationController,
     this.animation,
   }) : super(key: key);
 
-  final String imagepath;
+  final String imagePath;
+  final Function onTap;
   final AnimationController animationController;
   final Animation<dynamic> animation;
 
@@ -135,14 +139,15 @@ class AreaView extends StatelessWidget {
                   highlightColor: Colors.transparent,
                   hoverColor: Colors.transparent,
                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                  splashColor: FintnessAppTheme.nearlyDarkBlue.withOpacity(0.2),
-                  onTap: () {},
+                  splashColor:
+                      FintnessAppTheme.nearlyDarkBlue.withOpacity(0.2),
+                  onTap: onTap,
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding:
-                            const EdgeInsets.only(top: 16, left: 16, right: 16),
-                        child: Image.asset(imagepath),
+                        padding: const EdgeInsets.only(
+                            top: 16, left: 16, right: 16),
+                        child: Image.asset(imagePath),
                       ),
                     ],
                   ),

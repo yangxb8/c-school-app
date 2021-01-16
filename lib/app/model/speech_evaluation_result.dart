@@ -21,26 +21,18 @@ class SpeechEvaluationResult {
 
 @JsonSerializable()
 class SentenceInfo {
-  @JsonKey(name: 'SuggestedScore')
   final double suggestedScore;
-  @JsonKey(name: 'PronAccuracy')
   final double pronAccuracy;
-  @JsonKey(name: 'PronFluency')
   final double pronFluency;
-  @JsonKey(name: 'PronCompletion')
   final double pronCompletion;
-  @JsonKey(name: 'Words')
   final List<WordInfo> words;
-  @JsonKey(name: 'SessionId')
-  final String sessionId;
 
   SentenceInfo(
       {this.suggestedScore,
       this.pronAccuracy,
       this.pronFluency,
       this.pronCompletion,
-      this.words,
-      this.sessionId});
+      this.words});
   factory SentenceInfo.fromJson(Map<String, dynamic> json) =>
       _$SentenceInfoFromJson(json);
   Map<String, dynamic> toJson() => _$SentenceInfoToJson(this);
@@ -48,25 +40,24 @@ class SentenceInfo {
 
 @JsonSerializable()
 class WordInfo {
-  @JsonKey(name: 'PronAccuracy')
+  final int beginTime;
+  final int endTime;
   final double pronAccuracy;
-  @JsonKey(name: 'PronFluency')
   final double pronFluency;
-  @JsonKey(name: 'Word')
   final String word;
-  @JsonKey(
-      name: 'MatchTag',
-      fromJson: MatchResultUtil.fromInt,
-      toJson: MatchResultUtil.toInt)
-  final MatchResult matchResult;
-  @JsonKey(name: 'PhoneInfos')
+  @JsonKey(fromJson: MatchResultUtil.fromInt, toJson: MatchResultUtil.toInt)
+  final MatchResult matchTag;
   final List<PhoneInfo> phoneInfos;
+  final String referenceWord;
 
   WordInfo(
-      {this.pronAccuracy,
+      {this.beginTime,
+      this.endTime,
+      this.referenceWord,
+      this.pronAccuracy,
       this.pronFluency,
       this.word,
-      this.matchResult,
+      this.matchTag,
       this.phoneInfos});
   factory WordInfo.fromJson(Map<String, dynamic> json) =>
       _$WordInfoFromJson(json);
@@ -75,29 +66,24 @@ class WordInfo {
 
 @JsonSerializable()
 class PhoneInfo {
-  @JsonKey(name: 'PronAccuracy')
+  final int beginTime;
+  final int endTime;
   final double pronAccuracy;
-  @JsonKey(name: 'DetectedStress')
   final bool detectedStress;
-  @JsonKey(name: 'Stress')
-  final bool refStress;
-  @JsonKey(name: 'Phone')
+  @JsonKey(name: 'stress')
+  final bool referenceStress;
+  @JsonKey(name: 'phone')
   final String detectedPhone;
-  @JsonKey(name: 'ReferencePhone')
-  final String refPhone;
-  @JsonKey(
-      name: 'MatchTag',
-      fromJson: MatchResultUtil.fromInt,
-      toJson: MatchResultUtil.toInt)
-  final MatchResult matchResult;
+  final String referencePhone;
 
   PhoneInfo(
-      {this.pronAccuracy,
+      {this.beginTime,
+      this.endTime,
+      this.referenceStress,
+      this.referencePhone,
+      this.pronAccuracy,
       this.detectedStress,
-      this.refStress,
-      this.detectedPhone,
-      this.refPhone,
-      this.matchResult});
+      this.detectedPhone});
   factory PhoneInfo.fromJson(Map<String, dynamic> json) =>
       _$PhoneInfoFromJson(json);
   Map<String, dynamic> toJson() => _$PhoneInfoToJson(this);

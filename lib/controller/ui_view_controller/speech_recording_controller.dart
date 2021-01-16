@@ -53,7 +53,7 @@ class SpeechRecordingController extends GetxController {
     recordingStatus = RecordingStatus.EVALUATING;
     // Call native method and save result to latest userSpeech instance
     var result = await tencentApi.soeStopRecordAndEvaluate();
-    speechDataPath = result['dataPath'];
+    speechDataPath = result['audioPath'];
     sentenceInfo = result['evaluationResult'];
   }
 

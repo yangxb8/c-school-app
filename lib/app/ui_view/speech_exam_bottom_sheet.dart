@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -53,8 +55,8 @@ class SpeechExamBottomSheet extends StatelessWidget {
   final SpeechExam exam;
   static final int MAX_SPEECHES_SHOWN = 4;
 
-  SpeechExamBottomSheet({Key key, @required this.exam}) :
-        controller = Get.put(SpeechRecordingController.forExam(exam)),
+  SpeechExamBottomSheet({Key key, @required this.exam})
+      : controller = Get.put(SpeechRecordingController.forExam(exam)),
         super(key: key);
 
   @override
@@ -80,17 +82,14 @@ class SpeechExamBottomSheet extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Row(
-                children: exam.refText.split('').asMap().entries.map((entry) {
-                  var idx = entry.key;
-                  var word = entry.value;
-                  TextButton(
-                    onPressed: () => controller.wordSelected.value = idx,
-                    child: Text(word),
-                  );
-                }) as List,
-              ),
+            child: Row(
+              children: exam.refText
+                  .split('')
+                  .mapIndexed((element, index) => SimpleGestureDetector(
+                        onTap: () => controller.wordSelected.value = index,
+                        child: Text(element).paddingSymmetric(horizontal: 2),
+                      ))
+                  .toList(),
             ),
           ),
           Padding(

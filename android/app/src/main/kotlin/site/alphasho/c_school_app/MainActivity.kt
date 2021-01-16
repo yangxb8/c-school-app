@@ -28,7 +28,8 @@ class MainActivity: FlutterActivity() {
                     val refText = call.argument<String>("refText")?:""
                     val scoreCoeff = call.argument<Double>("scoreCoeff")?:""
                     val mode = call.argument<String>("mode")?:""
-                    val error = soeActivity.soeStartRecord(refText, scoreCoeff as Double, mode, applicationContext)
+                    val audioPath = call.argument<String>("audioPath")?:""
+                    val error = soeActivity.soeStartRecord(refText, scoreCoeff as Double, mode, audioPath, applicationContext)
                     if(error == null) result.success(null)
                     else result.error("SOE-START", "Soe start record error", error)
                 }
@@ -72,7 +73,7 @@ class SoeActivity {
         return lastResult
     }
 
-    fun soeStartRecord(refText: String, scoreCoeff: Double, mode: String, applicationContext: Context): Map<String, Any?>? {
+    fun soeStartRecord(refText: String, scoreCoeff: Double, mode: String, audioPath:String, applicationContext: Context): Map<String, Any?>? {
         init()
         oral!!.setListener(object : TAIOralEvaluationListener {
             // when evaluation result is ready
@@ -81,7 +82,7 @@ class SoeActivity {
                 if(!data.bEnd) return
                 processEnd = true
                 lastResult = if(error.code==TAIErrCode.SUCC){
-                        mapOf("speechData" to data, "evaluationResult" to Gson().toJson(result))
+                        mapOf("audioPath" to audioPath, "evaluationResult" to Gson().toJson(result?.sentenceInfoSet))
                     } else {
                         mapOf("error" to Gson().toJson(error))
                     }
@@ -115,6 +116,7 @@ class SoeActivity {
         param.secretKey = "rSqCKqlO6cz5wRWKGdoNaY6SaR0PhtgF"
         param.scoreCoeff = scoreCoeff
         param.refText = refText
+        param.audioPath = audioPath
         val recordParam = TAIRecorderParam()
         recordParam.vadEnable = true;
         recordParam.vadInterval = NO_SPEECH_DETECT_INTERVAL;

@@ -7,6 +7,7 @@ import 'package:c_school_app/util/functions.dart';
 import 'package:csv/csv.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,6 +24,7 @@ import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
+import 'package:uuid/uuid.dart';
 import '../model/user.dart';
 import './logger_service.dart';
 import '../i18n/api_service.i18n.dart';
@@ -300,7 +302,6 @@ class _FirestoreApi {
         speechDataPath: data.path,
         sentenceInfo: SentenceInfo.fromJson(jsonDecode(sentenceInfo)));
     // Save evaluation result
-    final evaluationResultPath = '/user_generated/evaluation_result';
     await storage.save(
         speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
         filename: '${userId}_${exam.examId}.${extension_json}',
@@ -637,17 +638,20 @@ class _TencentApi {
   }
 
   Future<void> soeStartRecord(SpeechExam exam) async {
+    final audioPath = '${(await getTemporaryDirectory()).path}/${Uuid().v1()}.mp3';
     try {
       // await soeChannel.invokeMethod('soeStartRecord',<String, dynamic>{
       //   'refText': exam.refText,
       //   'scoreCoeff': Get.find<AppStateService>().user.userScoreCoeff,
-      //   'mode': exam.mode.toString()// WORD, SENTENCE(default), PARAGRAPH, FREE
+      //   'mode': exam.mode.toString(),// WORD, SENTENCE(default), PARAGRAPH, FREE
+      //   'audioPath': audioPath
       // });
       //TODO: for debug, delete me!!!
       await soeChannel.invokeMethod('soeStartRecord', <String, dynamic>{
         'refText': '大家好才是真的好',
         'scoreCoeff': 4.0,
-        'mode': 'SENTENCE' // WORD, SENTENCE(default), PARAGRAPH, FREE
+        'mode': 'SENTENCE', // WORD, SENTENCE(default), PARAGRAPH, FREE
+        'audioPath': audioPath
       });
       logger.i('soe start recording!');
     } on PlatformException catch (e, t) {
@@ -657,17 +661,17 @@ class _TencentApi {
 
   /// Return speech data in Uint8List and evaluation result as SpeechEvaluationResult
   Future<Map<String, dynamic>> soeStopRecordAndEvaluate() async {
-    var result = {};
+    var result = <String, dynamic>{};
     try {
       final resultRaw =
           await soeChannel.invokeMapMethod('soeStopRecordAndEvaluate');
       result['evaluationResult'] =
-          SentenceInfo.fromJson(jsonDecode(resultRaw['evaluationResult']));
-      result['dataPath'] = resultRaw['dataPath'];
+          SentenceInfo.fromJson(jsonDecode(resultRaw['evaluationResult']).single);
+      result['audioPath'] = resultRaw['audioPath'];
       // Save result to cloud storage, but won't await it
       unawaited(Get.find<ApiService>().firestoreApi.saveUserSpeech(
           speechData: File(result['dataPath']),
-          sentenceInfo: resultRaw['evaluationResult']));
+          sentenceInfo: jsonEncode(result['evaluationResult'])));
       logger.i('soe stop recording and get evaluation result succeed!');
     } on PlatformException catch (e, t) {
       logger.e('Error calling native soe stop method', e, t);
