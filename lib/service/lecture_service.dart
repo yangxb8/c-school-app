@@ -1,3 +1,4 @@
+import 'package:c_school_app/app/model/exam_base.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,9 @@ class LectureService extends GetxService {
   /// All words available
   static List<Word> allWords;
 
+  /// All exams available
+  static List<Exam> allExams;
+
   /// Observable Liked words list for updating
   static RxList<String> userLikedWordIds_Rx;
 
@@ -37,11 +41,14 @@ class LectureService extends GetxService {
     if (_instance == null) {
       _instance = LectureService();
 
+      /// All available Lectures
+      allLectures = await _apiService.firestoreApi.fetchLectures();
+
       /// All available words
       allWords = await _apiService.firestoreApi.fetchWords();
 
-      /// All available Lectures
-      allLectures = await _apiService.firestoreApi.fetchLectures();
+      /// All available exams
+      allExams = await _apiService.firestoreApi.fetchExams();
 
       /// This properties need to be observable and can be use to update AppUser
       userLikedWordIds_Rx = List<String>.of(UserService.user.likedWords).obs;
@@ -61,24 +68,24 @@ class LectureService extends GetxService {
   /// Get all words user liked
   List<Word> get getLikedWords => findWordsByIds(userLikedWordIds_Rx);
 
-  List<Word> findWordsByConditions({WordMemoryStatus wordMemoryStatus, String lectureId}) {
+  List<Word> findWordsByConditions(
+      {WordMemoryStatus wordMemoryStatus, String lectureId}) {
     if (wordMemoryStatus == null && lectureId == null) {
       return [];
     }
     var latestReviewHistory = UserService.user.reviewedWordHistory
-        .filter((record) =>
-            record.isLatest);
+        .filter((record) => record.isLatest);
     var filteredHistory = latestReviewHistory.filter((record) {
-      if(wordMemoryStatus!=null && wordMemoryStatus!=record.wordMemoryStatus){
+      if (wordMemoryStatus != null &&
+          wordMemoryStatus != record.wordMemoryStatus) {
         return false;
       }
-      if(lectureId!=null && lectureId!=record.lectureId){
+      if (lectureId != null && lectureId != record.lectureId) {
         return false;
       }
       return true;
     });
-    var wordIdsOfMemoryStatus =
-    filteredHistory.map((e) => e.wordId);
+    var wordIdsOfMemoryStatus = filteredHistory.map((e) => e.wordId);
     return findWordsByIds(wordIdsOfMemoryStatus.toList());
   }
 
@@ -100,13 +107,29 @@ class LectureService extends GetxService {
     }
   }
 
-  List<Lecture> findLecturesById(String id) {
-    if (id.isBlank) {
+  List<Exam> findExamsByTags(List<String> tags) {
+    if (tags.isBlank) {
       return [];
     } else {
-      return [
-        allLectures.filter((lecture) => id == lecture.lectureId).single
-      ];
+      return allExams
+          .filter((exam) => tags.every((tag) => exam.tags.contains(tag)))
+          .toList();
+    }
+  }
+
+  Exam findExamById(String id) {
+    if (id.isBlank) {
+      return null;
+    } else {
+      return allExams.filter((exam) => id == exam.examId).single;
+    }
+  }
+
+  Lecture findLectureById(String id) {
+    if (id.isBlank) {
+      return null;
+    } else {
+      return allLectures.filter((lecture) => id == lecture.lectureId).single;
     }
   }
 
@@ -115,8 +138,7 @@ class LectureService extends GetxService {
       return [];
     } else {
       return allLectures
-          .filter((lecture) =>
-              tags.every((tag) => lecture.tags.contains(tag)))
+          .filter((lecture) => tags.every((tag) => lecture.tags.contains(tag)))
           .toList();
     }
   }
@@ -197,7 +219,7 @@ class LectureService extends GetxService {
     UserService.commitChange();
   }
 
-    /// Show a single word card from dialog
+  /// Show a single word card from dialog
   void showSingleWordCard(Word word) {
     Get.dialog(
       SimpleDialog(

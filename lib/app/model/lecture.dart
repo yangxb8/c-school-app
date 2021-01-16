@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 
+import 'exam_base.dart';
+
 part 'lecture.flamingo.dart';
 
 class Lecture extends Document<Lecture>{
@@ -45,10 +47,15 @@ class Lecture extends Document<Lecture>{
   @StorageField()
   StorageFile pic;
 
-  /// Convert lecture Id to WordTag and find words related
+  /// find words related
   List<Word> get words => lectureService
       .findWordsByTags([lectureId]);
+
+  /// find exams related
+  List<Exam> get exams => lectureService.findExamsByTags([lectureId]);
+
   int get lectureViewedCount => lectureService.lectureViewedCount(this);
+
   String get levelForDisplay => '$levelPrefix$level';
 
   @override

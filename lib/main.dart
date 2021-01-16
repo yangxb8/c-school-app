@@ -9,7 +9,6 @@ import 'package:wiredash/wiredash.dart';
 import 'package:splashscreen/splashscreen.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
-import 'controller/ui_view_controller/speech_recording_controller.dart';
 import 'router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -98,7 +97,7 @@ class CSchoolApp extends StatelessWidget {
 class Splash extends StatelessWidget {
   Future<void> navigateToHome() async {
     await Get.toNamed(
-        UserService.user.isLogin() ? '/review/words/home' : '/login');
+        UserService.user.isLogin() ? '/' : '/login');
   }
 
   Future<void> _loadFromFuture() async {
@@ -128,7 +127,6 @@ Future<void> initServices() async {
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
-  Get.lazyPut<SpeechRecordingController>(() => SpeechRecordingController());
   await Get.putAsync<LectureService>(
       () async => await LectureService.getInstance());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;

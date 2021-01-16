@@ -79,7 +79,7 @@ class ReviewWordsController extends GetxController
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
     _userWordsHistory = LectureService.userWordsHistory_Rx;
-    lectures = lectureService.findLecturesById(Get.parameters['lectureId']);
+    lectures = [lectureService.findLectureById(Get.parameters['lectureId'])];
     if (Get.arguments == null) {
       wordsList = lectures.length == 1
           ? lectures.single.words

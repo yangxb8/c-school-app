@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:c_school_app/app/model/exams.dart';
+import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/service/app_state_service.dart';
 import '../ui_view/speech_exam_bottom_sheet.dart';
 
@@ -42,15 +42,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
             leading: Icon(Icons.mic),
             //TODO: fetch exam properly
             onPressed: (BuildContext _)  => showSpeechExamBottomSheet(
-                exam: SpeechExam(
-                    questionVoiceData: null,
-                    examId: null,
-                    mode: null,
-                    refText: null,
-                    title: null,
-                    question: null,
-                    lectureId: null)),
-          ),
+                exam: SpeechExam()))
         ],
       ),
     ];
