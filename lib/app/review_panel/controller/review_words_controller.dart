@@ -269,6 +269,9 @@ class ReviewWordsController extends GetxController
 
   /// If we didn't find word id or its null, will go to first word
   Future<void> _animateToWordById(String wordId) async {
+    if(!pageController.hasClients || wordId==null){
+      return;
+    }
     var index = wordsList.indexWhere((word) => word.wordId == wordId);
     // If couldn't find the wordId, go to first word
     if (index == -1) {

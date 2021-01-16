@@ -6,7 +6,6 @@ import 'package:catcher/catcher.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:splashscreen/splashscreen.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
 import 'router.dart';
@@ -17,6 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:flamingo/flamingo.dart';
 
+import 'util/extensions.dart';
 import 'service/api_service.dart';
 import 'service/localstorage_service.dart';
 
@@ -60,15 +60,15 @@ class CSchoolApp extends StatelessWidget {
       navigatorKey: Catcher.navigatorKey,
       child: GetMaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
-          BouncingScrollWrapper.builder(context, widget),
-          maxWidth: 1200,
-          minWidth: 450,
-          defaultScale: true,
-          breakpoints: [
-            ResponsiveBreakpoint.resize(450, name: MOBILE),
-            ResponsiveBreakpoint.autoScale(800, name: TABLET),
-            ResponsiveBreakpoint.autoScale(1000, name: TABLET),
-          ]),
+            BouncingScrollWrapper.builder(context, widget),
+            maxWidth: 1200,
+            minWidth: 450,
+            defaultScale: true,
+            breakpoints: [
+              ResponsiveBreakpoint.resize(450, name: MOBILE),
+              ResponsiveBreakpoint.autoScale(800, name: TABLET),
+              ResponsiveBreakpoint.autoScale(1000, name: TABLET),
+            ]),
         title: 'CSchool',
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.fade,
@@ -95,29 +95,24 @@ class CSchoolApp extends StatelessWidget {
 }
 
 class Splash extends StatelessWidget {
-  Future<void> navigateToHome() async {
-    await Get.toNamed(
-        UserService.user.isLogin() ? '/' : '/login');
-  }
-
-  Future<void> _loadFromFuture() async {
+  Future<void> _init() async {
     await initServices();
     // TODO: Only for development, might need a proper way to upload our class
     // if (AppStateService.isDebug) {
     //   await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
     //   await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
     // }
-    await navigateToHome();
+    await Get.toNamed(UserService.user.isLogin() ? '/home' : '/login');
   }
 
   @override
   Widget build(BuildContext context) {
-    return SplashScreen(
-      navigateAfterFuture: _loadFromFuture(),
-      imageBackground: Image.asset('assets/splash/splash.png').image,
-      photoSize: 100.0,
-      useLoader: false,
-    );
+    return Image.asset(
+      'assets/splash/splash.png',
+      fit: BoxFit.cover,
+      height: double.infinity,
+      width: double.infinity,
+    ).afterFirstLayout(_init);
   }
 }
 
