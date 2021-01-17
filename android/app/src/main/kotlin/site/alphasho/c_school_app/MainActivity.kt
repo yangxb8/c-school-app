@@ -147,6 +147,10 @@ class SoeActivity {
             "SENTENCE" -> TAIOralEvaluationEvalMode.SENTENCE
             "FREE" -> TAIOralEvaluationEvalMode.FREE
             "PARAGRAPH" -> TAIOralEvaluationEvalMode.PARAGRAPH
+            "WORD_FIX" -> TAIOralEvaluationEvalMode.WORD_FIX
+            "WORD_REALTIME" -> TAIOralEvaluationEvalMode.WORD_REALTIME
+            "SCENE" -> TAIOralEvaluationEvalMode.SCENE
+            "MULTI_BRANCH" -> TAIOralEvaluationEvalMode.MULTI_BRANCH
             // default
             else -> TAIOralEvaluationEvalMode.SENTENCE
         }

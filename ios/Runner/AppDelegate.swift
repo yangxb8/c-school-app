@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import TAIOralEvaluation
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -17,9 +18,10 @@ import Flutter
         let refText = args["refText"] as? String
         let scoreCoeff = args["scoreCoeff"] as? Double
         let mode = args["mode"] as? String
-        soeDelegate?.soeStartRecord(refText,scoreCoeff,mode)
+        let audioPath = args["audioPath"] as? String
+        soeDelegate?.soeStartRecord(refText:refText,scoreCoeff:scoreCoeff,mode:mode,audioPath:audioPath,result:result)
       } else if call.method == "soeStopRecordAndEvaluate" {
-        let error = soeDelegate?.soeStopRecordAndEvaluate()
+        soeDelegate?.soeStopRecordAndEvaluate(result:result)
       } else {
         result(FlutterMethodNotImplemented)
       }
@@ -30,40 +32,29 @@ import Flutter
   }
 }
 
-class SoeDelegate : UIViewController {
+class SoeDelegate {
     let oralEvaluation = TAIOralEvaluation()
     
-    @IBAction func onRecord(refText:String, scoreCoeff:Double,mode:String,result:FlutterResult) {
+    func soeStartRecord(refText:String, scoreCoeff:Double,mode:String,audioPath:String,result:FlutterResult) {
         if self.oralEvaluation().isRecording() {
-            weak var ws:SoeDelegate! = self
-            self.oralEvaluation().stopRecordAndEvaluation({ (error:TAIError!) in
-                ws.response = String(format:"stopRecordAndEvaluation:%@", error)
-                ws.recordButton.setTitle("开始录制", forState:UIControlStateNormal)
-            })
             return
         }
-        _fileName = String(format:"taisdk_%ld.mp3", (NSDate.date().timeIntervalSince1970() as! long))
-        if (_coeffTextField.text == "") {
-            self.response = "startRecordAndEvaluation:scoreCoeff invalid"
-            return
-        }
-        self.responseTextView.text = ""
         let param:TAIOralEvaluationParam! = TAIOralEvaluationParam()
         param.sessionId = NSUUID.UUID().UUIDString()
-        param.appId = PrivateInfo.shareInstance().appId
-        param.soeAppId = PrivateInfo.shareInstance().soeAppId
-        param.secretId = PrivateInfo.shareInstance().secretId
-        param.secretKey = PrivateInfo.shareInstance().secretKey
+        param.appId = "1303827440"
+        param.soeAppId = "soe_1001872"
+        param.secretId = "AKIDorfD1yrBxYu3w2zWGj0aAXpzqPib3yKP"
+        param.secretKey = "rSqCKqlO6cz5wRWKGdoNaY6SaR0PhtgF"
         param.token = PrivateInfo.shareInstance().token
-        param.workMode = (self.transSegment.selectedSegmentIndex as! TAIOralEvaluationWorkMode)
-        param.evalMode = (self.modeSegment.selectedSegmentIndex as! TAIOralEvaluationEvalMode)
-        param.serverType = (self.serverType.selectedSegmentIndex as! TAIOralEvaluationServerType)
-        param.scoreCoeff = _coeffTextField.text.intValue()
+        param.workMode = TAIOralEvaluationWorkMode_Once
+        param.evalMode = evalModeFromString(mode:mode)
+        param.serverType = TAIOralEvaluationServerType_Chinese
+        param.scoreCoeff = scoreCoeff
         param.fileType = TAIOralEvaluationFileType_Mp3
-        param.storageMode = (self.storageSegment.selectedSegmentIndex as! TAIOralEvaluationStorageMode)
-        param.textMode = (self.textModeSegment.selectedSegmentIndex as! TAIOralEvaluationTextMode)
-        param.refText = _inputTextField.text
-        param.audioPath = String(format:"%@/%@.mp3", NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true)[0], param.sessionId)
+        param.storageMode = TAIOralEvaluationStorageMode_Disable
+        param.textMode = TAIOralEvaluationTextMode_Noraml
+        param.refText = refText
+        param.audioPath = audioPath
         if param.workMode == TAIOralEvaluationWorkMode_Stream {
             param.timeout = 5
             param.retryTimes = 5
@@ -85,9 +76,11 @@ class SoeDelegate : UIViewController {
         weak var ws:SoeDelegate! = self
         self.oralEvaluation().startRecordAndEvaluation(param, callback:{ (error:TAIError!) in
             if error.code == TAIErrCode_Succ {
-                ws.recordButton.setTitle("停止录制", forState:UIControlStateNormal)
+                result(nil)
             }
-            ws.response = String(format:"startRecordAndEvaluation:%@", error)
+            result(FlutterError(code: error.code,
+                                message: error.desc,
+                                details: error))
         })
     }
 
@@ -114,5 +107,29 @@ class SoeDelegate : UIViewController {
             _oralEvaluation.delegate = self
         }
         return _oralEvaluation
+    }
+    
+    //
+    func evalModeFromString(mode:String) -> TAIOralEvaluationEvalMode {
+        switch mode {
+        case "WORD":
+            return TAIOralEvaluationEvalMode_Word
+        case "FREE":
+            return TAIOralEvaluationEvalMode_Free
+        case "SENTENCE":
+            return TAIOralEvaluationEvalMode_Sentence
+        case "PARAGRAPH":
+            return TAIOralEvaluationEvalMode_Paragraph
+        case "WORD_FIX":
+            return TAIOralEvaluationEvalMode_Word_Fix
+        case "WORD_REALTIME":
+            return TAIOralEvaluationEvalMode_Word_RealTime
+        case "SCENE":
+            return TAIOralEvaluationEvalMode_Scene
+        case "MULTI_BRANCH":
+            return TAIOralEvaluationEvalMode_Multi_Branch
+        default:
+            return TAIOralEvaluationEvalMode_Sentence
+        }
     }
 }
