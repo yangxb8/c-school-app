@@ -10,10 +10,12 @@ import TAIOralEvaluation
   ) -> Bool {
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     let soeChannel = FlutterMethodChannel(name: "soe", binaryMessenger: controller.binaryMessenger)
-    let soeDelegate = SoeDelegate()
+    var soeDelegate;
     soeChannel.setMethodCallHandler({
       [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
       if call.method == "soeStartRecord" {
+        // Reinit SoeDelegate instance
+        soeDelegate = SoeDelegate()
         let args = call.arguments as? Dictionary<String, Any>
         let refText = args["refText"] as? String
         let scoreCoeff = args["scoreCoeff"] as? Double
@@ -34,9 +36,26 @@ import TAIOralEvaluation
 
 class SoeDelegate {
     let oralEvaluation = TAIOralEvaluation()
+    var evaluationFinish = false
+    
+    init() {
+        // By setting delegate to self, function like oralEvaluation() can be registered
+        oralEvaluation.delegate = self
+    }
+    
+    func stopRecordAndEvaluation(){
+        oralEvaluation.stopRecordAndEvaluation(callback:{ (error:TAIError!) in
+            if error.code == TAIErrCode_Succ {
+                result(nil)
+            }
+            result(FlutterError(code: error.code,
+                                message: error.desc,
+                                details: error))
+        })
+    }
     
     func soeStartRecord(refText:String, scoreCoeff:Double,mode:String,audioPath:String,result:FlutterResult) {
-        if self.oralEvaluation().isRecording() {
+        if oralEvaluation.isRecording() {
             return
         }
         let param:TAIOralEvaluationParam! = TAIOralEvaluationParam()
@@ -72,9 +91,8 @@ class SoeDelegate {
         recordParam.fragSize = fragSize * 1024
         recordParam.vadEnable = true
         recordParam.vadInterval = _vadTextField.text.intValue()
-        self.oralEvaluation().recorderParam = recordParam
-        weak var ws:SoeDelegate! = self
-        self.oralEvaluation().startRecordAndEvaluation(param, callback:{ (error:TAIError!) in
+        oralEvaluation.recorderParam = recordParam
+        oralEvaluation.startRecordAndEvaluation(param, callback:{ (error:TAIError!) in
             if error.code == TAIErrCode_Succ {
                 result(nil)
             }
@@ -92,24 +110,13 @@ class SoeDelegate {
         self.response = log
     }
 
+    //TODO
     func onEndOfSpeechInOralEvaluation(oralEvaluation:TAIOralEvaluation!) {
-        self.response = "onEndOfSpeech"
-        self.onRecord(nil)
+        result(FlutterError(code: error.code,
+                            message: error.desc,
+                            details: error))
     }
 
-    func oralEvaluation(oralEvaluation:TAIOralEvaluation!, onVolumeChanged volume:Int) {
-        self.progressView.progress = volume / 120.0
-    }
-
-    func oralEvaluation() -> TAIOralEvaluation! {
-        if !_oralEvaluation {
-            _oralEvaluation = TAIOralEvaluation()
-            _oralEvaluation.delegate = self
-        }
-        return _oralEvaluation
-    }
-    
-    //
     func evalModeFromString(mode:String) -> TAIOralEvaluationEvalMode {
         switch mode {
         case "WORD":

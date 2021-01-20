@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:c_school_app/app/model/lecture.dart';
@@ -175,31 +174,7 @@ class _FirebaseAuthApi {
 
   //TODO: Twitter Developer Portal has a callback URL of twittersdk:// for Android, and twitterkit-CONSUMERKEY:// for iOS.
   Future<String> loginWithTwitter() async {
-    try {
-      // Create a TwitterLogin instance
-      final twitterLogin = TwitterLogin(
-        consumerKey: 'HIsHd3qBoTLk3pUa9METOl17N',
-        consumerSecret: 'M9SFMqNzo9p2OfBpnNeiOvlf0b8rufL9P2CDXOwnTUmHFWFiiR',
-      );
-
-      // Trigger the sign-in flow
-      final loginResult = await twitterLogin.authorize();
-
-      // Get the Logged In session
-      final twitterSession = loginResult.session;
-
-      // Create a credential from the access token
-      final AuthCredential twitterAuthCredential =
-          TwitterAuthProvider.credential(
-              accessToken: twitterSession.token, secret: twitterSession.secret);
-
-      // Once signed in, return the UserCredential
-      await _firebaseAuth.signInWithCredential(twitterAuthCredential);
-    } catch (e) {
-      logger.e(e.toString());
-      return 'Unexpected internal error occurs'.i18nApi;
-    }
-    return 'ok';
+    throw UnimplementedError();
   }
 
   //TODO: implement this
