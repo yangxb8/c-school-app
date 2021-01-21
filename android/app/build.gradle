@@ -38,7 +38,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "site.alphasho.c_school_app"
+        applicationId "com.sophiabyte.cschool"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

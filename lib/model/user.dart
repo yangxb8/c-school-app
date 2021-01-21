@@ -41,6 +41,7 @@ class AppUser extends Document<AppUser> {
   List<UserMemo> userMemos = [];
   @ModelField()
   List<ControllerTrack> controllerTracks = [];
+
   User firebaseUser;
 
   set membershipTypes(List<MembershipType> types) =>

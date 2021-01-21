@@ -34,8 +34,8 @@ void main() {
   }
 }''';
     var json = jsonDecode(exampleJson);
-    var result = SpeechEvaluationResult.fromJson(json['Response']);
+    var result = SentenceInfo.fromJson(json['Response']);
     print(json);
-    expect(result.PronAccuracy,equals(65));
+    expect(result.pronAccuracy,equals(65));
   });
 }

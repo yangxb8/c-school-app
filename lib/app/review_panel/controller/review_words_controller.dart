@@ -79,7 +79,7 @@ class ReviewWordsController extends GetxController
   Future<void> onInit() async {
     // As our cards are stack from bottom to top, reverse the words order
     _userWordsHistory = LectureService.userWordsHistory_Rx;
-    lectures = lectureService.findLecturesById(Get.parameters['lectureId']);
+    lectures = [lectureService.findLectureById(Get.parameters['lectureId'])];
     if (Get.arguments == null) {
       wordsList = lectures.length == 1
           ? lectures.single.words
@@ -269,6 +269,9 @@ class ReviewWordsController extends GetxController
 
   /// If we didn't find word id or its null, will go to first word
   Future<void> _animateToWordById(String wordId) async {
+    if(!pageController.hasClients || wordId==null){
+      return;
+    }
     var index = wordsList.indexWhere((word) => word.wordId == wordId);
     // If couldn't find the wordId, go to first word
     if (index == -1) {

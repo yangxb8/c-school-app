@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:flutter_radar_chart/flutter_radar_chart.dart';
-import 'package:fl_chart/fl_chart.dart';
 
-import '../../app/model/exams.dart';
+import '../../app/model/speech_exam.dart';
 import '../../controller/ui_view_controller/speech_recording_controller.dart';
 
 class FloatBottomSheetContainer extends StatelessWidget {
@@ -34,7 +34,7 @@ class FloatBottomSheetContainer extends StatelessWidget {
 Future<T> showSpeechExamBottomSheet<T>({@required SpeechExam exam}) async {
   final result = await showCustomModalBottomSheet(
     context: Get.context,
-    builder: (context, scrollController) => SpeechExamBottomSheet(exam: exam),
+    builder: (_) => SpeechExamBottomSheet(exam: exam),
     containerWidget: (_, animation, child) => FloatBottomSheetContainer(
       child: child,
     ),
@@ -48,17 +48,20 @@ Future<T> showSpeechExamBottomSheet<T>({@required SpeechExam exam}) async {
 }
 
 // SpeechExamBottomSheetController is prepared in main.initServices()
-class SpeechExamBottomSheet extends GetView<SpeechRecordingController> {
+class SpeechExamBottomSheet extends StatelessWidget {
   final Color barBackgroundColor = const Color(0xff72d8bf);
   final Duration animDuration = const Duration(milliseconds: 250);
+  final SpeechRecordingController controller;
   final SpeechExam exam;
   static final int MAX_SPEECHES_SHOWN = 4;
-  SpeechExamBottomSheet({Key key, @required this.exam}) : super(key: key);
+
+  SpeechExamBottomSheet({Key key, @required this.exam})
+      : controller = Get.put(SpeechRecordingController.forExam(exam)),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // set exam of controller
-    controller.initWithExam(exam);
     return SafeArea(
       top: false,
       child: Column(
@@ -79,61 +82,22 @@ class SpeechExamBottomSheet extends GetView<SpeechRecordingController> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: IconButton(
-                icon: Icon(FontAwesome.play_circle),
-                onPressed: () => controller.playQuestion,
-              ),
-              title: Row(
-                children: exam.question.split('').asMap().entries.map((entry) {
-                  var idx = entry.key;
-                  var word = entry.value;
-                  TextButton(
-                    onPressed: () => controller.wordSelected.value = idx,
-                    child: Text(word),
-                  );
-                }) as List,
-              ),
+            child: Row(
+              children: exam.refText
+                  .split('')
+                  .mapIndexed((element, index) => SimpleGestureDetector(
+                        onTap: () => controller.wordSelected.value = index,
+                        child: Text(element).paddingSymmetric(horizontal: 2),
+                      ))
+                  .toList(),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            //TODO: replace this row with last speech result analysis
+            //TODO: show result properly
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                controller.lastSpeech == null
-                    ? Container()
-                    : RadarChart(
-                        data: [
-                          [
-                            controller.lastSpeech.evaluationResult.PronAccuracy
-                                .toInt(),
-                            (controller.lastSpeech.evaluationResult
-                                        .PronFluency *
-                                    100)
-                                .toInt(),
-                            (controller.lastSpeech.evaluationResult
-                                        .PronCompletion *
-                                    100)
-                                .toInt()
-                          ]
-                        ],
-                        features: [
-                          'PronAccuracy',
-                          'PronFluency',
-                          'PronCompletion'
-                        ],
-                        ticks: [0, 50, 100],
-                      ),
-                controller.lastSpeech ==null
-                    ? Container()
-                    : BarChart(
-                        //TODO: make bar chart properly
-                        null,
-                        swapAnimationDuration: animDuration,
-                      )
-              ],
+              children: [],
             ),
           ),
           Center(

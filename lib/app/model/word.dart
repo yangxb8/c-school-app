@@ -98,7 +98,7 @@ class Word extends Document<Word>{
       _otherMeaningIds = otherMeaningIds;
 
   Lecture get lecture =>
-      lectureService.findLecturesById(id.split('-').first).single;
+      lectureService.findLectureById(lectureId);
 
   String get lectureId => id.split('-').first;
 

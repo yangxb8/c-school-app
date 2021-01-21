@@ -116,8 +116,7 @@ class LoginController extends GetxController {
   void handleAnonymousLogin() async {
     var result = await apiService.firebaseAuthApi.loginAnonymous();
     if (result == 'ok') {
-      //TODO: change this, only for words-list test
-      await Get.offAllNamed('/review/words/home');
+      await Get.offAllNamed('/');
     } else {
       _showErrorPopup('Something is wrong!'.i18n);
     }
@@ -154,8 +153,7 @@ class LoginController extends GetxController {
         label: 'Close'.i18n,
         onPressed: () {
           // After login user should not press 'back' and return to login page
-          //TODO: change this, only for words-list test
-          Get.offAllNamed('/review/words/home');
+          Get.offAllNamed('/');
         },
       )
     ];

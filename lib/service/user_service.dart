@@ -40,7 +40,7 @@ class UserService extends GetxService {
   }
 
   static void commitChange() {
-    if(user == null){
+    if (user == null) {
       logger.e('AppUser is not initialized! Commit is canceled');
       return;
     }

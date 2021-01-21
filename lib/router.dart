@@ -21,7 +21,7 @@ class AppRouter {
           binding: BindingsBuilder(
               () => {Get.lazyPut<LoginController>(() => LoginController())})),
       GetPage(
-          name: '/',
+          name: '/home',
           page: () =>
               I18n(initialLocale: DEFAULT_LOCALE, child: MainAppHomeScreen()),
           binding: BindingsBuilder(() =>
