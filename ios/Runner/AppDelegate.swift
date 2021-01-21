@@ -1,6 +1,6 @@
 import UIKit
 import Flutter
-import TAIOralEvaluation
+import TAISDK
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -10,20 +10,20 @@ import TAIOralEvaluation
   ) -> Bool {
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     let soeChannel = FlutterMethodChannel(name: "soe", binaryMessenger: controller.binaryMessenger)
-    var soeDelegate;
+    var soeDelegate:SoeDelegate = SoeDelegate();
     soeChannel.setMethodCallHandler({
       [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
       if call.method == "soeStartRecord" {
         // Reinit SoeDelegate instance
         soeDelegate = SoeDelegate()
-        let args = call.arguments as? Dictionary<String, Any>
-        let refText = args["refText"] as? String
-        let scoreCoeff = args["scoreCoeff"] as? Double
-        let mode = args["mode"] as? String
-        let audioPath = args["audioPath"] as? String
-        soeDelegate?.soeStartRecord(refText:refText,scoreCoeff:scoreCoeff,mode:mode,audioPath:audioPath,result:result)
+        let args = call.arguments as! Dictionary<String, Any>
+        let refText = args["refText"] as! String
+        let scoreCoeff = args["scoreCoeff"] as! Double
+        let mode = args["mode"] as! String
+        let audioPath = args["audioPath"] as! String
+        soeDelegate.soeStartRecord(refText:refText,scoreCoeff:scoreCoeff,mode:mode,audioPath:audioPath,result:result)
       } else if call.method == "soeStopRecordAndEvaluate" {
-        soeDelegate?.soeStopRecordAndEvaluate(result:result)
+        soeDelegate.soeStopRecordAndEvaluate(result:result)
       } else {
         result(FlutterMethodNotImplemented)
       }
@@ -34,47 +34,55 @@ import TAIOralEvaluation
   }
 }
 
-class SoeDelegate {
+class SoeDelegate: NSObject,TAIOralEvaluationDelegate {
+    func onEndOfSpeech(in oralEvaluation: TAIOralEvaluation!) {
+    }
+    
+    func oralEvaluation(_ oralEvaluation: TAIOralEvaluation!, onVolumeChanged volume: Int) {
+    }
+    
     let oralEvaluation = TAIOralEvaluation()
+    let POLLING_INTERVAL = 200
+    let NO_SPEECH_DETECT_INTERVAL = 5000
     var evaluationFinish = false
     
-    init() {
+    override init() {
         // By setting delegate to self, function like oralEvaluation() can be registered
+        super.init()
         oralEvaluation.delegate = self
     }
     
-    func stopRecordAndEvaluation(){
-        oralEvaluation.stopRecordAndEvaluation(callback:{ (error:TAIError!) in
-            if error.code == TAIErrCode_Succ {
+    func soeStopRecordAndEvaluate(result:@escaping FlutterResult){
+        oralEvaluation.stopRecordAndEvaluation({ (error:TAIError!) in
+            if error.code == TAIErrCode.succ {
                 result(nil)
             }
-            result(FlutterError(code: error.code,
+            result(FlutterError(code: String(error.code.rawValue),
                                 message: error.desc,
                                 details: error))
         })
     }
     
-    func soeStartRecord(refText:String, scoreCoeff:Double,mode:String,audioPath:String,result:FlutterResult) {
+    func soeStartRecord(refText:String, scoreCoeff:Double,mode:String,audioPath:String,result:@escaping FlutterResult) {
         if oralEvaluation.isRecording() {
             return
         }
         let param:TAIOralEvaluationParam! = TAIOralEvaluationParam()
-        param.sessionId = NSUUID.UUID().UUIDString()
+        param.sessionId = NSUUID.init().uuidString
         param.appId = "1303827440"
         param.soeAppId = "soe_1001872"
         param.secretId = "AKIDorfD1yrBxYu3w2zWGj0aAXpzqPib3yKP"
         param.secretKey = "rSqCKqlO6cz5wRWKGdoNaY6SaR0PhtgF"
-        param.token = PrivateInfo.shareInstance().token
-        param.workMode = TAIOralEvaluationWorkMode_Once
+        param.workMode = TAIOralEvaluationWorkMode.once
         param.evalMode = evalModeFromString(mode:mode)
-        param.serverType = TAIOralEvaluationServerType_Chinese
-        param.scoreCoeff = scoreCoeff
-        param.fileType = TAIOralEvaluationFileType_Mp3
-        param.storageMode = TAIOralEvaluationStorageMode_Disable
-        param.textMode = TAIOralEvaluationTextMode_Noraml
+        param.serverType = TAIOralEvaluationServerType.chinese
+        param.scoreCoeff = Float(scoreCoeff)
+        param.fileType = TAIOralEvaluationFileType.mp3
+        param.storageMode = TAIOralEvaluationStorageMode.disable
+        param.textMode = TAIOralEvaluationTextMode.noraml
         param.refText = refText
         param.audioPath = audioPath
-        if param.workMode == TAIOralEvaluationWorkMode_Stream {
+        if param.workMode == TAIOralEvaluationWorkMode.stream {
             param.timeout = 5
             param.retryTimes = 5
         }
@@ -82,61 +90,47 @@ class SoeDelegate {
             param.timeout = 30
             param.retryTimes = 0
         }
-        let fragSize:CGFloat = _fragSizeTextField.text.floatValue()
-        if fragSize == 0 {
-            return
-        }
         let recordParam:TAIRecorderParam! = TAIRecorderParam()
-        recordParam.fragEnable = (param.workMode == TAIOralEvaluationWorkMode_Stream ? true: false)
-        recordParam.fragSize = fragSize * 1024
+        recordParam.fragEnable = false
         recordParam.vadEnable = true
-        recordParam.vadInterval = _vadTextField.text.intValue()
-        oralEvaluation.recorderParam = recordParam
+        recordParam.vadInterval = NO_SPEECH_DETECT_INTERVAL
+        oralEvaluation.setRecorderParam(recordParam)
         oralEvaluation.startRecordAndEvaluation(param, callback:{ (error:TAIError!) in
-            if error.code == TAIErrCode_Succ {
+            if error.code == TAIErrCode.succ {
                 result(nil)
             }
-            result(FlutterError(code: error.code,
+            result(FlutterError(code: String(error.code.rawValue),
                                 message: error.desc,
                                 details: error))
         })
     }
 
-    func oralEvaluation(oralEvaluation:TAIOralEvaluation!, onEvaluateData data:TAIOralEvaluationData!, result:TAIOralEvaluationRet!, error:TAIError!) {
-        if error.code != TAIErrCode_Succ {
-            _recordButton.setTitle("开始录制", forState:UIControlStateNormal)
+    func oralEvaluation(_ oralEvaluation:TAIOralEvaluation!, onEvaluateData
+                            :TAIOralEvaluationData!, result:TAIOralEvaluationRet!, error:TAIError!) {
+        if error.code != TAIErrCode.succ {
         }
-        let log:String! = String(format:"oralEvaluation:seq:%ld, end:%ld, error:%@, ret:%@", (data.seqId as! long), (data.bEnd as! long), error, result)
-        self.response = log
-    }
-
-    //TODO
-    func onEndOfSpeechInOralEvaluation(oralEvaluation:TAIOralEvaluation!) {
-        result(FlutterError(code: error.code,
-                            message: error.desc,
-                            details: error))
     }
 
     func evalModeFromString(mode:String) -> TAIOralEvaluationEvalMode {
         switch mode {
         case "WORD":
-            return TAIOralEvaluationEvalMode_Word
+            return TAIOralEvaluationEvalMode.word
         case "FREE":
-            return TAIOralEvaluationEvalMode_Free
+            return TAIOralEvaluationEvalMode.free
         case "SENTENCE":
-            return TAIOralEvaluationEvalMode_Sentence
+            return TAIOralEvaluationEvalMode.sentence
         case "PARAGRAPH":
-            return TAIOralEvaluationEvalMode_Paragraph
+            return TAIOralEvaluationEvalMode.paragraph
         case "WORD_FIX":
-            return TAIOralEvaluationEvalMode_Word_Fix
+            return TAIOralEvaluationEvalMode.word_Fix
         case "WORD_REALTIME":
-            return TAIOralEvaluationEvalMode_Word_RealTime
+            return TAIOralEvaluationEvalMode.word_RealTime
         case "SCENE":
-            return TAIOralEvaluationEvalMode_Scene
+            return TAIOralEvaluationEvalMode.scene
         case "MULTI_BRANCH":
-            return TAIOralEvaluationEvalMode_Multi_Branch
+            return TAIOralEvaluationEvalMode.multi_Branch
         default:
-            return TAIOralEvaluationEvalMode_Sentence
+            return TAIOralEvaluationEvalMode.sentence
         }
     }
 }
