@@ -116,7 +116,7 @@ class LoginController extends GetxController {
   void handleAnonymousLogin() async {
     var result = await apiService.firebaseAuthApi.loginAnonymous();
     if (result == 'ok') {
-      await Get.offAllNamed('/');
+      await Get.offAllNamed('/home');
     } else {
       _showErrorPopup('Something is wrong!'.i18n);
     }
@@ -153,7 +153,7 @@ class LoginController extends GetxController {
         label: 'Close'.i18n,
         onPressed: () {
           // After login user should not press 'back' and return to login page
-          Get.offAllNamed('/');
+          Get.offAllNamed('/home');
         },
       )
     ];

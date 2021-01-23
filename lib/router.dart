@@ -21,13 +21,13 @@ class AppRouter {
           binding: BindingsBuilder(
               () => {Get.lazyPut<LoginController>(() => LoginController())})),
       GetPage(
-          name: '/home',
+          name: '/lock', //TODO: /home
           page: () =>
               I18n(initialLocale: DEFAULT_LOCALE, child: MainAppHomeScreen()),
           binding: BindingsBuilder(() =>
               {Get.lazyPut<MainAppController>(() => MainAppController())})),
       GetPage(
-          name: '/review/words/home',
+          name: '/home', //TODO: /review/words/home
           page: () => I18n(
               initialLocale: DEFAULT_LOCALE, child: ReviewWordsHomeScreen()),
           binding: BindingsBuilder(() => {

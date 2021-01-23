@@ -5,6 +5,7 @@ import 'package:c_school_app/service/user_service.dart';
 import 'package:catcher/catcher.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wiredash/wiredash.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
@@ -31,7 +32,9 @@ void main() async {
 
   /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
   var releaseOptions = CatcherOptions(DialogReportMode(), [
-    EmailManualHandler(['yangxb10@gmail.com'])
+    SentryHandler(SentryClient(SentryOptions(
+        dsn:
+            'https://6b7250fbad81463791e2036ffdd6b184@o455157.ingest.sentry.io/5446301')))
   ]);
   Catcher(
       rootWidget: CSchoolApp(),
