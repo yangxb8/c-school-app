@@ -101,10 +101,10 @@ class Splash extends StatelessWidget {
   Future<void> _init() async {
     await initServices();
     // TODO: Only for development, might need a proper way to upload our class
-    // if (AppStateService.isDebug) {
-    //   await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
-    //   await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
-    // }
+    if (AppStateService.isDebug) {
+      await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
+      await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
+    }
     await Get.toNamed(UserService.user.isLogin() ? '/home' : '/login');
   }
 

@@ -218,7 +218,7 @@ class _FirestoreApi {
       _instance = _FirestoreApi();
       _firestore = FirebaseFirestore.instance;
       _documentAccessor = DocumentAccessor();
-      _setupEmulator();
+      // _setupEmulator(); //TODO: Uncomment this to use firestore simulator
       _currentUser = _FirebaseAuthApi().currentUser;
     }
 

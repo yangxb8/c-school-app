@@ -156,7 +156,7 @@ class LectureCard extends StatelessWidget {
     @required this.lecture,
   }) : super(key: key);
 
-  static const DEFAULT_IMAGE = 'assets/discover_panel/interFace3.png';
+  static const DEFAULT_IMAGE = 'assets/review_panel/default.png';
   final Lecture lecture;
   final LectureService lectureService = Get.find();
 

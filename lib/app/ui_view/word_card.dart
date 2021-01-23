@@ -20,7 +20,7 @@ import '../../i18n/review_words.i18n.dart';
 final cardAspectRatio = 12.0 / 22.0;
 final BUTTON_SIZE = 25.0;
 final verticalInset = 8.0;
-final DEFAULT_IMAGE = 'assets/review_panel/image_01.png';
+final DEFAULT_IMAGE = 'assets/review_panel/default.png';
 
 class WordCard extends StatelessWidget {
   final Word word;
