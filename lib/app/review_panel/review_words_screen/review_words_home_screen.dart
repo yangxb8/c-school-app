@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:c_school_app/util/widget.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -91,7 +92,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                 }),
           ],
         ),
-      ).afterFirstLayout(() => controller.animateToTrackedLecture()),
+      ).afterFirstLayout(controller.animateToTrackedLecture),
     );
   }
 
@@ -202,16 +203,11 @@ class LectureCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                lecture.pic?.url == null
-                    ? Image.asset(DEFAULT_IMAGE, fit: BoxFit.cover)
-                    : CachedNetworkImage(
-                        imageUrl: lecture.pic.url,
-                        placeholder: (context, url) =>
-                            BlurHash(hash: lecture.picHash),
-                        errorWidget: (context, url, error) =>
-                            Image.asset(DEFAULT_IMAGE),
-                        fit: BoxFit.cover,
-                      ).expanded(),
+                BlurHashImageWithFallback(
+                  fallbackImg: DEFAULT_IMAGE,
+                  mainImg: lecture.pic.url,
+                  blurHash: lecture.picHash,
+                ).expanded(),
               ],
             ).expanded(flex: 3),
             Column(

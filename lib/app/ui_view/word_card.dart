@@ -3,6 +3,7 @@ import 'package:c_school_app/app/model/word_example.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
+import 'package:c_school_app/util/widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flippable_box/flippable_box.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
@@ -85,20 +86,13 @@ class WordCard extends StatelessWidget {
             ).backgroundColor(ReviewWordsTheme.lightBlue),
             flex: 11),
         Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            word.pic?.url == null
-                ? Image.asset(
-                    DEFAULT_IMAGE,
-                    fit: BoxFit.cover,
-                  ).expanded()
-                : CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: word.pic.url,
-                    placeholder: (context, url) => BlurHash(hash: word.picHash),
-                    errorWidget: (context, url, error) => Image.asset(
-                          DEFAULT_IMAGE,
-                          fit: BoxFit.cover,
-                        )).expanded(),
+            BlurHashImageWithFallback(
+                fallbackImg: DEFAULT_IMAGE,
+                mainImg: word.pic?.url,
+                blurHash: word.picHash).expanded()
           ],
         ).expanded(flex: 10)
       ],

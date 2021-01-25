@@ -21,7 +21,7 @@ import '../../../util/extensions.dart';
 const LAN_CODE_CN = 'zh-cn';
 
 class ReviewWordsController extends GetxController
-    with SingleGetTickerProviderMixin{
+    with SingleGetTickerProviderMixin {
   final LectureService lectureService = Get.find();
   final logger = LoggerService.logger;
   final tts = FlutterTts();
@@ -31,9 +31,9 @@ class ReviewWordsController extends GetxController
 
   // Key for primaryWordIndex
   static const primaryWordIndexKey = 'ReviewWordsController.primaryWordIndex';
-  
+
   /// Current primary word ordinal in _wordList
-  final primaryWordIndex = 0.obs.trackLocal(primaryWordIndexKey);
+  final primaryWordIndex = 0.obs;
 
   /// Controller of primary card
   WordCardController primaryWordCardController;
@@ -132,7 +132,8 @@ class ReviewWordsController extends GetxController
   /// Save status to history
   void saveAndResetWordHistory(Word word) {
     if (wordMemoryStatus.value != WordMemoryStatus.NOT_REVIEWED) {
-      lectureService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
+      lectureService.addWordReviewedHistory(word,
+          status: wordMemoryStatus.value);
       wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     }
   }
@@ -161,10 +162,9 @@ class ReviewWordsController extends GetxController
 
   /// Male or Female
   void toggleSpeakerGender() {
-    speakerGender.value =
-        speakerGender.value == SpeakerGender.male
-            ? SpeakerGender.female
-            : SpeakerGender.male;
+    speakerGender.value = speakerGender.value == SpeakerGender.male
+        ? SpeakerGender.female
+        : SpeakerGender.male;
   }
 
   /// Simplified version of same method in WordCard
@@ -260,14 +260,21 @@ class ReviewWordsController extends GetxController
   }
 
   Future<void> _animateToFirstWord() async {
-    await pageController.animateToPage(pageController.initialPage,
-        duration: 0.5.seconds, curve: Curves.easeInOut);
+    if (pageController.hasClients) {
+      await pageController.animateToPage(pageController.initialPage,
+          duration: 0.5.seconds, curve: Curves.easeInOut);
+    }
   }
 
   /// Animate to word in track
-  Future<void> animateToTrackedWord() async{
-    await pageController.animateToPage(primaryWordIndex.value,
-        duration: 0.5.seconds, curve: Curves.easeInOut);
+  Future<void> afterFirstLayout() async {
+    // Usually trackLocal will be set along when field declared, but we need it
+    // here to ensure it's value not to be overwrite by initPage of  pageController
+    primaryWordIndex.trackLocal(primaryWordIndexKey);
+    if (pageController.hasClients) {
+      await pageController.animateToPage(primaryWordIndex.value,
+          duration: 0.5.seconds, curve: Curves.easeInOut);
+    }
   }
 
   int indexOfWord(Word word) => wordsList.indexOf(word);

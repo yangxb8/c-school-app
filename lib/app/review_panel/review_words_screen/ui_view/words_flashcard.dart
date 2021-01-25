@@ -119,7 +119,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
           ),
         ),
       ),
-    ).afterFirstLayout(controller.animateToTrackedWord);
+    );
   }
 }
 
@@ -184,6 +184,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           children: cardList,
         );
       }),
-    );
+    ).afterFirstLayout(controller.afterFirstLayout);
   }
 }
+ 

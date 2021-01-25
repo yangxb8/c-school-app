@@ -32,7 +32,7 @@ extension WidgetWrapper on Widget {
   }
 
   Widget afterFirstLayout(Function afterFirstLayout) {
-    return StatefulWrapper(child: this, onInit: afterFirstLayout);
+    return StatefulWrapper(child: this, afterFirstLayout: afterFirstLayout);
   }
 }
 
