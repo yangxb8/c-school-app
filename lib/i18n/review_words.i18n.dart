@@ -4,7 +4,7 @@ extension Localization on String {
   static final _t = Translations('en') +
       {
         'en': 'All Course',
-        'ja_jp': 'クラス',
+        'ja_jp': 'クラスリスト',
       } +
       {
         'en': 'words',
@@ -13,10 +13,6 @@ extension Localization on String {
       {
         'en': 'Empty',
         'ja_jp': 'なし',
-      } +
-      {
-        'en': 'Example',
-        'ja_jp': '【例文】',
       } +
       {
         'en': 'My Words',

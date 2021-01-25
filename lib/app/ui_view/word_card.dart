@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import '../model/word.dart';
-import '../../i18n/review_words.i18n.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
 final BUTTON_SIZE = 25.0;
@@ -151,10 +150,11 @@ class WordCard extends StatelessWidget {
       onTap: controller.playWord,
       behavior: HitTestBehavior.opaque,
       child: PinyinAnnotatedParagraph(
-          paragraph: word.wordAsString,
-          pinyins: word.pinyin,
-          defaultTextStyle: ReviewWordsTheme.wordCardWord,
-          pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,),
+        paragraph: word.wordAsString,
+        pinyins: word.pinyin,
+        defaultTextStyle: ReviewWordsTheme.wordCardWord,
+        pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
+      ),
     ).center();
     // Second meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
@@ -172,7 +172,13 @@ class WordCard extends StatelessWidget {
         Expanded(
           child: ListView(
             shrinkWrap: true,
-            children: partMeanings,
+            children: [
+              Text(word.explanation)
+                  .alignment(Alignment.centerLeft)
+                  .paddingOnly(left: 10),
+              divider(),
+              ...partMeanings
+            ],
           ),
           flex: 3,
         ),
@@ -183,10 +189,6 @@ class WordCard extends StatelessWidget {
   Widget _buildExampleRow(WordExample wordExample) {
     return Column(
       children: [
-        Text(
-          'Example'.i18n,
-          style: ReviewWordsTheme.wordCardSubTitle,
-        ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
         SimpleGestureDetector(
           onTap: () => controller.playExample(wordExample: wordExample),
           behavior: HitTestBehavior.opaque,

@@ -100,11 +100,6 @@ class CSchoolApp extends StatelessWidget {
 class Splash extends StatelessWidget {
   Future<void> _init() async {
     await initServices();
-    // TODO: Only for development, might need a proper way to upload our class
-    if (AppStateService.isDebug) {
-      await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
-      await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
-    }
     await Get.toNamed(UserService.user.isLogin() ? '/home' : '/login');
   }
 
@@ -125,6 +120,7 @@ Future<void> initServices() async {
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
+  //TODO: LectureService should be initiated after user authorized
   await Get.putAsync<LectureService>(
       () async => await LectureService.getInstance());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;

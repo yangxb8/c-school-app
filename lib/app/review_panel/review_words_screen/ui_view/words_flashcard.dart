@@ -101,7 +101,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                       splashRadius: 0.01,
                       icon: Obx(
                         () => Icon(
-                          FontAwesome5.sad_cry,
+                          MaterialCommunityIcons.emoticon_cry_outline,
                           color: controller.wordMemoryStatus.value ==
                                   WordMemoryStatus.FORGOT
                               ? Colors.yellowAccent

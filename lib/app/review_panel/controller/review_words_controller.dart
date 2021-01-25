@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:c_school_app/service/app_state_service.dart';
-import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -17,14 +16,12 @@ import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:c_school_app/service/logger_service.dart';
-import 'package:c_school_app/controller/trackable_controller_interface.dart';
-import 'review_words_controller_track.dart';
+import '../../../util/extensions.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
 class ReviewWordsController extends GetxController
-    with SingleGetTickerProviderMixin
-    implements TrackableController {
+    with SingleGetTickerProviderMixin{
   final LectureService lectureService = Get.find();
   final logger = LoggerService.logger;
   final tts = FlutterTts();
@@ -32,8 +29,11 @@ class ReviewWordsController extends GetxController
   PageController pageController;
   AnimationController searchBarPlayIconController;
 
+  // Key for primaryWordIndex
+  static const primaryWordIndexKey = 'ReviewWordsController.primaryWordIndex';
+  
   /// Current primary word ordinal in _wordList
-  final primaryWordIndex = 0.obs;
+  final primaryWordIndex = 0.obs.trackLocal(primaryWordIndexKey);
 
   /// Controller of primary card
   WordCardController primaryWordCardController;
@@ -97,8 +97,6 @@ class ReviewWordsController extends GetxController
     await tts.setSpeechRate(0.5);
     // worker to monitor search query change and fire search function
     debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
-    // worker to update track whenever it change
-    ever(primaryWordIndex, (_) => updateTrack());
     // If is a specific lecture, add it to history
     if (lectures.length == 1) {
       lectureService.addLectureReviewedHistory(lectures.single);
@@ -131,13 +129,12 @@ class ReviewWordsController extends GetxController
     }
   }
 
-  /// If nothing is pressed, default to NORMAL
+  /// Save status to history
   void saveAndResetWordHistory(Word word) {
-    if (wordMemoryStatus.value == WordMemoryStatus.NOT_REVIEWED) {
-      wordMemoryStatus.value = WordMemoryStatus.NORMAL;
+    if (wordMemoryStatus.value != WordMemoryStatus.NOT_REVIEWED) {
+      lectureService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
+      wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     }
-    lectureService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
-    wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
   }
 
   /// Make sure primary card is front side when slide
@@ -267,43 +264,19 @@ class ReviewWordsController extends GetxController
         duration: 0.5.seconds, curve: Curves.easeInOut);
   }
 
-  /// If we didn't find word id or its null, will go to first word
-  Future<void> _animateToWordById(String wordId) async {
-    if(!pageController.hasClients || wordId==null){
-      return;
-    }
-    var index = wordsList.indexWhere((word) => word.wordId == wordId);
-    // If couldn't find the wordId, go to first word
-    if (index == -1) {
-      await _animateToFirstWord();
-    } else {
-      await pageController.animateToPage(index,
-          duration: 0.5.seconds, curve: Curves.easeInOut);
-    }
-  }
-
   /// Animate to word in track
   Future<void> animateToTrackedWord() async{
-    await _animateToWordById(controllerTrack.trackedWordId);
+    await pageController.animateToPage(primaryWordIndex.value,
+        duration: 0.5.seconds, curve: Curves.easeInOut);
   }
 
   int indexOfWord(Word word) => wordsList.indexOf(word);
 
   @override
-  void updateTrack() {
-    controllerTrack.trackedWordId = primaryWord.wordId;
-  }
-
-  @override
-  ReviewWordsControllerTrack get controllerTrack =>
-      UserService.user.getControllerTrack<ReviewWordsControllerTrack>() ??
-      ReviewWordsControllerTrack();
-
-  @override
   void onClose() {
     // If we have are at last card, clear track
     if (primaryWordIndex.value == wordsList.length - 1) {
-      controllerTrack.trackedWordId = null;
+      primaryWordIndex.value = 0;
     }
     lectureService.commitChange();
     audioPlayer.dispose();

@@ -8,7 +8,7 @@ import 'exam_base.dart';
 
 part 'lecture.flamingo.dart';
 
-class Lecture extends Document<Lecture>{
+class Lecture extends Document<Lecture> {
   static const levelPrefix = 'Level';
   static LectureService lectureService = Get.find<LectureService>();
 
@@ -19,7 +19,7 @@ class Lecture extends Document<Lecture>{
     Map<String, dynamic> values,
   })  : lectureId = id,
         level = level,
-        tags = id == null ? []:['$levelPrefix$level'],
+        tags = id == null ? [] : ['$levelPrefix$level'],
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
@@ -27,29 +27,28 @@ class Lecture extends Document<Lecture>{
 
   /// For display
   @Field()
-  int level;
+  int level = 0;
 
   @Field()
-  String title;
+  String title = '';
 
   @Field()
-  String description;
+  String description = '';
 
   /// Converted from ClassTag enum
   @Field()
-  List<String> tags;
+  List<String> tags = [];
 
   /// Hash of lecture pic for display by blurhash
   @Field()
-  String picHash;
+  String picHash = '';
 
   /// If the lecture has pic in cloud storage
   @StorageField()
   StorageFile pic;
 
   /// find words related
-  List<Word> get words => lectureService
-      .findWordsByTags([lectureId]);
+  List<Word> get words => lectureService.findWordsByTags([lectureId]);
 
   /// find exams related
   List<Exam> get exams => lectureService.findExamsByTags([lectureId]);
