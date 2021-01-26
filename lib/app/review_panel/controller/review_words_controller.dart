@@ -5,6 +5,7 @@ import 'package:c_school_app/service/app_state_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
@@ -27,9 +28,12 @@ class ReviewWordsController extends GetxController
   final tts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   PageController pageController;
+  /// Animate icon
   AnimationController searchBarPlayIconController;
+  /// Animate icon color
+  Rx<CustomAnimationControl> searchBarPlayIconControl = CustomAnimationControl.STOP.obs;
 
-  // Key for primaryWordIndex
+  /// Key for primaryWordIndex
   static const primaryWordIndexKey = 'ReviewWordsController.primaryWordIndex';
 
   /// Current primary word ordinal in _wordList
@@ -47,8 +51,8 @@ class ReviewWordsController extends GetxController
   /// Controller for words list
   final groupedItemScrollController = GroupedItemScrollController();
 
-  /// ScrollDirection of words_list
-  SwipeDirection wordsListSwipeDirection;
+  /// If word list is first time rendered, special animation will be shown
+  bool isListFirstRender = true;
 
   /// WordsHistory of this user
   RxList<WordHistory> _userWordsHistory;
@@ -196,6 +200,7 @@ class ReviewWordsController extends GetxController
     }
     if (!isAutoPlayMode.value) {
       searchBarPlayIconController.forward();
+      searchBarPlayIconControl.value=CustomAnimationControl.PLAY_FROM_START;
       isAutoPlayMode.value = true;
       // Play from beginning
       await _animateToFirstWord();
@@ -203,6 +208,7 @@ class ReviewWordsController extends GetxController
       _autoPlayCard();
     } else {
       searchBarPlayIconController.reverse();
+      searchBarPlayIconControl.value=CustomAnimationControl.PLAY_REVERSE_FROM_END;
       isAutoPlayMode.value = false;
     }
   }
@@ -249,14 +255,8 @@ class ReviewWordsController extends GetxController
       searchResult.clear();
       return;
     }
-    var containKeyWord = (Word word) {
-      return word.wordAsString.contains(searchQuery.value) ||
-          word.wordMeanings.any((m) =>
-              m.meaning.contains(searchQuery.value) ||
-              word.tags.contains(searchQuery.value));
-    };
     searchResult.clear();
-    searchResult.addAll(wordsList.filter((word) => containKeyWord(word)));
+    searchResult.addAll(wordsList.searchFuzzy(searchQuery.value));
   }
 
   Future<void> _animateToFirstWord() async {

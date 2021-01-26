@@ -10,6 +10,7 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import '../../../../util/utility.dart';
 
 const BUTTON_SIZE = 30.0;
 
@@ -25,6 +26,12 @@ class WordsList extends GetView<ReviewWordsController> {
       child: ValueListenableBuilder<Iterable<ItemPosition>>(
           valueListenable: _groupedItemPositionsListener.itemPositions,
           builder: (_, positions, __) {
+            // When first rendered, minVisibleCardIndex should be 0
+            final minVisibleCardIndex =
+            findFirstVisibleItemIndex(positions);
+            if (controller.isListFirstRender && minVisibleCardIndex > 0) {
+              controller.isListFirstRender = false;
+            }
             return StickyGroupedListView<Word, String>(
               elements: controller.wordsList,
               itemScrollController: controller.groupedItemScrollController,
@@ -44,9 +51,7 @@ class WordsList extends GetView<ReviewWordsController> {
               indexedItemBuilder: (_, Word word, index) => FadeInRight(
                 duration: 0.5.seconds,
                 // Delay the animation to create a staggered effect when first render
-                delay: index < 11 &&
-                        controller.wordsListSwipeDirection !=
-                            SwipeDirection.down
+                delay: controller.isListFirstRender
                     ? (0.3 * index).seconds
                     : 0.seconds,
                 child: Card(

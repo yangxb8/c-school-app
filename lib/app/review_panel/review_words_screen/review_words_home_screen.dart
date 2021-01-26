@@ -93,7 +93,14 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
           ],
         ),
       ).afterFirstLayout(controller.animateToTrackedLecture),
-    );
+
+      ///TODO: only for review words, this will be done when main app home screen initiated so delete it
+    ).onInit(() async {
+      if (Get.isRegistered<LectureService>()) {
+        await Get.putAsync<LectureService>(
+            () async => await LectureService.getInstance());
+      }
+    });
   }
 
   Widget _buildSpecialLectureCard() {
