@@ -1,6 +1,8 @@
+import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/localstorage_service.dart';
 import 'package:c_school_app/util/classes.dart';
 import 'package:flutter/material.dart';
+import 'package:fuzzy/fuzzy.dart';
 import 'package:get/get.dart';
 
 extension DateTimeExtension on DateTime {
@@ -21,10 +23,64 @@ extension HanziUtil on String {
   }
 }
 
+extension WordListUtil on Iterable<Word> {
+  /// Fuzzy search a list of Word by keyword, options can be provided
+  List<Word> searchFuzzy(String key, {FuzzyOptions options}) {
+    return where((word) => word.containsFuzzy(key, options: options)).toList();
+  }
+}
+
+extension WordUtil on Word {
+  /// Search if this Word list contains key fuzzily
+  bool containsFuzzy(String key, {FuzzyOptions options}) {
+    options ??=
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
+    return wordAsString.containsFuzzy(key) ||
+        wordMeanings.map((e) => e.meaning).containsFuzzy(key) ||
+        tags.containsFuzzy(key);
+  }
+}
+
+extension StringListUtil on Iterable<String> {
+  /// Fuzzy search a list of String by keyword, options can be provided
+  List<String> searchFuzzy(String key, {FuzzyOptions options}) {
+    options ??=
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
+    final fuse = Fuzzy(toList(), options: options);
+    return fuse.search(key).map((r) => r.item.toString());
+  }
+
+  /// Search if this string list contains key fuzzily
+  bool containsFuzzy(String key, {FuzzyOptions options}) {
+    options ??=
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
+    final fuse = Fuzzy(toList(), options: options);
+    return fuse.search(key).isNotEmpty;
+  }
+}
+
+extension StringUtil on String {
+  /// Search if this string contains key fuzzily
+  bool containsFuzzy(String key, {FuzzyOptions options}) {
+    return [this].containsFuzzy(key, options: options);
+  }
+}
+
 extension WidgetWrapper on Widget {
-  Widget statefulWrapper({Function onInit, Function afterFirstLayout}) {
+  Widget statefulWrapper(
+      {Function onInit,
+      Function afterFirstLayout,
+      Function deactivate,
+      Function didUpdateWidget,
+      Function dispose}) {
     return StatefulWrapper(
-        child: this, onInit: onInit, afterFirstLayout: afterFirstLayout);
+      child: this,
+      onInit: onInit,
+      afterFirstLayout: afterFirstLayout,
+      deactivate: deactivate,
+      didUpdateWidget: didUpdateWidget,
+      dispose: dispose,
+    );
   }
 
   Widget onInit(Function onInit) {
@@ -38,66 +94,65 @@ extension WidgetWrapper on Widget {
 
 extension RxIntExtension on RxInt {
   static final localStorageService = Get.find<LocalStorageService>();
+
   /// Register a worker to track this RxInt and persist using localstorage.
   RxInt trackLocal(String key) {
-    if(localStorageService.containsKey(key)){
+    if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this,
-        (value) => localStorageService.saveToDisk(key, value));
+    ever(this, (value) => localStorageService.saveToDisk(key, value));
     return this;
   }
 }
 
 extension RxDoubleExtension on RxDouble {
   static final localStorageService = Get.find<LocalStorageService>();
+
   /// Register a worker to track this RxDouble and persist using localstorage.
   RxDouble trackLocal(String key) {
-    if(localStorageService.containsKey(key)){
+    if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this,
-        (value) => localStorageService.saveToDisk(key, value));
+    ever(this, (value) => localStorageService.saveToDisk(key, value));
     return this;
   }
 }
 
 extension RxBoolExtension on RxBool {
   static final localStorageService = Get.find<LocalStorageService>();
+
   /// Register a worker to track this RxBool and persist using localstorage.
   RxBool trackLocal(String key) {
-    if(localStorageService.containsKey(key)){
+    if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this,
-        (value) => localStorageService.saveToDisk(key, value));
+    ever(this, (value) => localStorageService.saveToDisk(key, value));
     return this;
   }
 }
 
 extension RxStringExtension on RxString {
   static final localStorageService = Get.find<LocalStorageService>();
+
   /// Register a worker to track this RxString and persist using localstorage.
   RxString trackLocal(String key) {
-    if(localStorageService.containsKey(key)){
+    if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this,
-        (value) => localStorageService.saveToDisk(key, value));
+    ever(this, (value) => localStorageService.saveToDisk(key, value));
     return this;
   }
 }
 
 extension RxStringListExtension on RxList<String> {
   static final localStorageService = Get.find<LocalStorageService>();
+
   /// Register a worker to track this RxList<String> and persist using localstorage.
   RxList<String> trackLocal(String key) {
-    if(localStorageService.containsKey(key)){
+    if (localStorageService.containsKey(key)) {
       assignAll(Get.find<LocalStorageService>().getFromDisk(key));
     }
-    ever(this,
-        (value) => localStorageService.saveToDisk(key, value));
+    ever(this, (value) => localStorageService.saveToDisk(key, value));
     return this;
   }
 }
-

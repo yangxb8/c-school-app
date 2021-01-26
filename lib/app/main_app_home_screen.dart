@@ -1,3 +1,4 @@
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,11 @@ class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProvid
   AnimationController animationController;
 
   @override
-  void initState() {
+  void initState() async{
+    if(Get.isRegistered<LectureService>()){
+      await Get.putAsync<LectureService>(
+              () async => await LectureService.getInstance());
+    }
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     super.initState();

@@ -1,9 +1,11 @@
 import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import 'package:simple_animations/simple_animations.dart';
 import './ui_view/words_flashcard.dart';
 import './ui_view/words_list.dart';
 import 'package:c_school_app/i18n/review_words.i18n.dart';
@@ -52,11 +54,18 @@ class ReviewWords extends GetView<ReviewWordsController> {
         ),
         FloatingSearchBarAction(
           child: CircularButton(
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.play_pause,
-              size: 30,
-              color: Colors.grey,
-              progress: controller.searchBarPlayIconController,
+            icon: Obx(
+              () => CustomAnimation<Color>(
+                control: controller.searchBarPlayIconControl.value,
+                tween: Colors.grey.tweenTo(Colors.lightBlueAccent),
+                duration: 0.3.seconds,
+                builder: (_, __, value) => AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  size: 30,
+                  color: value,
+                  progress: controller.searchBarPlayIconController,
+                ),
+              ),
             ),
             onPressed: () => controller.autoPlayPressed(),
           ),

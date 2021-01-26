@@ -15,6 +15,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   final TextStyle centerWordTextStyle;
   final TextStyle linkedWordTextStyle;
   final TextStyle pinyinTextStyle;
+  final bool showPinyins;
 
   const PinyinAnnotatedParagraph(
       {Key key,
@@ -25,7 +26,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       this.linkedWords,
       this.centerWordTextStyle,
       this.linkedWordTextStyle,
-      this.pinyinTextStyle})
+      this.pinyinTextStyle,
+      this.showPinyins = true})
       : super(key: key);
 
   @override
@@ -44,8 +46,10 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     final inner = IntrinsicWidth(
       child: Column(
         children: [
-          Text(pinyinAnnotatedHanzi.pinyin,
-              style: pinyinAnnotatedHanzi.pinyinStyle),
+          showPinyins
+              ? Text(pinyinAnnotatedHanzi.pinyin,
+                  style: pinyinAnnotatedHanzi.pinyinStyle)
+              : Container(),
           Text(pinyinAnnotatedHanzi.hanzi,
               style: pinyinAnnotatedHanzi.hanziStyle),
         ],
@@ -106,7 +110,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     var result;
     keywordsSeparatedParagraph.forEach((part) {
       // Target hanzi is in range of this part of paragraph
-      final linkedWordList = linkedWords?.filter((w) => w.wordAsString == part)?? [];
+      final linkedWordList =
+          linkedWords?.filter((w) => w.wordAsString == part) ?? [];
       if (totalIdx + part.length > hanziIdx) {
         if (centerWord?.wordAsString == part) {
           result = {ParagraphHanziType.center: null};

@@ -1,4 +1,4 @@
-ffffimport 'dart:async';
+import 'dart:async';
 import 'dart:io';
 import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/service/user_service.dart';
@@ -120,8 +120,5 @@ Future<void> initServices() async {
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
-  //TODO: LectureService should be initiated after user authorized
-  await Get.putAsync<LectureService>(
-      () async => await LectureService.getInstance());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;
 }
