@@ -1,12 +1,10 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:c_school_app/util/widget.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_home_screen_controller.dart';
 import 'package:c_school_app/service/lecture_service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -95,12 +93,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
       ).afterFirstLayout(controller.animateToTrackedLecture),
 
       ///TODO: only for review words, this will be done when main app home screen initiated so delete it
-    ).onInit(() async {
-      if (Get.isRegistered<LectureService>()) {
-        await Get.putAsync<LectureService>(
-            () async => await LectureService.getInstance());
-      }
-    });
+    );
   }
 
   Widget _buildSpecialLectureCard() {

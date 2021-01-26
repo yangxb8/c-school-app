@@ -483,6 +483,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  fuzzy:
+    dependency: "direct main"
+    description:
+      name: fuzzy
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   get:
     dependency: "direct main"
     description:
@@ -609,6 +616,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  latinize:
+    dependency: transitive
+    description:
+      name: latinize
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   logger:
     dependency: "direct main"
     description:
@@ -840,6 +854,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.25.0"
+  sa_v1_migration:
+    dependency: transitive
+    description:
+      name: sa_v1_migration
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.2"
   scrollable_positioned_list:
     dependency: transitive
     description:
@@ -924,6 +945,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.3"
+  simple_animations:
+    dependency: "direct main"
+    description:
+      name: simple_animations
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.5.0"
   simple_gesture_detector:
     dependency: "direct main"
     description:

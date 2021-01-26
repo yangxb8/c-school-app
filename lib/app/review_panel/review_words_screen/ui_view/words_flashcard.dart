@@ -15,13 +15,12 @@ const cardAspectRatio = 12.0 / 22.0;
 const widgetAspectRatio = cardAspectRatio * 1.2;
 
 class WordsFlashcard extends GetView<ReviewWordsController> {
-  WordsFlashcard({key}):super(key:key);
+  WordsFlashcard({key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     controller.pageController.addListener(() {
       controller.pageFraction.value = controller.pageController.page;
-      controller.flipBackPrimaryCard();
     });
 
     Future<void> _onHorizontalSwipe(swipeDirection) async {
@@ -167,7 +166,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
                   0.0);
           var wordCard = WordCard(word: controller.reversedWordsList[i]);
           // Set primary card controller
-          if (isPrimaryCard) {
+          if (isPrimaryCard && controller.primaryWordIndex.value != i) {
             controller.primaryWordIndex.value = i;
             controller.primaryWordCardController = wordCard.controller;
           }
@@ -187,4 +186,3 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
     ).afterFirstLayout(controller.afterFirstLayout);
   }
 }
- 

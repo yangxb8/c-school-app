@@ -3,6 +3,7 @@ import 'package:c_school_app/service/logger_service.dart';
 import 'package:wiredash/wiredash.dart';
 import 'api_service.dart';
 import '../model/user.dart';
+import 'lecture_service.dart';
 
 /// Provide user related service, like create and update user
 class UserService extends GetxService {
@@ -15,6 +16,10 @@ class UserService extends GetxService {
     if (_instance == null) {
       _instance = UserService();
       user = await _getCurrentUser();
+      if (user != null && user.isLogin()) {
+        await Get.putAsync<LectureService>(
+            () async => await LectureService.getInstance());
+      }
       _listenToFirebaseAuth();
     }
     return _instance;

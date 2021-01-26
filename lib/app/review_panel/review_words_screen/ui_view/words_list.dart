@@ -10,7 +10,7 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:get/get.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
-import '../../../../util/utility.dart';
+import 'package:c_school_app/util/utility.dart';
 
 const BUTTON_SIZE = 30.0;
 

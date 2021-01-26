@@ -4,9 +4,7 @@ import 'package:c_school_app/app/review_panel/review_words_screen/review_words_t
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:c_school_app/util/widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flippable_box/flippable_box.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:styled_widget/styled_widget.dart';

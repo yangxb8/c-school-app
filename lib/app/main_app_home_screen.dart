@@ -20,10 +20,6 @@ class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProvid
 
   @override
   void initState() async{
-    if(Get.isRegistered<LectureService>()){
-      await Get.putAsync<LectureService>(
-              () async => await LectureService.getInstance());
-    }
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     super.initState();

@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
@@ -28,10 +27,13 @@ class ReviewWordsController extends GetxController
   final tts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   PageController pageController;
+
   /// Animate icon
   AnimationController searchBarPlayIconController;
+
   /// Animate icon color
-  Rx<CustomAnimationControl> searchBarPlayIconControl = CustomAnimationControl.STOP.obs;
+  Rx<CustomAnimationControl> searchBarPlayIconControl =
+      CustomAnimationControl.STOP.obs;
 
   /// Key for primaryWordIndex
   static const primaryWordIndexKey = 'ReviewWordsController.primaryWordIndex';
@@ -101,6 +103,8 @@ class ReviewWordsController extends GetxController
     await tts.setSpeechRate(0.5);
     // worker to monitor search query change and fire search function
     debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
+    // Worker to flip back primary card when it change
+    ever(primaryWordIndex, (_) => flipBackPrimaryCard());
     // If is a specific lecture, add it to history
     if (lectures.length == 1) {
       lectureService.addLectureReviewedHistory(lectures.single);
@@ -144,7 +148,8 @@ class ReviewWordsController extends GetxController
 
   /// Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if (primaryWordCardController.isCardFlipped.isTrue) {
+    if (primaryWordCardController != null &&
+        primaryWordCardController.isCardFlipped.isTrue) {
       primaryWordCardController.flipCard();
     }
   }
@@ -200,7 +205,7 @@ class ReviewWordsController extends GetxController
     }
     if (!isAutoPlayMode.value) {
       searchBarPlayIconController.forward();
-      searchBarPlayIconControl.value=CustomAnimationControl.PLAY_FROM_START;
+      searchBarPlayIconControl.value = CustomAnimationControl.PLAY_FROM_START;
       isAutoPlayMode.value = true;
       // Play from beginning
       await _animateToFirstWord();
@@ -208,7 +213,8 @@ class ReviewWordsController extends GetxController
       _autoPlayCard();
     } else {
       searchBarPlayIconController.reverse();
-      searchBarPlayIconControl.value=CustomAnimationControl.PLAY_REVERSE_FROM_END;
+      searchBarPlayIconControl.value =
+          CustomAnimationControl.PLAY_REVERSE_FROM_END;
       isAutoPlayMode.value = false;
     }
   }
@@ -232,6 +238,8 @@ class ReviewWordsController extends GetxController
           // When we reach the last card or autoPlay turn off
           if (isAutoPlayMode.isfalse || primaryWordIndex.value == 0) {
             searchBarPlayIconController.reverse();
+            searchBarPlayIconControl.value =
+                CustomAnimationControl.PLAY_REVERSE_FROM_END;
             isAutoPlayMode.value = false;
           } else {
             await pageController.previousPage(
