@@ -37,7 +37,20 @@ extension Localization on String {
       {
         'en': 'Oops, No words here',
         'ja_jp': 'あら、ここに単語がないみたい',
+      }+
+      {
+        'en': 'Change to %s speaker',
+        'ja_jp': 'スピーカを%sに変更',
+      }+
+      {
+        'en': 'male',
+        'ja_jp': '男性',
+      }+
+      {
+        'en': 'female',
+        'ja_jp': '女性',
       };
 
   String get i18n => localize(this, _t);
+  String fill(List<Object> params) => localizeFill(this, params);
 }

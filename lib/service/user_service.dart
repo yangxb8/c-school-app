@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:c_school_app/service/logger_service.dart';
+import 'package:shake/shake.dart';
 import 'package:wiredash/wiredash.dart';
 import 'api_service.dart';
 import '../model/user.dart';
@@ -11,6 +12,7 @@ class UserService extends GetxService {
   static AppUser user;
   static final ApiService _apiService = Get.find();
   static final logger = LoggerService.logger;
+  static ShakeDetector detector;
 
   static Future<UserService> getInstance() async {
     if (_instance == null) {
@@ -21,6 +23,7 @@ class UserService extends GetxService {
             () async => await LectureService.getInstance());
       }
       _listenToFirebaseAuth();
+      _startWireDashService();
     }
     return _instance;
   }
@@ -52,6 +55,10 @@ class UserService extends GetxService {
     _apiService.firestoreApi.updateAppUser(user, _refreshAppUser);
   }
 
+  static void _startWireDashService() {
+    detector = ShakeDetector.autoStart(onPhoneShake: () => showWireDash());
+  }
+
   static void showWireDash() {
     Wiredash.of(Get.context).setUserProperties(
         userId: user.userId, userEmail: user.firebaseUser.email);
@@ -62,6 +69,7 @@ class UserService extends GetxService {
   @override
   void onClose() {
     commitChange();
+    detector?.stopListening();
     super.onClose();
   }
 }
