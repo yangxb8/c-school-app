@@ -27,8 +27,7 @@ class WordsList extends GetView<ReviewWordsController> {
           valueListenable: _groupedItemPositionsListener.itemPositions,
           builder: (_, positions, __) {
             // When first rendered, minVisibleCardIndex should be 0
-            final minVisibleCardIndex =
-            findFirstVisibleItemIndex(positions);
+            final minVisibleCardIndex = findFirstVisibleItemIndex(positions);
             if (controller.isListFirstRender && minVisibleCardIndex > 0) {
               controller.isListFirstRender = false;
             }
@@ -46,8 +45,7 @@ class WordsList extends GetView<ReviewWordsController> {
                   .decorated(
                     color: ReviewWordsTheme.darkBlue,
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  )
-                  .paddingOnly(top: 10.0, bottom: 10.0),
+                  ),
               indexedItemBuilder: (_, Word word, index) => FadeInRight(
                 duration: 0.5.seconds,
                 // Delay the animation to create a staggered effect when first render
@@ -60,7 +58,8 @@ class WordsList extends GetView<ReviewWordsController> {
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                   elevation: 8.0,
-                  margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   child: SimpleGestureDetector(
                     onTap: () => controller.showSingleCard(word),
                     child: ListTile(

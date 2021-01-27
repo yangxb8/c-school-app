@@ -152,7 +152,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
 
         for (var i = 0; i < controller.reversedWordsList.length; i++) {
           var delta = i - pageFraction;
-          var isPrimaryCard = delta.toInt() == 0;
+          var isPrimaryCard = delta>0 && delta.toInt() == 0;
           // If card is not visible, don't build it
           if (delta.abs() > MAX_CARDS_FRAME) {
             continue;
