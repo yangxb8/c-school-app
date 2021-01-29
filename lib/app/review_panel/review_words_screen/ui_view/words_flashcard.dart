@@ -28,11 +28,9 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
       if (controller.isAutoPlayMode.value) return;
       var currentPrimaryWord = controller.primaryWord;
       if (swipeDirection == SwipeDirection.right) {
-        await controller.pageController.nextPage(
-            duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+        await controller.previousCard();
       } else {
-        await controller.pageController.previousPage(
-            duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+        await controller.nextCard();
       }
       controller.saveAndResetWordHistory(currentPrimaryWord);
     }
@@ -71,45 +69,42 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                       icon: Obx(
                         () => Icon(
                           FontAwesome5.laugh_beam,
-                          color: controller.wordMemoryStatus.value ==
-                                  WordMemoryStatus.REMEMBERED
+                          color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
                               ? Colors.yellowAccent
                               : Colors.blueGrey,
                           size: BUTTON_SIZE,
                         ),
                       ),
-                      onPressed: () => controller.handWordMemoryStatusPressed(
-                          WordMemoryStatus.REMEMBERED),
+                      onPressed: () =>
+                          controller.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
                     ),
                     IconButton(
                       splashRadius: 0.01,
                       icon: Obx(
                         () => Icon(
                           FontAwesome5.frown_open,
-                          color: controller.wordMemoryStatus.value ==
-                                  WordMemoryStatus.NORMAL
+                          color: controller.wordMemoryStatus.value == WordMemoryStatus.NORMAL
                               ? Colors.yellowAccent
                               : Colors.blueGrey,
                           size: BUTTON_SIZE,
                         ),
                       ),
-                      onPressed: () => controller
-                          .handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
+                      onPressed: () =>
+                          controller.handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
                     ),
                     IconButton(
                       splashRadius: 0.01,
                       icon: Obx(
                         () => Icon(
                           MaterialCommunityIcons.emoticon_cry_outline,
-                          color: controller.wordMemoryStatus.value ==
-                                  WordMemoryStatus.FORGOT
+                          color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
                               ? Colors.yellowAccent
                               : Colors.blueGrey,
                           size: BUTTON_SIZE,
                         ),
                       ),
-                      onPressed: () => controller
-                          .handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
+                      onPressed: () =>
+                          controller.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
                     ),
                   ],
                 ),
@@ -152,21 +147,18 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
 
         for (var i = 0; i < controller.reversedWordsList.length; i++) {
           var delta = i - pageFraction;
-          var isPrimaryCard = delta>0 && delta.toInt() == 0;
+          var isPrimaryCard = delta >= 0 && delta.toInt() == 0;
           // If card is not visible, don't build it
           if (delta.abs() > MAX_CARDS_FRAME) {
             continue;
           }
           var isOnRight = delta > 0;
 
-          var start = padding +
-              max(
-                  primaryCardLeft -
-                      horizontalInset * -delta * (isOnRight ? 40 : 1),
-                  0.0);
+          var start =
+              padding + max(primaryCardLeft - horizontalInset * -delta * (isOnRight ? 40 : 1), 0.0);
           var wordCard = WordCard(word: controller.reversedWordsList[i]);
           // Set primary card controller
-          if (isPrimaryCard && controller.primaryWordIndex.value != i) {
+          if (isPrimaryCard) {
             controller.primaryWordIndex.value = i;
             controller.primaryWordCardController = wordCard.controller;
           }

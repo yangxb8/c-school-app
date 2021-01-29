@@ -1,4 +1,5 @@
 import 'package:c_school_app/service/app_state_service.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter_beautiful_popup/main.dart';
@@ -144,6 +145,14 @@ class LoginController extends GetxController {
   }
 
   void _showLoginSuccessPopup() {
+    var isLectureServiceReady = false.obs;
+    if (Get.isRegistered<LectureService>()) {
+      isLectureServiceReady.toggle();
+    }
+    else{
+      Get.putAsync<LectureService>(
+              () async => await LectureService.getInstance()).then((_)=>isLectureServiceReady.toggle());
+    }
     final popup = BeautifulPopup(
       context: context,
       template: TemplateBlueRocket,
@@ -153,7 +162,7 @@ class LoginController extends GetxController {
         label: 'Close'.i18n,
         onPressed: () {
           // After login user should not press 'back' and return to login page
-          Get.offAllNamed('/home');
+          once(isLectureServiceReady, (value)=> Get.offAllNamed('/home'));
         },
       )
     ];

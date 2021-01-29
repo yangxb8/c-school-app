@@ -43,9 +43,9 @@ class WordsList extends GetView<ReviewWordsController> {
               )
                   .paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10)
                   .decorated(
-                    color: ReviewWordsTheme.darkBlue,
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
+                color: ReviewWordsTheme.darkBlue,
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ).alignment(Alignment.topCenter),
               indexedItemBuilder: (_, Word word, index) => FadeInRight(
                 duration: 0.5.seconds,
                 // Delay the animation to create a staggered effect when first render

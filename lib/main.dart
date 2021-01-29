@@ -16,6 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:flamingo/flamingo.dart';
 
+import 'service/lecture_service.dart';
 import 'util/extensions.dart';
 import 'service/api_service.dart';
 import 'service/localstorage_service.dart';
@@ -32,13 +33,9 @@ void main() async {
   /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
   var releaseOptions = CatcherOptions(DialogReportMode(), [
     SentryHandler(SentryClient(SentryOptions(
-        dsn:
-            'https://6b7250fbad81463791e2036ffdd6b184@o455157.ingest.sentry.io/5446301')))
+        dsn: 'https://6b7250fbad81463791e2036ffdd6b184@o455157.ingest.sentry.io/5446301')))
   ]);
-  Catcher(
-      rootWidget: CSchoolApp(),
-      debugConfig: debugOptions,
-      releaseConfig: releaseOptions);
+  Catcher(rootWidget: CSchoolApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
 }
 
 class CSchoolApp extends StatelessWidget {
@@ -47,14 +44,17 @@ class CSchoolApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness:
-          Platform.isAndroid ? Brightness.dark : Brightness.light,
+      statusBarBrightness: Platform.isAndroid ? Brightness.dark : Brightness.light,
       systemNavigationBarColor: Colors.white,
       systemNavigationBarDividerColor: Colors.grey,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
     return KeyboardDismisser(
         child: Wiredash(
+      options: WiredashOptionsData(
+        /// You can set your own locale to override device default (`window.locale` by default)
+        locale: const Locale.fromSubtags(languageCode: 'jp'),
+      ),
       projectId: 'c-school-iysnrje',
       secret: 'rbl6r14rthdvtkruhfu0lvlldp6rpq3pepclnowm1q6ui08u',
 
@@ -114,10 +114,12 @@ class Splash extends StatelessWidget {
 }
 
 Future<void> initServices() async {
-  await Get.putAsync<LocalStorageService>(
-      () async => await LocalStorageService.getInstance());
+  await Get.putAsync<LocalStorageService>(() async => await LocalStorageService.getInstance());
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
+  if (UserService.user != null && UserService.user.isLogin()) {
+    await Get.putAsync<LectureService>(() async => await LectureService.getInstance());
+  }
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;
 }

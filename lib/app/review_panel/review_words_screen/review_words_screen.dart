@@ -33,8 +33,6 @@ class ReviewWords extends GetView<ReviewWordsController> {
       transitionDuration: const Duration(milliseconds: 800),
       transitionCurve: Curves.easeInOut,
       physics: const BouncingScrollPhysics(),
-      axisAlignment: 0.0,
-      openAxisAlignment: 0.0,
       maxWidth: 600,
       debounceDelay: const Duration(milliseconds: 500),
       onQueryChanged: (query) {
@@ -108,7 +106,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
                         : controller.searchResult
                             .map((word) => ListTile(
                                 title: TextButton(
-                                    child: Text(word.wordAsString),
+                                    child: Text('${word.wordAsString} (${word.wordMeanings.first.meaning})'),
                                     onPressed: () {
                                       controller.searchBarController.close();
                                       controller.showSingleCard(word);

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:c_school_app/service/app_state_service.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:hardware_buttons/hardware_buttons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -19,7 +18,6 @@ import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:c_school_app/service/logger_service.dart';
-import 'package:volume_watcher/volume_watcher.dart';
 import '../../../util/extensions.dart';
 import '../../../i18n/review_words.i18n.dart';
 
@@ -97,13 +95,6 @@ class ReviewWordsController extends GetxController
   /// [WordsFlashcard] Used to controller pagination of card
   RxDouble pageFraction;
 
-  /// [WordsFlashcard] Listen to volume button pressed
-  StreamSubscription<VolumeButtonEvent> _volumeButtonSubscription;
-
-  /// [WordsFlashcard] We use volume button to control card swipe. As volume will
-  /// change this way, we change the volume back every time
-  double originVolume;
-
   @override
   Future<void> onInit() async {
     _userWordsHistory = LectureService.userWordsHistory_Rx;
@@ -142,21 +133,6 @@ class ReviewWordsController extends GetxController
     if (AppStateService.isDebug) {
       AudioPlayer.logEnabled = true;
     }
-    // Support volume button to swipe card
-    originVolume = await VolumeWatcher.getCurrentVolume;
-    VolumeWatcher.hideVolumeView = true;
-    _volumeButtonSubscription =
-        volumeButtonEvents.listen((VolumeButtonEvent event) {
-      // Only work on flashcard mode
-      if (mode == WordsReviewMode.list) return;
-      if (event == VolumeButtonEvent.VOLUME_DOWN) {
-        _handleVolumeDown();
-      } else {
-        _handleVolumeUp();
-      }
-      // Finally change volume back
-      VolumeWatcher.setVolume(originVolume);
-    });
     super.onInit();
   }
 
@@ -289,6 +265,14 @@ class ReviewWordsController extends GetxController
     }
   }
 
+  /// [WordsFlashcard] animate to next card
+  Future<void> nextCard() async => await pageController.previousPage(
+      duration: 300.milliseconds, curve: Curves.easeInOut);
+
+  /// [WordsFlashcard] animate to last card
+  Future<void> previousCard() async => await pageController.nextPage(
+      duration: 300.milliseconds, curve: Curves.easeInOut);
+
   /// [WordsFlashcard] Tts package use listener to handler completion of speech
   /// So we need to set logic after each tts speech inside a
   /// callback function
@@ -311,8 +295,7 @@ class ReviewWordsController extends GetxController
                 CustomAnimationControl.PLAY_REVERSE_FROM_END;
             isAutoPlayMode.value = false;
           } else {
-            await pageController.previousPage(
-                duration: 300.milliseconds, curve: Curves.easeInOut);
+            await nextCard();
             Future.delayed(1.seconds, _autoPlayCard);
           }
         });
@@ -339,26 +322,14 @@ class ReviewWordsController extends GetxController
     }
   }
 
-  /// [WordsFlashcard] Press volume down = next card
-  Future<void> _handleVolumeDown() async {
-    await pageController.previousPage(
-        duration: 300.milliseconds, curve: Curves.easeInOut);
-  }
-
-  /// [WordsFlashcard] Press volume up = flip card
-  void _handleVolumeUp() {
-    primaryWordCardController.flipCard();
-  }
-
   @override
   void onClose() {
     // If we have are at last card, clear track
-    if (primaryWordIndex.value == wordsList.length - 1) {
-      primaryWordIndex.value = 0;
+    if (primaryWordIndex.value == 0) {
+      primaryWordIndex.value = wordsList.length - 1;
     }
     lectureService.commitChange();
     audioPlayer.dispose();
-    _volumeButtonSubscription?.cancel();
     super.onClose();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:c_school_app/service/lecture_service.dart';
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:get/get.dart';

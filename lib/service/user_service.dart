@@ -4,7 +4,6 @@ import 'package:shake/shake.dart';
 import 'package:wiredash/wiredash.dart';
 import 'api_service.dart';
 import '../model/user.dart';
-import 'lecture_service.dart';
 
 /// Provide user related service, like create and update user
 class UserService extends GetxService {
@@ -17,11 +16,7 @@ class UserService extends GetxService {
   static Future<UserService> getInstance() async {
     if (_instance == null) {
       _instance = UserService();
-      user = await _getCurrentUser();
-      if (user != null && user.isLogin()) {
-        await Get.putAsync<LectureService>(
-            () async => await LectureService.getInstance());
-      }
+      await _refreshAppUser();
       _listenToFirebaseAuth();
       _startWireDashService();
     }
@@ -43,8 +38,8 @@ class UserService extends GetxService {
     }
   }
 
-  static void _refreshAppUser() {
-    _getCurrentUser().then((appUser) => user = appUser);
+  static void _refreshAppUser() async{
+    user = await _getCurrentUser();
   }
 
   static void commitChange() {

@@ -32,7 +32,6 @@ class WordCard extends StatelessWidget {
     var hint = SimpleGestureDetector(
       onTap: controller.toggleHint,
       child: CircleAvatar(
-        backgroundColor: Colors.white,
         radius: 20,
         child: Obx(
           () => SimpleTooltip(
@@ -88,9 +87,8 @@ class WordCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             BlurHashImageWithFallback(
-                fallbackImg: DEFAULT_IMAGE,
-                mainImg: word.pic?.url,
-                blurHash: word.picHash).expanded()
+                    fallbackImg: DEFAULT_IMAGE, mainImg: word.pic?.url, blurHash: word.picHash)
+                .expanded()
           ],
         ).expanded(flex: 10)
       ],
@@ -103,9 +101,7 @@ class WordCard extends StatelessWidget {
             splashRadius: 0.01,
             icon: Icon(FontAwesome.heart),
             // key: favoriteButtonKey,
-            color: controller.isWordLiked()
-                ? ReviewWordsTheme.lightYellow
-                : Colors.grey,
+            color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
             iconSize: BUTTON_SIZE * 1.2,
             onPressed: () => controller.toggleFavoriteCard(),
           ).paddingOnly(top: 10, right: 10),
@@ -124,14 +120,19 @@ class WordCard extends StatelessWidget {
               curve: Curves.easeOut,
               back: Container(
                   constraints: BoxConstraints.expand(),
-                  child:
-                      Stack(children: [buildBackCardContent(), favoriteIcon])),
+                  child: Stack(children: [buildBackCardContent(), favoriteIcon])),
               front: Container(
                   constraints: BoxConstraints.expand(),
                   child: Stack(children: [frontCardContent, favoriteIcon])),
             ),
           ),
         ),
+      ),
+    ).card(
+      color: Colors.transparent,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
       ),
     );
   }
@@ -150,9 +151,8 @@ class WordCard extends StatelessWidget {
     ).center();
     // Second meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
-      var partExample = meaning.examples
-          .map((wordExample) => _buildExampleRow(wordExample))
-          .toList();
+      var partExample =
+          meaning.examples.map((wordExample) => _buildExampleRow(wordExample)).toList();
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: partExample,
@@ -165,9 +165,7 @@ class WordCard extends StatelessWidget {
           child: ListView(
             shrinkWrap: true,
             children: [
-              Text(word.explanation)
-                  .alignment(Alignment.centerLeft)
-                  .paddingOnly(left: 10),
+              Text(word.explanation).alignment(Alignment.centerLeft).paddingOnly(left: 10),
               divider(),
               ...partMeanings
             ],
@@ -193,7 +191,7 @@ class WordCard extends StatelessWidget {
             centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
             linkedWords: word.relatedWords,
             linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-          ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
+          ).alignment(Alignment.centerLeft).paddingOnly(left: 20),
         ),
         AutoSizeText(
           wordExample.meaning,

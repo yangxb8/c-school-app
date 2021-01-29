@@ -34,7 +34,7 @@ extension WordUtil on Word {
   /// Search if this Word list contains key fuzzily
   bool containsFuzzy(String key, {FuzzyOptions options}) {
     options ??=
-        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.3);
     return wordAsString.containsFuzzy(key) ||
         wordMeanings.map((e) => e.meaning).containsFuzzy(key) ||
         tags.containsFuzzy(key);
@@ -45,7 +45,7 @@ extension StringListUtil on Iterable<String> {
   /// Fuzzy search a list of String by keyword, options can be provided
   List<String> searchFuzzy(String key, {FuzzyOptions options}) {
     options ??=
-        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.3);
     final fuse = Fuzzy(toList(), options: options);
     return fuse.search(key).map((r) => r.item.toString());
   }
@@ -53,7 +53,7 @@ extension StringListUtil on Iterable<String> {
   /// Search if this string list contains key fuzzily
   bool containsFuzzy(String key, {FuzzyOptions options}) {
     options ??=
-        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.3);
     final fuse = Fuzzy(toList(), options: options);
     return fuse.search(key).isNotEmpty;
   }

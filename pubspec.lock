@@ -470,7 +470,7 @@ packages:
     source: sdk
     version: "0.0.0"
   fluttertoast:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: fluttertoast
       url: "https://pub.dartlang.org"
@@ -868,6 +868,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.9"
+  sensors:
+    dependency: transitive
+    description:
+      name: sensors
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2+6"
   sentry:
     dependency: transitive
     description:
@@ -889,6 +896,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.0"
+  shake:
+    dependency: "direct main"
+    description:
+      name: shake
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1152,7 +1166,7 @@ packages:
       name: wiredash
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0"
+    version: "0.4.1"
   xdg_directories:
     dependency: transitive
     description:

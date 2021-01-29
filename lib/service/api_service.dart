@@ -89,7 +89,7 @@ class _FirebaseAuthApi {
   User get currentUser => _firebaseAuth.currentUser;
 
   void listenToFirebaseAuth(Function func) {
-    _firebaseAuth.authStateChanges().listen((User user) => func());
+    _firebaseAuth.authStateChanges().listen((_) async => await func());
   }
 
   // Already return fromm every conditions
