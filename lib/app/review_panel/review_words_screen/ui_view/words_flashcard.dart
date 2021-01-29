@@ -156,7 +156,10 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
 
           var start =
               padding + max(primaryCardLeft - horizontalInset * -delta * (isOnRight ? 40 : 1), 0.0);
-          var wordCard = WordCard(word: controller.reversedWordsList[i]);
+          var wordCard = WordCard(
+            // Key was added to prevent strange behavior of card flip status
+              key: ValueKey(controller.reversedWordsList[i]),
+              word: controller.reversedWordsList[i]);
           // Set primary card controller
           if (isPrimaryCard) {
             controller.primaryWordIndex.value = i;

@@ -24,7 +24,7 @@ class WordCard extends StatelessWidget {
   final Word word;
   final WordCardController controller;
   WordCard({Key key, @required this.word})
-      : controller = WordCardController(word),
+      : controller = Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
         super(key: key);
 
   @override
@@ -191,7 +191,7 @@ class WordCard extends StatelessWidget {
             centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
             linkedWords: word.relatedWords,
             linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-          ).alignment(Alignment.centerLeft).paddingOnly(left: 20),
+          ).alignment(Alignment.centerLeft).paddingSymmetric(horizontal: 20),
         ),
         AutoSizeText(
           wordExample.meaning,
