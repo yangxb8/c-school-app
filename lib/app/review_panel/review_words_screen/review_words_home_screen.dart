@@ -1,5 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:c_school_app/util/widget.dart';
+import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:c_school_app/app/model/word.dart';
@@ -68,12 +68,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                       itemPositionsListener: _groupedItemPositionsListener,
                       floatingHeader: true,
                       groupBy: (Lecture element) => element.levelForDisplay,
-                      groupSeparatorBuilder: (Lecture element) => Text(
-                            element.levelForDisplay,
-                            style: ReviewWordsTheme.wordCardSubTitle,
-                          )
-                              .paddingSymmetric(horizontal: 30, vertical: 10.0)
-                              .card(),
+                      groupSeparatorBuilder: (_) => const SizedBox.shrink(),
                       itemComparator: (element1, element2) =>
                           element1.lectureId.compareTo(element2.lectureId),
                       indexedItemBuilder: (_, lecture, index) => FadeInRight(

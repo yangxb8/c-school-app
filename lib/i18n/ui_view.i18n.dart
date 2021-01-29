@@ -5,6 +5,10 @@ extension Localization on String {
       {
         'en': 'Summary',
         'ja_jp': '総評',
+      }+
+      {
+        'en': 'Empty',
+        'ja_jp': 'なし',
       };
 
   String get i18n => localize(this, _t);

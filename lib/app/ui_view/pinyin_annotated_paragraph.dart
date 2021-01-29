@@ -40,12 +40,13 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   }
 
   Widget _buildSingleHanzi({@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+    final pinyinRow = showPinyins && pinyinAnnotatedHanzi.pinyin.isNotEmpty
+        ? [Text(pinyinAnnotatedHanzi.pinyin, style: pinyinAnnotatedHanzi.pinyinStyle)]
+        : [];
     final inner = IntrinsicWidth(
       child: Column(
         children: [
-          showPinyins
-              ? Text(pinyinAnnotatedHanzi.pinyin, style: pinyinAnnotatedHanzi.pinyinStyle)
-              : Container(),
+          ...pinyinRow,
           Text(pinyinAnnotatedHanzi.hanzi, style: pinyinAnnotatedHanzi.hanziStyle),
         ],
       ),

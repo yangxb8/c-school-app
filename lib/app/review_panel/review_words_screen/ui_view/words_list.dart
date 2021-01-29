@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:c_school_app/util/utility.dart';
 
-const BUTTON_SIZE = 30.0;
+const BUTTON_SIZE = 50.0;
 
 class WordsList extends GetView<ReviewWordsController> {
   final _groupedItemPositionsListener = ItemPositionsListener.create();
@@ -43,48 +43,50 @@ class WordsList extends GetView<ReviewWordsController> {
               )
                   .paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10)
                   .decorated(
-                color: ReviewWordsTheme.darkBlue,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ).alignment(Alignment.topCenter),
+                    color: ReviewWordsTheme.darkBlue,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  )
+                  .alignment(Alignment.topCenter),
               indexedItemBuilder: (_, Word word, index) => FadeInRight(
                 duration: 0.5.seconds,
                 // Delay the animation to create a staggered effect when first render
-                delay: controller.isListFirstRender
-                    ? (0.3 * index).seconds
-                    : 0.seconds,
-                child: Card(
-                  color: ReviewWordsTheme.lightBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0),
-                  ),
-                  elevation: 8.0,
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  child: SimpleGestureDetector(
-                    onTap: () => controller.showSingleCard(word),
-                    child: ListTile(
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: IconButton(
-                          icon: Icon(FontAwesome.play_circle),
-                          iconSize: BUTTON_SIZE,
-                          onPressed: () => controller.playWord(word: word),
+                delay: controller.isListFirstRender ? (0.3 * index).seconds : 0.seconds,
+                child: SizedBox(
+                  height: 100,
+                  child: Card(
+                    color: ReviewWordsTheme.lightBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    elevation: 8.0,
+                    margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    child: SimpleGestureDetector(
+                      onTap: () => controller.showSingleCard(word),
+                      onLongPress: () => controller.jumpToCard(index),
+                      child: ListTile(
+                        leading: Obx(
+                          () => IconButton(
+                            color: controller.indexOfWordPlaying.value == index
+                                ? Colors.lightBlueAccent
+                                : Colors.blueGrey,
+                            padding: EdgeInsets.only(left: 20),
+                            icon: Icon(FontAwesome.play_circle),
+                            iconSize: BUTTON_SIZE,
+                            onPressed: () => controller.playWord(index),
+                          ),
                         ),
-                      ),
-                      title: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: PinyinAnnotatedParagraph(
+                        title: PinyinAnnotatedParagraph(
                           defaultTextStyle: ReviewWordsTheme.wordListItem,
+                          pinyinTextStyle: ReviewWordsTheme.wordListItemPinyin,
                           paragraph: word.wordAsString,
                           pinyins: word.pinyin,
-                        ),
+                        ).center(),
                       ),
                     ),
                   ),
                 ),
               ),
-              itemComparator: (element1, element2) =>
-                  element1.wordId.compareTo(element2.wordId),
+              itemComparator: (element1, element2) => element1.wordId.compareTo(element2.wordId),
               // optional
               order: StickyGroupedListOrder.ASC, // optional
             );

@@ -23,8 +23,7 @@ import '../../../i18n/review_words.i18n.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
-class ReviewWordsController extends GetxController
-    with SingleGetTickerProviderMixin {
+class ReviewWordsController extends GetxController with SingleGetTickerProviderMixin {
   final LectureService lectureService = Get.find();
   final logger = LoggerService.logger;
 
@@ -47,8 +46,7 @@ class ReviewWordsController extends GetxController
   AnimationController searchBarPlayIconController;
 
   /// Animate icon color
-  Rx<CustomAnimationControl> searchBarPlayIconControl =
-      CustomAnimationControl.STOP.obs;
+  Rx<CustomAnimationControl> searchBarPlayIconControl = CustomAnimationControl.STOP.obs;
 
   /// Search query of search bar
   RxString searchQuery = ''.obs;
@@ -58,6 +56,9 @@ class ReviewWordsController extends GetxController
 
   /// Speaker gender of all audio (tts not supported)
   Rx<SpeakerGender> speakerGender = SpeakerGender.male.obs;
+
+  /// If this is set, afterFirstLayout will animate to the word instead of tracked one
+  int _jumpToWord;
 
   /// [WordsList] audio player
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -70,6 +71,9 @@ class ReviewWordsController extends GetxController
 
   /// [WordsList] If word list is first time rendered
   bool isListFirstRender = true;
+
+  /// [WordsList] The word been played now
+  RxInt indexOfWordPlaying = (-1).obs;
 
   /// [WordsFlashcard] pageController
   PageController pageController;
@@ -95,15 +99,15 @@ class ReviewWordsController extends GetxController
   /// [WordsFlashcard] Used to controller pagination of card
   RxDouble pageFraction;
 
+  /// [WordsFlashCard] If word card is first time rendered
+  bool isCardFirstRender = true;
+
   @override
   Future<void> onInit() async {
     _userWordsHistory = LectureService.userWordsHistory_Rx;
-    associatedLecture =
-        lectureService.findLectureById(Get.parameters['lectureId']);
+    associatedLecture = lectureService.findLectureById(Get.parameters['lectureId']);
     if (Get.arguments == null) {
-      wordsList = associatedLecture != null
-          ? associatedLecture.words
-          : LectureService.allWords;
+      wordsList = associatedLecture != null ? associatedLecture.words : LectureService.allWords;
       // If wordsList is provided, use it
     } else if (Get.arguments is List<Word>) {
       wordsList = Get.arguments;
@@ -112,8 +116,7 @@ class ReviewWordsController extends GetxController
     reversedWordsList = wordsList.reversed.toList();
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
-    searchBarPlayIconController =
-        AnimationController(vsync: this, duration: 0.3.seconds);
+    searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
     // worker to monitor search query change and fire search function
     debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
     // Worker to flip back primary card when it change
@@ -175,9 +178,8 @@ class ReviewWordsController extends GetxController
 
   /// Male or Female
   void toggleSpeakerGender() {
-    speakerGender.value = speakerGender.value == SpeakerGender.male
-        ? SpeakerGender.female
-        : SpeakerGender.male;
+    speakerGender.value =
+        speakerGender.value == SpeakerGender.male ? SpeakerGender.female : SpeakerGender.male;
     Fluttertoast.showToast(
         msg: 'Change to %s speaker'
             .i18n
@@ -202,8 +204,7 @@ class ReviewWordsController extends GetxController
       flipBackPrimaryCard();
       _autoPlayCard();
     } else {
-      searchBarPlayIconControl.value =
-          CustomAnimationControl.PLAY_REVERSE_FROM_END;
+      searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
       isAutoPlayMode.value = false;
     }
   }
@@ -212,32 +213,41 @@ class ReviewWordsController extends GetxController
   /// As we might need to play from word list.
   ///
   /// Play audio of the word
-  Future<void> playWord({Word word}) async {
-    if (isAutoPlayMode.value) return;
-    word ??= primaryWord;
-    var wordAudio = speakerGender.value == SpeakerGender.male
-        ? word.wordAudioMale
-        : word.wordAudioFemale;
+  Future<void> playWord(int index) async {
+    if (isAutoPlayMode.value || index == null) return;
+    indexOfWordPlaying.value = index;
+    final word = wordsList[index];
+    var wordAudio =
+        speakerGender.value == SpeakerGender.male ? word.wordAudioMale : word.wordAudioFemale;
     if (wordAudio == null) {
       if (tts == null) {
         tts = FlutterTts();
         await tts.setLanguage(LAN_CODE_CN);
         await tts.setSpeechRate(0.5);
       }
+      tts.setCompletionHandler(() => indexOfWordPlaying.value = -1);
       await tts.speak(word.wordAsString);
     } else {
       await audioPlayer.play(wordAudio.url);
+      await audioPlayer.onPlayerCompletion.first;
+      indexOfWordPlaying.value = -1;
+    }
+  }
+
+  /// [WordsList] Jump to card in flash card mode
+  void jumpToCard(int index) {
+    // Index from words list is for wordsList, however flashcard use reversedWordsList.
+    _jumpToWord = wordsList.length - 1 - index;
+    if (_mode.value == WordsReviewMode.list) {
+      changeMode();
     }
   }
 
   /// [WordsFlashcard]
-  int countWordMemoryStatusOfWordByStatus(
-          {@required WordMemoryStatus status}) =>
-      _userWordsHistory
-          .filter((history) =>
-              history.wordId == primaryWord.wordId &&
-              history.wordMemoryStatus == status)
-          .length;
+  int countWordMemoryStatusOfWordByStatus({@required WordMemoryStatus status}) => _userWordsHistory
+      .filter(
+          (history) => history.wordId == primaryWord.wordId && history.wordMemoryStatus == status)
+      .length;
 
   /// [WordsFlashcard]
   void handWordMemoryStatusPressed(WordMemoryStatus status) {
@@ -251,27 +261,25 @@ class ReviewWordsController extends GetxController
   /// [WordsFlashcard] Save status to history
   void saveAndResetWordHistory(Word word) {
     if (wordMemoryStatus.value != WordMemoryStatus.NOT_REVIEWED) {
-      lectureService.addWordReviewedHistory(word,
-          status: wordMemoryStatus.value);
+      lectureService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
       wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     }
   }
 
   /// [WordsFlashcard] Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if (primaryWordCardController != null &&
-        primaryWordCardController.isCardFlipped.isTrue) {
+    if (primaryWordCardController != null && primaryWordCardController.isCardFlipped.isTrue) {
       primaryWordCardController.flipCard();
     }
   }
 
   /// [WordsFlashcard] animate to next card
-  Future<void> nextCard() async => await pageController.previousPage(
-      duration: 300.milliseconds, curve: Curves.easeInOut);
+  Future<void> nextCard() async =>
+      await pageController.previousPage(duration: 300.milliseconds, curve: Curves.easeInOut);
 
   /// [WordsFlashcard] animate to last card
-  Future<void> previousCard() async => await pageController.nextPage(
-      duration: 300.milliseconds, curve: Curves.easeInOut);
+  Future<void> previousCard() async =>
+      await pageController.nextPage(duration: 300.milliseconds, curve: Curves.easeInOut);
 
   /// [WordsFlashcard] Tts package use listener to handler completion of speech
   /// So we need to set logic after each tts speech inside a
@@ -291,8 +299,7 @@ class ReviewWordsController extends GetxController
           // after playWord
           // When we reach the last card or autoPlay turn off
           if (isAutoPlayMode.isfalse || primaryWordIndex.value == 0) {
-            searchBarPlayIconControl.value =
-                CustomAnimationControl.PLAY_REVERSE_FROM_END;
+            searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
             isAutoPlayMode.value = false;
           } else {
             await nextCard();
@@ -315,11 +322,18 @@ class ReviewWordsController extends GetxController
   Future<void> afterFirstLayout() async {
     // Usually trackLocal will be set along when field declared, but we need it
     // here to ensure it's value not to be overwrite by initPage of  pageController
-    primaryWordIndex.trackLocal(primaryWordIndexKey);
+    if (isCardFirstRender) {
+      primaryWordIndex.trackLocal(primaryWordIndexKey);
+    }
+    // If _jumpToWord is set, animate to it. Otherwise animate to tracked word
+    _jumpToWord ??= primaryWordIndex.value;
     if (pageController.hasClients) {
-      await pageController.animateToPage(primaryWordIndex.value,
+      await pageController.animateToPage(_jumpToWord,
           duration: 0.5.seconds, curve: Curves.easeInOut);
     }
+    // Clear jumpToWord
+    _jumpToWord = null;
+    if (isCardFirstRender) isCardFirstRender = false;
   }
 
   @override

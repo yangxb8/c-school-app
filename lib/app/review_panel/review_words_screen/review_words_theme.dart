@@ -77,6 +77,10 @@ class ReviewWordsTheme {
     color: darkBlue,
   );
 
+  static TextStyle wordListItemPinyin = wordListItem.copyWith(
+    fontSize: 30,
+  );
+
   static TextStyle wordCardMeaning = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 45,
