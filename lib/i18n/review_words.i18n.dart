@@ -36,7 +36,7 @@ extension Localization on String {
       }+
       {
         'en': 'Oops, No words here',
-        'ja_jp': 'あら、ここに単語がないみたい',
+        'ja_jp': 'あら、単語がないみたい',
       }+
       {
         'en': 'Change to %s speaker',
@@ -49,6 +49,10 @@ extension Localization on String {
       {
         'en': 'female',
         'ja_jp': '女性',
+      }+
+      {
+        'en': 'Last card reached. Swipe left will go to first card',
+        'ja_jp': '最後のカードです。左にスワイプすると初めに戻ります。',
       };
 
   String get i18n => localize(this, _t);

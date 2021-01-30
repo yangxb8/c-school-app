@@ -92,6 +92,10 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// [WordsFlashCard] If word card is first time rendered
   bool isCardFirstRender = true;
 
+  /// [WordsFlashCard] Should be go back to first card if last card is reach
+  /// If false then a toast will be show to inform user that we will go back to first card
+  bool backToFirstCard = false;
+
   @override
   Future<void> onInit() async {
     _userWordsHistory = LectureService.userWordsHistory_Rx;
@@ -176,8 +180,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     if (!isAutoPlayMode.value) {
       searchBarPlayIconControl.value = CustomAnimationControl.PLAY_FROM_START;
       isAutoPlayMode.value = true;
-      // Play from beginning
-      await _animateToFirstWord();
       flipBackPrimaryCard();
       _autoPlayCard();
     } else {
@@ -202,9 +204,11 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
         await tts.setLanguage(LAN_CODE_CN);
         await tts.setSpeechRate(0.5);
       }
+      await tts.stop();
       tts.setCompletionHandler(() => indexOfWordPlaying.value = -1);
       await tts.speak(word.wordAsString);
     } else {
+      await audioPlayer.stop();
       await audioPlayer.play(wordAudio.url);
       await audioPlayer.onPlayerCompletion.first;
       indexOfWordPlaying.value = -1;
@@ -236,9 +240,9 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   }
 
   /// [WordsFlashcard] Save status to history
-  void saveAndResetWordHistory(Word word) {
+  void saveAndResetWordHistory() {
     if (wordMemoryStatus.value != WordMemoryStatus.NOT_REVIEWED) {
-      lectureService.addWordReviewedHistory(word, status: wordMemoryStatus.value);
+      lectureService.addWordReviewedHistory(primaryWord, status: wordMemoryStatus.value);
       wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     }
   }
@@ -251,12 +255,28 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   }
 
   /// [WordsFlashcard] animate to next card
-  Future<void> nextCard() async =>
+  Future<void> nextCard() async {
+    saveAndResetWordHistory();
+    if (primaryWordIndex.value == 0) {
+      if (backToFirstCard) {
+        await _animateToFirstWord();
+        backToFirstCard = false;
+      } else {
+        await Fluttertoast.showToast(
+            gravity: ToastGravity.CENTER,
+            msg: 'Last card reached. Swipe left will go to first card'.i18n);
+        backToFirstCard = true;
+      }
+    } else {
       await pageController.previousPage(duration: 300.milliseconds, curve: Curves.easeInOut);
+    }
+  }
 
   /// [WordsFlashcard] animate to last card
-  Future<void> previousCard() async =>
-      await pageController.nextPage(duration: 300.milliseconds, curve: Curves.easeInOut);
+  Future<void> previousCard() async {
+    saveAndResetWordHistory();
+    await pageController.nextPage(duration: 300.milliseconds, curve: Curves.easeInOut);
+  }
 
   /// [WordsFlashcard] Tts package use listener to handler completion of speech
   /// So we need to set logic after each tts speech inside a

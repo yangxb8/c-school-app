@@ -102,7 +102,7 @@ class WordCard extends StatelessWidget {
             icon: Icon(FontAwesome.heart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
-            iconSize: BUTTON_SIZE * 1.2,
+            iconSize: BUTTON_SIZE * 2,
             onPressed: () => controller.toggleFavoriteCard(),
           ).paddingOnly(top: 10, right: 10),
         ),

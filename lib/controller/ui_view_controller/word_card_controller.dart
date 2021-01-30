@@ -110,16 +110,7 @@ class WordCardController extends GetxController {
   Future<FlutterTts> _generateTts({String language = LAN_CODE_CN}) async {
     final tts = FlutterTts();
     await tts.setLanguage(language);
-    switch (language) {
-      case LAN_CODE_JP:
-        await tts.setSpeechRate(0.8);
-        break;
-      case LAN_CODE_CN:
-        await tts.setSpeechRate(0.5);
-        break;
-      default:
-        await tts.setSpeechRate(0.8);
-    }
+    await tts.setSpeechRate(0.5);
     return tts;
   }
 

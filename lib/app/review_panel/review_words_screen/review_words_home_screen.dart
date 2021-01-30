@@ -96,7 +96,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         items: LectureService.allLectures,
         searchResultBuilder: (lecture) => ListTile(
           title: Text(
-            lecture.title,
+            '${lecture.lectureId}. ${lecture.title}',
             style: ReviewWordsTheme.lectureCardTitle,
           ),
         ),
