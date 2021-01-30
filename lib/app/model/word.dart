@@ -120,6 +120,7 @@ class Word extends Document<Word> implements Searchable{
   @override
   Map<String, dynamic> get searchableProperties => {
     'wordAsString': wordAsString,
+    'pinyin':pinyin,
     'wordMeanings': wordMeanings.map((m) => m.meaning),
     'tags':tags
   };

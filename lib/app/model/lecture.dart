@@ -1,3 +1,5 @@
+import 'package:c_school_app/app/model/searchable.dart';
+import 'package:c_school_app/app/ui_view/search_bar.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
@@ -8,7 +10,7 @@ import 'exam_base.dart';
 
 part 'lecture.flamingo.dart';
 
-class Lecture extends Document<Lecture> {
+class Lecture extends Document<Lecture> implements Searchable{
   static const levelPrefix = 'Level';
   static LectureService lectureService = Get.find<LectureService>();
 
@@ -62,4 +64,13 @@ class Lecture extends Document<Lecture> {
 
   @override
   void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> get searchableProperties => {
+    'title': title,
+    'lectureId': lectureId,
+    'description':  description,
+    'level': level.toString(),
+    'tags': tags,
+  };
 }

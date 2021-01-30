@@ -12,14 +12,11 @@ class LoginController extends GetxController {
   final BuildContext context = Get.context;
 
   final GlobalKey<FormFieldState> loginEmailKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> loginPasswordKey =
-      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> loginPasswordKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> signupEmailKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupPasswordKey =
-      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupPasswordKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> signupNamelKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupConfirmPasswordlKey =
-      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupConfirmPasswordlKey = GlobalKey<FormFieldState>();
 
   Map<String, String> formTexts = {
     'loginEmail': '',
@@ -42,9 +39,7 @@ class LoginController extends GetxController {
       signupPasswordKey.currentState.reset();
       signupConfirmPasswordlKey.currentState.reset();
       var result = await apiService.firebaseAuthApi.signUpWithEmail(
-          formTexts['signupEmail'],
-          formTexts['signupPassword'],
-          formTexts['signupName']);
+          formTexts['signupEmail'], formTexts['signupPassword'], formTexts['signupName']);
       if (result == 'need email verify') {
         _showEmailVerificationPopup(context, formTexts['signupEmail']);
       } else if (result != 'ok') {
@@ -135,8 +130,7 @@ class LoginController extends GetxController {
       )
     ];
     if (extraAction != null) {
-      actions.add(popup.button(
-          label: extraAction['label'], onPressed: extraAction['onPressed']));
+      actions.add(popup.button(label: extraAction['label'], onPressed: extraAction['onPressed']));
     }
     popup.show(title: 'Oops?'.i18n, content: content, actions: actions
         // bool barrierDismissible = false,
@@ -148,10 +142,9 @@ class LoginController extends GetxController {
     var isLectureServiceReady = false.obs;
     if (Get.isRegistered<LectureService>()) {
       isLectureServiceReady.toggle();
-    }
-    else{
-      Get.putAsync<LectureService>(
-              () async => await LectureService.getInstance()).then((_)=>isLectureServiceReady.toggle());
+    } else {
+      Get.putAsync<LectureService>(() async => await LectureService.getInstance())
+          .then((_) => isLectureServiceReady.toggle());
     }
     final popup = BeautifulPopup(
       context: context,
@@ -162,22 +155,17 @@ class LoginController extends GetxController {
         label: 'Close'.i18n,
         onPressed: () {
           // After login user should not press 'back' and return to login page
-          once(isLectureServiceReady, (value)=> Get.offAllNamed('/home'));
+          if (isLectureServiceReady.value) {
+            Get.offAllNamed('/home');
+          } else {
+            once(isLectureServiceReady, (_) => Get.offAllNamed('/home'));
+          }
         },
       )
     ];
-    final content = 'You have study for %d times!'
-        .i18n
-        .fill([AppStateService.startCount+1]);
+    final content = 'You have study for %d times!'.i18n.fill([AppStateService.startCount + 1]);
 
-    popup.show(
-        title: 'Welcome Back!'.i18n,
-        content: content,
-        actions: actions,
-        close: Container()
-        // bool barrierDismissible = false,
-        // Widget close,
-        );
+    popup.show(title: 'Welcome Back!'.i18n, content: content, actions: actions, close: Container());
   }
 
   void _showEmailVerificationPopup(BuildContext context, String email) {
@@ -187,10 +175,9 @@ class LoginController extends GetxController {
     );
     popup.show(
       title: 'Almost there'.i18nApi,
-      content:
-          'We have sent your an Email at %s, follow the link there to verify your account!'
-              .i18nApi
-              .fill([email]),
+      content: 'We have sent your an Email at %s, follow the link there to verify your account!'
+          .i18nApi
+          .fill([email]),
       actions: [
         popup.button(
           label: 'Close'.i18nApi,

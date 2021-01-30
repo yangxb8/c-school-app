@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
+import 'package:c_school_app/app/ui_view/search_bar.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:c_school_app/app/model/word.dart';
@@ -24,24 +25,17 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: <Widget>[
-            Text(
-              'My Words'.i18n,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 22,
-                letterSpacing: 0.27,
-                decoration: TextDecoration.none,
-                color: ReviewWordsTheme.darkerText,
-              ),
-            ).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
-            _buildSpecialLectureCard().expanded(flex: 1),
-            Text('All Course'.i18n,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'My Words'.i18n,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -49,51 +43,72 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                       letterSpacing: 0.27,
                       decoration: TextDecoration.none,
                       color: ReviewWordsTheme.darkerText,
-                    ))
-                .paddingOnly(left: 20, top: 20)
-                .alignment(Alignment.centerLeft),
-            ValueListenableBuilder<Iterable<ItemPosition>>(
-                valueListenable: _groupedItemPositionsListener.itemPositions,
-                builder: (_, positions, __) {
-                  // When first rendered, minVisibleCardIndex should be 0
-                  final minVisibleCardIndex =
-                      findFirstVisibleItemIndex(positions);
-                  if (controller.isFirstRender && minVisibleCardIndex > 0) {
-                    controller.isFirstRender = false;
-                  }
-                  return StickyGroupedListView<Lecture, String>(
-                      elements: LectureService.allLectures,
-                      itemScrollController:
-                          controller.groupedItemScrollController,
-                      itemPositionsListener: _groupedItemPositionsListener,
-                      floatingHeader: true,
-                      groupBy: (Lecture element) => element.levelForDisplay,
-                      groupSeparatorBuilder: (_) => const SizedBox.shrink(),
-                      itemComparator: (element1, element2) =>
-                          element1.lectureId.compareTo(element2.lectureId),
-                      indexedItemBuilder: (_, lecture, index) => FadeInRight(
-                          duration: 0.5.seconds,
-                          // Delay the animation to create a staggered effect
-                          // when first rendered
-                          delay: controller.isFirstRender
-                              ? (0.3 * index).seconds
-                              : 0.seconds,
-                          child: LectureCard(
-                            lecture: lecture,
-                            index: index,
-                          ).paddingOnly(bottom: 5))).expanded(flex: 5);
-                }),
+                    ),
+                  ).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
+                  _buildSpecialLectureCard().expanded(flex: 1),
+                  Text('All Course'.i18n,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 22,
+                        letterSpacing: 0.27,
+                        decoration: TextDecoration.none,
+                        color: ReviewWordsTheme.darkerText,
+                      )).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
+                  ValueListenableBuilder<Iterable<ItemPosition>>(
+                      valueListenable: _groupedItemPositionsListener.itemPositions,
+                      builder: (_, positions, __) {
+                        // When first rendered, minVisibleCardIndex should be 0
+                        final minVisibleCardIndex = findFirstVisibleItemIndex(positions);
+                        if (controller.isFirstRender && minVisibleCardIndex > 0) {
+                          controller.isFirstRender = false;
+                        }
+                        return StickyGroupedListView<Lecture, String>(
+                            elements: LectureService.allLectures,
+                            itemScrollController: controller.groupedItemScrollController,
+                            itemPositionsListener: _groupedItemPositionsListener,
+                            floatingHeader: true,
+                            groupBy: (Lecture element) => element.levelForDisplay,
+                            groupSeparatorBuilder: (_) => const SizedBox.shrink(),
+                            itemComparator: (element1, element2) =>
+                                element1.lectureId.compareTo(element2.lectureId),
+                            indexedItemBuilder: (_, lecture, index) => FadeInRight(
+                                duration: 0.5.seconds,
+                                // Delay the animation to create a staggered effect
+                                // when first rendered
+                                delay: controller.isFirstRender ? (0.3 * index).seconds : 0.seconds,
+                                child: LectureCard(
+                                  lecture: lecture,
+                                  index: index,
+                                ).paddingOnly(bottom: 5))).expanded(flex: 5);
+                      }),
+                ],
+              ),
+            ).afterFirstLayout(controller.animateToTrackedLecture).paddingOnly(top: 40),
+            _buildSearchBar()
           ],
         ),
-      ).afterFirstLayout(controller.animateToTrackedLecture),
+      ),
     );
   }
+
+  Widget _buildSearchBar() => SearchBar<Lecture>(
+        items: LectureService.allLectures,
+        searchResultBuilder: (lecture) => ListTile(
+          title: Text(
+            lecture.title,
+            style: ReviewWordsTheme.lectureCardTitle,
+          ),
+        ),
+        onSearchResultTap: (lecture) => navigateToReviewWordScreen(lecture: lecture),
+        automaticallyImplyBackButton: false,
+      );
 
   Widget _buildSpecialLectureCard() {
     final bigIconSize = 50.0;
     var wordsListLiked = controller.lectureService.getLikedWords;
-    var wordsListForgotten = controller.lectureService
-        .findWordsByConditions(wordMemoryStatus: WordMemoryStatus.FORGOT);
+    var wordsListForgotten =
+        controller.lectureService.findWordsByConditions(wordMemoryStatus: WordMemoryStatus.FORGOT);
     var wordsListAll = LectureService.allWords;
 
     return Row(
@@ -105,8 +120,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             IconButton(
               icon: Icon(MaterialCommunityIcons.emoticon_cry_outline,
                   size: bigIconSize, color: ReviewWordsTheme.darkBlue),
-              onPressed: () =>
-                  navigateToReviewWordScreen(wordsList: wordsListForgotten),
+              onPressed: () => navigateToReviewWordScreen(wordsList: wordsListForgotten),
               tooltip: 'Forgotten words'.i18n,
             ),
             _buildWordsCount(wordsListForgotten.length)
@@ -115,10 +129,8 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              onPressed: () =>
-                  navigateToReviewWordScreen(wordsList: wordsListLiked),
-              icon: Icon(FontAwesome.heart,
-                  size: bigIconSize, color: ReviewWordsTheme.darkBlue),
+              onPressed: () => navigateToReviewWordScreen(wordsList: wordsListLiked),
+              icon: Icon(FontAwesome.heart, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               tooltip: 'Liked words'.i18n,
             ),
             _buildWordsCount(wordsListLiked.length)
@@ -127,10 +139,9 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              icon: Icon(FontAwesome.university,
-                  size: bigIconSize, color: ReviewWordsTheme.darkBlue),
-              onPressed: () =>
-                  navigateToReviewWordScreen(wordsList: wordsListAll),
+              icon:
+                  Icon(FontAwesome.university, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
+              onPressed: () => navigateToReviewWordScreen(wordsList: wordsListAll),
               tooltip: 'All words'.i18n,
             ),
             _buildWordsCount(wordsListAll?.length ?? 0)
@@ -184,8 +195,7 @@ class LectureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var forgottenWords = lectureService.findWordsByConditions(
-        wordMemoryStatus: WordMemoryStatus.FORGOT,
-        lectureId: lecture.lectureId);
+        wordMemoryStatus: WordMemoryStatus.FORGOT, lectureId: lecture.lectureId);
     return SimpleGestureDetector(
       onTap: () => navigateToReviewWordScreen(lecture: lecture, index: index),
       child: SizedBox(
@@ -219,9 +229,7 @@ class LectureCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          lectureService
-                              .getLectureViewedCount(lecture)
-                              .toString(),
+                          lectureService.getLectureViewedCount(lecture).toString(),
                           textAlign: TextAlign.left,
                           style: ReviewWordsTheme.lectureCardMeta,
                         ),
@@ -292,8 +300,7 @@ class LectureCard extends StatelessWidget {
 /// ReviewWordsController will find words by lectureId so wordsList if optional,
 /// Set index will make controller to memorize the lecture last viewed
 /// if both provided, will use wordsList
-void navigateToReviewWordScreen(
-    {Lecture lecture, int index, List<Word> wordsList}) {
+void navigateToReviewWordScreen({Lecture lecture, int index, List<Word> wordsList}) {
   if (lecture == null && wordsList.isBlank) {
     final popup = BeautifulPopup(
       context: Get.context,
@@ -309,10 +316,8 @@ void navigateToReviewWordScreen(
     );
   } else {
     if (index != null) {
-      Get.find<ReviewWordsHomeController>().lastViewedLectureIndex.value =
-          index;
+      Get.find<ReviewWordsHomeController>().lastViewedLectureIndex.value = index;
     }
-    Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}',
-        arguments: wordsList);
+    Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}', arguments: wordsList);
   }
 }

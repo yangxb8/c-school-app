@@ -11,7 +11,6 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/model/user_word_history.dart';
 import 'package:c_school_app/service/lecture_service.dart';
@@ -20,7 +19,6 @@ import 'package:c_school_app/controller/ui_view_controller/word_card_controller.
 import 'package:c_school_app/service/logger_service.dart';
 import '../../../util/extensions.dart';
 import '../../../i18n/review_words.i18n.dart';
-import '../../model/searchable.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
@@ -40,20 +38,11 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// True if we are in autoPlay mode
   RxBool isAutoPlayMode = false.obs;
 
-  /// Controller for search bar of review words screen
-  final searchBarController = FloatingSearchBarController();
-
   /// Animate icon shape, it will auto-play by worker when color change
   AnimationController searchBarPlayIconController;
 
   /// Animate icon color
   Rx<CustomAnimationControl> searchBarPlayIconControl = CustomAnimationControl.STOP.obs;
-
-  /// Search query of search bar
-  RxString searchQuery = ''.obs;
-
-  /// Result of search bar
-  RxList<Word> searchResult = <Word>[].obs;
 
   /// Speaker gender of all audio (tts not supported)
   Rx<SpeakerGender> speakerGender = SpeakerGender.male.obs;
@@ -118,8 +107,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
     searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
-    // worker to monitor search query change and fire search function
-    debounce(searchQuery, (_) => search(), time: Duration(seconds: 1));
     // Worker to flip back primary card when it change
     ever(primaryWordIndex, (_) => flipBackPrimaryCard());
     // Worker to sync color and icon change of playIcon
@@ -150,17 +137,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
 
   /// [WordsFlashcard] PrimaryWord associated with primaryWordIndex
   Word get primaryWord => reversedWordsList[primaryWordIndex.value];
-
-  /// Search card content, consider a match if word or meaning contains query
-  void search() {
-    if (isAutoPlayMode.value) return;
-    if (searchQuery.value.isBlank) {
-      searchResult.clear();
-      return;
-    }
-    searchResult.clear();
-    searchResult.addAll(wordsList.searchFuzzy<Word>(searchQuery.value));
-  }
 
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
