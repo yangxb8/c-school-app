@@ -3,7 +3,7 @@ platform :ios, '9.0'
 $FirebaseSDKVersion = '7.4.0'
 require 'yaml'
 
-pubspec = YAML.load_file(File.join('..', File.join('..', 'pubspec.yaml')))
+pubspec = YAML.load_file(File.join('..', 'pubspec.yaml'))
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
