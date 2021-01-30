@@ -59,6 +59,9 @@ class Lecture extends Document<Lecture> implements Searchable{
 
   String get levelForDisplay => '$levelPrefix$level';
 
+  /// 'C0001' => 1
+  int get intLectureId => int.parse(lectureId.numericOnly());
+
   @override
   Map<String, dynamic> toData() => _$toData(this);
 

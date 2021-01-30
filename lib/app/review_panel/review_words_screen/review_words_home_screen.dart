@@ -96,7 +96,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         items: LectureService.allLectures,
         searchResultBuilder: (lecture) => ListTile(
           title: Text(
-            '${lecture.lectureId}. ${lecture.title}',
+            '${lecture.intLectureId}. ${lecture.title}',
             style: ReviewWordsTheme.lectureCardTitle,
           ),
         ),
@@ -219,9 +219,9 @@ class LectureCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AutoSizeText(
-                  lecture.title,
+                  '${lecture.intLectureId}. ${lecture.title}',
                   style: ReviewWordsTheme.lectureCardTitle,
-                  maxLines: 1,
+                  maxLines: 2,
                 ).paddingOnly(right: 10, bottom: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
