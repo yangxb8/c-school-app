@@ -20,6 +20,7 @@ import 'package:c_school_app/controller/ui_view_controller/word_card_controller.
 import 'package:c_school_app/service/logger_service.dart';
 import '../../../util/extensions.dart';
 import '../../../i18n/review_words.i18n.dart';
+import '../../model/searchable.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
@@ -158,7 +159,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       return;
     }
     searchResult.clear();
-    searchResult.addAll(wordsList.searchFuzzy(searchQuery.value));
+    searchResult.addAll(wordsList.searchFuzzy<Word>(searchQuery.value));
   }
 
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX

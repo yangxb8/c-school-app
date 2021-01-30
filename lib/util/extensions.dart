@@ -23,29 +23,11 @@ extension HanziUtil on String {
   }
 }
 
-extension WordListUtil on Iterable<Word> {
-  /// Fuzzy search a list of Word by keyword, options can be provided
-  List<Word> searchFuzzy(String key, {FuzzyOptions options}) {
-    return where((word) => word.containsFuzzy(key, options: options)).toList();
-  }
-}
-
-extension WordUtil on Word {
-  /// Search if this Word list contains key fuzzily
-  bool containsFuzzy(String key, {FuzzyOptions options}) {
-    options ??=
-        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.3);
-    return wordAsString.containsFuzzy(key) ||
-        wordMeanings.map((e) => e.meaning).containsFuzzy(key) ||
-        tags.containsFuzzy(key);
-  }
-}
-
 extension StringListUtil on Iterable<String> {
   /// Fuzzy search a list of String by keyword, options can be provided
   List<String> searchFuzzy(String key, {FuzzyOptions options}) {
     options ??=
-        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.3);
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
     final fuse = Fuzzy(toList(), options: options);
     return fuse.search(key).map((r) => r.item.toString());
   }
@@ -53,7 +35,7 @@ extension StringListUtil on Iterable<String> {
   /// Search if this string list contains key fuzzily
   bool containsFuzzy(String key, {FuzzyOptions options}) {
     options ??=
-        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.3);
+        FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
     final fuse = Fuzzy(toList(), options: options);
     return fuse.search(key).isNotEmpty;
   }
