@@ -1,5 +1,10 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
 import '../discover_panel/discover_panel_theme.dart';
 import '../discover_panel/models/category.dart';
 

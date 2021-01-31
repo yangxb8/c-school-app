@@ -1,14 +1,20 @@
+// 🎯 Dart imports:
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
-import 'package:c_school_app/app/model/word_example.dart';
-import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/service/lecture_service.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/app/model/word_example.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/service/logger_service.dart';
 
 const LAN_CODE_CN = 'zh-cn';
@@ -110,16 +116,7 @@ class WordCardController extends GetxController {
   Future<FlutterTts> _generateTts({String language = LAN_CODE_CN}) async {
     final tts = FlutterTts();
     await tts.setLanguage(language);
-    switch (language) {
-      case LAN_CODE_JP:
-        await tts.setSpeechRate(0.8);
-        break;
-      case LAN_CODE_CN:
-        await tts.setSpeechRate(0.5);
-        break;
-      default:
-        await tts.setSpeechRate(0.8);
-    }
+    await tts.setSpeechRate(0.5);
     return tts;
   }
 
@@ -127,7 +124,6 @@ class WordCardController extends GetxController {
   void onClose() {
     lectureService.commitChange();
     audioPlayer.dispose();
-    logger.i('Word card Controller destroyed');
     super.onClose();
   }
 }

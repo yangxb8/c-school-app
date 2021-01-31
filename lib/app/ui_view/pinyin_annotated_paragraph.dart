@@ -1,10 +1,15 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:supercharged/supercharged.dart';
-import '../model/word.dart';
+
+// 🌎 Project imports:
 import '../../service/lecture_service.dart';
 import '../../util/extensions.dart';
+import '../model/word.dart';
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
   final String paragraph;
@@ -15,6 +20,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   final TextStyle centerWordTextStyle;
   final TextStyle linkedWordTextStyle;
   final TextStyle pinyinTextStyle;
+  final bool showPinyins;
 
   const PinyinAnnotatedParagraph(
       {Key key,
@@ -25,7 +31,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       this.linkedWords,
       this.centerWordTextStyle,
       this.linkedWordTextStyle,
-      this.pinyinTextStyle})
+      this.pinyinTextStyle,
+      this.showPinyins = true})
       : super(key: key);
 
   @override
@@ -34,20 +41,18 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     return Wrap(
         spacing: 3,
         runSpacing: 2,
-        children: hanzis
-            .map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi))
-            .toList());
+        children: hanzis.map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)).toList());
   }
 
-  Widget _buildSingleHanzi(
-      {@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+  Widget _buildSingleHanzi({@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+    final pinyinRow = showPinyins && pinyinAnnotatedHanzi.pinyin.isNotEmpty
+        ? [Text(pinyinAnnotatedHanzi.pinyin, style: pinyinAnnotatedHanzi.pinyinStyle)]
+        : [];
     final inner = IntrinsicWidth(
       child: Column(
         children: [
-          Text(pinyinAnnotatedHanzi.pinyin,
-              style: pinyinAnnotatedHanzi.pinyinStyle),
-          Text(pinyinAnnotatedHanzi.hanzi,
-              style: pinyinAnnotatedHanzi.hanziStyle),
+          ...pinyinRow,
+          Text(pinyinAnnotatedHanzi.hanzi, style: pinyinAnnotatedHanzi.hanziStyle),
         ],
       ),
     );
@@ -55,8 +60,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       return inner;
     } else {
       return SimpleGestureDetector(
-          onTap: () => Get.find<LectureService>()
-              .showSingleWordCard(pinyinAnnotatedHanzi.linkedWord),
+          onTap: () =>
+              Get.find<LectureService>().showSingleWordCard(pinyinAnnotatedHanzi.linkedWord),
           child: inner);
     }
   }
@@ -73,8 +78,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       final hanzi = paragraph[idx];
       var pinyin = hanzi.isSingleHanzi ? pinyins[idx] : '';
       final hanziTypeAndRelatedWord = _calculateHanziType(
-          hanziIdx: idx,
-          keywordsSeparatedParagraph: keywordsSeparatedParagraph);
+          hanziIdx: idx, keywordsSeparatedParagraph: keywordsSeparatedParagraph);
       final hanziType = hanziTypeAndRelatedWord.keys.single;
       final linkedWord = hanziTypeAndRelatedWord.values.single;
       var hanziStyle;
@@ -100,27 +104,29 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   }
 
   Map<ParagraphHanziType, Word> _calculateHanziType(
-      {@required int hanziIdx,
-      @required List<String> keywordsSeparatedParagraph}) {
+      {@required int hanziIdx, @required List<String> keywordsSeparatedParagraph}) {
     var totalIdx = 0;
     var result;
-    keywordsSeparatedParagraph.forEach((part) {
+    for (final part in keywordsSeparatedParagraph) {
       // Target hanzi is in range of this part of paragraph
-      final linkedWordList = linkedWords?.filter((w) => w.wordAsString == part)?? [];
+      final linkedWordList = linkedWords?.filter((w) => w.wordAsString == part) ?? [];
       if (totalIdx + part.length > hanziIdx) {
         if (centerWord?.wordAsString == part) {
           result = {ParagraphHanziType.center: null};
+          break;
         } else if (linkedWordList.isNotEmpty) {
           result = {ParagraphHanziType.linked: linkedWordList.single};
+          break;
         } else {
           result = {ParagraphHanziType.normal: null};
+          break;
         }
       }
       // If hanziIdx is not found within this part, add totalIdx and move to next part
       else {
         totalIdx += part.length;
       }
-    });
+    }
     return result;
   }
 
@@ -132,8 +138,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     if (keyword is List<String>) {
       var keywordSet = keyword.toSet();
       var exampleDivided = example;
-      keywordSet
-          .forEach((k) => exampleDivided = _divideExample(k, exampleDivided));
+      keywordSet.forEach((k) => exampleDivided = _divideExample(k, exampleDivided));
       return exampleDivided;
     }
     // When the String is already divided before

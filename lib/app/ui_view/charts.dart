@@ -1,6 +1,10 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+// 🌎 Project imports:
 import '../../i18n/ui_view.i18n.dart';
 
 class SpeechEvaluationRadialBarChart extends StatelessWidget {

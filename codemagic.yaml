@@ -1,0 +1,60 @@
+# Automatically generated on 2021-01-22 UTC from https://codemagic.io/app/6006678e1b08f359056e56cf/settings
+# Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
+
+workflows:
+  debug:
+    name: debug
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - pull_request
+      branch_patterns:
+        - pattern: '*'
+          include: true
+          source: true
+    scripts:
+      - cd . && flutter packages pub get
+      - find . -name "Podfile" -execdir pod install \;
+      - cd . && flutter build ios --debug --no-codesign
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+  beta:
+    name: beta
+    max_build_duration: 90
+    environment:
+      vars:
+        APP_STORE_CONNECT_ISSUER_ID: cb20db26-fb6d-403c-9af2-ce60d1ba5dd2
+        APP_STORE_CONNECT_KEY_IDENTIFIER: 4UH5565GHD
+        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(Z0FBQUFBQmdDdHZJejRXRTB1M2M5a3V2WWVQbUxCSEIxUFlnX1F3LWNXdloxcGhUcmtOQXhjZHRMa3E4b3pXRGU3T0lqeGVxSTRiZUFFV0lSS1YzU2RxZnViOFo4cGhobkdMLWNhWDJsVFkzZF9ZOVA2Rm1iWEJFdWJ5UUNqR2lxS3JBU3BSUktGLTJDOXRjYzAtS0ZOMGhrWjUyWVBBelVFWllaeHVIMUR4dkNiaUl0Q3ZZc0tPbnpxX2RGUW9zbF95a2o4UUhobDgtbFlsT211clpYcHdWTEM0LXRzQ1JGYks4ZDd3MzFoUVhHOGloOEhrT0JNeV9JdFVVQUE1OUNzUC00SXowbkFKaUVnVmczYTVXUEdjdVpBRDB5Q2xsZzNqN3RpMFlTV0xMdU9QcUJENXg4d1JHNWZhWktTQ3R6OVVycmpuWUstd3c1VGxaUUw0ajhtaE8tcjdLd2pRSWtlaXU5bGlOYXlHVFdhTmNGWVo1M2c3eGc2S0wzSm85WTNrTHl4bjNFUzdPSjR0a2l1Mm5TM0ZtUlJ4RUh3UktrcWFjd0o3N1UwSGJoRk9pUTZrWHl2RT0=)
+        CERTIFICATE_PRIVATE_KEY: Encrypted(Z0FBQUFBQmdDdHZJZjRRa2h0U1RNYnFienU5ZzlyQ1QzNGhSR1dHTEVObGtrMTJYb0NUVnBRRTRiMnVoVmx6ZDhIUklfN2d6OUdLTTVCQVVqNHRwNzFseVJRa1JXXzlFYlFDVzhTd0sxUS1kMy1xVHMxZHdqNl8zV29RZE1aQ0VwN1RMbXRqcVd0UU9hU1VGeElDazQybzdCQXlFeEFTM0JqQUUwMzlPYzdxR1ZRdXpZX25rVGRKVV9wUEJsRk9BakdTb1RwM1NWWEJWRm1TdmIyeXpWOXUzdE11MEV0OXVFSS1uNi1IYjMtX2tIMjI3Y1pxcmNHcXg3X3hBdldNbUFGVDlTLW1rM2NEWWhkbWZmay1RTjVPd1d3bzdINFBmSVBVck1KM0pqM0xCTWNxLW9hTzNjZlU2WnBLUnVnRmY3VWotV0QzNTdEdGktRmotaDFzZVlLaTJzY3NxeHJDRUVMTDdWQ0x6TWpud1ZzaExtOWtnclg0YjkycmRVc2NBV0VacjZoRGlEVnZnVjBzbEhrcmNoelY0Ri1jbnptQUs1X3J5clBuekhFM1puM1AycFJueHRkVEFDYjBic0xEVEVkUHpONVRqWnBxcGJaeWMtWktvV2JLUmZWZFFqdVFsSHhiQ0FuY2pOZzRaeUI1VFU0TFZ2WEJrU0tPV1F4MXZ2cTdDWG9MdG9fbUFxdnR1eVRiTVo1ZVhuR2o2YUNNdUEtTURHaEp0U2x4NVAzQXRNUGxFRzlZSmpMQlVDOF93RDNzVFpXU2M3VDFyb0hadHVJbC1tSmt2d2pfYkJsNzVJanZiQmUwUUE4b3VDZ1B3QlBMbk5FcjBmNWRNNFpTTXFtVEc4cnUxY2RaTzZjLXhsQmZDZUFKODdZVnpoRGdSNWswS2Uxbmw2OFlRMXo5SXA1LXdSNE95QmlqcGJCckQ5YjRDanMyZ3E5V3FtWWJsVEdCbk0zNHQwUGkwSW1zUjhTeGN1STFUY3VnZEg0OXR3aW44cXdiV1NvaEU4RXZ2ekJ2U3NzZ3FCZ0dfRkhNTHFEZXBJWFZwSHdiQ3NVTURVZS1nOHhnLTlNUkVNelBLSkQ2aVp1OFhnMDdRb2NNT3p6LXBjQXBfU2hxZmVOX2VjNmtkSGJLV0thZEdkR3h5V2hqYUhkVy1GWDJmeTFaSmRTbEVHVnpWNlVQVmphUTNnU1FZRXQ5UXpoU05UQ2hrWDVEQS1ROWN0OVBNMElUU1ZoZGI3MGJsRWY4NHVlZUJBSS1PN3V4SDdEYXBTdHZGTVVSQUtSVzMyOVRUbEF1cUtzcnNsS0c1OXlLVEQ5czR3N2hXRFlTR0cyNE4ydjNrc2QwTlUxZTBsUlUtbnRtMzh3SGR2OEY2NmhFXzlqTlc5TnZ0WkQ3eFl2dGlOYUItNnFwUjNNZVBjTmR5cW1tR2RVRFI4alJKRl95VURFaGtIQ1ZRcVM3X0wzcFFoOHlBcXRJblUtSGtSaTNRd3VJeGp1YVBYLVUtZ3o3eG5pUTRkWmU2eXJBbkNITmY5Yl9SbUdPODBRdGNaNWczaGhuT2N0UE1BZTlvbThZYnY2ekJfcU4tVTdYbmdyTWZmdUtQczltanJPUl80MUJEOEtuOEhfRlg4WFctLVFkR1QtdlZYYTlJV2JZT1J4a1V4YndQeUZ5ZG5ab0RqSjFLcEY1QjVYTWFWM3hTYW9FZDlrdmd5UzM0Ykd3bDdDclRxaGNUTVV5WVlFMlBjNi1kdFRYQlpHZGtZd1E3Y1Q0aURpencxOHJmNVhZZERLa1VWczFGb0k5UmhkTHVOeGgzR2syRUxqV2tLdXIzWmRqZm1Qc2xyWDZBSW9SMmczWkJ2WGRzQk85SWJGYWpDX1RBdGJmMDlvb3RkYlVLXzVkTGdXZFJFLTEtTmc2bXUxT05nY1lDQ3N3QmRWSXJwMUU5ZjVyWHRIR2Z1SkJhdloySENwUHVZcE9TZnhNWUpnUVViaVprUktCd1R1OFpoV1JQYW5aY1ZmUXVkcWp3SHQ5c0wzN2J0NGlaVS1fMG9QQk1XMFhaVDJoSERzOTZZX2JJYUxoaWQ5OE1JNUFrWUNoRWxSSUVjOFZNVlQ3RDFlSXZpdE5kSzNnaG5PMjg4Y1c2YWNDX1BZVzFWT3hVX3dHT1NrbDUycHhScjB6MTVqd3A3dlJEZHZyV3VPbXpfSDBmM1RmekZJY09ucmJxSFB1NnE5VVdIYWJOMTVqTG94RllLNlgzTnJ0VGRQU24xOVdtU2wxcVdQN2ljTWRWaHNsa2swRW5rMG54QUVaTzJCalRnSW9NTXpQTjFvMWxKSHU5Y0kyQkhVODFIUGR3Y0hyenkxMjBmTlFRZlJUTG9fNG1TdmpuT3ZWSENXcHlybUEzam1PMnVnRDVWVWhMYTRrY1BHTXRNajlBUnNIcFMxNGtvRkNlY183VDJmb1NOOTNDampSMC0yd1Noa2JkSVZHZWMtUG9qdGNjWVJHeEVpbHljZXZaUm1VT05hemZub2FiQldyWkItVl83S1hsRUVLa3dlM0wtQkZFS3RRdmg4ZTJ6WGtva3ZpdVIzTlZDTG1nTk9QUzZ5NXBoOFJfSHhUb3J3cno5Ny1oRDRERXhHeF95VFNnN2NiZ0dlSGpGRlZpb0JXWllCUTNEX2xEOTM5MGpxOWpzUFhYeUJnV2hJMXhuRVhQbVppdWNVb2s0eVR0bXlpU0o0RVRmaC1WV0N1a0lxWU1XWDlRS3FKY2w4bmJlLTNKVmZUMHljNWtsZVZFMVlGVFZXTE1yNElhc1ZaWTVnYUtpcm1hZnNNSWlQNF9oclZ6OVYzeEdwZzJoZjJUYXdmOGJRR1RJWTZtajhkODdBRW9QSXBBZGQ1Q3piRUY1WmtCTTJhakN2WXFlQldDVmpXdVJjUHVzZHZrSFROWjdISE9LVFRKOHdvNjVyZGhKcUplNDZJY3pQdWY2UXN4bEtTY3U5ZHl3UldxVFlyZ3lNSHZDeHRGU3pqOUc2ZGtyMDd2MXRsTmZYR1VzZk9QTW5hc3BnSlQ4THk1QkZhTVBFT0NOU1ByNTMzek5WaVBrUndKZG1DQTNYUkhWWm1r)
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - cd . && flutter packages pub get
+      - find . -name "Podfile" -execdir pod install \;
+      - keychain initialize
+      - app-store-connect fetch-signing-files "com.sophiabyte.cschool" --type IOS_APP_STORE
+        --create
+      - keychain add-certificates
+      - cd . && flutter build ios --release --build-number $BUILD_NUMBER --no-codesign
+      - xcode-project use-profiles
+      - cd . && xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme
+        "Runner"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      slack:
+        channel: '#pj-c-school'
+        notify_on_build_start: false
+      app_store_connect:
+        apple_id: yangxb12@yahoo.co.jp
+        password: Encrypted(Z0FBQUFBQmdDdHZJVmxXMEV1Rk56aHVObk1SQzJTQVoxTngxdWZHZzNJU211aEFlamtPazk0QngwdXhtYlhiamdlZVZNaVgtZGhKVG5Ka0U2ZnFvZmRaMXR1dVhBZ0RpUEJ1WEF3RkZ5TWtCRVRJdVFFM05CWDQ9)

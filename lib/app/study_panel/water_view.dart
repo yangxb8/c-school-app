@@ -1,7 +1,12 @@
-import '../ui_view/wave_view.dart';
-import '../my_progress_theme.dart';
-import 'package:supercharged/supercharged.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
+import '../my_progress_theme.dart';
+import '../ui_view/wave_view.dart';
 
 class WaterView extends StatefulWidget {
   const WaterView({Key key, this.mainScreenAnimationController, this.mainScreenAnimation}) : super(key: key);

@@ -1,11 +1,15 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:supercharged/supercharged.dart';
+
+// 📦 Package imports:
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:supercharged/supercharged.dart';
 
+// 🌎 Project imports:
 import '../../app/model/speech_exam.dart';
 import '../../controller/ui_view_controller/speech_recording_controller.dart';
 

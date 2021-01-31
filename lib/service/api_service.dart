@@ -1,32 +1,38 @@
+// 🎯 Dart imports:
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:c_school_app/app/model/exam_base.dart';
-import 'package:c_school_app/service/user_service.dart';
-import 'package:c_school_app/util/functions.dart';
-import 'package:csv/csv.dart';
-import 'package:enum_to_string/enum_to_string.dart';
-import 'package:pedantic/pedantic.dart';
-import 'package:path_provider/path_provider.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flamingo/flamingo.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// 📦 Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pedantic/pedantic.dart';
+import 'package:uuid/uuid.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/exam_base.dart';
 import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
-import 'package:uuid/uuid.dart';
+import 'package:c_school_app/service/user_service.dart';
+import 'package:c_school_app/util/functions.dart';
+import '../i18n/api_service.i18n.dart';
 import '../model/user.dart';
 import './logger_service.dart';
-import '../i18n/api_service.i18n.dart';
 
 final logger = LoggerService.logger;
 
@@ -89,7 +95,7 @@ class _FirebaseAuthApi {
   User get currentUser => _firebaseAuth.currentUser;
 
   void listenToFirebaseAuth(Function func) {
-    _firebaseAuth.authStateChanges().listen((User user) => func());
+    _firebaseAuth.authStateChanges().listen((_) async => await func());
   }
 
   // Already return fromm every conditions
@@ -218,7 +224,7 @@ class _FirestoreApi {
       _instance = _FirestoreApi();
       _firestore = FirebaseFirestore.instance;
       _documentAccessor = DocumentAccessor();
-      _setupEmulator();
+      // _setupEmulator(); //TODO: Uncomment this to use firestore simulator
       _currentUser = _FirebaseAuthApi().currentUser;
     }
 
@@ -301,6 +307,7 @@ class _FirestoreApi {
     final COLUMN_WORD_PROCESS_STATUS = 18;
     final COLUMN_PIC_HASH = 19;
     final WORD_PROCESS_STATUS_NEW = 0;
+    final WORD_PROCESS_STATUS_MODIFIED = 1;
     final SEPARATOR = '/';
     final PINYIN_SEPARATOR = '-';
 
@@ -312,7 +319,8 @@ class _FirestoreApi {
       csv = CsvToListConverter()
           .convert(await rootBundle.loadString('assets/upload/words.csv'))
             ..removeWhere((w) =>
-                WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
+                ![WORD_PROCESS_STATUS_NEW, WORD_PROCESS_STATUS_MODIFIED]
+                    .contains(w[COLUMN_WORD_PROCESS_STATUS]) ||
                 w[COLUMN_WORD] == null);
     } catch (_) {
       print('No words.csv found, will skip!');
@@ -324,16 +332,28 @@ class _FirestoreApi {
           ..word = row[COLUMN_WORD].trim().split('')
           ..pinyin = row[COLUMN_PINYIN].trim().split(PINYIN_SEPARATOR)
           ..partOfSentence = row[COLUMN_PART_OF_SENTENCE].trim()
-          ..detail = row[COLUMN_DETAIL].trim()
+          ..explanation = row[COLUMN_DETAIL].trim()
           ..picHash = row[COLUMN_PIC_HASH].trim()
           ..wordMeanings = [
             WordMeaning(
-                meaning: row[COLUMN_MEANING].trim().replaceAll(SEPARATOR, ','),
-                examples: row[COLUMN_EXAMPLE].trim().split(SEPARATOR),
+                meaning: row[COLUMN_MEANING].toString().trim().replaceAll(
+                    SEPARATOR, ','),
+                examples: row[COLUMN_EXAMPLE].toString().trim() == ''
+                    ? []
+                    : row[COLUMN_EXAMPLE].toString().trim().split(SEPARATOR),
                 exampleMeanings:
-                    row[COLUMN_EXAMPLE_MEANING].trim().split(SEPARATOR),
-                examplePinyins:
-                    row[COLUMN_EXAMPLE_PINYIN].trim().split(SEPARATOR).toList())
+                    row[COLUMN_EXAMPLE_MEANING].toString().trim() == ''
+                        ? []
+                        : row[COLUMN_EXAMPLE_MEANING]
+                            .toString()
+                            .trim()
+                            .split(SEPARATOR),
+                examplePinyins: row[COLUMN_EXAMPLE_PINYIN].trim() == ''
+                    ? []
+                    : row[COLUMN_EXAMPLE_PINYIN]
+                        .trim()
+                        .split(SEPARATOR)
+                        .toList())
           ]
           ..hint = row[COLUMN_HINT].trim()
           ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].trim().split(SEPARATOR)
@@ -428,13 +448,14 @@ class _FirestoreApi {
   }
 
   void uploadLecturesByCsv() async {
-    final COLUMN_ID = 0;
-    final COLUMN_LEVEL = 1;
-    final COLUMN_TITLE = 2;
-    final COLUMN_DESCRIPTION = 3;
-    final COLUMN_PROCESS_STATUS = 5;
-    final COLUMN_PIC_HASH = 6;
-    final WORD_PROCESS_STATUS_NEW = 0;
+    final columnId = 0;
+    final columnLevel = 1;
+    final columnTitle = 2;
+    final columnDescription = 3;
+    final columnProcessStatus = 5;
+    final columnPicHash = 6;
+    final processStatusNew = 0;
+    final processStatusModified = 1;
 
     final storage = Storage()..fetch();
     final documentAccessor = DocumentAccessor();
@@ -445,18 +466,19 @@ class _FirestoreApi {
       csv = CsvToListConverter()
           .convert(await rootBundle.loadString('assets/upload/lectures.csv'))
             ..removeWhere((w) =>
-                WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
-                w[COLUMN_TITLE] == null);
+                ![processStatusNew, processStatusModified]
+                    .contains(w[columnProcessStatus]) ||
+                w[columnTitle] == null);
     } catch (_) {
       print('No lectures.csv found, will skip!');
       return;
     }
 
     var lectures =
-        csv.map((row) => Lecture(id: row[COLUMN_ID], level: row[COLUMN_LEVEL])
-          ..title = row[COLUMN_TITLE].trim() // Title should not be null
-          ..description = row[COLUMN_DESCRIPTION]?.trim()
-          ..picHash = row[COLUMN_PIC_HASH]?.trim());
+        csv.map((row) => Lecture(id: row[columnId], level: row[columnLevel])
+          ..title = row[columnTitle].trim() // Title should not be null
+          ..description = row[columnDescription]?.trim()
+          ..picHash = row[columnPicHash]?.trim());
 
     // Checking status
     storage.uploader.listen((data) {
@@ -613,7 +635,8 @@ class _TencentApi {
   }
 
   Future<void> soeStartRecord(SpeechExam exam) async {
-    final audioPath = '${(await getTemporaryDirectory()).path}/${Uuid().v1()}.mp3';
+    final audioPath =
+        '${(await getTemporaryDirectory()).path}/${Uuid().v1()}.mp3';
     try {
       // await soeChannel.invokeMethod('soeStartRecord',<String, dynamic>{
       //   'refText': exam.refText,
@@ -640,8 +663,8 @@ class _TencentApi {
     try {
       final resultRaw =
           await soeChannel.invokeMapMethod('soeStopRecordAndEvaluate');
-      result['evaluationResult'] =
-          SentenceInfo.fromJson(jsonDecode(resultRaw['evaluationResult']).single);
+      result['evaluationResult'] = SentenceInfo.fromJson(
+          jsonDecode(resultRaw['evaluationResult']).single);
       result['audioPath'] = resultRaw['audioPath'];
       // Save result to cloud storage, but won't await it
       unawaited(Get.find<ApiService>().firestoreApi.saveUserSpeech(

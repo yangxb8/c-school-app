@@ -1,4 +1,7 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 🌎 Project imports:
 import 'discover_panel_theme.dart';
 
 class SampleLectureScreen extends StatefulWidget {

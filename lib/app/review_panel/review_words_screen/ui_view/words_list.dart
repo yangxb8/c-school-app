@@ -1,91 +1,90 @@
-import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:get/get.dart';
-import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 
-const BUTTON_SIZE = 30.0;
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
+import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
+
+const BUTTON_SIZE = 50.0;
 
 class WordsList extends GetView<ReviewWordsController> {
-  WordsList({key}):super(key:key);
+  WordsList({key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SimpleGestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onVerticalSwipe: (swipeDirection) =>
-          controller.wordsListSwipeDirection = swipeDirection,
-      child: Padding(
+    return Padding(
         padding: const EdgeInsets.only(top: 80.0),
         child: StickyGroupedListView<Word, String>(
           elements: controller.wordsList,
-          itemScrollController: controller.groupedItemScrollController,
+          groupBy: (Word element) => element.lectureId,
+          groupComparator: (lectureId1, lectureId2) => lectureId1.compareTo(lectureId2),
+          itemComparator: (element1, element2) => element1.wordId.compareTo(element2.wordId),
+          // optional
+          order: StickyGroupedListOrder.ASC,
           floatingHeader: true,
-          groupBy: (Word element) => element.lecture.lectureId,
-          groupSeparatorBuilder: (Word element) => Text(
-            element.lecture.title,
-            style: ReviewWordsTheme.wordListTitle,
-          )
-              .paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10)
-              .decorated(
+          groupSeparatorBuilder: (Word element) => Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                element.lecture.title,
+                style: ReviewWordsTheme.wordListTitle,
+              )
+                  .paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10)
+                  .decorated(
                 color: ReviewWordsTheme.darkBlue,
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              )
-              .paddingOnly(top: 10.0, bottom: 10.0),
-          itemBuilder: (_, Word word) => FadeInRight(
-            duration: 0.5.seconds,
-            // Only when the first time top 11 elements are shown
-            // Delay the animation to create a staggered effect
-            delay: controller.indexOfWord(word) < 11 &&
-                    controller.wordsListSwipeDirection != SwipeDirection.down
-                ? (0.3 * controller.indexOfWord(word)).seconds
-                : 0.seconds,
-            child: Card(
-              color: ReviewWordsTheme.lightBlue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6.0),
               ),
-              elevation: 8.0,
-              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-              child: SimpleGestureDetector(
-                onTap: () => controller.showSingleCard(word),
-                child: ListTile(
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: IconButton(
-                      icon: Icon(FontAwesome.play_circle),
-                      iconSize: BUTTON_SIZE,
-                      onPressed: () => controller.playWord(word: word),
+            ],
+          ),
+          indexedItemBuilder: (_, Word word, index) => FadeInRight(
+            duration: 0.5.seconds,
+            // Delay the animation to create a staggered effect when first render
+            child: SizedBox(
+              height: 100,
+              child: Card(
+                color: ReviewWordsTheme.lightBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
+                elevation: 8.0,
+                margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: SimpleGestureDetector(
+                  onTap: () => controller.showSingleCard(word),
+                  onLongPress: () => controller.jumpToCard(index),
+                  child: ListTile(
+                    leading: Obx(
+                      () => IconButton(
+                        color: controller.indexOfWordPlaying.value == index
+                            ? Colors.lightBlueAccent
+                            : Colors.blueGrey,
+                        padding: EdgeInsets.only(left: 20),
+                        icon: Icon(FontAwesome.play_circle),
+                        iconSize: BUTTON_SIZE,
+                        onPressed: () => controller.playWord(index),
+                      ),
                     ),
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          '${word.wordAsString}       ',
-                          style: ReviewWordsTheme.wordListItem,
-                        ),
-                        Text(word.pinyin.join(' '),
-                            style: ReviewWordsTheme.wordListItem)
-                      ],
-                    ),
+                    title: PinyinAnnotatedParagraph(
+                      defaultTextStyle: ReviewWordsTheme.wordListItem,
+                      pinyinTextStyle: ReviewWordsTheme.wordListItemPinyin,
+                      paragraph: word.wordAsString,
+                      pinyins: word.pinyin,
+                    ).center(),
                   ),
                 ),
               ),
             ),
-          ),
-          itemComparator: (element1, element2) =>
-              element1.wordId.compareTo(element2.wordId),
-          // optional
-          order: StickyGroupedListOrder.ASC, // optional
-        ),
-      ),
-    );
+          ), // optional
+        ));
   }
 }

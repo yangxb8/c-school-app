@@ -1,32 +1,35 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:c_school_app/app/model/word_example.dart';
-import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
-import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
-import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flippable_box/flippable_box.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:simple_tooltip/simple_tooltip.dart';
-import 'package:styled_widget/styled_widget.dart';
-import 'package:flutter/widgets.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+// 📦 Package imports:
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flippable_box/flippable_box.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:simple_tooltip/simple_tooltip.dart';
+import 'package:styled_widget/styled_widget.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/word_example.dart';
+import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
+import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
+import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
+import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import '../model/word.dart';
-import '../../i18n/review_words.i18n.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
 final BUTTON_SIZE = 25.0;
 final verticalInset = 8.0;
-final DEFAULT_IMAGE = 'assets/review_panel/image_01.png';
+final DEFAULT_IMAGE = 'assets/review_panel/default.png';
 
 class WordCard extends StatelessWidget {
   final Word word;
   final WordCardController controller;
   WordCard({Key key, @required this.word})
-      : controller = WordCardController(word),
+      : controller = Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
         super(key: key);
 
   @override
@@ -34,7 +37,6 @@ class WordCard extends StatelessWidget {
     var hint = SimpleGestureDetector(
       onTap: controller.toggleHint,
       child: CircleAvatar(
-        backgroundColor: Colors.white,
         radius: 20,
         child: Obx(
           () => SimpleTooltip(
@@ -86,20 +88,12 @@ class WordCard extends StatelessWidget {
             ).backgroundColor(ReviewWordsTheme.lightBlue),
             flex: 11),
         Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            word.pic?.url == null
-                ? Image.asset(
-                    DEFAULT_IMAGE,
-                    fit: BoxFit.cover,
-                  ).expanded()
-                : CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: word.pic.url,
-                    placeholder: (context, url) => BlurHash(hash: word.picHash),
-                    errorWidget: (context, url, error) => Image.asset(
-                          DEFAULT_IMAGE,
-                          fit: BoxFit.cover,
-                        )).expanded(),
+            BlurHashImageWithFallback(
+                    fallbackImg: DEFAULT_IMAGE, mainImg: word.pic?.url, blurHash: word.picHash)
+                .expanded()
           ],
         ).expanded(flex: 10)
       ],
@@ -112,10 +106,8 @@ class WordCard extends StatelessWidget {
             splashRadius: 0.01,
             icon: Icon(FontAwesome.heart),
             // key: favoriteButtonKey,
-            color: controller.isWordLiked()
-                ? ReviewWordsTheme.lightYellow
-                : Colors.grey,
-            iconSize: BUTTON_SIZE * 1.2,
+            color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
+            iconSize: BUTTON_SIZE * 2,
             onPressed: () => controller.toggleFavoriteCard(),
           ).paddingOnly(top: 10, right: 10),
         ),
@@ -133,14 +125,19 @@ class WordCard extends StatelessWidget {
               curve: Curves.easeOut,
               back: Container(
                   constraints: BoxConstraints.expand(),
-                  child:
-                      Stack(children: [buildBackCardContent(), favoriteIcon])),
+                  child: Stack(children: [buildBackCardContent(), favoriteIcon])),
               front: Container(
                   constraints: BoxConstraints.expand(),
                   child: Stack(children: [frontCardContent, favoriteIcon])),
             ),
           ),
         ),
+      ),
+    ).card(
+      color: Colors.transparent,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
       ),
     );
   }
@@ -151,28 +148,42 @@ class WordCard extends StatelessWidget {
       onTap: controller.playWord,
       behavior: HitTestBehavior.opaque,
       child: PinyinAnnotatedParagraph(
-          paragraph: word.wordAsString,
-          pinyins: word.pinyin,
-          defaultTextStyle: ReviewWordsTheme.wordCardWord,
-          pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,),
+        paragraph: word.wordAsString,
+        pinyins: word.pinyin,
+        defaultTextStyle: ReviewWordsTheme.wordCardWord,
+        pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
+      ),
     ).center();
     // Second meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
-      var partExample = meaning.examples
-          .map((wordExample) => _buildExampleRow(wordExample))
-          .toList();
+      var partExample =
+          meaning.examples.map((wordExample) => _buildExampleRow(wordExample)).toList();
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: partExample,
       );
     }).toList();
+    // explanation part
+    var partExplanation = word.explanation.isEmpty
+        ? SizedBox.shrink()
+        : AutoSizeText(
+            '💡 ${word.explanation}',
+            maxLines: 5,
+            style: ReviewWordsTheme.wordCardExplanation,
+          )
+            .paddingAll(10)
+            .decorated(
+              borderRadius: BorderRadius.circular(5),
+              color: ReviewWordsTheme.extremeLightBlue
+            )
+            .paddingSymmetric(horizontal: 20, vertical: 40);
     return Column(
       children: <Widget>[
         Expanded(child: partHanZi, flex: 2),
         Expanded(
           child: ListView(
             shrinkWrap: true,
-            children: partMeanings,
+            children: [partExplanation, ...partMeanings],
           ),
           flex: 3,
         ),
@@ -183,10 +194,6 @@ class WordCard extends StatelessWidget {
   Widget _buildExampleRow(WordExample wordExample) {
     return Column(
       children: [
-        Text(
-          'Example'.i18n,
-          style: ReviewWordsTheme.wordCardSubTitle,
-        ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
         SimpleGestureDetector(
           onTap: () => controller.playExample(wordExample: wordExample),
           behavior: HitTestBehavior.opaque,
@@ -199,7 +206,7 @@ class WordCard extends StatelessWidget {
             centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
             linkedWords: word.relatedWords,
             linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-          ).alignment(Alignment.centerLeft).paddingOnly(left: 10),
+          ).alignment(Alignment.centerLeft).paddingSymmetric(horizontal: 20),
         ),
         AutoSizeText(
           wordExample.meaning,

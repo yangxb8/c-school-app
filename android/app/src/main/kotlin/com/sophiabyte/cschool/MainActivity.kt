@@ -1,4 +1,4 @@
-package site.alphasho.c_school_app
+package com.sophiabyte.cschool
 
 import android.content.Context
 import androidx.annotation.NonNull

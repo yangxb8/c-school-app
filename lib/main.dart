@@ -1,24 +1,31 @@
+// 🎯 Dart imports:
 import 'dart:async';
 import 'dart:io';
-import 'package:c_school_app/service/lecture_service.dart';
-import 'package:c_school_app/service/user_service.dart';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// 📦 Package imports:
 import 'package:catcher/catcher.dart';
+import 'package:flamingo/flamingo.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:logger/logger.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wiredash/wiredash.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/service/user_service.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
 import 'router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:logger/logger.dart';
-import 'package:flamingo/flamingo.dart';
-
-import 'util/extensions.dart';
 import 'service/api_service.dart';
+import 'service/lecture_service.dart';
 import 'service/localstorage_service.dart';
+import 'util/extensions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,12 +38,10 @@ void main() async {
 
   /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
   var releaseOptions = CatcherOptions(DialogReportMode(), [
-    EmailManualHandler(['yangxb10@gmail.com'])
+    SentryHandler(SentryClient(SentryOptions(
+        dsn: 'https://6b7250fbad81463791e2036ffdd6b184@o455157.ingest.sentry.io/5446301')))
   ]);
-  Catcher(
-      rootWidget: CSchoolApp(),
-      debugConfig: debugOptions,
-      releaseConfig: releaseOptions);
+  Catcher(rootWidget: CSchoolApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
 }
 
 class CSchoolApp extends StatelessWidget {
@@ -45,14 +50,17 @@ class CSchoolApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness:
-          Platform.isAndroid ? Brightness.dark : Brightness.light,
+      statusBarBrightness: Platform.isAndroid ? Brightness.dark : Brightness.light,
       systemNavigationBarColor: Colors.white,
       systemNavigationBarDividerColor: Colors.grey,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
     return KeyboardDismisser(
         child: Wiredash(
+      options: WiredashOptionsData(
+        /// You can set your own locale to override device default (`window.locale` by default)
+        locale: const Locale.fromSubtags(languageCode: 'jp'),
+      ),
       projectId: 'c-school-iysnrje',
       secret: 'rbl6r14rthdvtkruhfu0lvlldp6rpq3pepclnowm1q6ui08u',
 
@@ -97,11 +105,6 @@ class CSchoolApp extends StatelessWidget {
 class Splash extends StatelessWidget {
   Future<void> _init() async {
     await initServices();
-    // TODO: Only for development, might need a proper way to upload our class
-    // if (AppStateService.isDebug) {
-    //   await Get.find<ApiService>().firestoreApi.uploadLecturesByCsv();
-    //   await Get.find<ApiService>().firestoreApi.uploadWordsByCsv();
-    // }
     await Get.toNamed(UserService.user.isLogin() ? '/home' : '/login');
   }
 
@@ -117,12 +120,12 @@ class Splash extends StatelessWidget {
 }
 
 Future<void> initServices() async {
-  await Get.putAsync<LocalStorageService>(
-      () async => await LocalStorageService.getInstance());
+  await Get.putAsync<LocalStorageService>(() async => await LocalStorageService.getInstance());
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
-  await Get.putAsync<LectureService>(
-      () async => await LectureService.getInstance());
+  if (UserService.user != null && UserService.user.isLogin()) {
+    await Get.putAsync<LectureService>(() async => await LectureService.getInstance());
+  }
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;
 }

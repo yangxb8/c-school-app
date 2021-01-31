@@ -1,8 +1,12 @@
+// 📦 Package imports:
 import 'package:get/get.dart';
-import 'package:c_school_app/service/logger_service.dart';
+import 'package:shake/shake.dart';
 import 'package:wiredash/wiredash.dart';
-import 'api_service.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/service/logger_service.dart';
 import '../model/user.dart';
+import 'api_service.dart';
 
 /// Provide user related service, like create and update user
 class UserService extends GetxService {
@@ -10,12 +14,14 @@ class UserService extends GetxService {
   static AppUser user;
   static final ApiService _apiService = Get.find();
   static final logger = LoggerService.logger;
+  static ShakeDetector detector;
 
   static Future<UserService> getInstance() async {
     if (_instance == null) {
       _instance = UserService();
-      user = await _getCurrentUser();
+      await _refreshAppUser();
       _listenToFirebaseAuth();
+      _startWireDashService();
     }
     return _instance;
   }
@@ -35,8 +41,8 @@ class UserService extends GetxService {
     }
   }
 
-  static void _refreshAppUser() {
-    _getCurrentUser().then((appUser) => user = appUser);
+  static void _refreshAppUser() async{
+    user = await _getCurrentUser();
   }
 
   static void commitChange() {
@@ -45,6 +51,10 @@ class UserService extends GetxService {
       return;
     }
     _apiService.firestoreApi.updateAppUser(user, _refreshAppUser);
+  }
+
+  static void _startWireDashService() {
+    detector = ShakeDetector.autoStart(onPhoneShake: () => showWireDash());
   }
 
   static void showWireDash() {
@@ -57,6 +67,7 @@ class UserService extends GetxService {
   @override
   void onClose() {
     commitChange();
+    detector?.stopListening();
     super.onClose();
   }
 }
