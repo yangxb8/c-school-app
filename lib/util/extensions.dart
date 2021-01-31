@@ -1,8 +1,13 @@
-import 'package:c_school_app/service/localstorage_service.dart';
-import 'package:c_school_app/util/classes.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:fuzzy/fuzzy.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/service/localstorage_service.dart';
+import 'package:c_school_app/util/classes.dart';
 
 extension DateTimeExtension on DateTime {
   String yyyyMMdd() {

@@ -1,11 +1,13 @@
-import 'package:c_school_app/app/model/searchable.dart';
-import 'package:c_school_app/app/ui_view/search_bar.dart';
+// 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/service/lecture_service.dart';
 
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/searchable.dart';
+import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/app/ui_view/search_bar.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import 'exam_base.dart';
 
 part 'lecture.flamingo.dart';

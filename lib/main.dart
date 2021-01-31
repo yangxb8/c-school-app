@@ -1,25 +1,31 @@
+// 🎯 Dart imports:
 import 'dart:async';
 import 'dart:io';
-import 'package:c_school_app/service/user_service.dart';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// 📦 Package imports:
 import 'package:catcher/catcher.dart';
+import 'package:flamingo/flamingo.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:logger/logger.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wiredash/wiredash.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/service/user_service.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
 import 'router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:logger/logger.dart';
-import 'package:flamingo/flamingo.dart';
-
-import 'service/lecture_service.dart';
-import 'util/extensions.dart';
 import 'service/api_service.dart';
+import 'service/lecture_service.dart';
 import 'service/localstorage_service.dart';
+import 'util/extensions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

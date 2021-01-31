@@ -1,10 +1,15 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:supercharged/supercharged.dart';
-import '../model/word.dart';
+
+// 🌎 Project imports:
 import '../../service/lecture_service.dart';
 import '../../util/extensions.dart';
+import '../model/word.dart';
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
   final String paragraph;

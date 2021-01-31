@@ -1,9 +1,12 @@
+// 📦 Package imports:
 import 'package:get/get.dart';
-import 'package:c_school_app/service/logger_service.dart';
 import 'package:shake/shake.dart';
 import 'package:wiredash/wiredash.dart';
-import 'api_service.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/service/logger_service.dart';
 import '../model/user.dart';
+import 'api_service.dart';
 
 /// Provide user related service, like create and update user
 class UserService extends GetxService {

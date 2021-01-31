@@ -1,8 +1,11 @@
+// 📦 Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/model/user_lecture_history.dart';
 import 'package:c_school_app/model/user_memo.dart';
 import 'package:c_school_app/model/user_rank.dart';

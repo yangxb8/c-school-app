@@ -1,11 +1,16 @@
+// 🐦 Flutter imports:
+import 'package:flutter/cupertino.dart';
+
+// 📦 Package imports:
+import 'package:flutter_beautiful_popup/main.dart';
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/service/app_state_service.dart';
 import 'package:c_school_app/service/lecture_service.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:flutter_beautiful_popup/main.dart';
-import '../../../service/api_service.dart';
 import '../../../i18n/api_service.i18n.dart';
 import '../../../i18n/login_page.i18n.dart';
+import '../../../service/api_service.dart';
 
 class LoginController extends GetxController {
   final ApiService apiService = Get.find();

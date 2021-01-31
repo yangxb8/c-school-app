@@ -1,7 +1,12 @@
-import '../my_progress_theme.dart';
-import '../model/meals_list_data.dart';
-import 'package:supercharged/supercharged.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
+import '../model/meals_list_data.dart';
+import '../my_progress_theme.dart';
 
 class MealsListView extends StatefulWidget {
   const MealsListView(

@@ -1,13 +1,10 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/app/review_panel/controller/review_words_home_screen_controller.dart';
-import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
-import 'package:c_school_app/app/ui_view/search_bar.dart';
-import 'package:c_school_app/service/lecture_service.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
+// 📦 Package imports:
+import 'package:animate_do/animate_do.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_beautiful_popup/main.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -15,6 +12,13 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:styled_widget/styled_widget.dart';
 
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_home_screen_controller.dart';
+import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
+import 'package:c_school_app/app/ui_view/search_bar.dart';
+import 'package:c_school_app/service/lecture_service.dart';
 import '../../../i18n/review_words.i18n.dart';
 import '../../../util/extensions.dart';
 import 'review_words_theme.dart';

@@ -1,5 +1,10 @@
+// 🎯 Dart imports:
 import 'dart:convert';
+
+// 📦 Package imports:
 import 'package:flutter_test/flutter_test.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 
 void main() {

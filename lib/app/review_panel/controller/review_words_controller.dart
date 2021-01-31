@@ -1,20 +1,25 @@
+// 🎯 Dart imports:
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
-import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
-import 'package:c_school_app/service/app_state_service.dart';
-import 'package:c_school_app/service/lecture_service.dart';
-import 'package:c_school_app/service/logger_service.dart';
-import 'package:enum_to_string/enum_to_string.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:audioplayers/audioplayers.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
+import 'package:c_school_app/service/app_state_service.dart';
+import 'package:c_school_app/service/lecture_service.dart';
+import 'package:c_school_app/service/logger_service.dart';
 import '../../../i18n/review_words.i18n.dart';
 import '../../../util/extensions.dart';
 

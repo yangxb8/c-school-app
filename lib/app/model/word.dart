@@ -1,9 +1,12 @@
-import 'package:c_school_app/app/model/searchable.dart';
+// 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/app/model/searchable.dart';
+import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 
 part 'word.flamingo.dart';

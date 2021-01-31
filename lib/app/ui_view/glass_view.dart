@@ -1,6 +1,10 @@
-import 'package:supercharged/supercharged.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 
+// 📦 Package imports:
+import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
 import '../my_progress_theme.dart';
 
 class GlassView extends StatelessWidget {

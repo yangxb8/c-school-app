@@ -1,14 +1,19 @@
-import 'package:c_school_app/app/ui_view/separator.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// 📦 Package imports:
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/ui_view/separator.dart';
+import '../../i18n/login_page.i18n.dart';
 import 'controller/login_controller.dart';
 import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
-import '../../i18n/login_page.i18n.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);

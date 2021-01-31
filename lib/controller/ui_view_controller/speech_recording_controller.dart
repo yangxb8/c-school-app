@@ -1,11 +1,15 @@
+// 🐦 Flutter imports:
 import 'package:flutter/services.dart';
+
+// 📦 Package imports:
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:audioplayers/audioplayers.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/exceptions/sound_exceptions.dart';
 import 'package:c_school_app/service/app_state_service.dart';
-import 'package:c_school_app/app/model/speech_evaluation_result.dart';
-
 import '../../app/model/speech_exam.dart';
 import '../../service/api_service.dart';
 

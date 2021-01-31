@@ -1,15 +1,20 @@
-import 'package:c_school_app/app/model/exam_base.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/exam_base.dart';
+import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/model/user_lecture_history.dart';
 import 'package:c_school_app/model/user_word_history.dart';
 import 'package:c_school_app/service/user_service.dart';
-import 'package:supercharged/supercharged.dart';
-import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/app/model/word.dart';
-import 'api_service.dart';
 import '../app/ui_view/word_card.dart';
+import 'api_service.dart';
 
 /*
 * This class provide service related to Class, like fetching class,

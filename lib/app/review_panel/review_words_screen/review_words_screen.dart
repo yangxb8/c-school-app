@@ -1,13 +1,18 @@
-import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
-import 'package:c_school_app/app/ui_view/search_bar.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
+import 'package:c_school_app/app/ui_view/search_bar.dart';
 import './ui_view/words_flashcard.dart';
 import './ui_view/words_list.dart';
 

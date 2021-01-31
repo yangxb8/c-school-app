@@ -1,7 +1,14 @@
+// 🎯 Dart imports:
 import 'dart:math' as math;
-import '../my_progress_theme.dart';
+
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:vector_math/vector_math.dart' as vector;
+
+// 🌎 Project imports:
+import '../my_progress_theme.dart';
 
 class WaveView extends StatefulWidget {
   final double percentageValue;

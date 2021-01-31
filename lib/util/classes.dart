@@ -1,4 +1,7 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:after_layout/after_layout.dart';
 
 /// Wrapper for stateful functionality to provide onInit calls in stateles widget

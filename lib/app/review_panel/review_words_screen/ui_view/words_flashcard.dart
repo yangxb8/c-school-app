@@ -1,14 +1,21 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:c_school_app/app/ui_view/word_card.dart';
+// 🎯 Dart imports:
+import 'dart:math';
+
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
+import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/util/extensions.dart';
-import 'dart:math';
 
 const BUTTON_SIZE = 50.0;
 const cardAspectRatio = 12.0 / 22.0;

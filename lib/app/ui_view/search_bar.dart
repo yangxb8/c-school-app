@@ -1,9 +1,14 @@
-import 'package:c_school_app/app/model/searchable.dart';
-import 'package:styled_widget/styled_widget.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:styled_widget/styled_widget.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/searchable.dart';
 import '../model/searchable.dart';
 
 /// Builder of search result

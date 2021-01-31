@@ -1,32 +1,38 @@
+// 🎯 Dart imports:
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:c_school_app/app/model/exam_base.dart';
-import 'package:c_school_app/service/user_service.dart';
-import 'package:c_school_app/util/functions.dart';
-import 'package:csv/csv.dart';
-import 'package:enum_to_string/enum_to_string.dart';
-import 'package:pedantic/pedantic.dart';
-import 'package:path_provider/path_provider.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flamingo/flamingo.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// 📦 Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pedantic/pedantic.dart';
+import 'package:uuid/uuid.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/exam_base.dart';
 import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
-import 'package:uuid/uuid.dart';
+import 'package:c_school_app/service/user_service.dart';
+import 'package:c_school_app/util/functions.dart';
+import '../i18n/api_service.i18n.dart';
 import '../model/user.dart';
 import './logger_service.dart';
-import '../i18n/api_service.i18n.dart';
 
 final logger = LoggerService.logger;
 
