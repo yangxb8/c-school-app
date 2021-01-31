@@ -158,17 +158,27 @@ class WordCard extends StatelessWidget {
         children: partExample,
       );
     }).toList();
+    // explanation part
+    var partExplanation = word.explanation.isEmpty
+        ? SizedBox.shrink()
+        : AutoSizeText(
+            '💡 ${word.explanation}',
+            maxLines: 5,
+            style: ReviewWordsTheme.wordCardExplanation,
+          )
+            .paddingAll(10)
+            .decorated(
+              borderRadius: BorderRadius.circular(5),
+              color: ReviewWordsTheme.extremeLightBlue
+            )
+            .paddingSymmetric(horizontal: 20, vertical: 40);
     return Column(
       children: <Widget>[
         Expanded(child: partHanZi, flex: 2),
         Expanded(
           child: ListView(
             shrinkWrap: true,
-            children: [
-              AutoSizeText(word.explanation, maxLines: 5,).alignment(Alignment.centerLeft).paddingOnly(left: 10),
-              divider(),
-              ...partMeanings
-            ],
+            children: [partExplanation, ...partMeanings],
           ),
           flex: 3,
         ),
