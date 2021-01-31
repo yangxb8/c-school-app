@@ -1,4 +1,5 @@
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/model/lecture.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -49,5 +50,32 @@ class ReviewWordsHomeController extends GetxController {
     wordsListForgotten
         .assignAll(lectureService.findWordsByConditions(wordMemoryStatus: WordMemoryStatus.FORGOT));
     wordsListAll.assignAll(LectureService.allWords);
+  }
+}
+
+class LectureCardController extends GetxController{
+  final LectureService lectureService = Get.find();
+
+  /// Lecture this card is associated with
+  final Lecture lecture;
+
+  /// Forgotten words in this lecture
+  final RxList<Word> forgottenWords = <Word>[].obs;
+
+  /// How many times this lecture has been viewed
+  final RxInt lectureViewCount = (-1).obs;
+
+  LectureCardController(this.lecture);
+
+  @override
+  void onInit() {
+    refreshState();
+    super.onInit();
+  }
+
+  void refreshState() {
+    forgottenWords.assignAll(lectureService.findWordsByConditions(
+        wordMemoryStatus: WordMemoryStatus.FORGOT, lectureId: lecture.lectureId));
+    lectureViewCount.value = lectureService.getLectureViewedCount(lecture);
   }
 }

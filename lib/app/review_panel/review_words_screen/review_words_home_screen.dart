@@ -175,17 +175,18 @@ class LectureCard extends StatelessWidget {
     Key key,
     @required this.lecture,
     this.index,
-  }) : super(key: key);
+  })  : controller = Get.put(LectureCardController(lecture), tag: lecture.lectureId),
+        super(key: key);
+
   static const cardHeight = 120.0;
   static const DEFAULT_IMAGE = 'assets/review_panel/default.png';
   final Lecture lecture;
   final int index;
+  final LectureCardController controller;
   final LectureService lectureService = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    var forgottenWords = lectureService.findWordsByConditions(
-        wordMemoryStatus: WordMemoryStatus.FORGOT, lectureId: lecture.lectureId);
     return SimpleGestureDetector(
       onTap: () => navigateToReviewWordScreen(lecture: lecture, index: index),
       child: SizedBox(
@@ -218,6 +219,13 @@ class LectureCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
+                        Obx(
+                          () => Text(
+                            '${controller.lectureViewCount}',
+                            textAlign: TextAlign.left,
+                            style: ReviewWordsTheme.lectureCardMeta,
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
                           child: Icon(
@@ -226,15 +234,15 @@ class LectureCard extends StatelessWidget {
                             size: 20,
                           ),
                         ),
-                        Text(
-                          lectureService.getLectureViewedCount(lecture).toString(),
-                          textAlign: TextAlign.left,
-                          style: ReviewWordsTheme.lectureCardMeta,
-                        ),
                       ],
                     ),
                     Row(
                       children: [
+                        Text(
+                          '${lecture.words.length}',
+                          textAlign: TextAlign.left,
+                          style: ReviewWordsTheme.lectureCardMeta,
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
                           child: Icon(
@@ -243,15 +251,17 @@ class LectureCard extends StatelessWidget {
                             size: 20,
                           ),
                         ),
-                        Text(
-                          '${lecture.words.length}',
-                          textAlign: TextAlign.left,
-                          style: ReviewWordsTheme.lectureCardMeta,
-                        ),
                       ],
                     ).paddingOnly(left: 20),
                     Row(
                       children: [
+                        Obx(
+                          () => Text(
+                            '${controller.forgottenWords.length}',
+                            textAlign: TextAlign.left,
+                            style: ReviewWordsTheme.lectureCardMeta,
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
                           child: Icon(
@@ -259,11 +269,6 @@ class LectureCard extends StatelessWidget {
                             color: ReviewWordsTheme.lightYellow,
                             size: 20,
                           ),
-                        ),
-                        Text(
-                          forgottenWords.length.toString(),
-                          textAlign: TextAlign.left,
-                          style: ReviewWordsTheme.lectureCardMeta,
                         ),
                       ],
                     ).paddingOnly(left: 20)
@@ -291,7 +296,7 @@ class LectureCard extends StatelessWidget {
 /// Set index will make controller to memorize the lecture last viewed
 /// if both provided, will use wordsList
 void navigateToReviewWordScreen({Lecture lecture, int index, List<Word> wordsList}) {
-  var controller = Get.find<ReviewWordsHomeController>();
+  final reviewWordsHomeController = Get.find<ReviewWordsHomeController>();
   if (lecture == null && wordsList.isBlank) {
     final popup = BeautifulPopup(
       context: Get.context,
@@ -307,9 +312,16 @@ void navigateToReviewWordScreen({Lecture lecture, int index, List<Word> wordsLis
     );
   } else {
     if (index != null) {
-      controller.lastViewedLectureIndex.value = index;
+      reviewWordsHomeController.lastViewedLectureIndex.value = index;
     }
     Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}', arguments: wordsList)
-        .then((_) => controller.refreshState());
+        .then((_) {
+      // Refresh lecture card
+      if (lecture != null) {
+        Get.find<LectureCardController>(tag: lecture.lectureId).refreshState();
+      }
+      // Refresh special card
+      reviewWordsHomeController.refreshState();
+    });
   }
 }
