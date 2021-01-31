@@ -39,6 +39,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
         ),
       ),
       onSearchResultTap: (word) => controller.showSingleCard(word),
+      automaticallyImplyBackButton: true,
       leadingActions: [
         CircularButton(
           icon: Obx(() =>

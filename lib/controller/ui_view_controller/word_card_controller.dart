@@ -118,7 +118,6 @@ class WordCardController extends GetxController {
   void onClose() {
     lectureService.commitChange();
     audioPlayer.dispose();
-    logger.i('Word card Controller destroyed');
     super.onClose();
   }
 }

@@ -48,7 +48,7 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
     this.tailingActions = const [],
     this.searchEnableProperties,
     this.emptyWidget = defaultEmptyResult,
-    this.automaticallyImplyBackButton = true
+    this.automaticallyImplyBackButton = false
   })  : _controller = Get.put(_SearchBarController<T>(items)),
         super(key: key);
 

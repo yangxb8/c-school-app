@@ -165,7 +165,7 @@ class WordCard extends StatelessWidget {
           child: ListView(
             shrinkWrap: true,
             children: [
-              Text(word.explanation).alignment(Alignment.centerLeft).paddingOnly(left: 10),
+              AutoSizeText(word.explanation, maxLines: 5,).alignment(Alignment.centerLeft).paddingOnly(left: 10),
               divider(),
               ...partMeanings
             ],

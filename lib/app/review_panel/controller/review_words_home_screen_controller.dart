@@ -1,3 +1,4 @@
+import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,20 +13,37 @@ class ReviewWordsHomeController extends GetxController {
   /// Used to controller scroll of lectures list
   final groupedItemScrollController = GroupedItemScrollController();
 
-  /// If first time rendered, a staggered animation of lectures will be played
-  bool isFirstRender = true;
-  static const lastViewedLectureIndexKey =
-      'ReviewWordsHomeController.lastViewedLectureIndex';
+  static const lastViewedLectureIndexKey = 'ReviewWordsHomeController.lastViewedLectureIndex';
 
   /// Last Lecture user has viewed, default to 0 (First lecture)
   final lastViewedLectureIndex = 0.obs.trackLocal(lastViewedLectureIndexKey);
 
+  /// Liked words
+  RxList<Word> wordsListLiked = <Word>[].obs;
+
+  /// Forgotten words
+  RxList<Word> wordsListForgotten = <Word>[].obs;
+
+  /// All words
+  RxList<Word> wordsListAll = <Word>[].obs;
+
+  @override
+  void onInit() {
+    refreshState();
+    super.onInit();
+  }
+
   void animateToTrackedLecture() {
     if (groupedItemScrollController.isAttached) {
       groupedItemScrollController.scrollTo(
-          index: lastViewedLectureIndex.value,
-          duration: 0.5.seconds,
-          curve: Curves.bounceInOut);
+          index: lastViewedLectureIndex.value, duration: 0.5.seconds, curve: Curves.bounceInOut);
     }
+  }
+
+  void refreshState() {
+    wordsListLiked.assignAll(lectureService.getLikedWords);
+    wordsListForgotten
+        .assignAll(lectureService.findWordsByConditions(wordMemoryStatus: WordMemoryStatus.FORGOT));
+    wordsListAll.assignAll(LectureService.allWords);
   }
 }

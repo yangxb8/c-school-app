@@ -1,24 +1,22 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/app/model/word.dart';
+import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import 'package:c_school_app/service/app_state_service.dart';
+import 'package:c_school_app/service/lecture_service.dart';
+import 'package:c_school_app/service/logger_service.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:simple_animations/simple_animations.dart';
-import 'package:sticky_grouped_list/sticky_grouped_list.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/model/user_word_history.dart';
-import 'package:c_school_app/service/lecture_service.dart';
-import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
-import 'package:c_school_app/service/logger_service.dart';
-import '../../../util/extensions.dart';
+import 'package:simple_animations/simple_animations.dart';
+import 'package:supercharged/supercharged.dart';
+
 import '../../../i18n/review_words.i18n.dart';
+import '../../../util/extensions.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
@@ -56,12 +54,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// [WordsList] fallback when no audio was found for word
   FlutterTts tts;
 
-  /// [WordsList] Controller for words list
-  final groupedItemScrollController = GroupedItemScrollController();
-
-  /// [WordsList] If word list is first time rendered
-  bool isListFirstRender = true;
-
   /// [WordsList] The word been played now
   RxInt indexOfWordPlaying = (-1).obs;
 
@@ -76,9 +68,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
 
   /// [WordsFlashcard] Controller of primary card
   WordCardController primaryWordCardController;
-
-  /// [WordsFlashcard] WordsHistory of this user
-  RxList<WordHistory> _userWordsHistory;
 
   /// [WordsFlashcard] Reversed Words List for flashCard
   List<Word> reversedWordsList = [];
@@ -98,7 +87,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
 
   @override
   Future<void> onInit() async {
-    _userWordsHistory = LectureService.userWordsHistory_Rx;
     associatedLecture = lectureService.findLectureById(Get.parameters['lectureId']);
     if (Get.arguments == null) {
       wordsList = associatedLecture != null ? associatedLecture.words : LectureService.allWords;
@@ -111,8 +99,10 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
     searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
-    // Worker to flip back primary card when it change
-    ever(primaryWordIndex, (_) => flipBackPrimaryCard());
+    // Worker when primary card change
+    ever(primaryWordIndex, (_) {
+      flipBackPrimaryCard();
+    });
     // Worker to sync color and icon change of playIcon
     ever(searchBarPlayIconControl, (value) {
       if (value == CustomAnimationControl.PLAY_FROM_START) {
@@ -149,6 +139,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       isAutoPlayMode.value = false;
     }
     if (_mode.value == WordsReviewMode.flash_card) {
+      saveAndResetWordHistory();
       _mode.value = WordsReviewMode.list;
       logger.i('Change to List Mode');
     } else {
@@ -223,12 +214,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       changeMode();
     }
   }
-
-  /// [WordsFlashcard]
-  int countWordMemoryStatusOfWordByStatus({@required WordMemoryStatus status}) => _userWordsHistory
-      .filter(
-          (history) => history.wordId == primaryWord.wordId && history.wordMemoryStatus == status)
-      .length;
 
   /// [WordsFlashcard]
   void handWordMemoryStatusPressed(WordMemoryStatus status) {
@@ -339,6 +324,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     if (primaryWordIndex.value == 0) {
       primaryWordIndex.value = wordsList.length - 1;
     }
+    saveAndResetWordHistory();
     lectureService.commitChange();
     audioPlayer.dispose();
     super.onClose();

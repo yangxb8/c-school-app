@@ -1,4 +1,3 @@
-import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/localstorage_service.dart';
 import 'package:c_school_app/util/classes.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +81,7 @@ extension RxIntExtension on RxInt {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this, (value) => localStorageService.saveToDisk(key, value));
+    debounce(this, (value) => localStorageService.saveToDisk(key, value), time: 1.seconds);
     return this;
   }
 }
@@ -95,7 +94,7 @@ extension RxDoubleExtension on RxDouble {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this, (value) => localStorageService.saveToDisk(key, value));
+    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }
@@ -108,7 +107,7 @@ extension RxBoolExtension on RxBool {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this, (value) => localStorageService.saveToDisk(key, value));
+    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }
@@ -121,7 +120,7 @@ extension RxStringExtension on RxString {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    ever(this, (value) => localStorageService.saveToDisk(key, value));
+    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }
@@ -134,7 +133,7 @@ extension RxStringListExtension on RxList<String> {
     if (localStorageService.containsKey(key)) {
       assignAll(Get.find<LocalStorageService>().getFromDisk(key));
     }
-    ever(this, (value) => localStorageService.saveToDisk(key, value));
+    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }
