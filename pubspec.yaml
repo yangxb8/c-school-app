@@ -31,7 +31,8 @@ dependencies:
     sdk: flutter
   #  device_info: ^1.0.0
   firebase_core: ^0.7.0
-  #  firebase_analytics: ^7.0.1
+  firebase_analytics: ^7.0.1
+  firebase_performance: ^0.5.0+1
   firebase_auth: ^0.20.0+1
   #  flutter_facebook_auth: "^0.2.3"
   #  twitter_login: ^2.1.3

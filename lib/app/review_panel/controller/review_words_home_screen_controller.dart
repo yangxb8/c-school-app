@@ -1,5 +1,4 @@
 // 🐦 Flutter imports:
-import 'package:c_school_app/app/model/lecture.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -8,6 +7,7 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
+import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import '../../../util/extensions.dart';

@@ -127,7 +127,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
   final padding = 10.0;
   final verticalInset = 8.0;
   final logger = LoggerService.logger;
-  static const MAX_CARDS_FRAME = 5;
+  static const MAX_CARDS_FRAME = 4;
 
   CardScrollWidget(this.pageFraction);
 
@@ -154,7 +154,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           var delta = i - pageFraction;
           var isPrimaryCard = delta >= 0 && delta.toInt() == 0;
           // If card is not visible, don't build it
-          if (delta.abs() > MAX_CARDS_FRAME) {
+          if (delta>1 || -delta > MAX_CARDS_FRAME) {
             continue;
           }
           var isOnRight = delta > 0;
@@ -164,7 +164,8 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           var wordCard = WordCard(
             // Key was added to prevent strange behavior of card flip status
               key: ValueKey(controller.reversedWordsList[i]),
-              word: controller.reversedWordsList[i]);
+              word: controller.reversedWordsList[i],
+              loadImage: delta.abs()<2);
           // Set primary card controller
           if (isPrimaryCard) {
             controller.primaryWordIndex.value = i;

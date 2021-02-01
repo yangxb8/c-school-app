@@ -8,6 +8,9 @@ import 'package:flutter/services.dart';
 
 // 📦 Package imports:
 import 'package:catcher/catcher.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
@@ -18,6 +21,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wiredash/wiredash.dart';
 
 // 🌎 Project imports:
+import 'package:c_school_app/i18n/wiredash_translation.dart';
 import 'package:c_school_app/service/user_service.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
@@ -58,8 +62,11 @@ class CSchoolApp extends StatelessWidget {
     return KeyboardDismisser(
         child: Wiredash(
       options: WiredashOptionsData(
-        /// You can set your own locale to override device default (`window.locale` by default)
-        locale: const Locale.fromSubtags(languageCode: 'jp'),
+        customTranslations: {
+          const Locale.fromSubtags(languageCode: 'jp'):
+          const CSchoolTranslations(),
+        },
+        locale: const Locale('jp'),
       ),
       projectId: 'c-school-iysnrje',
       secret: 'rbl6r14rthdvtkruhfu0lvlldp6rpq3pepclnowm1q6ui08u',
@@ -96,6 +103,9 @@ class CSchoolApp extends StatelessWidget {
           const Locale('ja', 'JP'),
         ],
         getPages: AppRouter.setupRouter(),
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
+        ],
         home: Splash(),
       ),
     ));
@@ -123,6 +133,7 @@ Future<void> initServices() async {
   await Get.putAsync<LocalStorageService>(() async => await LocalStorageService.getInstance());
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
+  await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
   if (UserService.user != null && UserService.user.isLogin()) {
     await Get.putAsync<LectureService>(() async => await LectureService.getInstance());

@@ -27,8 +27,11 @@ final DEFAULT_IMAGE = 'assets/review_panel/default.png';
 
 class WordCard extends StatelessWidget {
   final Word word;
+
+  /// Whether we should load the image
+  final bool loadImage;
   final WordCardController controller;
-  WordCard({Key key, @required this.word})
+  WordCard({Key key, @required this.word, this.loadImage})
       : controller = Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
         super(key: key);
 
@@ -90,11 +93,19 @@ class WordCard extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            BlurHashImageWithFallback(
-                    fallbackImg: DEFAULT_IMAGE, mainImg: word.pic?.url, blurHash: word.picHash)
-                .expanded()
-          ],
+          children: loadImage
+              ? [
+                  BlurHashImageWithFallback(
+                          fallbackImg: DEFAULT_IMAGE,
+                          mainImg: word.pic?.url,
+                          blurHash: word.picHash)
+                      .expanded()
+                ]
+              : [
+                  Container(
+                    color: Colors.white70,
+                  ).expanded()
+                ],
         ).expanded(flex: 10)
       ],
     );
@@ -173,9 +184,7 @@ class WordCard extends StatelessWidget {
           )
             .paddingAll(10)
             .decorated(
-              borderRadius: BorderRadius.circular(5),
-              color: ReviewWordsTheme.extremeLightBlue
-            )
+                borderRadius: BorderRadius.circular(5), color: ReviewWordsTheme.extremeLightBlue)
             .paddingSymmetric(horizontal: 20, vertical: 40);
     return Column(
       children: <Widget>[
