@@ -103,7 +103,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              icon: Icon(MaterialCommunityIcons.emoticon_cry_outline,
+              icon: Icon(Entypo.cross,
                   size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListForgotten.toList()),
@@ -199,7 +199,7 @@ class LectureCard extends StatelessWidget {
               children: [
                 BlurHashImageWithFallback(
                   fallbackImg: DEFAULT_IMAGE,
-                  mainImg: lecture.pic.url,
+                  mainImgUrl: lecture.pic.url,
                   blurHash: lecture.picHash,
                 ).expanded(),
               ],

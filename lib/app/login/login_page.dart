@@ -85,21 +85,6 @@ class _LoginPageState extends State<LoginPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
-                            child: GestureDetector(
-                              onTap: c.handleAnonymousLogin,
-                              child: Icon(
-                                FontAwesome.times,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                       Padding(
                         padding: EdgeInsets.only(top: 35.0),
                         child: Image(
@@ -425,23 +410,6 @@ class _LoginPageState extends State<LoginPage>
       Padding(
         padding: EdgeInsets.only(top: 10.0, right: 30.0, bottom: 20.0),
         child: GestureDetector(
-          onTap: c.handleFacebookLogin,
-          child: Container(
-            padding: const EdgeInsets.all(15.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
-            child: Icon(
-              FontAwesome.facebook_f,
-              color: Color(0xFF0084ff),
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.only(top: 10.0, right: 30.0, bottom: 20.0),
-        child: GestureDetector(
           onTap: c.handleTwitterLogin,
           child: Container(
             padding: const EdgeInsets.all(15.0),
@@ -451,6 +419,23 @@ class _LoginPageState extends State<LoginPage>
             ),
             child: Icon(
               FontAwesome.twitter,
+              color: Color(0xFF0084ff),
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.only(top: 10.0, right: 30.0, bottom: 20.0),
+        child: GestureDetector(
+          onTap: c.handleFacebookLogin,
+          child: Container(
+            padding: const EdgeInsets.all(15.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            child: Icon(
+              FontAwesome.facebook_f,
               color: Color(0xFF0084ff),
             ),
           ),

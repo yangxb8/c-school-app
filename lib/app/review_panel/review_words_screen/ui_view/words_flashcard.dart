@@ -73,9 +73,9 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                       splashRadius: 0.01,
                       icon: Obx(
                         () => Icon(
-                          FontAwesome5.laugh_beam,
+                          Entypo.circle,
                           color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
-                              ? Colors.yellowAccent
+                              ? Colors.redAccent
                               : Colors.blueGrey,
                           size: BUTTON_SIZE,
                         ),
@@ -87,23 +87,9 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                       splashRadius: 0.01,
                       icon: Obx(
                         () => Icon(
-                          FontAwesome5.frown_open,
-                          color: controller.wordMemoryStatus.value == WordMemoryStatus.NORMAL
-                              ? Colors.yellowAccent
-                              : Colors.blueGrey,
-                          size: BUTTON_SIZE,
-                        ),
-                      ),
-                      onPressed: () =>
-                          controller.handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
-                    ),
-                    IconButton(
-                      splashRadius: 0.01,
-                      icon: Obx(
-                        () => Icon(
-                          MaterialCommunityIcons.emoticon_cry_outline,
+                          Entypo.cross,
                           color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
-                              ? Colors.yellowAccent
+                              ? Colors.blueAccent
                               : Colors.blueGrey,
                           size: BUTTON_SIZE,
                         ),

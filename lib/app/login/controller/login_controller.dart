@@ -114,15 +114,6 @@ class LoginController extends GetxController {
     }
   }
 
-  void handleAnonymousLogin() async {
-    var result = await apiService.firebaseAuthApi.loginAnonymous();
-    if (result == 'ok') {
-      await Get.offAllNamed('/home');
-    } else {
-      _showErrorPopup('Something is wrong!'.i18n);
-    }
-  }
-
   void _showErrorPopup(String content, {Map<String, dynamic> extraAction}) {
     final popup = BeautifulPopup(
       context: context,
