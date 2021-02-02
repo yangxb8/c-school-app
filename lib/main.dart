@@ -115,7 +115,7 @@ class CSchoolApp extends StatelessWidget {
 class Splash extends StatelessWidget {
   Future<void> _init() async {
     await initServices();
-    await Get.toNamed(UserService.user.isLogin() ? '/home' : '/login');
+    await Get.toNamed(UserService.user.isLogin() ? '/login' : '/login');
   }
 
   @override

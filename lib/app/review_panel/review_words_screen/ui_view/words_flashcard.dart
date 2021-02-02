@@ -2,11 +2,11 @@
 import 'dart:math';
 
 // 🐦 Flutter imports:
+import 'package:c_school_app/c_school_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
@@ -17,7 +17,9 @@ import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/util/extensions.dart';
 
-const BUTTON_SIZE = 50.0;
+
+
+const BUTTON_SIZE = 60.0;
 const cardAspectRatio = 12.0 / 22.0;
 const widgetAspectRatio = cardAspectRatio * 1.2;
 
@@ -42,7 +44,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
 
     return FadeIn(
       child: Padding(
-        padding: const EdgeInsets.only(top: 90.0),
+        padding: const EdgeInsets.only(top: 80.0),
         child: SimpleGestureDetector(
           onHorizontalSwipe: _onHorizontalSwipe,
           child: Column(
@@ -63,43 +65,41 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                   Obx(() => CardScrollWidget(controller.pageFraction.value)),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    IconButton(
-                      splashRadius: 0.01,
-                      icon: Obx(
-                        () => Icon(
-                          Entypo.circle,
-                          color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
-                              ? Colors.redAccent
-                              : Colors.blueGrey,
-                          size: BUTTON_SIZE,
-                        ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(top: 4),
+                    splashRadius: 0.01,
+                    icon: Obx(
+                      () => Icon(
+                        CSchool.circle_empty,
+                        color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
+                            ? Colors.redAccent
+                            : Colors.blueGrey,
+                        size: BUTTON_SIZE,
                       ),
-                      onPressed: () =>
-                          controller.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
                     ),
-                    IconButton(
-                      splashRadius: 0.01,
-                      icon: Obx(
-                        () => Icon(
-                          Entypo.cross,
-                          color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
-                              ? Colors.blueAccent
-                              : Colors.blueGrey,
-                          size: BUTTON_SIZE,
-                        ),
+                    onPressed: () =>
+                        controller.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
+                  ),
+                  IconButton(
+                    splashRadius: 0.01,
+                    icon: Obx(
+                      () => Icon(
+                        CSchool.cancel_circled,
+                        color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
+                            ? Colors.blueAccent
+                            : Colors.blueGrey,
+                        size: BUTTON_SIZE,
                       ),
-                      onPressed: () =>
-                          controller.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
                     ),
-                  ],
-                ),
-              )
+                    onPressed: () =>
+                        controller.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
+                  ).paddingOnly(bottom: 12),
+                ],
+              ).paddingOnly(right: 20)
             ],
           ),
         ),

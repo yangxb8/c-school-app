@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // 📦 Package imports:
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -14,6 +13,7 @@ import '../../i18n/login_page.i18n.dart';
 import 'controller/login_controller.dart';
 import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
+import '../../c_school_icons.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage>
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(top: 35.0),
+                        padding: EdgeInsets.only(top: 85.0),
                         child: Image(
                             width: 250.0,
                             height: 191.0,
@@ -256,7 +256,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.envelope,
+                              CSchool.envelope,
                               color: Colors.black,
                               size: 22.0,
                             ),
@@ -289,7 +289,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.lock,
+                              CSchool.unlock_alt,
                               size: 22.0,
                               color: Colors.black,
                             ),
@@ -300,8 +300,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleLogin,
                               child: Icon(
                                 _obscureTextLogin
-                                    ? FontAwesome.eye
-                                    : FontAwesome.eye_slash,
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -418,7 +418,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.twitter,
+              CSchool.twitter,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -435,7 +435,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.facebook_f,
+              CSchool.facebook_f,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -452,7 +452,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.google,
+              CSchool.google,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -471,7 +471,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.apple,
+              CSchool.apple,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -521,7 +521,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.user,
+                              CSchool.user_circle,
                               color: Colors.black,
                             ),
                             hintText: 'Name'.i18n,
@@ -551,7 +551,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.envelope,
+                              CSchool.envelope,
                               color: Colors.black,
                             ),
                             hintText: 'Email Address'.i18n,
@@ -582,7 +582,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.lock,
+                              CSchool.unlock_alt,
                               color: Colors.black,
                             ),
                             hintText: 'Password'.i18n,
@@ -592,8 +592,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignup,
                               child: Icon(
                                 _obscureTextSignup
-                                    ? FontAwesome.eye
-                                    : FontAwesome.eye_slash,
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -623,7 +623,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.lock,
+                              CSchool.unlock_alt,
                               color: Colors.black,
                             ),
                             hintText: 'Confirmation'.i18n,
@@ -633,8 +633,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignupConfirm,
                               child: Icon(
                                 _obscureTextSignupConfirm
-                                    ? FontAwesome.eye
-                                    : FontAwesome.eye_slash,
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),

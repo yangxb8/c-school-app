@@ -1,8 +1,8 @@
 // 🐦 Flutter imports:
+import 'package:c_school_app/c_school_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -69,8 +69,8 @@ class ReviewWords extends GetView<ReviewWordsController> {
         ),
         CircularButton(
           icon: Obx(() => controller.speakerGender.value == SpeakerGender.male
-              ? Icon(Ionicons.md_male)
-              : Icon(Ionicons.md_female)),
+              ? Icon(CSchool.male)
+              : Icon(CSchool.female)),
           onPressed: controller.toggleSpeakerGender,
         )
       ],

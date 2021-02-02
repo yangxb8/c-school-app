@@ -39,7 +39,6 @@ dependencies:
   sign_in_with_apple: ^2.5.4
   get: ^3.24.0
   i18n_extension: ^2.0.0
-  flutter_icons: ^1.1.0
   shared_preferences: ">=0.5.10 <2.0.0"
   form_field_validator: ^1.0.1
   flutter_beautiful_popup: ^1.5.0
@@ -73,7 +72,6 @@ dependencies:
   styled_widget: ^0.2.2
   wiredash: ^0.4.1
   animate_do: ^1.7.5
-  simple_tooltip: 0.1.16
   auto_size_text: ^2.1.0
   after_layout: ^1.0.7+2
   responsive_framework: ^0.0.14
@@ -88,11 +86,12 @@ dev_dependencies:
 
   import_sorter: ^4.4.1
   pedantic: ^1.9.2
-  build_runner: ^1.11.0
+  build_runner: ^1.11.1
   json_serializable: ^3.5.1
   flamingo_generator: ^0.8.0
   change_app_package_name: ^0.1.2
   csv: ^4.1.0
+  fluttericon: ^1.0.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -132,6 +131,10 @@ flutter:
     - family: WorkSansMedium
       fonts:
         - asset: assets/fonts/Work_Sans/WorkSans-Medium.ttf
+
+    - family:  CSchool
+      fonts:
+        - asset: assets/fonts/CSchool.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_beautiful_popup/main.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -22,6 +21,7 @@ import 'package:c_school_app/service/lecture_service.dart';
 import '../../../i18n/review_words.i18n.dart';
 import '../../../util/extensions.dart';
 import 'review_words_theme.dart';
+import '../../../c_school_icons.dart';
 
 class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
   @override
@@ -103,8 +103,9 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              icon: Icon(Entypo.cross,
-                  size: bigIconSize, color: ReviewWordsTheme.darkBlue),
+              padding: EdgeInsets.only(top: 5,left: 8),
+              icon: Icon(CSchool.cancel_circled,
+                  size: bigIconSize*1.2, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListForgotten.toList()),
               tooltip: 'Forgotten words'.i18n,
@@ -117,7 +118,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             IconButton(
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListLiked.toList()),
-              icon: Icon(FontAwesome.heart, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
+              icon: Icon(CSchool.heart, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               tooltip: 'Liked words'.i18n,
             ),
             _buildWordsCount(controller.wordsListLiked)
@@ -127,7 +128,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
           children: [
             IconButton(
               icon:
-                  Icon(FontAwesome.university, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
+                  Icon(CSchool.books_stack_of_three, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListAll.toList()),
               tooltip: 'All words'.i18n,
@@ -151,14 +152,6 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
 
   Widget _buildWordsCount(List<Word> words) => Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 5.0),
-            child: Icon(
-              Icons.menu_book,
-              color: ReviewWordsTheme.lightYellow,
-              size: 20,
-            ),
-          ),
           Obx(
             () => Text(
               '${words.length}',
@@ -166,6 +159,14 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
               style: ReviewWordsTheme.lectureCardMeta,
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Icon(
+              CSchool.playing_cards,
+              color: ReviewWordsTheme.lightYellow,
+              size: 20,
+            ),
+          )
         ],
       ).paddingOnly(top: 25, left: 15);
 }
@@ -219,6 +220,36 @@ class LectureCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
+                        Text(
+                          '${lecture.words.length}',
+                          textAlign: TextAlign.left,
+                          style: ReviewWordsTheme.lectureCardMeta,
+                        ),
+                        Icon(
+                          CSchool.playing_cards,
+                          color: ReviewWordsTheme.lightYellow,
+                          size: 20,
+                        ).paddingOnly(left: 10),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Obx(
+                              () => Text(
+                            '${controller.forgottenWords.length}',
+                            textAlign: TextAlign.left,
+                            style: ReviewWordsTheme.lectureCardMeta,
+                          ),
+                        ),
+                        Icon(
+                          CSchool.cancel_circled,
+                          color: ReviewWordsTheme.lightYellow,
+                          size: 20,
+                        ).paddingOnly(left: 10),
+                      ],
+                    ).paddingOnly(left: 20),
+                    Row(
+                      children: [
                         Obx(
                           () => Text(
                             '${controller.lectureViewCount}',
@@ -226,52 +257,13 @@ class LectureCard extends StatelessWidget {
                             style: ReviewWordsTheme.lectureCardMeta,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: Icon(
-                            Icons.remove_red_eye,
-                            color: ReviewWordsTheme.lightYellow,
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '${lecture.words.length}',
-                          textAlign: TextAlign.left,
-                          style: ReviewWordsTheme.lectureCardMeta,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: Icon(
-                            Icons.menu_book,
-                            color: ReviewWordsTheme.lightYellow,
-                            size: 20,
-                          ),
-                        ),
+                        Icon(
+                          CSchool.study,
+                          color: ReviewWordsTheme.lightYellow,
+                          size: 20,
+                        ).paddingOnly(left: 10),
                       ],
                     ).paddingOnly(left: 20),
-                    Row(
-                      children: [
-                        Obx(
-                          () => Text(
-                            '${controller.forgottenWords.length}',
-                            textAlign: TextAlign.left,
-                            style: ReviewWordsTheme.lectureCardMeta,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: Icon(
-                            MaterialCommunityIcons.emoticon_cry_outline,
-                            color: ReviewWordsTheme.lightYellow,
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    ).paddingOnly(left: 20)
                   ],
                 )
               ],

@@ -1,9 +1,9 @@
 // 🐦 Flutter imports:
+import 'package:c_school_app/c_school_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -14,6 +14,8 @@ import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
+
+
 
 const BUTTON_SIZE = 50.0;
 
@@ -69,7 +71,7 @@ class WordsList extends GetView<ReviewWordsController> {
                             ? ReviewWordsTheme.lightYellow
                             : ReviewWordsTheme.darkBlue,
                         padding: EdgeInsets.only(left: 20),
-                        icon: Icon(FontAwesome.play_circle),
+                        icon: Icon(CSchool.volume),
                         iconSize: BUTTON_SIZE,
                         onPressed: () => controller.playWord(index),
                       ),

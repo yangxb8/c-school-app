@@ -6,10 +6,8 @@ import 'package:flutter/widgets.dart';
 // 📦 Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flippable_box/flippable_box.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 // 🌎 Project imports:
@@ -19,6 +17,7 @@ import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
 import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
 import '../model/word.dart';
+import '../../c_school_icons.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
 final BUTTON_SIZE = 25.0;
@@ -30,42 +29,16 @@ class WordCard extends StatelessWidget {
   /// Whether we should load the image
   final bool loadImage;
   final WordCardController controller;
-  WordCard({Key key, @required this.word, this.loadImage})
+  WordCard({Key key, @required this.word, this.loadImage=true})
       : controller = Get.put<WordCardController>(WordCardController(word),
             tag: word.wordId),
         super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var hint = SimpleGestureDetector(
-      onTap: controller.toggleHint,
-      child: CircleAvatar(
-        radius: 20,
-        child: Obx(
-          () => SimpleTooltip(
-            tooltipTap: controller.toggleHint,
-            tooltipDirection: TooltipDirection.down,
-            borderColor: Colors.transparent,
-            show: controller.isHintShown.value,
-            ballonPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            maxWidth: Get.width * 0.7,
-            content: AutoSizeText(
-              word.hint,
-              style: ReviewWordsTheme.wordCardHint,
-              maxLines: 1,
-            ),
-            child: Icon(FontAwesome5.lightbulb,
-                color: controller.isHintShown.value
-                    ? ReviewWordsTheme.lightYellow
-                    : ReviewWordsTheme.lightBlue,
-                size: BUTTON_SIZE),
-          ),
-        ),
-      ),
-    );
-    var emptyImage = Container(
+  Widget build(BuildContext context) {;
+    final emptyImage = Container(
       color: ReviewWordsTheme.lightBlue,
-    ).expanded();
+    );
     var frontCardContent = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -87,7 +60,6 @@ class WordCard extends StatelessWidget {
                               overflow: TextOverflow.fade,
                             ).paddingSymmetric(vertical: 10))
                         .toList(),
-                    if (!word.hint.isBlank) hint else Container()
                   ],
                 ),
               ],
@@ -104,7 +76,7 @@ class WordCard extends StatelessWidget {
                           blurHash: word.picHash)
                       .expanded()
                 ]
-              : [emptyImage],
+              : [emptyImage.expanded()],
         ).expanded(flex: 10)
       ],
     );
@@ -114,7 +86,7 @@ class WordCard extends StatelessWidget {
         Obx(
           () => IconButton(
             splashRadius: 0.01,
-            icon: Icon(FontAwesome.heart),
+            icon: Icon(CSchool.heart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked()
                 ? ReviewWordsTheme.lightYellow
@@ -182,7 +154,7 @@ class WordCard extends StatelessWidget {
     var partExplanation = word.explanation.isEmpty
         ? SizedBox.shrink()
         : AutoSizeText(
-            '💡 ${word.explanation}',
+            '💡 ${word.hint}¥n💡 ${word.explanation}',
             maxLines: 5,
             style: ReviewWordsTheme.wordCardExplanation,
           )
