@@ -23,7 +23,6 @@ import '../model/word.dart';
 final cardAspectRatio = 12.0 / 22.0;
 final BUTTON_SIZE = 25.0;
 final verticalInset = 8.0;
-final DEFAULT_IMAGE = 'assets/review_panel/default.png';
 
 class WordCard extends StatelessWidget {
   final Word word;
@@ -32,7 +31,8 @@ class WordCard extends StatelessWidget {
   final bool loadImage;
   final WordCardController controller;
   WordCard({Key key, @required this.word, this.loadImage})
-      : controller = Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
+      : controller = Get.put<WordCardController>(WordCardController(word),
+            tag: word.wordId),
         super(key: key);
 
   @override
@@ -63,6 +63,9 @@ class WordCard extends StatelessWidget {
         ),
       ),
     );
+    var emptyImage = Container(
+      color: ReviewWordsTheme.lightBlue,
+    ).expanded();
     var frontCardContent = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -96,16 +99,12 @@ class WordCard extends StatelessWidget {
           children: loadImage
               ? [
                   BlurHashImageWithFallback(
-                          fallbackImg: DEFAULT_IMAGE,
-                          mainImg: word.pic?.url,
+                          fallbackImg: emptyImage,
+                          mainImgUrl: word.pic?.url,
                           blurHash: word.picHash)
                       .expanded()
                 ]
-              : [
-                  Container(
-                    color: Colors.white70,
-                  ).expanded()
-                ],
+              : [emptyImage],
         ).expanded(flex: 10)
       ],
     );
@@ -117,7 +116,9 @@ class WordCard extends StatelessWidget {
             splashRadius: 0.01,
             icon: Icon(FontAwesome.heart),
             // key: favoriteButtonKey,
-            color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
+            color: controller.isWordLiked()
+                ? ReviewWordsTheme.lightYellow
+                : Colors.grey,
             iconSize: BUTTON_SIZE * 2,
             onPressed: () => controller.toggleFavoriteCard(),
           ).paddingOnly(top: 10, right: 10),
@@ -132,11 +133,13 @@ class WordCard extends StatelessWidget {
           onTap: controller.flipCard,
           child: Obx(
             () => FlippableBox(
+              duration: 0.3,
               isFlipped: controller.isCardFlipped.value,
               curve: Curves.easeOut,
               back: Container(
                   constraints: BoxConstraints.expand(),
-                  child: Stack(children: [buildBackCardContent(), favoriteIcon])),
+                  child:
+                      Stack(children: [buildBackCardContent(), favoriteIcon])),
               front: Container(
                   constraints: BoxConstraints.expand(),
                   child: Stack(children: [frontCardContent, favoriteIcon])),
@@ -167,8 +170,9 @@ class WordCard extends StatelessWidget {
     ).center();
     // Second meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
-      var partExample =
-          meaning.examples.map((wordExample) => _buildExampleRow(wordExample)).toList();
+      var partExample = meaning.examples
+          .map((wordExample) => _buildExampleRow(wordExample))
+          .toList();
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: partExample,
@@ -184,7 +188,8 @@ class WordCard extends StatelessWidget {
           )
             .paddingAll(10)
             .decorated(
-                borderRadius: BorderRadius.circular(5), color: ReviewWordsTheme.extremeLightBlue)
+                borderRadius: BorderRadius.circular(5),
+                color: ReviewWordsTheme.extremeLightBlue)
             .paddingSymmetric(horizontal: 20, vertical: 40);
     return Column(
       children: <Widget>[

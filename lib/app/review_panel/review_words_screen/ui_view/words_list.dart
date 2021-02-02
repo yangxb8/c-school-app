@@ -66,8 +66,8 @@ class WordsList extends GetView<ReviewWordsController> {
                     leading: Obx(
                       () => IconButton(
                         color: controller.indexOfWordPlaying.value == index
-                            ? Colors.lightBlueAccent
-                            : Colors.blueGrey,
+                            ? ReviewWordsTheme.lightYellow
+                            : ReviewWordsTheme.darkBlue,
                         padding: EdgeInsets.only(left: 20),
                         icon: Icon(FontAwesome.play_circle),
                         iconSize: BUTTON_SIZE,
