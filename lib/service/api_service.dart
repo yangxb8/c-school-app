@@ -2,8 +2,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 // 🐦 Flutter imports:
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,12 +15,12 @@ import 'package:csv/csv.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
 
 // 🌎 Project imports:
@@ -38,21 +40,18 @@ final logger = LoggerService.logger;
 
 class ApiService extends GetxService {
   static ApiService _instance;
-  static FirebaseApp _firebaseApp;
   static bool _isFirebaseInitilized = false;
   static _FirebaseAuthApi _firebaseAuthApi;
   static _FirestoreApi _firestoreApi;
-  static _CloudStorageApi _cloudStorageApi;
   static _TencentApi _tencentApi;
 
   static Future<ApiService> getInstance() async {
     _instance ??= ApiService();
 
     if (!_isFirebaseInitilized) {
-      _firebaseApp = await Firebase.initializeApp();
+      await Firebase.initializeApp();
       _firebaseAuthApi = _FirebaseAuthApi.getInstance();
       _firestoreApi = _FirestoreApi.getInstance();
-      _cloudStorageApi = _CloudStorageApi.getInstance(_firebaseApp);
       _tencentApi = _TencentApi.getInstance();
       _isFirebaseInitilized = true;
     }
@@ -62,7 +61,6 @@ class ApiService extends GetxService {
 
   _FirebaseAuthApi get firebaseAuthApi => _firebaseAuthApi;
   _FirestoreApi get firestoreApi => _firestoreApi;
-  _CloudStorageApi get cloudStorageApi => _cloudStorageApi;
   _TencentApi get tencentApi => _tencentApi;
 }
 
@@ -183,9 +181,61 @@ class _FirebaseAuthApi {
     throw UnimplementedError();
   }
 
-  //TODO: implement this
   Future<String> loginWithApple() async {
-    throw UnimplementedError();
+    /// Generates a cryptographically secure random nonce, to be included in a
+    /// credential request.
+    String generateNonce([int length = 32]) {
+      final charset =
+          '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+      final random = Random.secure();
+      return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+          .join();
+    }
+
+    /// Returns the sha256 hash of [input] in hex notation.
+    String sha256ofString(String input) {
+      final bytes = utf8.encode(input);
+      final digest = sha256.convert(bytes);
+      return digest.toString();
+    }
+    // To prevent replay attacks with the credential returned from Apple, we
+    // include a nonce in the credential request. When signing in in with
+    // Firebase, the nonce in the id token returned by Apple, is expected to
+    // match the sha256 hash of `rawNonce`.
+    final rawNonce = generateNonce();
+    final nonce = sha256ofString(rawNonce);
+    try {
+      // Request credential for the currently signed in Apple account.
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
+      final oauthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+
+      // Sign in the user with Firebase. If the nonce we generated earlier does
+      // not match the nonce in `appleCredential.identityToken`, sign in will fail.
+      var userCredential =
+          await _firebaseAuth.signInWithCredential(oauthCredential);
+      // If the user is not in our DB, create it
+      if (_firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
+          null) {
+        _firestoreApi._registerAppUser(
+            firebaseUser: userCredential.user,
+            nickname: appleCredential.givenName);
+      }
+      return 'ok';
+    } catch (e) {
+      logger.e(e.toString());
+      return 'Unexpected internal error occurs'.i18nApi;
+    }
   }
 
   //TODO: implement this
@@ -193,20 +243,10 @@ class _FirebaseAuthApi {
     throw UnimplementedError();
   }
 
-  //TODO: implement this, after logout, login as anonymous.
   Future<String> logout() async {
-    throw UnimplementedError();
-    await loginAnonymous();
-  }
-
-  Future<String> loginAnonymous() async {
-    try {
-      await FirebaseAuth.instance.signInAnonymously();
-      return 'ok';
-    } catch (e) {
-      logger.e(e.toString());
-      return 'Unexpected internal error occurs'.i18nApi;
-    }
+    await FirebaseAuth.instance.signOut();
+    //TODO: Login out from 3rd party OAuth
+    return 'ok';
   }
 }
 
@@ -600,22 +640,6 @@ class _FirestoreApi {
     if (!debugMode) return;
     var host = GetPlatform.isAndroid ? '10.0.2.2:8080' : 'localhost:8080';
     _firestore.settings = Settings(host: host, sslEnabled: false);
-  }
-}
-
-//TODO: implement this class
-class _CloudStorageApi {
-  static _CloudStorageApi _instance;
-  static FirebaseStorage _firebaseStorage;
-
-  static _CloudStorageApi getInstance(FirebaseApp firebaseApp) {
-    if (_instance == null) {
-      _instance = _CloudStorageApi();
-      _firebaseStorage = FirebaseStorage.instanceFor(
-          app: firebaseApp, bucket: 'gs://spoken-chinese.appspot.com');
-    }
-
-    return _instance;
   }
 }
 
