@@ -267,10 +267,12 @@ class _FirestoreApi {
 
     // Save speech data
     final speechDataPath = '/user_generated/speech_data';
+    final uuid = Uuid().v1();
+    final meta = {'newPost': 'true','userId': userId, 'examId':exam.examId};
     final data = await storage.save(speechDataPath, speechData,
-        filename: '${userId}_${exam.examId}.${extension_audio}',
+        filename: '$uuid.${extension_audio}',
         mimeType: mimeTypeMpeg,
-        metadata: {'newPost': 'true'});
+        metadata: meta);
     final result = SpeechEvaluationResult(
         userId: userId,
         examId: exam.examId ?? 'freeSpeech',
@@ -279,9 +281,9 @@ class _FirestoreApi {
     // Save evaluation result
     await storage.save(
         speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
-        filename: '${userId}_${exam.examId}.${extension_json}',
+        filename: '$uuid.${extension_json}',
         mimeType: 'application/json',
-        metadata: {'newPost': 'true'});
+        metadata: meta);
   }
 
   /// Upload words to firestore and cloud storage
