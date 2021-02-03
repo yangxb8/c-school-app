@@ -35,34 +35,38 @@ import TAISDK
 }
 
 class SoeDelegate: NSObject,TAIOralEvaluationDelegate {
-    func onEndOfSpeech(in oralEvaluation: TAIOralEvaluation!) {
-    }
-    
-    func oralEvaluation(_ oralEvaluation: TAIOralEvaluation!, onVolumeChanged volume: Int) {
-    }
-    
     let oralEvaluation = TAIOralEvaluation()
-    let POLLING_INTERVAL = 200
+    let POLLING_INTERVAL = 0.2
     let NO_SPEECH_DETECT_INTERVAL = 5000
-    var evaluationFinish = false
-    
+    var evaluationResultJson: String
+    var flutterResult: FlutterResult
+    var errorDetected: false
+
     override init() {
         // By setting delegate to self, function like oralEvaluation() can be registered
         super.init()
         oralEvaluation.delegate = self
     }
-    
+
     func soeStopRecordAndEvaluate(result:@escaping FlutterResult){
         oralEvaluation.stopRecordAndEvaluation({ (error:TAIError!) in
             if error.code == TAIErrCode.succ {
-                result(nil)
+                flutterResult = result
+                // Polling evaluationResultJson until its set by oralEvaluation()
+                Timer.scheduledTimer(withTimeInterval: POLLING_INTERVAL, repeats: true) { timer in
+                    // Error or succeed
+                    if errorDetected || evaluationResultJson != nil{
+                        // Callback will report to flutter so here we just stop the timer
+                        timer.invalidate()
+                    }
+                }
             }
             result(FlutterError(code: String(error.code.rawValue),
                                 message: error.desc,
                                 details: error))
         })
     }
-    
+
     func soeStartRecord(refText:String, scoreCoeff:Double,mode:String,audioPath:String,result:@escaping FlutterResult) {
         if oralEvaluation.isRecording() {
             return
@@ -108,7 +112,26 @@ class SoeDelegate: NSObject,TAIOralEvaluationDelegate {
     func oralEvaluation(_ oralEvaluation:TAIOralEvaluation!, onEvaluateData
                             :TAIOralEvaluationData!, result:TAIOralEvaluationRet!, error:TAIError!) {
         if error.code != TAIErrCode.succ {
+            errorDetected = true
+            flutterResult(FlutterError(code: nil,
+                                message: "Evaluation Failed",
+                                details: nil))
         }
+        flutterResult(result.description())
+    }
+
+    // When end of speech is detected
+    func onEndOfSpeech(in oralEvaluation: TAIOralEvaluation!) {
+        errorDetected = true
+        flutterResult(FlutterError(code: nil,
+                                message: "End of Speech detected",
+                                details: nil))
+    }
+
+    // When volumn changed
+    func oralEvaluation(_ oralEvaluation: TAIOralEvaluation!, onVolumeChanged volume: Int) {
+        // do nothing
+        return
     }
 
     func evalModeFromString(mode:String) -> TAIOralEvaluationEvalMode {
