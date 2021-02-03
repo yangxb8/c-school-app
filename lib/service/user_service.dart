@@ -7,12 +7,14 @@ import 'package:wiredash/wiredash.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import '../model/user.dart';
 import 'api_service.dart';
+import 'lecture_service.dart';
 
 /// Provide user related service, like create and update user
 class UserService extends GetxService {
   static UserService _instance;
   static AppUser user;
   static final ApiService _apiService = Get.find();
+  static final isLectureServiceInitialized = false.obs;
   static final logger = LoggerService.logger;
   static ShakeDetector detector;
 
@@ -43,6 +45,10 @@ class UserService extends GetxService {
 
   static void _refreshAppUser() async{
     user = await _getCurrentUser();
+    if (user != null && user.isLogin() && isLectureServiceInitialized.isfalse) {
+      await Get.putAsync<LectureService>(() async => await LectureService.getInstance());
+      isLectureServiceInitialized.toggle();
+    }
   }
 
   static void commitChange() {

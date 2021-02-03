@@ -1,4 +1,8 @@
 // 🐦 Flutter imports:
+import 'dart:async';
+
+import 'package:c_school_app/service/lecture_service.dart';
+import 'package:c_school_app/service/user_service.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -26,13 +30,16 @@ class AppRouter {
           binding: BindingsBuilder(
               () => {Get.lazyPut<LoginController>(() => LoginController())})),
       GetPage(
-          name: '/lock', //TODO: /home
+          name: '/home',
           page: () =>
               I18n(initialLocale: DEFAULT_LOCALE, child: MainAppHomeScreen()),
           binding: BindingsBuilder(() =>
               {Get.lazyPut<MainAppController>(() => MainAppController())})),
       GetPage(
-          name: '/home', //TODO: /review/words/home
+        middlewares: [
+          HomeRouteMiddleware()
+        ],
+          name: '/review/words/home',
           page: () => I18n(
               initialLocale: DEFAULT_LOCALE, child: ReviewWordsHomeScreen()),
           binding: BindingsBuilder(() => {
@@ -47,5 +54,17 @@ class AppRouter {
                     () => ReviewWordsController())
               })),
     ];
+  }
+}
+
+class HomeRouteMiddleware extends GetMiddleware{
+  
+  @override
+  RouteSettings redirect(String route) {
+    if(UserService.user.isLogin()){
+      return RouteSettings(name: '/review/words'); //TODO: For beta test
+    } else {
+    return RouteSettings(name: '/login');
+    }
   }
 }
