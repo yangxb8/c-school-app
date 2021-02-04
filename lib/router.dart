@@ -30,15 +30,13 @@ class AppRouter {
           binding: BindingsBuilder(
               () => {Get.lazyPut<LoginController>(() => LoginController())})),
       GetPage(
+          middlewares: [HomeRouteMiddleware()],
           name: '/home',
           page: () =>
               I18n(initialLocale: DEFAULT_LOCALE, child: MainAppHomeScreen()),
           binding: BindingsBuilder(() =>
               {Get.lazyPut<MainAppController>(() => MainAppController())})),
       GetPage(
-        middlewares: [
-          HomeRouteMiddleware()
-        ],
           name: '/review/words/home',
           page: () => I18n(
               initialLocale: DEFAULT_LOCALE, child: ReviewWordsHomeScreen()),
@@ -62,7 +60,7 @@ class HomeRouteMiddleware extends GetMiddleware{
   @override
   RouteSettings redirect(String route) {
     if(UserService.user.isLogin()){
-      return RouteSettings(name: '/review/words'); //TODO: For beta test
+      return RouteSettings(name: '/review/words/home'); //TODO: For beta test
     } else {
     return RouteSettings(name: '/login');
     }

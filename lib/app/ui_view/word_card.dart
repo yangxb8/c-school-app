@@ -29,13 +29,13 @@ class WordCard extends StatelessWidget {
   /// Whether we should load the image
   final bool loadImage;
   final WordCardController controller;
-  WordCard({Key key, @required this.word, this.loadImage=true})
-      : controller = Get.put<WordCardController>(WordCardController(word),
-            tag: word.wordId),
+  WordCard({Key key, @required this.word, this.loadImage = true})
+      : controller = Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
         super(key: key);
 
   @override
-  Widget build(BuildContext context) {;
+  Widget build(BuildContext context) {
+    ;
     final emptyImage = Container(
       color: ReviewWordsTheme.lightBlue,
     );
@@ -88,10 +88,8 @@ class WordCard extends StatelessWidget {
             splashRadius: 0.01,
             icon: Icon(CSchool.heart),
             // key: favoriteButtonKey,
-            color: controller.isWordLiked()
-                ? ReviewWordsTheme.lightYellow
-                : Colors.grey,
-            iconSize: BUTTON_SIZE * 2,
+            color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
+            iconSize: BUTTON_SIZE * 1.8,
             onPressed: () => controller.toggleFavoriteCard(),
           ).paddingOnly(top: 10, right: 10),
         ),
@@ -110,8 +108,7 @@ class WordCard extends StatelessWidget {
               curve: Curves.easeOut,
               back: Container(
                   constraints: BoxConstraints.expand(),
-                  child:
-                      Stack(children: [buildBackCardContent(), favoriteIcon])),
+                  child: Stack(children: [buildBackCardContent(), favoriteIcon])),
               front: Container(
                   constraints: BoxConstraints.expand(),
                   child: Stack(children: [frontCardContent, favoriteIcon])),
@@ -130,21 +127,22 @@ class WordCard extends StatelessWidget {
 
   Widget buildBackCardContent() {
     // Top hanzi part
-    var partHanZi = SimpleGestureDetector(
-      onTap: controller.playWord,
-      behavior: HitTestBehavior.opaque,
-      child: PinyinAnnotatedParagraph(
-        paragraph: word.wordAsString,
-        pinyins: word.pinyin,
-        defaultTextStyle: ReviewWordsTheme.wordCardWord,
-        pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
-      ),
-    ).center();
+    var partHanZi = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(icon: Icon(CSchool.volume), onPressed: controller.playWord),
+        PinyinAnnotatedParagraph(
+          paragraph: word.wordAsString,
+          pinyins: word.pinyin,
+          defaultTextStyle: ReviewWordsTheme.wordCardWord,
+          pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
+        ).paddingOnly(right: 20),
+      ],
+    ).paddingOnly(top: 25).center();
     // Second meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
-      var partExample = meaning.examples
-          .map((wordExample) => _buildExampleRow(wordExample))
-          .toList();
+      var partExample =
+          meaning.examples.map((wordExample) => _buildExampleRow(wordExample)).toList();
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: partExample,
@@ -160,8 +158,7 @@ class WordCard extends StatelessWidget {
           )
             .paddingAll(10)
             .decorated(
-                borderRadius: BorderRadius.circular(5),
-                color: ReviewWordsTheme.extremeLightBlue)
+                borderRadius: BorderRadius.circular(5), color: ReviewWordsTheme.extremeLightBlue)
             .paddingSymmetric(horizontal: 20, vertical: 40);
     return Column(
       children: <Widget>[
@@ -180,24 +177,27 @@ class WordCard extends StatelessWidget {
   Widget _buildExampleRow(WordExample wordExample) {
     return Column(
       children: [
-        SimpleGestureDetector(
-          onTap: () => controller.playExample(wordExample: wordExample),
-          behavior: HitTestBehavior.opaque,
-          child: PinyinAnnotatedParagraph(
-            paragraph: wordExample.example,
-            pinyins: wordExample.pinyin,
-            defaultTextStyle: ReviewWordsTheme.wordCardExample,
-            pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
-            centerWord: word,
-            centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
-            linkedWords: word.relatedWords,
-            linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-          ).alignment(Alignment.centerLeft).paddingSymmetric(horizontal: 20),
+        Row(
+          children: [
+            IconButton(
+                icon: Icon(CSchool.volume, color: Colors.grey,),
+                onPressed: () => controller.playExample(wordExample: wordExample)),
+            PinyinAnnotatedParagraph(
+              paragraph: wordExample.example,
+              pinyins: wordExample.pinyin,
+              defaultTextStyle: ReviewWordsTheme.wordCardExample,
+              pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
+              centerWord: word,
+              centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
+              linkedWords: word.relatedWords,
+              linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
+            ).paddingOnly(right: 10).expanded(),
+          ],
         ),
         AutoSizeText(
           wordExample.meaning,
           style: ReviewWordsTheme.exampleMeaning,
-        ).alignment(Alignment.centerLeft).paddingOnly(left: 20),
+        ).alignment(Alignment.centerLeft).paddingSymmetric(horizontal: 20),
         divider()
       ],
     );

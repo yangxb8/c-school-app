@@ -46,7 +46,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                       color: ReviewWordsTheme.darkerText,
                     ),
                   ).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
-                  _buildSpecialLectureCard().expanded(flex: 1),
+                  _buildSpecialLectureCard().expanded(),
                   Text('All Course'.i18n,
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -94,7 +94,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
       );
 
   Widget _buildSpecialLectureCard() {
-    final bigIconSize = 50.0;
+    final bigIconSize = 40.0;
 
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -112,7 +112,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             ),
             _buildWordsCount(controller.wordsListForgotten)
           ],
-        ),
+        ).expanded(),
         Column(
           children: [
             IconButton(
@@ -123,7 +123,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             ),
             _buildWordsCount(controller.wordsListLiked)
           ],
-        ),
+        ).expanded(),
         Column(
           children: [
             IconButton(
@@ -135,7 +135,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             ),
             _buildWordsCount(controller.wordsListAll)
           ],
-        ),
+        ).expanded(),
       ],
     )
         .paddingOnly(top: 3, right: 20)
@@ -151,6 +151,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
   }
 
   Widget _buildWordsCount(List<Word> words) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Obx(
             () => Text(
@@ -159,16 +160,13 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
               style: ReviewWordsTheme.lectureCardMeta,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: Icon(
-              CSchool.playing_cards,
-              color: ReviewWordsTheme.lightYellow,
-              size: 20,
-            ),
-          )
+          Icon(
+            CSchool.playing_cards,
+            color: ReviewWordsTheme.lightYellow,
+            size: 20,
+          ).paddingOnly(left: 10)
         ],
-      ).paddingOnly(top: 25, left: 15);
+      ).paddingOnly(top:10);
 }
 
 class LectureCard extends StatelessWidget {
@@ -208,15 +206,15 @@ class LectureCard extends StatelessWidget {
             Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AutoSizeText(
                   '${lecture.intLectureId}. ${lecture.title}',
                   style: ReviewWordsTheme.lectureCardTitle,
                   maxLines: 2,
-                ).paddingOnly(right: 10, bottom: 5),
+                ).paddingSymmetric(horizontal: 10, vertical: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Row(
                       children: [
@@ -229,7 +227,7 @@ class LectureCard extends StatelessWidget {
                           CSchool.playing_cards,
                           color: ReviewWordsTheme.lightYellow,
                           size: 20,
-                        ).paddingOnly(left: 10),
+                        ).paddingOnly(left: 5),
                       ],
                     ),
                     Row(
@@ -245,9 +243,9 @@ class LectureCard extends StatelessWidget {
                           CSchool.cancel_circled,
                           color: ReviewWordsTheme.lightYellow,
                           size: 20,
-                        ).paddingOnly(left: 10),
+                        ).paddingOnly(left: 5),
                       ],
-                    ).paddingOnly(left: 20),
+                    ),
                     Row(
                       children: [
                         Obx(
@@ -261,13 +259,13 @@ class LectureCard extends StatelessWidget {
                           CSchool.study,
                           color: ReviewWordsTheme.lightYellow,
                           size: 20,
-                        ).paddingOnly(left: 10),
+                        ).paddingOnly(left: 5),
                       ],
-                    ).paddingOnly(left: 20),
+                    ),
                   ],
                 )
               ],
-            ).paddingOnly(left: 20).expanded(flex: 4)
+            ).paddingSymmetric(horizontal: 10).expanded(flex: 4)
           ],
         ),
       )

@@ -23,7 +23,7 @@ class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProvid
   AnimationController animationController;
 
   @override
-  void initState() async{
+  void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     super.initState();

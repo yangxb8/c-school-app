@@ -11,13 +11,4 @@ class LoggerService {
     printEmojis: true,
     printTime: false,
   ));
-
-  /// For redirect log from getx
-  static void getLogWriter(String text, {bool isError = false}) {
-    if (isError) {
-      logger.e(text);
-    } else {
-      logger.i(text);
-    }
-  }
 }

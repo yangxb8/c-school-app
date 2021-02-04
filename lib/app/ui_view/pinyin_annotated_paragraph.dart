@@ -21,6 +21,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   final TextStyle linkedWordTextStyle;
   final TextStyle pinyinTextStyle;
   final bool showPinyins;
+  final double spacing;
+  final double runSpacing;
 
   const PinyinAnnotatedParagraph(
       {Key key,
@@ -32,15 +34,17 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       this.centerWordTextStyle,
       this.linkedWordTextStyle,
       this.pinyinTextStyle,
-      this.showPinyins = true})
+      this.showPinyins = true,
+      this.spacing = 0,
+      this.runSpacing = 0})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final hanzis = _generateHanzis();
     return Wrap(
-        spacing: 3,
-        runSpacing: 2,
+        spacing: spacing,
+        runSpacing: runSpacing,
         children: hanzis.map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)).toList());
   }
 

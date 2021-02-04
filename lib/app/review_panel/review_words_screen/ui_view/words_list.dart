@@ -68,8 +68,8 @@ class WordsList extends GetView<ReviewWordsController> {
                     leading: Obx(
                       () => IconButton(
                         color: controller.indexOfWordPlaying.value == index
-                            ? ReviewWordsTheme.lightYellow
-                            : ReviewWordsTheme.darkBlue,
+                            ? Colors.lightBlueAccent
+                            : Colors.grey,
                         padding: EdgeInsets.only(left: 20),
                         icon: Icon(CSchool.volume),
                         iconSize: BUTTON_SIZE,

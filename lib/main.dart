@@ -92,7 +92,6 @@ class CSchoolApp extends StatelessWidget {
           const Locale('ja', 'JP'),
         ],
         getPages: AppRouter.setupRouter(),
-        logWriterCallback: LoggerService.getLogWriter,
         navigatorObservers: [
           FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
         ],
