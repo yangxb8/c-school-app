@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:audioplayers/audioplayers.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -16,8 +15,9 @@ import 'package:supercharged/supercharged.dart';
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/app/model/word.dart';
-import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
+import 'package:c_school_app/app/ui_view/controller/word_card_controller.dart';
 import 'package:c_school_app/service/app_state_service.dart';
+import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import '../../../i18n/review_words.i18n.dart';
@@ -53,14 +53,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// If this is set, afterFirstLayout will animate to the word instead of tracked one
   int _jumpToWord;
 
-  /// [WordsList] audio player
-  final AudioPlayer audioPlayer = AudioPlayer();
-
-  /// [WordsList] fallback when no audio was found for word
-  FlutterTts tts;
-
-  /// [WordsList] The word been played now
-  RxInt indexOfWordPlaying = (-1).obs;
+  /// Audio Service
+  final AudioService audioService = Get.find();
 
   /// [WordsFlashcard] pageController
   PageController pageController;
@@ -188,27 +182,14 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// As we might need to play from word list.
   ///
   /// Play audio of the word
-  Future<void> playWord(int index) async {
-    if (isAutoPlayMode.value || index == null) return;
-    indexOfWordPlaying.value = index;
-    final word = wordsList[index];
+  Future<void> playWord({@required Word word, @required String audioKey}) async {
+    if (isAutoPlayMode.value || word == null) return;
     var wordAudio =
         speakerGender.value == SpeakerGender.male ? word.wordAudioMale : word.wordAudioFemale;
     if (wordAudio == null) {
-      if (tts == null) {
-        tts = FlutterTts();
-        await tts.setLanguage(LAN_CODE_CN);
-        await tts.setSpeechRate(0.5);
-      }
-      await tts.stop();
-      tts.setCompletionHandler(() => indexOfWordPlaying.value = -1);
-      await tts.speak(word.wordAsString);
-    } else {
-      await audioPlayer.stop();
-      await audioPlayer.play(wordAudio.url);
-      await audioPlayer.onPlayerCompletion.first;
-      indexOfWordPlaying.value = -1;
+      return;
     }
+    await audioService.play(wordAudio.url, key: audioKey);
   }
 
   /// [WordsList] Jump to card in flash card mode
@@ -275,13 +256,22 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// Also, we check isAutoPlayMode in multiple stage so user
   /// can stop the play anytime
   void _autoPlayCard() async {
-    if (isAutoPlayMode.isfalse) return;
+    if (isAutoPlayMode.isfalse) {
+      searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+      return;
+    }
     await primaryWordCardController.playMeanings(completionCallBack: () async {
       // after playMeanings
-      if (isAutoPlayMode.isfalse) return;
+      if (isAutoPlayMode.isfalse) {
+        searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+        return;
+      }
       await Timer(0.5.seconds, primaryWordCardController.flipCard);
       await Timer(0.5.seconds, () async {
-        if (isAutoPlayMode.isfalse) return;
+        if (isAutoPlayMode.isfalse) {
+          searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+          return;
+        }
         await primaryWordCardController.playWord(completionCallBack: () async {
           // after playWord
           // When we reach the last card or autoPlay turn off
@@ -331,7 +321,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     }
     saveAndResetWordHistory();
     lectureService.commitChange();
-    audioPlayer.dispose();
     super.onClose();
   }
 }

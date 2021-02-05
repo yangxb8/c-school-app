@@ -9,11 +9,11 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/ui_view/separator.dart';
+import '../../c_school_icons.dart';
 import '../../i18n/login_page.i18n.dart';
 import 'controller/login_controller.dart';
 import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
-import '../../c_school_icons.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);

@@ -1,5 +1,4 @@
 // 🐦 Flutter imports:
-import 'package:c_school_app/c_school_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -13,6 +12,7 @@ import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/search_bar.dart';
+import 'package:c_school_app/c_school_icons.dart';
 import './ui_view/words_flashcard.dart';
 import './ui_view/words_list.dart';
 

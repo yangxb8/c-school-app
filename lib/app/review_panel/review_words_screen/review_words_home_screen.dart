@@ -18,10 +18,10 @@ import 'package:c_school_app/app/review_panel/controller/review_words_home_scree
 import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
 import 'package:c_school_app/app/ui_view/search_bar.dart';
 import 'package:c_school_app/service/lecture_service.dart';
+import '../../../c_school_icons.dart';
 import '../../../i18n/review_words.i18n.dart';
 import '../../../util/extensions.dart';
 import 'review_words_theme.dart';
-import '../../../c_school_icons.dart';
 
 class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
   @override

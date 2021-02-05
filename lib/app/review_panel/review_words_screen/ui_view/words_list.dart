@@ -1,5 +1,4 @@
 // 🐦 Flutter imports:
-import 'package:c_school_app/c_school_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -8,14 +7,14 @@ import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:styled_widget/styled_widget.dart';
+import 'package:uuid/uuid.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
-
-
+import 'package:c_school_app/c_school_icons.dart';
 
 const BUTTON_SIZE = 50.0;
 
@@ -41,12 +40,10 @@ class WordsList extends GetView<ReviewWordsController> {
               Text(
                 element.lecture.title,
                 style: ReviewWordsTheme.wordListTitle,
-              )
-                  .paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10)
-                  .decorated(
-                color: ReviewWordsTheme.darkBlue,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
+              ).paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10).decorated(
+                    color: ReviewWordsTheme.darkBlue,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
             ],
           ),
           indexedItemBuilder: (_, Word word, index) => FadeInRight(
@@ -64,29 +61,39 @@ class WordsList extends GetView<ReviewWordsController> {
                 child: SimpleGestureDetector(
                   onTap: () => controller.showSingleCard(word),
                   onLongPress: () => controller.jumpToCard(index),
-                  child: ListTile(
-                    leading: Obx(
-                      () => IconButton(
-                        color: controller.indexOfWordPlaying.value == index
-                            ? Colors.lightBlueAccent
-                            : Colors.grey,
-                        padding: EdgeInsets.only(left: 20),
-                        icon: Icon(CSchool.volume),
-                        iconSize: BUTTON_SIZE,
-                        onPressed: () => controller.playWord(index),
-                      ),
-                    ),
-                    title: PinyinAnnotatedParagraph(
-                      defaultTextStyle: ReviewWordsTheme.wordListItem,
-                      pinyinTextStyle: ReviewWordsTheme.wordListItemPinyin,
-                      paragraph: word.wordAsString,
-                      pinyins: word.pinyin,
-                    ).center(),
-                  ),
+                  child: _WordMiniCard(word: word),
                 ),
               ),
             ),
           ), // optional
         ));
+  }
+}
+
+class _WordMiniCard extends GetView<ReviewWordsController> {
+  _WordMiniCard({Key key, @required this.word}) : super(key: key);
+
+  final String audioKey = Uuid().v1();
+  final Word word;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: ObxValue(
+          (data) => IconButton(
+                color: data.value == audioKey ? Colors.lightBlueAccent : Colors.grey,
+                padding: EdgeInsets.only(left: 20),
+                icon: Icon(CSchool.volume),
+                iconSize: BUTTON_SIZE,
+                onPressed: () => controller.playWord(word: word, audioKey: audioKey),
+              ),
+          controller.audioService.clientKey),
+      title: PinyinAnnotatedParagraph(
+        defaultTextStyle: ReviewWordsTheme.wordListItem,
+        pinyinTextStyle: ReviewWordsTheme.wordListItemPinyin,
+        paragraph: word.wordAsString,
+        pinyins: word.pinyin,
+      ).center(),
+    );
   }
 }

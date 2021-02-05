@@ -9,18 +9,20 @@ import 'package:flippable_box/flippable_box.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
+import 'package:supercharged/supercharged.dart';
+import 'package:uuid/uuid.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/word_example.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
-import 'package:c_school_app/controller/ui_view_controller/word_card_controller.dart';
-import '../model/word.dart';
 import '../../c_school_icons.dart';
+import '../model/word.dart';
+import 'controller/word_card_controller.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
-final BUTTON_SIZE = 25.0;
+final icon_size = 30.0;
 final verticalInset = 8.0;
 
 class WordCard extends StatelessWidget {
@@ -89,7 +91,7 @@ class WordCard extends StatelessWidget {
             icon: Icon(CSchool.heart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
-            iconSize: BUTTON_SIZE * 1.8,
+            iconSize: icon_size * 1.7,
             onPressed: () => controller.toggleFavoriteCard(),
           ).paddingOnly(top: 10, right: 10),
         ),
@@ -127,15 +129,25 @@ class WordCard extends StatelessWidget {
 
   Widget buildBackCardContent() {
     // Top hanzi part
+    final hanziAudioKey = Uuid().v1();
     var partHanZi = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(icon: Icon(CSchool.volume), onPressed: controller.playWord),
         PinyinAnnotatedParagraph(
           paragraph: word.wordAsString,
           pinyins: word.pinyin,
           defaultTextStyle: ReviewWordsTheme.wordCardWord,
           pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
+          leadingWidget: IconButton(
+            icon: ObxValue(
+                (audioKey) => Icon(
+                      CSchool.volume,
+                      color: audioKey.value == hanziAudioKey ? Colors.lightBlueAccent : Colors.grey,
+                    ),
+                controller.audioService.clientKey),
+            onPressed: () => controller.playWord(audioKey: hanziAudioKey),
+            iconSize: icon_size,
+          ),
         ).paddingOnly(right: 20),
       ],
     ).paddingOnly(top: 25).center();
@@ -175,25 +187,32 @@ class WordCard extends StatelessWidget {
   }
 
   Widget _buildExampleRow(WordExample wordExample) {
+    final audioKey = Uuid().v1();
     return Column(
       children: [
-        Row(
-          children: [
-            IconButton(
-                icon: Icon(CSchool.volume, color: Colors.grey,),
-                onPressed: () => controller.playExample(wordExample: wordExample)),
-            PinyinAnnotatedParagraph(
-              paragraph: wordExample.example,
-              pinyins: wordExample.pinyin,
-              defaultTextStyle: ReviewWordsTheme.wordCardExample,
-              pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
-              centerWord: word,
-              centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
-              linkedWords: word.relatedWords,
-              linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-            ).paddingOnly(right: 10).expanded(),
-          ],
-        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: PinyinAnnotatedParagraph(
+            paragraph: wordExample.example,
+            pinyins: wordExample.pinyin,
+            defaultTextStyle: ReviewWordsTheme.wordCardExample,
+            pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
+            centerWord: word,
+            centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
+            linkedWords: word.relatedWords,
+            linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
+            spacing: 2,
+            leadingWidget: SimpleGestureDetector(
+                child: ObxValue(
+                    (key) => Icon(
+                          CSchool.volume,
+                          color: key.value == audioKey ? Colors.lightBlueAccent : Colors.grey,
+                          size: icon_size * 0.8,
+                        ),
+                    controller.audioService.clientKey),
+                onTap: () => controller.playExample(wordExample: wordExample, audioKey: audioKey)),
+          ),
+        ).paddingSymmetric(horizontal: 10),
         AutoSizeText(
           wordExample.meaning,
           style: ReviewWordsTheme.exampleMeaning,
@@ -203,11 +222,5 @@ class WordCard extends StatelessWidget {
     );
   }
 
-  Widget divider() => Divider(
-        thickness: 1,
-        height: 30.0,
-        indent: 20,
-        endIndent: 20,
-        color: ReviewWordsTheme.lightYellow,
-      );
+  Widget divider() => SizedBox(height: 20,);
 }

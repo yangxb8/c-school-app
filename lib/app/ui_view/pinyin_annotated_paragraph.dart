@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:styled_widget/styled_widget.dart';
 import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
@@ -12,16 +13,40 @@ import '../../util/extensions.dart';
 import '../model/word.dart';
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
+  /// Paragraph of chinese chars
   final String paragraph;
+
+  /// Word to apply center word style
   final Word centerWord;
+
+  /// Word that can be linked to other words
   final List<Word> linkedWords;
+
+  /// Pinyins of paragraph
   final List<String> pinyins;
+
+  /// TextStyle of paragraph and others if not other text style is specified
   final TextStyle defaultTextStyle;
+
+  /// Text style for center word
   final TextStyle centerWordTextStyle;
+
+  /// Text style for linked word
   final TextStyle linkedWordTextStyle;
+
+  /// Text style for pinyin
   final TextStyle pinyinTextStyle;
+
+  /// Widget been display before paragraph
+  final Widget leadingWidget;
+
+  /// False to hide pinyin
   final bool showPinyins;
+
+  /// Spacing of every chinese char
   final double spacing;
+
+  /// Spacing of lines
   final double runSpacing;
 
   const PinyinAnnotatedParagraph(
@@ -34,6 +59,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       this.centerWordTextStyle,
       this.linkedWordTextStyle,
       this.pinyinTextStyle,
+      this.leadingWidget,
       this.showPinyins = true,
       this.spacing = 0,
       this.runSpacing = 0})
@@ -41,11 +67,14 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hanzis = _generateHanzis();
+    final elements = leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget];
+    elements
+        .addAll(_generateHanzis().map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)));
     return Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
         spacing: spacing,
         runSpacing: runSpacing,
-        children: hanzis.map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)).toList());
+        children: elements);
   }
 
   Widget _buildSingleHanzi({@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {

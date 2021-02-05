@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // 🐦 Flutter imports:
-import 'package:c_school_app/c_school_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -14,10 +13,9 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:c_school_app/app/ui_view/word_card.dart';
+import 'package:c_school_app/c_school_icons.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/util/extensions.dart';
-
-
 
 const BUTTON_SIZE = 60.0;
 const cardAspectRatio = 12.0 / 22.0;
@@ -44,7 +42,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
 
     return FadeIn(
       child: Padding(
-        padding: const EdgeInsets.only(top: 80.0),
+        padding: const EdgeInsets.only(top: 60.0),
         child: SimpleGestureDetector(
           onHorizontalSwipe: _onHorizontalSwipe,
           child: Column(

@@ -10,8 +10,8 @@ import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
 import '../../app/model/speech_exam.dart';
-import '../../controller/ui_view_controller/speech_recording_controller.dart';
 import '../../c_school_icons.dart';
+import 'controller/speech_recording_controller.dart';
 
 class FloatBottomSheetContainer extends StatelessWidget {
   final Widget child;

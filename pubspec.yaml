@@ -52,11 +52,11 @@ dependencies:
   convex_bottom_bar: ^2.6.0
   settings_ui: ^0.5.0
   modal_bottom_sheet: ^1.0.0+1
-  permission_handler: ^5.0.1+1
-  audioplayers: ^0.17.0
+  permission_handler: ^5.1.0+2
+  audioplayers: ^0.17.3
   path_provider: ^1.6.27
   json_annotation: ^3.1.1
-  syncfusion_flutter_charts: ^18.4.39
+  syncfusion_flutter_charts: ^18.4.41
   flippable_box: ^1.0.6
   simple_gesture_detector: ^0.1.6
   material_floating_search_bar: ^0.2.6

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:io';
 
 // 🐦 Flutter imports:
-import 'package:c_school_app/service/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,12 +21,12 @@ import 'package:wiredash/wiredash.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/i18n/wiredash_translation.dart';
+import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
 import 'router.dart';
 import 'service/api_service.dart';
-import 'service/lecture_service.dart';
 import 'service/localstorage_service.dart';
 import 'util/extensions.dart';
 
@@ -124,5 +123,6 @@ Future<void> initServices() async {
   await Flamingo.initializeApp();
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
+  await Get.lazyPut<AudioService>(() => AudioService());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;
 }
