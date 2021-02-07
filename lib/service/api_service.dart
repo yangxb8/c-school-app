@@ -153,6 +153,9 @@ class _FirebaseAuthApi {
     try {
       // Trigger the authentication flow
       final googleUser = await _googleSignIn.signIn();
+      if(googleUser==null){
+        return 'abort';
+      }
       // Obtain the auth details from the request
       final googleAuth = await googleUser.authentication;
       // Create a new credential
