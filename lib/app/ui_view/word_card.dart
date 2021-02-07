@@ -189,7 +189,7 @@ class WordCard extends StatelessWidget {
                 icon: ObxValue(
                     (key) => Icon(
                           CSchool.volume,
-                          color: key.value == audioKey ? Colors.lightBlueAccent : Colors.grey,
+                          color: key.value == audioKey ?  ReviewWordsTheme.lightYellow: Colors.grey,
                           size: icon_size,
                         ),
                     controller.audioService.clientKey),

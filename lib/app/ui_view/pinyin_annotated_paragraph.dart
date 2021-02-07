@@ -111,7 +111,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   }
 
   Widget _buildSingleHanzi({@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
-    final pinyinRow = showPinyins && pinyinAnnotatedHanzi.pinyin.isNotEmpty
+    final pinyinRow = showPinyins
         ? [Text(pinyinAnnotatedHanzi.pinyin, style: pinyinAnnotatedHanzi.pinyinStyle)]
         : [];
     final inner = IntrinsicWidth(

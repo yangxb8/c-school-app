@@ -36,10 +36,10 @@ class BlurHashImageWithFallback extends StatelessWidget {
           imageUrl: mainImgUrl,
           placeholder: (context, url) =>
               BlurHash(hash: blurHash, imageFit: boxFit, color: Colors.white70,),
-          errorWidget: (context, url, error) => Image.asset(
+          errorWidget: (context, url, error) => (fallbackImg is String)? Image.asset(
                 fallbackImg,
                 fit: boxFit,
-              ));
+              ):fallbackImg);
     }
   }
 }

@@ -104,7 +104,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
           children: [
             IconButton(
               padding: EdgeInsets.only(top: 8,left: 8),
-              icon: Icon(CSchool.wrong,
+              icon: Icon(CSchool.wrong_box,
                   size: bigIconSize*0.8, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListForgotten.toList()),
@@ -187,6 +187,9 @@ class LectureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(lecture.words.isEmpty){
+      return const SizedBox.shrink();
+    }
     return SimpleGestureDetector(
       onTap: () => navigateToReviewWordScreen(lecture: lecture, index: index),
       child: SizedBox(
@@ -231,7 +234,7 @@ class LectureCard extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          CSchool.wrong,
+                          CSchool.wrong_box,
                           color: ReviewWordsTheme.lightYellow,
                           size: 20,
                         ),
