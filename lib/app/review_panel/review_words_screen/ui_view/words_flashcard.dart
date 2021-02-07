@@ -75,7 +75,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                         CSchool.correct,
                         color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
                             ? Colors.redAccent
-                            : Colors.blueGrey,
+                            : Colors.grey,
                         size: BUTTON_SIZE,
                       ),
                     ),
@@ -89,7 +89,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                         CSchool.wrong,
                         color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
                             ? Colors.blueAccent
-                            : Colors.blueGrey,
+                            : Colors.grey,
                         size: BUTTON_SIZE,
                       ),
                     ),
