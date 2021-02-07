@@ -37,12 +37,12 @@ class ReviewWords extends GetView<ReviewWordsController> {
         title: Text(
           word.wordAsString,
           style: ReviewWordsTheme.wordListItem,
-        ),
+        ).paddingOnly(left: 20),
         trailing: Text(
           word.wordMeanings.first.meaning,
           style: ReviewWordsTheme.wordListItem,
         ),
-      ),
+      ).paddingOnly(right: 20),
       onSearchResultTap: (word) => controller.showSingleCard(word),
       automaticallyImplyBackButton: true,
       leadingActions: [
