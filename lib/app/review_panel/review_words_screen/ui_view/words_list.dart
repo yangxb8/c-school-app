@@ -73,7 +73,7 @@ class _WordMiniCard extends GetView<ReviewWordsController> {
           children: [
             ObxValue(
                     (data) => IconButton(
-                  color: data.value == audioKey ? Colors.lightBlueAccent : Colors.grey,
+                  color: data.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
                   padding: EdgeInsets.only(left: 20),
                   icon: Icon(CSchool.volume),
                   iconSize: BUTTON_SIZE,

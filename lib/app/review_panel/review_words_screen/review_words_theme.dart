@@ -47,7 +47,7 @@ class ReviewWordsTheme {
 
   static TextStyle lectureCardTitle = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 25,
+    fontSize: 30,
     letterSpacing: 0.27,
     color: darkBlue,
   );

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 // 📦 Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flippable_box/flippable_box.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -43,41 +44,30 @@ class WordCard extends StatelessWidget {
     var frontCardContent = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    ...word.wordMeanings
-                        .map((e) => AutoSizeText(
-                              e.meaning,
-                              style: ReviewWordsTheme.wordCardMeaning,
-                              maxLines: 1,
-                            ).paddingSymmetric(vertical: 10))
-                        .toList(),
-                  ],
-                ).expanded(),
+                ...word.wordMeanings
+                    .map((e) => AutoSizeText(
+                          e.meaning,
+                          style: ReviewWordsTheme.wordCardMeaning,
+                          maxLines: 1,
+                        ).paddingSymmetric(vertical: 10))
+                    .toList(),
               ],
-            ).backgroundColor(ReviewWordsTheme.lightBlue),
-            flex: 11),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: loadImage
-              ? [
-                  BlurHashImageWithFallback(
-                          fallbackImg: emptyImage,
-                          mainImgUrl: word.pic?.url,
-                          blurHash: word.picHash)
-                      .expanded()
-                ]
-              : [emptyImage.expanded()],
-        ).expanded(flex: 10)
+            ).backgroundColor(ReviewWordsTheme.lightBlue).expanded(),
+          ],
+        ).expanded(),
+        AspectRatio(
+          aspectRatio: 4/3,
+          child: loadImage
+              ? BlurHashImageWithFallback(
+                  fallbackImg: emptyImage, mainImgUrl: word.pic?.url, blurHash: word.picHash)
+              : emptyImage,
+        )
       ],
     );
     var favoriteIcon = Row(
@@ -89,7 +79,7 @@ class WordCard extends StatelessWidget {
             icon: Icon(CSchool.heart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
-            iconSize: icon_size * 1.7,
+            iconSize: icon_size * 1.3,
             onPressed: () => controller.toggleFavoriteCard(),
           ).paddingOnly(top: 10, right: 10),
         ),
@@ -131,11 +121,13 @@ class WordCard extends StatelessWidget {
     var partHanZi = Row(
       children: [
         IconButton(
-          padding: const EdgeInsets.all(0),
+          padding: const EdgeInsets.only(top: 50),
           icon: ObxValue(
               (audioKey) => Icon(
                     CSchool.volume,
-                    color: audioKey.value == hanziAudioKey ? Colors.lightBlueAccent : Colors.grey,
+                    color: audioKey.value == hanziAudioKey
+                        ? ReviewWordsTheme.lightYellow
+                        : Colors.grey,
                   ),
               controller.audioService.clientKey),
           onPressed: () => controller.playWord(audioKey: hanziAudioKey),
@@ -162,11 +154,12 @@ class WordCard extends StatelessWidget {
     // meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
       var examples = meaning.examples
-          .map((wordExample) => _buildExampleRow(wordExample))
+          .mapIndexed((wordExample, index) =>
+              _buildExampleRow(wordExample, index == meaning.examples.length - 1))
           .toList();
       var mainPart = examples.isEmpty
           ? SizedBox.shrink()
-          : Column(children: examples).decorated(
+          : Column(children: examples).paddingSymmetric(vertical: 10).decorated(
               borderRadius: BorderRadius.circular(10), color: ReviewWordsTheme.extremeLightBlue);
       return mainPart;
     }).toList();
@@ -184,7 +177,7 @@ class WordCard extends StatelessWidget {
     ).paddingSymmetric(horizontal: 10).backgroundColor(ReviewWordsTheme.lightBlue);
   }
 
-  Widget _buildExampleRow(WordExample wordExample) {
+  Widget _buildExampleRow(WordExample wordExample, bool isLastRow) {
     final audioKey = Uuid().v1();
     return Column(
       children: [
@@ -192,7 +185,7 @@ class WordCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             IconButton(
-                padding: const EdgeInsets.only(right: 2,top:15),
+                padding: const EdgeInsets.only(right: 2, top: 32),
                 icon: ObxValue(
                     (key) => Icon(
                           CSchool.volume,
@@ -218,12 +211,10 @@ class WordCard extends StatelessWidget {
           wordExample.meaning,
           style: ReviewWordsTheme.exampleMeaning,
         ).alignment(Alignment.centerLeft).paddingOnly(left: 50),
-        divider()
+        isLastRow ? const SizedBox.shrink() : Divider()
       ],
     );
   }
 
-  Widget divider() => SizedBox(height: 20);
+  Widget divider() => const SizedBox(height: 20);
 }
-
-bool isMainExample(String example) => example.startsWith('*');

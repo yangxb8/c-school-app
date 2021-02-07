@@ -103,9 +103,9 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              padding: EdgeInsets.only(top: 5,left: 8),
-              icon: Icon(CSchool.cancel_circled,
-                  size: bigIconSize*1.2, color: ReviewWordsTheme.darkBlue),
+              padding: EdgeInsets.only(top: 8,left: 8),
+              icon: Icon(CSchool.wrong,
+                  size: bigIconSize*0.8, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListForgotten.toList()),
               tooltip: 'Forgotten words'.i18n,
@@ -127,8 +127,9 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
+              padding: EdgeInsets.only(top: 5,left: 8),
               icon:
-                  Icon(CSchool.books_stack_of_three, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
+                  Icon(CSchool.books_stack_of_three, size: bigIconSize*1.2, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListAll.toList()),
               tooltip: 'All words'.i18n,
@@ -153,17 +154,17 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
   Widget _buildWordsCount(List<Word> words) => Row(
     mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Icon(
+            CSchool.word_card,
+            color: ReviewWordsTheme.lightYellow,
+            size: 20,
+          ),
           Obx(
             () => Text(
               '${words.length}',
               textAlign: TextAlign.left,
               style: ReviewWordsTheme.lectureCardMeta,
             ),
-          ),
-          Icon(
-            CSchool.playing_cards,
-            color: ReviewWordsTheme.lightYellow,
-            size: 20,
           ).paddingOnly(left: 10)
         ],
       ).paddingOnly(top:10);
@@ -192,80 +193,77 @@ class LectureCard extends StatelessWidget {
         height: cardHeight,
         child: Row(
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                BlurHashImageWithFallback(
-                  fallbackImg: DEFAULT_IMAGE,
-                  mainImgUrl: lecture.pic.url,
-                  blurHash: lecture.picHash,
-                ).expanded(),
-              ],
-            ).expanded(flex: 3),
+            AspectRatio(
+              aspectRatio: 4/3,
+              child: BlurHashImageWithFallback(
+                fallbackImg: DEFAULT_IMAGE,
+                mainImgUrl: lecture.pic.url,
+                blurHash: lecture.picHash,
+              ),
+            ),
             Column(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AutoSizeText(
                   '${lecture.intLectureId}. ${lecture.title}',
                   style: ReviewWordsTheme.lectureCardTitle,
-                  maxLines: 2,
-                ).paddingSymmetric(horizontal: 10, vertical: 10),
+                  maxLines: 1,
+                ).paddingSymmetric(horizontal: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
+                        Icon(
+                          CSchool.word_card,
+                          color: ReviewWordsTheme.lightYellow,
+                          size: 20,
+                        ),
                         Text(
                           '${lecture.words.length}',
                           textAlign: TextAlign.left,
                           style: ReviewWordsTheme.lectureCardMeta,
-                        ),
-                        Icon(
-                          CSchool.playing_cards,
-                          color: ReviewWordsTheme.lightYellow,
-                          size: 20,
-                        ).paddingOnly(left: 5),
+                        ).paddingOnly(left: 10),
                       ],
                     ),
                     Row(
                       children: [
+                        Icon(
+                          CSchool.wrong,
+                          color: ReviewWordsTheme.lightYellow,
+                          size: 20,
+                        ),
                         Obx(
                               () => Text(
                             '${controller.forgottenWords.length}',
                             textAlign: TextAlign.left,
                             style: ReviewWordsTheme.lectureCardMeta,
                           ),
-                        ),
-                        Icon(
-                          CSchool.cancel_circled,
-                          color: ReviewWordsTheme.lightYellow,
-                          size: 20,
-                        ).paddingOnly(left: 5),
+                        ).paddingOnly(left: 10),
                       ],
                     ),
                     Row(
                       children: [
+                        Icon(
+                          CSchool.study,
+                          color: ReviewWordsTheme.lightYellow,
+                          size: 20,
+                        ),
                         Obx(
                           () => Text(
                             '${controller.lectureViewCount}',
                             textAlign: TextAlign.left,
                             style: ReviewWordsTheme.lectureCardMeta,
                           ),
-                        ),
-                        Icon(
-                          CSchool.study,
-                          color: ReviewWordsTheme.lightYellow,
-                          size: 20,
-                        ).paddingOnly(left: 5),
+                        ).paddingOnly(left: 10),
                       ],
                     ),
                   ],
-                )
+                ).paddingSymmetric(horizontal: 5)
               ],
-            ).paddingSymmetric(horizontal: 10).expanded(flex: 4)
+            ).expanded()
           ],
         ),
       )

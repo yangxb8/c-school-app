@@ -12,10 +12,6 @@
 ///       - asset: fonts/CSchool.ttf
 ///
 /// 
-/// * Font Awesome 4, Copyright (C) 2016 by Dave Gandy
-///         Author:    Dave Gandy
-///         License:   SIL ()
-///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 /// * Elusive, Copyright (C) 2013 by Aristeides Stathopoulos
 ///         Author:    Aristeides Stathopoulos
 ///         License:   SIL (http://scripts.sil.org/OFL)
@@ -35,9 +31,8 @@ class CSchool {
 
   static const IconData volume = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData study = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData playing_cards = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData word_card = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData books_stack_of_three = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData cancel_circled = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData male = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData female = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData correct = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -47,7 +42,6 @@ class CSchool {
   static const IconData eye_slash = IconData(0xf070, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData twitter = IconData(0xf099, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData envelope = IconData(0xf0e0, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData circle_empty = IconData(0xf10c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData microphone = IconData(0xf130, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData unlock_alt = IconData(0xf13e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData apple = IconData(0xf179, fontFamily: _kFontFam, fontPackage: _kFontPkg);
