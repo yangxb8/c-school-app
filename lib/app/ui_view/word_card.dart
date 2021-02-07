@@ -154,7 +154,7 @@ class WordCard extends StatelessWidget {
     var partExplanation = word.explanation.isEmpty
         ? SizedBox.shrink()
         : AutoSizeText(
-            '💡 ${word.hint}¥n💡 ${word.explanation}',
+            '💡 ${word.explanation}',
             maxLines: 5,
             style: ReviewWordsTheme.wordCardExplanation,
           ).decorated(
