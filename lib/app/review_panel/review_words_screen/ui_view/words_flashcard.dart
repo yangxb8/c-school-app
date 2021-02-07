@@ -17,7 +17,7 @@ import 'package:c_school_app/c_school_icons.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/util/extensions.dart';
 
-const BUTTON_SIZE = 60.0;
+const BUTTON_SIZE = 50.0;
 const cardAspectRatio = 12.0 / 22.0;
 const widgetAspectRatio = cardAspectRatio * 1.2;
 
@@ -72,7 +72,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                     splashRadius: 0.01,
                     icon: Obx(
                       () => Icon(
-                        CSchool.circle_empty,
+                        CSchool.correct,
                         color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
                             ? Colors.redAccent
                             : Colors.blueGrey,
@@ -86,7 +86,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                     splashRadius: 0.01,
                     icon: Obx(
                       () => Icon(
-                        CSchool.cancel_circled,
+                        CSchool.wrong,
                         color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
                             ? Colors.blueAccent
                             : Colors.blueGrey,

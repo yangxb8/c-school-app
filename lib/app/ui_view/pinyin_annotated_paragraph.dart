@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:styled_widget/styled_widget.dart';
 import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
@@ -16,14 +15,17 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   /// Paragraph of chinese chars
   final String paragraph;
 
+  /// Pinyins of paragraph
+  final List<String> pinyins;
+
+  /// Max line this paragraph can occupy. If this is set, fontSize will be adjusted to fit
+  final int maxLines;
+
   /// Word to apply center word style
   final Word centerWord;
 
   /// Word that can be linked to other words
   final List<Word> linkedWords;
-
-  /// Pinyins of paragraph
-  final List<String> pinyins;
 
   /// TextStyle of paragraph and others if not other text style is specified
   final TextStyle defaultTextStyle;
@@ -53,28 +55,59 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       {Key key,
       @required this.paragraph,
       @required this.pinyins,
+      this.maxLines,
       @required this.defaultTextStyle,
       this.centerWord,
       this.linkedWords,
-      this.centerWordTextStyle,
-      this.linkedWordTextStyle,
-      this.pinyinTextStyle,
+      centerWordTextStyle,
+      linkedWordTextStyle,
+      pinyinTextStyle,
       this.leadingWidget,
       this.showPinyins = true,
       this.spacing = 0,
       this.runSpacing = 0})
-      : super(key: key);
+      : pinyinTextStyle = pinyinTextStyle ?? defaultTextStyle,
+        linkedWordTextStyle = linkedWordTextStyle ?? defaultTextStyle,
+        centerWordTextStyle = centerWordTextStyle ?? defaultTextStyle,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final elements = leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget];
-    elements
-        .addAll(_generateHanzis().map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)));
-    return Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: spacing,
-        runSpacing: runSpacing,
-        children: elements);
+    return LayoutBuilder(builder: (_, originSize) {
+      // Adjust font size to fit in lines
+      //TODO: 0.8 is magic number, maybe we need to calculate font size properly
+      var size = originSize.copyWith(maxWidth: originSize.maxWidth*0.8);
+      var adjustedDefaultFontSize = defaultTextStyle.fontSize;
+      var adjustedPinyinFontSize = pinyinTextStyle.fontSize;
+      if (maxLines != null) {
+        adjustedDefaultFontSize =
+            _calculateFontSize(size, paragraph, defaultTextStyle, maxLines)[0] as double;
+        // If pinyin has its own style, adjust its font size too
+        adjustedPinyinFontSize = pinyinTextStyle == null
+            ? adjustedDefaultFontSize
+            : _calculateFontSize(size, pinyins.join(),
+                pinyinTextStyle, maxLines)[0] as double;
+      }
+      final adjustedDefaultTextStyle = defaultTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
+      final adjustedPinyinTextStyle =
+          pinyinTextStyle?.copyWith(fontSize: adjustedPinyinFontSize) ?? adjustedDefaultTextStyle;
+      final adjustedCenterWordTextStyle =
+          centerWordTextStyle?.copyWith(fontSize: adjustedDefaultFontSize) ??
+              adjustedDefaultTextStyle;
+      final adjustedLinkedWordTextStyle =
+          linkedWordTextStyle?.copyWith(fontSize: adjustedDefaultFontSize) ??
+              adjustedDefaultTextStyle;
+      // Build single hanzi
+      final elements = leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget];
+      elements.addAll(_generateHanzis(adjustedDefaultTextStyle, adjustedPinyinTextStyle,
+              adjustedCenterWordTextStyle, adjustedLinkedWordTextStyle)
+          .map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)));
+      return Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: spacing,
+          runSpacing: runSpacing,
+          children: elements);
+    });
   }
 
   Widget _buildSingleHanzi({@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
@@ -99,7 +132,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     }
   }
 
-  List<PinyinAnnotatedHanzi> _generateHanzis() {
+  List<PinyinAnnotatedHanzi> _generateHanzis(TextStyle defaultStyle, TextStyle pinyinStyle,
+      TextStyle centerWordStyle, TextStyle linkedWordStyle) {
     // Divide paragraph by center word and linked word
     final dividerWords = <String>[];
     if (centerWord != null) dividerWords.add(centerWord.wordAsString);
@@ -117,20 +151,20 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       var hanziStyle;
       switch (hanziType) {
         case ParagraphHanziType.linked:
-          hanziStyle = linkedWordTextStyle ?? defaultTextStyle;
+          hanziStyle = linkedWordStyle;
           break;
         case ParagraphHanziType.center:
-          hanziStyle = centerWordTextStyle ?? defaultTextStyle;
+          hanziStyle = centerWordStyle;
           break;
         default:
-          hanziStyle = defaultTextStyle;
+          hanziStyle = defaultStyle;
           break;
       }
       return PinyinAnnotatedHanzi(
           hanzi: hanzi,
           pinyin: pinyin,
           hanziStyle: hanziStyle,
-          pinyinStyle: pinyinTextStyle,
+          pinyinStyle: pinyinStyle,
           type: hanziType,
           linkedWord: linkedWord);
     });
@@ -195,6 +229,70 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       return exampleDivided;
     }
     return null;
+  }
+
+  List _calculateFontSize(BoxConstraints size, String text, TextStyle originStyle, int maxLines) {
+    // Apply wrap spacing to text style to correctly calculate the font size
+    var style = originStyle.copyWith(letterSpacing: spacing);
+    var span = TextSpan(
+      style: style,
+      text: text,
+    );
+
+    var userScale = Get.textScaleFactor;
+
+    int left;
+    int right;
+    const minFontSize = 12;
+    const maxFontSize = double.infinity;
+    const stepGranularity = 1;
+
+    var defaultFontSize = style.fontSize.clamp(minFontSize, maxFontSize);
+    var defaultScale = defaultFontSize * userScale / style.fontSize;
+    if (_checkTextFits(span, defaultScale, maxLines, size)) {
+      return [defaultFontSize * userScale, true];
+    }
+
+    left = (minFontSize / stepGranularity).floor();
+    right = (defaultFontSize / stepGranularity).ceil();
+
+    var lastValueFits = false;
+    while (left <= right) {
+      var mid = (left + (right - left) / 2).toInt();
+      double scale;
+      scale = mid * userScale * stepGranularity / style.fontSize;
+      if (_checkTextFits(span, scale, maxLines, size)) {
+        left = mid + 1;
+        lastValueFits = true;
+      } else {
+        right = mid - 1;
+      }
+    }
+
+    if (!lastValueFits) {
+      right += 1;
+    }
+
+    double fontSize;
+    fontSize = right * userScale * stepGranularity;
+
+    return [fontSize, lastValueFits];
+  }
+
+  bool _checkTextFits(TextSpan text, double scale, int maxLines, BoxConstraints constraints) {
+    var tp = TextPainter(
+      text: text,
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+      textScaleFactor: scale ?? 1,
+      maxLines: maxLines,
+    );
+
+    tp.layout(maxWidth: constraints.maxWidth);
+
+    return !(tp.didExceedMaxLines ||
+        tp.height > constraints.maxHeight ||
+        tp.width > constraints.maxWidth);
   }
 }
 

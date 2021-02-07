@@ -49,51 +49,53 @@ class WordsList extends GetView<ReviewWordsController> {
           indexedItemBuilder: (_, Word word, index) => FadeInRight(
             duration: 0.5.seconds,
             // Delay the animation to create a staggered effect when first render
-            child: SizedBox(
-              height: 100,
-              child: Card(
-                color: ReviewWordsTheme.lightBlue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                ),
-                elevation: 8.0,
-                margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                child: SimpleGestureDetector(
-                  onTap: () => controller.showSingleCard(word),
-                  onLongPress: () => controller.jumpToCard(index),
-                  child: _WordMiniCard(word: word),
-                ),
-              ),
-            ),
+            child: _WordMiniCard(word: word, index: index,),
           ), // optional
         ));
   }
 }
 
 class _WordMiniCard extends GetView<ReviewWordsController> {
-  _WordMiniCard({Key key, @required this.word}) : super(key: key);
+  _WordMiniCard({Key key, @required this.word, @required this.index}) : super(key: key);
 
   final String audioKey = Uuid().v1();
+  final int index;
   final Word word;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: ObxValue(
-          (data) => IconButton(
-                color: data.value == audioKey ? Colors.lightBlueAccent : Colors.grey,
-                padding: EdgeInsets.only(left: 20),
-                icon: Icon(CSchool.volume),
-                iconSize: BUTTON_SIZE,
-                onPressed: () => controller.playWord(word: word, audioKey: audioKey),
-              ),
-          controller.audioService.clientKey),
-      title: PinyinAnnotatedParagraph(
-        defaultTextStyle: ReviewWordsTheme.wordListItem,
-        pinyinTextStyle: ReviewWordsTheme.wordListItemPinyin,
-        paragraph: word.wordAsString,
-        pinyins: word.pinyin,
-      ).center(),
+    return SizedBox(
+      height: 100,
+      child: SimpleGestureDetector(
+        onTap: () => controller.showSingleCard(word),
+        onLongPress: () => controller.jumpToCard(index),
+        child: Row(
+          children: [
+            ObxValue(
+                    (data) => IconButton(
+                  color: data.value == audioKey ? Colors.lightBlueAccent : Colors.grey,
+                  padding: EdgeInsets.only(left: 20),
+                  icon: Icon(CSchool.volume),
+                  iconSize: BUTTON_SIZE,
+                  onPressed: () => controller.playWord(word: word, audioKey: audioKey),
+                ),
+                controller.audioService.clientKey),
+            PinyinAnnotatedParagraph(
+              defaultTextStyle: ReviewWordsTheme.wordListItem,
+              paragraph: word.wordAsString,
+              maxLines: 1,
+              pinyins: word.pinyin,
+            ).center().expanded()
+          ],
+        ).card(
+          color: ReviewWordsTheme.lightBlue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6.0),
+          ),
+          elevation: 8.0,
+          margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        ),
+      ),
     );
   }
 }

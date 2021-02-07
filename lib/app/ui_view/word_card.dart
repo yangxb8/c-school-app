@@ -9,7 +9,6 @@ import 'package:flippable_box/flippable_box.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:uuid/uuid.dart';
 
 // 🌎 Project imports:
@@ -59,11 +58,10 @@ class WordCard extends StatelessWidget {
                               e.meaning,
                               style: ReviewWordsTheme.wordCardMeaning,
                               maxLines: 1,
-                              overflow: TextOverflow.fade,
                             ).paddingSymmetric(vertical: 10))
                         .toList(),
                   ],
-                ),
+                ).expanded(),
               ],
             ).backgroundColor(ReviewWordsTheme.lightBlue),
             flex: 11),
@@ -131,35 +129,27 @@ class WordCard extends StatelessWidget {
     // Top hanzi part
     final hanziAudioKey = Uuid().v1();
     var partHanZi = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        IconButton(
+          padding: const EdgeInsets.all(0),
+          icon: ObxValue(
+              (audioKey) => Icon(
+                    CSchool.volume,
+                    color: audioKey.value == hanziAudioKey ? Colors.lightBlueAccent : Colors.grey,
+                  ),
+              controller.audioService.clientKey),
+          onPressed: () => controller.playWord(audioKey: hanziAudioKey),
+          iconSize: icon_size,
+        ),
         PinyinAnnotatedParagraph(
           paragraph: word.wordAsString,
           pinyins: word.pinyin,
+          maxLines: 1,
           defaultTextStyle: ReviewWordsTheme.wordCardWord,
           pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
-          leadingWidget: IconButton(
-            icon: ObxValue(
-                (audioKey) => Icon(
-                      CSchool.volume,
-                      color: audioKey.value == hanziAudioKey ? Colors.lightBlueAccent : Colors.grey,
-                    ),
-                controller.audioService.clientKey),
-            onPressed: () => controller.playWord(audioKey: hanziAudioKey),
-            iconSize: icon_size,
-          ),
-        ).paddingOnly(right: 20),
+        ).paddingOnly(right: 30).center().expanded()
       ],
-    ).paddingOnly(top: 25).center();
-    // Second meaning part
-    var partMeanings = word.wordMeanings.map((meaning) {
-      var partExample =
-          meaning.examples.map((wordExample) => _buildExampleRow(wordExample)).toList();
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: partExample,
-      );
-    }).toList();
+    ).paddingOnly(top: 30).center();
     // explanation part
     var partExplanation = word.explanation.isEmpty
         ? SizedBox.shrink()
@@ -167,60 +157,73 @@ class WordCard extends StatelessWidget {
             '💡 ${word.hint}¥n💡 ${word.explanation}',
             maxLines: 5,
             style: ReviewWordsTheme.wordCardExplanation,
-          )
-            .paddingAll(10)
-            .decorated(
-                borderRadius: BorderRadius.circular(5), color: ReviewWordsTheme.extremeLightBlue)
-            .paddingSymmetric(horizontal: 20, vertical: 40);
+          ).decorated(
+            borderRadius: BorderRadius.circular(10), color: ReviewWordsTheme.extremeLightBlue);
+    // meaning part
+    var partMeanings = word.wordMeanings.map((meaning) {
+      var examples = meaning.examples
+          .map((wordExample) => _buildExampleRow(wordExample))
+          .toList();
+      var mainPart = examples.isEmpty
+          ? SizedBox.shrink()
+          : Column(children: examples).decorated(
+              borderRadius: BorderRadius.circular(10), color: ReviewWordsTheme.extremeLightBlue);
+      return mainPart;
+    }).toList();
     return Column(
       children: <Widget>[
         Expanded(child: partHanZi, flex: 2),
         Expanded(
           child: ListView(
             shrinkWrap: true,
-            children: [partExplanation, ...partMeanings],
+            children: [partExplanation, divider(), ...partMeanings],
           ),
-          flex: 3,
+          flex: 4,
         ),
       ],
-    ).backgroundColor(ReviewWordsTheme.lightBlue);
+    ).paddingSymmetric(horizontal: 10).backgroundColor(ReviewWordsTheme.lightBlue);
   }
 
   Widget _buildExampleRow(WordExample wordExample) {
     final audioKey = Uuid().v1();
     return Column(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: PinyinAnnotatedParagraph(
-            paragraph: wordExample.example,
-            pinyins: wordExample.pinyin,
-            defaultTextStyle: ReviewWordsTheme.wordCardExample,
-            pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
-            centerWord: word,
-            centerWordTextStyle: ReviewWordsTheme.wordCardExampleCenterWord,
-            linkedWords: word.relatedWords,
-            linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
-            spacing: 2,
-            leadingWidget: SimpleGestureDetector(
-                child: ObxValue(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IconButton(
+                padding: const EdgeInsets.only(right: 2,top:15),
+                icon: ObxValue(
                     (key) => Icon(
                           CSchool.volume,
                           color: key.value == audioKey ? Colors.lightBlueAccent : Colors.grey,
-                          size: icon_size * 0.8,
+                          size: icon_size,
                         ),
                     controller.audioService.clientKey),
-                onTap: () => controller.playExample(wordExample: wordExample, audioKey: audioKey)),
-          ),
-        ).paddingSymmetric(horizontal: 10),
+                onPressed: () =>
+                    controller.playExample(wordExample: wordExample, audioKey: audioKey)),
+            PinyinAnnotatedParagraph(
+              paragraph: wordExample.example,
+              pinyins: wordExample.pinyin,
+              defaultTextStyle: ReviewWordsTheme.wordCardExample,
+              pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
+              centerWord: word,
+              linkedWords: word.relatedWords,
+              linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
+              spacing: 2,
+            ).expanded()
+          ],
+        ),
         AutoSizeText(
           wordExample.meaning,
           style: ReviewWordsTheme.exampleMeaning,
-        ).alignment(Alignment.centerLeft).paddingSymmetric(horizontal: 20),
+        ).alignment(Alignment.centerLeft).paddingOnly(left: 50),
         divider()
       ],
     );
   }
 
-  Widget divider() => SizedBox(height: 20,);
+  Widget divider() => SizedBox(height: 20);
 }
+
+bool isMainExample(String example) => example.startsWith('*');

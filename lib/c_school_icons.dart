@@ -25,8 +25,6 @@
 ///         License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
 ///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 ///
-
-// 🐦 Flutter imports:
 import 'package:flutter/widgets.dart';
 
 class CSchool {
@@ -42,6 +40,8 @@ class CSchool {
   static const IconData cancel_circled = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData male = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData female = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData correct = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData wrong = IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData heart = IconData(0xf004, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData eye = IconData(0xf06e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData eye_slash = IconData(0xf070, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -55,5 +55,4 @@ class CSchool {
   static const IconData user_circle = IconData(0xf2bd, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData facebook_f = IconData(0xf39e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData comment_dots = IconData(0xf4ad, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData sad_tear = IconData(0xf5b4, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

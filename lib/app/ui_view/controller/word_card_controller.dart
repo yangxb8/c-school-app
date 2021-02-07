@@ -66,7 +66,7 @@ class WordCardController extends GetxController {
   }
 
   /// Play audio of the word
-  Future<void> playWord({@required String audioKey, Function completionCallBack}) async {
+  Future<void> playWord({String audioKey, Function completionCallBack}) async {
     var wordAudio =
         reviewWordSpeakerGender == SpeakerGender.male ? word.wordAudioMale : word.wordAudioFemale;
     if (wordAudio == null) {
