@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
@@ -11,7 +10,8 @@ import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
 import '../../app/model/speech_exam.dart';
-import '../../controller/ui_view_controller/speech_recording_controller.dart';
+import '../../c_school_icons.dart';
+import 'controller/speech_recording_controller.dart';
 
 class FloatBottomSheetContainer extends StatelessWidget {
   final Widget child;
@@ -76,9 +76,9 @@ class SpeechExamBottomSheet extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Icon(FontAwesome5.comment_dots),
+                Icon(CSchool.comment_dots),
                 IconButton(
-                  icon: Icon(FontAwesome.times_circle),
+                  icon: Icon(CSchool.microphone),
                   onPressed: () => Get.back(),
                 )
               ],
@@ -106,7 +106,7 @@ class SpeechExamBottomSheet extends StatelessWidget {
           ),
           Center(
             child: IconButton(
-              icon: Icon(FontAwesome.microphone),
+              icon: Icon(CSchool.microphone),
               onPressed: () => controller.handleRecordButtonPressed(),
               iconSize: 35.0,
             ),

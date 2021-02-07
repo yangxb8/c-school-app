@@ -8,10 +8,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/exceptions/sound_exceptions.dart';
+import 'package:c_school_app/service/api_service.dart';
 import 'package:c_school_app/service/app_state_service.dart';
-import '../../app/model/speech_exam.dart';
-import '../../service/api_service.dart';
 
 class SpeechRecordingController extends GetxController {
   static const platform = MethodChannel('soe');

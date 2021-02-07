@@ -8,22 +8,25 @@ import 'package:flutter/services.dart';
 
 // 📦 Package imports:
 import 'package:catcher/catcher.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:logger/logger.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wiredash/wiredash.dart';
 
 // 🌎 Project imports:
+import 'package:c_school_app/i18n/wiredash_translation.dart';
+import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
 import 'router.dart';
 import 'service/api_service.dart';
-import 'service/lecture_service.dart';
 import 'service/localstorage_service.dart';
 import 'util/extensions.dart';
 
@@ -58,8 +61,11 @@ class CSchoolApp extends StatelessWidget {
     return KeyboardDismisser(
         child: Wiredash(
       options: WiredashOptionsData(
-        /// You can set your own locale to override device default (`window.locale` by default)
-        locale: const Locale.fromSubtags(languageCode: 'jp'),
+        customTranslations: {
+          const Locale.fromSubtags(languageCode: 'jp'):
+          const CSchoolTranslations(),
+        },
+        locale: const Locale('jp'),
       ),
       projectId: 'c-school-iysnrje',
       secret: 'rbl6r14rthdvtkruhfu0lvlldp6rpq3pepclnowm1q6ui08u',
@@ -67,16 +73,6 @@ class CSchoolApp extends StatelessWidget {
       /// We use Catcher's navigatorKey here also for Wiredash
       navigatorKey: Catcher.navigatorKey,
       child: GetMaterialApp(
-        builder: (context, widget) => ResponsiveWrapper.builder(
-            BouncingScrollWrapper.builder(context, widget),
-            maxWidth: 1200,
-            minWidth: 450,
-            defaultScale: true,
-            breakpoints: [
-              ResponsiveBreakpoint.resize(450, name: MOBILE),
-              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-              ResponsiveBreakpoint.autoScale(1000, name: TABLET),
-            ]),
         title: 'CSchool',
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.fade,
@@ -84,7 +80,6 @@ class CSchoolApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
           textTheme: AppTheme.textTheme,
-          platform: TargetPlatform.iOS,
         ),
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
@@ -96,6 +91,9 @@ class CSchoolApp extends StatelessWidget {
           const Locale('ja', 'JP'),
         ],
         getPages: AppRouter.setupRouter(),
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
+        ],
         home: Splash(),
       ),
     ));
@@ -105,7 +103,7 @@ class CSchoolApp extends StatelessWidget {
 class Splash extends StatelessWidget {
   Future<void> _init() async {
     await initServices();
-    await Get.toNamed(UserService.user.isLogin() ? '/home' : '/login');
+    await Get.toNamed('/home');
   }
 
   @override
@@ -123,9 +121,8 @@ Future<void> initServices() async {
   await Get.putAsync<LocalStorageService>(() async => await LocalStorageService.getInstance());
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
+  await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
-  if (UserService.user != null && UserService.user.isLogin()) {
-    await Get.putAsync<LectureService>(() async => await LectureService.getInstance());
-  }
+  await Get.lazyPut<AudioService>(() => AudioService());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;
 }

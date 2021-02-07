@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // 📦 Package imports:
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/ui_view/separator.dart';
+import '../../c_school_icons.dart';
 import '../../i18n/login_page.i18n.dart';
 import 'controller/login_controller.dart';
 import 'style/login_theme.dart' as theme;
@@ -33,8 +33,7 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
 
-  final LoginController c = Get.find();
-  bool processing = false;
+  final LoginController controller = Get.find();
 
   final passwordValidator = MultiValidator([
     RequiredValidator(errorText: 'Required'.i18n),
@@ -65,6 +64,7 @@ class _LoginPageState extends State<LoginPage>
             overscroll.disallowGlow();
           },
           child: ModalProgressHUD(
+              inAsyncCall: controller.processing.value,
               child: SingleChildScrollView(
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -85,23 +85,8 @@ class _LoginPageState extends State<LoginPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
-                            child: GestureDetector(
-                              onTap: c.handleAnonymousLogin,
-                              child: Icon(
-                                FontAwesome.times,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                       Padding(
-                        padding: EdgeInsets.only(top: 35.0),
+                        padding: EdgeInsets.only(top: 85.0),
                         child: Image(
                             width: 250.0,
                             height: 191.0,
@@ -145,7 +130,7 @@ class _LoginPageState extends State<LoginPage>
                   ),
                 ),
               ),
-              inAsyncCall: processing)),
+              )),
     );
   }
 
@@ -259,9 +244,9 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
-                          key: c.loginEmailKey,
+                          key: controller.loginEmailKey,
                           focusNode: myFocusNodeEmailLogin,
-                          onChanged: (val) => c.formTexts['loginEmail'] = val,
+                          onChanged: (val) => controller.formTexts['loginEmail'] = val,
                           validator: emailValidator,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
@@ -271,7 +256,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.envelope,
+                              CSchool.envelope,
                               color: Colors.black,
                               size: 22.0,
                             ),
@@ -290,10 +275,10 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
-                          key: c.loginPasswordKey,
+                          key: controller.loginPasswordKey,
                           focusNode: myFocusNodePasswordLogin,
                           onChanged: (val) =>
-                              c.formTexts['loginPassword'] = val,
+                              controller.formTexts['loginPassword'] = val,
                           validator:
                               RequiredValidator(errorText: 'Required'.i18n),
                           obscureText: _obscureTextLogin,
@@ -304,7 +289,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.lock,
+                              CSchool.unlock_alt,
                               size: 22.0,
                               color: Colors.black,
                             ),
@@ -315,8 +300,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleLogin,
                               child: Icon(
                                 _obscureTextLogin
-                                    ? FontAwesome.eye
-                                    : FontAwesome.eye_slash,
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -374,19 +359,13 @@ class _LoginPageState extends State<LoginPage>
                       ),
                     ),
                     onPressed: () async {
-                      setState(() {
-                        processing = true;
-                      });
-                      await c.handleEmailLogin();
-                      setState(() {
-                        processing = false;
-                      });
+                      await controller.handleEmailLogin();
                     }),
               )),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
             child: FlatButton(
-                onPressed: c.handleForgetPassword,
+                onPressed: controller.handleForgetPassword,
                 child: Text(
                   'Forgot Password?'.i18n,
                   style: TextStyle(
@@ -425,7 +404,7 @@ class _LoginPageState extends State<LoginPage>
       Padding(
         padding: EdgeInsets.only(top: 10.0, right: 30.0, bottom: 20.0),
         child: GestureDetector(
-          onTap: c.handleFacebookLogin,
+          onTap: controller.handleTwitterLogin,
           child: Container(
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
@@ -433,7 +412,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.facebook_f,
+              CSchool.twitter,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -442,7 +421,7 @@ class _LoginPageState extends State<LoginPage>
       Padding(
         padding: EdgeInsets.only(top: 10.0, right: 30.0, bottom: 20.0),
         child: GestureDetector(
-          onTap: c.handleTwitterLogin,
+          onTap: controller.handleFacebookLogin,
           child: Container(
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
@@ -450,7 +429,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.twitter,
+              CSchool.facebook_f,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -459,7 +438,7 @@ class _LoginPageState extends State<LoginPage>
       Padding(
         padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
         child: GestureDetector(
-          onTap: c.handleGoogleLogin,
+          onTap: controller.handleGoogleLogin,
           child: Container(
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
@@ -467,7 +446,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.google,
+              CSchool.google,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -478,7 +457,7 @@ class _LoginPageState extends State<LoginPage>
       thirdPartyLogin.add(Padding(
         padding: EdgeInsets.only(left: 30, top: 10.0, bottom: 20.0),
         child: GestureDetector(
-          onTap: c.handleAppleLogin,
+          onTap: controller.handleAppleLogin,
           child: Container(
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
@@ -486,7 +465,7 @@ class _LoginPageState extends State<LoginPage>
               color: Colors.white,
             ),
             child: Icon(
-              FontAwesome.apple,
+              CSchool.apple,
               color: Color(0xFF0084ff),
             ),
           ),
@@ -520,9 +499,9 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
-                          key: c.signupNamelKey,
+                          key: controller.signupNamelKey,
                           focusNode: myFocusNodeName,
-                          onChanged: (val) => c.formTexts['signupName'] = val,
+                          onChanged: (val) => controller.formTexts['signupName'] = val,
                           validator: MultiValidator([
                             RequiredValidator(errorText: 'Required'.i18n),
                             MaxLengthValidator(50, errorText: 'Too long'.i18n)
@@ -536,7 +515,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.user,
+                              CSchool.user_circle,
                               color: Colors.black,
                             ),
                             hintText: 'Name'.i18n,
@@ -554,9 +533,9 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
-                          key: c.signupEmailKey,
+                          key: controller.signupEmailKey,
                           focusNode: myFocusNodeEmail,
-                          onChanged: (val) => c.formTexts['signupEmail'] = val,
+                          onChanged: (val) => controller.formTexts['signupEmail'] = val,
                           validator: emailValidator,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
@@ -566,7 +545,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.envelope,
+                              CSchool.envelope,
                               color: Colors.black,
                             ),
                             hintText: 'Email Address'.i18n,
@@ -584,10 +563,10 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
-                          key: c.signupPasswordKey,
+                          key: controller.signupPasswordKey,
                           focusNode: myFocusNodePassword,
                           onChanged: (val) =>
-                              c.formTexts['signupPassword'] = val,
+                              controller.formTexts['signupPassword'] = val,
                           validator: passwordValidator,
                           obscureText: _obscureTextSignup,
                           style: TextStyle(
@@ -597,7 +576,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.lock,
+                              CSchool.unlock_alt,
                               color: Colors.black,
                             ),
                             hintText: 'Password'.i18n,
@@ -607,8 +586,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignup,
                               child: Icon(
                                 _obscureTextSignup
-                                    ? FontAwesome.eye
-                                    : FontAwesome.eye_slash,
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -625,11 +604,11 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
-                          key: c.signupConfirmPasswordlKey,
+                          key: controller.signupConfirmPasswordlKey,
                           validator: (val) => MatchValidator(
                                   errorText: 'Passwords do not match'.i18n)
                               .validateMatch(
-                                  val, c.formTexts['signupPassword']),
+                                  val, controller.formTexts['signupPassword']),
                           obscureText: _obscureTextSignupConfirm,
                           style: TextStyle(
                               fontFamily: 'WorkSansSemiBold',
@@ -638,7 +617,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesome.lock,
+                              CSchool.unlock_alt,
                               color: Colors.black,
                             ),
                             hintText: 'Confirmation'.i18n,
@@ -648,8 +627,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignupConfirm,
                               child: Icon(
                                 _obscureTextSignupConfirm
-                                    ? FontAwesome.eye
-                                    : FontAwesome.eye_slash,
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -707,13 +686,7 @@ class _LoginPageState extends State<LoginPage>
                       ),
                     ),
                     onPressed: () async {
-                      setState(() {
-                        processing = true;
-                      });
-                      await c.handleEmailSignUp();
-                      setState(() {
-                        processing = false;
-                      });
+                      await controller.handleEmailSignUp();
                     }),
               ))
         ],

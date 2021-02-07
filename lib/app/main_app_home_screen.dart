@@ -6,7 +6,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
-import 'package:c_school_app/controller/main_app_controller.dart';
+import 'package:c_school_app/app/main_app_controller.dart';
 import '../i18n/main_app_home_screen.i18n.dart';
 import 'discover_panel/discover_panel_home_screen.dart';
 import 'review_panel/review_panel_home_screen.dart';
@@ -23,7 +23,7 @@ class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProvid
   AnimationController animationController;
 
   @override
-  void initState() async{
+  void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     super.initState();

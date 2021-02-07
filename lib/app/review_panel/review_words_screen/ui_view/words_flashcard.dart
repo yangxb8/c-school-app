@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
@@ -14,6 +13,7 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/review_panel/controller/review_words_controller.dart';
 import 'package:c_school_app/app/ui_view/word_card.dart';
+import 'package:c_school_app/c_school_icons.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/util/extensions.dart';
 
@@ -42,7 +42,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
 
     return FadeIn(
       child: Padding(
-        padding: const EdgeInsets.only(top: 90.0),
+        padding: const EdgeInsets.only(top: 60.0),
         child: SimpleGestureDetector(
           onHorizontalSwipe: _onHorizontalSwipe,
           child: Column(
@@ -63,57 +63,41 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
                   Obx(() => CardScrollWidget(controller.pageFraction.value)),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    IconButton(
-                      splashRadius: 0.01,
-                      icon: Obx(
-                        () => Icon(
-                          FontAwesome5.laugh_beam,
-                          color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
-                              ? Colors.yellowAccent
-                              : Colors.blueGrey,
-                          size: BUTTON_SIZE,
-                        ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(top: 4),
+                    splashRadius: 0.01,
+                    icon: Obx(
+                      () => Icon(
+                        CSchool.correct,
+                        color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
+                            ? Colors.redAccent
+                            : Colors.blueGrey,
+                        size: BUTTON_SIZE,
                       ),
-                      onPressed: () =>
-                          controller.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
                     ),
-                    IconButton(
-                      splashRadius: 0.01,
-                      icon: Obx(
-                        () => Icon(
-                          FontAwesome5.frown_open,
-                          color: controller.wordMemoryStatus.value == WordMemoryStatus.NORMAL
-                              ? Colors.yellowAccent
-                              : Colors.blueGrey,
-                          size: BUTTON_SIZE,
-                        ),
+                    onPressed: () =>
+                        controller.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
+                  ),
+                  IconButton(
+                    splashRadius: 0.01,
+                    icon: Obx(
+                      () => Icon(
+                        CSchool.wrong,
+                        color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
+                            ? Colors.blueAccent
+                            : Colors.blueGrey,
+                        size: BUTTON_SIZE,
                       ),
-                      onPressed: () =>
-                          controller.handWordMemoryStatusPressed(WordMemoryStatus.NORMAL),
                     ),
-                    IconButton(
-                      splashRadius: 0.01,
-                      icon: Obx(
-                        () => Icon(
-                          MaterialCommunityIcons.emoticon_cry_outline,
-                          color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
-                              ? Colors.yellowAccent
-                              : Colors.blueGrey,
-                          size: BUTTON_SIZE,
-                        ),
-                      ),
-                      onPressed: () =>
-                          controller.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
-                    ),
-                  ],
-                ),
-              )
+                    onPressed: () =>
+                        controller.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
+                  ).paddingOnly(bottom: 12),
+                ],
+              ).paddingOnly(right: 20)
             ],
           ),
         ),
@@ -127,7 +111,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
   final padding = 10.0;
   final verticalInset = 8.0;
   final logger = LoggerService.logger;
-  static const MAX_CARDS_FRAME = 5;
+  static const MAX_CARDS_FRAME = 4;
 
   CardScrollWidget(this.pageFraction);
 
@@ -154,7 +138,7 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           var delta = i - pageFraction;
           var isPrimaryCard = delta >= 0 && delta.toInt() == 0;
           // If card is not visible, don't build it
-          if (delta.abs() > MAX_CARDS_FRAME) {
+          if (delta>1 || -delta > MAX_CARDS_FRAME) {
             continue;
           }
           var isOnRight = delta > 0;
@@ -164,7 +148,8 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           var wordCard = WordCard(
             // Key was added to prevent strange behavior of card flip status
               key: ValueKey(controller.reversedWordsList[i]),
-              word: controller.reversedWordsList[i]);
+              word: controller.reversedWordsList[i],
+              loadImage: delta.abs()<2);
           // Set primary card controller
           if (isPrimaryCard) {
             controller.primaryWordIndex.value = i;
