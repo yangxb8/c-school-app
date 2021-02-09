@@ -33,6 +33,7 @@ class CSchool {
   static const IconData study = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData word_card = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData books_stack_of_three = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData wrong_box = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData male = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData female = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData correct = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);

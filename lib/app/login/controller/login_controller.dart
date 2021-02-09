@@ -93,7 +93,7 @@ class LoginController extends GetxController {
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else {
-      _showErrorPopup('Something is wrong!'.i18n);
+      _showErrorPopup('Something is wrong!'.i18nApi);
     }
   }
 
@@ -101,8 +101,10 @@ class LoginController extends GetxController {
     var result = await apiService.firebaseAuthApi.loginWithGoogle();
     if (result == 'ok') {
       _showLoginSuccessPopup();
-    } else {
-      _showErrorPopup('Something is wrong!'.i18n);
+    } else if(result=='abort'){
+      return;
+    }else{
+      _showErrorPopup('Something is wrong!'.i18nApi);
     }
   }
 
@@ -111,7 +113,7 @@ class LoginController extends GetxController {
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else {
-      _showErrorPopup('Something is wrong!'.i18n);
+      _showErrorPopup('Something is wrong!'.i18nApi);
     }
   }
 

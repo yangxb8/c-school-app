@@ -1,6 +1,7 @@
 // 🐦 Flutter imports:
 
 // 🐦 Flutter imports:
+import 'package:c_school_app/service/app_state_service.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -59,6 +60,9 @@ class HomeRouteMiddleware extends GetMiddleware{
   @override
   RouteSettings redirect(String route) {
     if(UserService.user.isLogin()){
+      if(AppStateService.isDebug){
+        return null;
+      }
       return RouteSettings(name: '/review/words/home'); //TODO: For beta test
     } else {
     return RouteSettings(name: '/login');

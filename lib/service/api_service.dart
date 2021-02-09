@@ -153,6 +153,9 @@ class _FirebaseAuthApi {
     try {
       // Trigger the authentication flow
       final googleUser = await _googleSignIn.signIn();
+      if(googleUser==null){
+        return 'abort';
+      }
       // Obtain the auth details from the request
       final googleAuth = await googleUser.authentication;
       // Create a new credential
@@ -332,22 +335,20 @@ class _FirestoreApi {
 
   /// Upload words to firestore and cloud storage
   void uploadWordsByCsv() async {
-    final COLUMN_WORD_ID = 0;
-    final COLUMN_WORD = 1;
-    final COLUMN_PART_OF_SENTENCE = 2;
-    final COLUMN_MEANING = 3;
-    final COLUMN_PINYIN = 5;
-    final COLUMN_HINT = 6;
-    final COLUMN_OTHER_MEANING_ID = 7;
-    final COLUMN_DETAIL = 8;
-    final COLUMN_EXAMPLE = 9;
-    final COLUMN_EXAMPLE_MEANING = 10;
-    final COLUMN_EXAMPLE_PINYIN = 11;
-    final COLUMN_RELATED_WORD_ID = 14;
-    final COLUMN_WORD_PROCESS_STATUS = 18;
-    final COLUMN_PIC_HASH = 19;
-    final WORD_PROCESS_STATUS_NEW = 0;
-    final WORD_PROCESS_STATUS_MODIFIED = 1;
+    final COLUMN_WORD_PROCESS_STATUS = 0;
+    final COLUMN_WORD_ID = 1;
+    final COLUMN_WORD = COLUMN_WORD_ID+1;
+    final COLUMN_PART_OF_SENTENCE = COLUMN_WORD_ID+2;
+    final COLUMN_MEANING = COLUMN_WORD_ID+3;
+    final COLUMN_PINYIN = COLUMN_WORD_ID+5;
+    final COLUMN_OTHER_MEANING_ID = COLUMN_WORD_ID+6;
+    final COLUMN_DETAIL = COLUMN_WORD_ID+7;
+    final COLUMN_EXAMPLE = COLUMN_WORD_ID+8;
+    final COLUMN_EXAMPLE_MEANING = COLUMN_WORD_ID+9;
+    final COLUMN_EXAMPLE_PINYIN = COLUMN_WORD_ID+10;
+    final COLUMN_RELATED_WORD_ID = COLUMN_WORD_ID+13;
+    final COLUMN_PIC_HASH = COLUMN_WORD_ID+17;
+    final WORD_PROCESS_STATUS_UPLOAD = 2;
     final SEPARATOR = '/';
     final PINYIN_SEPARATOR = '-';
 
@@ -359,8 +360,7 @@ class _FirestoreApi {
       csv = CsvToListConverter()
           .convert(await rootBundle.loadString('assets/upload/words.csv'))
             ..removeWhere((w) =>
-                ![WORD_PROCESS_STATUS_NEW, WORD_PROCESS_STATUS_MODIFIED]
-                    .contains(w[COLUMN_WORD_PROCESS_STATUS]) ||
+                WORD_PROCESS_STATUS_UPLOAD != w[COLUMN_WORD_PROCESS_STATUS] ||
                 w[COLUMN_WORD] == null);
     } catch (_) {
       print('No words.csv found, will skip!');
@@ -395,7 +395,6 @@ class _FirestoreApi {
                         .split(SEPARATOR)
                         .toList())
           ]
-          ..hint = row[COLUMN_HINT].trim()
           ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].trim().split(SEPARATOR)
           ..otherMeaningIds =
               row[COLUMN_OTHER_MEANING_ID].trim().split(SEPARATOR))
