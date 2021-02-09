@@ -22,7 +22,7 @@ import '../model/word.dart';
 import 'controller/word_card_controller.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
-final icon_size = 30.0;
+final icon_size = 40.0;
 final verticalInset = 8.0;
 
 class WordCard extends StatelessWidget {
@@ -75,13 +75,14 @@ class WordCard extends StatelessWidget {
       children: [
         Obx(
           () => IconButton(
+            padding: EdgeInsets.only(top: 15, right: 15),
             splashRadius: 0.01,
             icon: Icon(CSchool.heart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
-            iconSize: icon_size * 1.3,
+            iconSize: icon_size *0.9,
             onPressed: () => controller.toggleFavoriteCard(),
-          ).paddingOnly(top: 10, right: 10),
+          ),
         ),
       ],
     );
@@ -141,7 +142,7 @@ class WordCard extends StatelessWidget {
           pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
         ).paddingOnly(right: 30).center().expanded()
       ],
-    ).paddingOnly(top: 30).center();
+    ).paddingOnly(top: 40).center();
     // explanation part
     var partExplanation = word.explanation.isEmpty
         ? SizedBox.shrink()
@@ -185,7 +186,7 @@ class WordCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             IconButton(
-                padding: const EdgeInsets.only(right: 2, top: 32),
+                padding: const EdgeInsets.only(right: 2, top: 24),
                 icon: ObxValue(
                     (key) => Icon(
                           CSchool.volume,
