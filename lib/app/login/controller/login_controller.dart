@@ -1,14 +1,23 @@
-import 'package:c_school_app/service/app_state_service.dart';
+// 🐦 Flutter imports:
+
+// 🐦 Flutter imports:
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
+
+// 📦 Package imports:
 import 'package:flutter_beautiful_popup/main.dart';
-import '../../../service/api_service.dart';
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/service/app_state_service.dart';
+import 'package:c_school_app/service/user_service.dart';
 import '../../../i18n/api_service.i18n.dart';
 import '../../../i18n/login_page.i18n.dart';
+import '../../../service/api_service.dart';
 
 class LoginController extends GetxController {
   final ApiService apiService = Get.find();
   final BuildContext context = Get.context;
+  RxBool processing = false.obs;
 
   final GlobalKey<FormFieldState> loginEmailKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> loginPasswordKey =
@@ -29,6 +38,7 @@ class LoginController extends GetxController {
   };
 
   Future<void> handleEmailSignUp() async {
+    processing.value = true;
     var _validateAll = [
       signupNamelKey.currentState.validate(),
       signupEmailKey.currentState.validate(),
@@ -50,9 +60,11 @@ class LoginController extends GetxController {
         _showErrorPopup(result);
       }
     }
+    processing.value = false;
   }
 
   Future<void> handleEmailLogin() async {
+    processing.value = true;
     var _validateAll = [
       loginEmailKey.currentState.validate(),
       loginPasswordKey.currentState.validate()
@@ -73,6 +85,7 @@ class LoginController extends GetxController {
     } else {
       _showErrorPopup(result);
     }
+    processing.value = false;
   }
 
   void handleFacebookLogin() async {
@@ -80,7 +93,7 @@ class LoginController extends GetxController {
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else {
-      _showErrorPopup('Something is wrong!'.i18n);
+      _showErrorPopup('Something is wrong!'.i18nApi);
     }
   }
 
@@ -88,8 +101,10 @@ class LoginController extends GetxController {
     var result = await apiService.firebaseAuthApi.loginWithGoogle();
     if (result == 'ok') {
       _showLoginSuccessPopup();
-    } else {
-      _showErrorPopup('Something is wrong!'.i18n);
+    } else if(result=='abort'){
+      return;
+    }else{
+      _showErrorPopup('Something is wrong!'.i18nApi);
     }
   }
 
@@ -98,7 +113,7 @@ class LoginController extends GetxController {
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else {
-      _showErrorPopup('Something is wrong!'.i18n);
+      _showErrorPopup('Something is wrong!'.i18nApi);
     }
   }
 
@@ -108,15 +123,6 @@ class LoginController extends GetxController {
     var result = await apiService.firebaseAuthApi.loginWithApple();
     if (result == 'ok') {
       _showLoginSuccessPopup();
-    } else {
-      _showErrorPopup('Something is wrong!'.i18n);
-    }
-  }
-
-  void handleAnonymousLogin() async {
-    var result = await apiService.firebaseAuthApi.loginAnonymous();
-    if (result == 'ok') {
-      await Get.offAllNamed('/');
     } else {
       _showErrorPopup('Something is wrong!'.i18n);
     }
@@ -152,23 +158,27 @@ class LoginController extends GetxController {
       popup.button(
         label: 'Close'.i18n,
         onPressed: () {
-          // After login user should not press 'back' and return to login page
-          Get.offAllNamed('/');
+          if (UserService.isLectureServiceInitialized.isTrue) {
+            Get.offAllNamed('/home');
+          } else {
+            processing.value = true;
+            once(UserService.isLectureServiceInitialized, (_) {
+              processing.value = false;
+              Get.offAllNamed('/home');
+            });
+          }
         },
       )
     ];
     final content = 'You have study for %d times!'
         .i18n
-        .fill([AppStateService.startCount]);
+        .fill([AppStateService.startCount + 1]);
 
     popup.show(
         title: 'Welcome Back!'.i18n,
         content: content,
         actions: actions,
-        close: Container()
-        // bool barrierDismissible = false,
-        // Widget close,
-        );
+        close: Container());
   }
 
   void _showEmailVerificationPopup(BuildContext context, String email) {

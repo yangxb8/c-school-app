@@ -1,6 +1,9 @@
+// 🐦 Flutter imports:
+import 'package:flutter/cupertino.dart';
+
+// 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:flutter/cupertino.dart';
 
 part 'user_lecture_history.flamingo.dart';
 

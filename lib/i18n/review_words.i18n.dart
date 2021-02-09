@@ -1,10 +1,11 @@
+// 📦 Package imports:
 import 'package:i18n_extension/i18n_extension.dart';
 
 extension Localization on String {
   static final _t = Translations('en') +
       {
         'en': 'All Course',
-        'ja_jp': 'クラス',
+        'ja_jp': 'クラスリスト',
       } +
       {
         'en': 'words',
@@ -13,10 +14,6 @@ extension Localization on String {
       {
         'en': 'Empty',
         'ja_jp': 'なし',
-      } +
-      {
-        'en': 'Example',
-        'ja_jp': '【例文】',
       } +
       {
         'en': 'My Words',
@@ -40,8 +37,25 @@ extension Localization on String {
       }+
       {
         'en': 'Oops, No words here',
-        'ja_jp': 'あら、ここに単語がないみたい',
+        'ja_jp': 'あら、単語がないみたい',
+      }+
+      {
+        'en': 'Change to %s speaker',
+        'ja_jp': 'スピーカを%sに変更',
+      }+
+      {
+        'en': 'male',
+        'ja_jp': '男性',
+      }+
+      {
+        'en': 'female',
+        'ja_jp': '女性',
+      }+
+      {
+        'en': 'Last card reached. Swipe left will go to first card',
+        'ja_jp': '最後のカードです。左にスワイプすると初めに戻ります。',
       };
 
   String get i18n => localize(this, _t);
+  String fill(List<Object> params) => localizeFill(this, params);
 }

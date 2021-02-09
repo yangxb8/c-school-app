@@ -1,5 +1,8 @@
-import 'package:flamingo/flamingo.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// 📦 Package imports:
+import 'package:flamingo/flamingo.dart';
 
 /// Represent a single example of word
 class WordExample {

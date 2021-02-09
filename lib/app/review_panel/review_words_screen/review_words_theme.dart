@@ -1,8 +1,10 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:supercharged/supercharged.dart';
 
 class ReviewWordsTheme {
-
   ReviewWordsTheme._();
 
   static const Color notWhite = Color(0xFFEDF0F2);
@@ -20,6 +22,7 @@ class ReviewWordsTheme {
   static const Color chipBackground = Color(0xFFEEF1F3);
   static const Color spacer = Color(0xFFF2F2F2);
 
+  static Color extremeLightBlue = '#c0d8fc'.toColor();
   static Color lightBlue = '#B5D0FA'.toColor();
   static Color darkBlue = '#484C75'.toColor();
   static Color lightYellow = '#FBEB99'.toColor();
@@ -44,7 +47,7 @@ class ReviewWordsTheme {
 
   static TextStyle lectureCardTitle = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 25,
+    fontSize: 30,
     letterSpacing: 0.27,
     color: darkBlue,
   );
@@ -89,8 +92,7 @@ class ReviewWordsTheme {
       fontSize: 25,
       letterSpacing: 0.27,
       color: darkBlue,
-      decoration: TextDecoration.none
-  );
+      decoration: TextDecoration.none);
 
   static TextStyle wordCardPinyin = TextStyle(
     fontWeight: FontWeight.bold,
@@ -111,6 +113,10 @@ class ReviewWordsTheme {
     fontSize: 25,
     letterSpacing: 0.27,
     color: darkBlue,
+  );
+
+  static TextStyle wordCardExplanation = wordCardExample.copyWith(
+    fontSize: 20
   );
 
   static TextStyle wordCardExamplePinyin = wordCardExample.copyWith(

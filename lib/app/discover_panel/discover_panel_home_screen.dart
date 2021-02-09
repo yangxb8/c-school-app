@@ -1,8 +1,13 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
 import '../discover_panel/category_list_view.dart';
-import '../discover_panel/sample_lecture.dart';
 import '../discover_panel/popular_lecture_list_view.dart';
+import '../discover_panel/sample_lecture.dart';
 import 'discover_panel_theme.dart';
 
 class DiscoverPanelHomeScreen extends StatefulWidget {

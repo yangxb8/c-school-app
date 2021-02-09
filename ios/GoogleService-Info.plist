@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>853976991023-ntu86a47p0fkmpig9k83n4aenb3564r1.apps.googleusercontent.com</string>
+	<string>853976991023-78vvit4hjs4dihj92qu2e4so9vikaf3o.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.853976991023-ntu86a47p0fkmpig9k83n4aenb3564r1</string>
+	<string>com.googleusercontent.apps.853976991023-78vvit4hjs4dihj92qu2e4so9vikaf3o</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>853976991023-b180g333nov3g7afmf5v4pdpd32e7l2m.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>site.alphasho.spokenChinese</string>
+	<string>com.sophiabyte.cschool</string>
 	<key>PROJECT_ID</key>
 	<string>spoken-chinese</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:853976991023:ios:b824208bae4422e087cdda</string>
+	<string>1:853976991023:ios:3f4d6f16f6f4e23e87cdda</string>
 	<key>DATABASE_URL</key>
 	<string>https://spoken-chinese.firebaseio.com</string>
 </dict>
