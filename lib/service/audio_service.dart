@@ -69,7 +69,7 @@ class AudioService extends GetxService {
     clientKey.value = key;
     // Always cache the audio
     final localUri = (await DefaultCacheManager().getSingleFile(url)).path;
-    await _audioPlayer.play(localUri, isLocal: true);
+    await _audioPlayer.play(localUri, isLocal: true, position: 0.seconds);
     if (callback != null) {
       _playerListener = once(playerState, (_) async => await callback(),
           condition: () => playerState.value == AudioPlayerState.COMPLETED);

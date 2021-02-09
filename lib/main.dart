@@ -40,7 +40,7 @@ void main() async {
   var debugOptions = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
 
   /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
-  var releaseOptions = CatcherOptions(DialogReportMode(), [
+  var releaseOptions = CatcherOptions(SilentReportMode(), [
     SentryHandler(SentryClient(SentryOptions(
         dsn: 'https://6b7250fbad81463791e2036ffdd6b184@o455157.ingest.sentry.io/5446301')))
   ]);
