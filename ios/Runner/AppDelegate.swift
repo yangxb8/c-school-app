@@ -38,9 +38,9 @@ class SoeDelegate: NSObject,TAIOralEvaluationDelegate {
     let oralEvaluation = TAIOralEvaluation()
     let POLLING_INTERVAL = 0.2
     let NO_SPEECH_DETECT_INTERVAL = 5000
-    var evaluationResultJson: String
-    var flutterResult: FlutterResult
-    var errorDetected: false
+    var evaluationResultJson: String?
+    var flutterResult: FlutterResult?
+    var errorDetected: Bool = false
 
     override init() {
         // By setting delegate to self, function like oralEvaluation() can be registered
@@ -51,11 +51,11 @@ class SoeDelegate: NSObject,TAIOralEvaluationDelegate {
     func soeStopRecordAndEvaluate(result:@escaping FlutterResult){
         oralEvaluation.stopRecordAndEvaluation({ (error:TAIError!) in
             if error.code == TAIErrCode.succ {
-                flutterResult = result
+                self.flutterResult = result
                 // Polling evaluationResultJson until its set by oralEvaluation()
-                Timer.scheduledTimer(withTimeInterval: POLLING_INTERVAL, repeats: true) { timer in
+                Timer.scheduledTimer(withTimeInterval: self.POLLING_INTERVAL, repeats: true) { timer in
                     // Error or succeed
-                    if errorDetected || evaluationResultJson != nil{
+                    if self.errorDetected || self.evaluationResultJson != nil{
                         // Callback will report to flutter so here we just stop the timer
                         timer.invalidate()
                     }
@@ -113,17 +113,17 @@ class SoeDelegate: NSObject,TAIOralEvaluationDelegate {
                             :TAIOralEvaluationData!, result:TAIOralEvaluationRet!, error:TAIError!) {
         if error.code != TAIErrCode.succ {
             errorDetected = true
-            flutterResult(FlutterError(code: nil,
+            flutterResult?(FlutterError(code: "",
                                 message: "Evaluation Failed",
                                 details: nil))
         }
-        flutterResult(result.description())
+        flutterResult?(result.description)
     }
 
     // When end of speech is detected
     func onEndOfSpeech(in oralEvaluation: TAIOralEvaluation!) {
         errorDetected = true
-        flutterResult(FlutterError(code: nil,
+        flutterResult?(FlutterError(code: "",
                                 message: "End of Speech detected",
                                 details: nil))
     }
