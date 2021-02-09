@@ -1,5 +1,8 @@
-import '../my_progress_theme.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 🌎 Project imports:
+import '../my_progress_theme.dart';
 
 class BodyMeasurementView extends StatelessWidget {
   final AnimationController animationController;

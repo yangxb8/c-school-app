@@ -1,11 +1,14 @@
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 🌎 Project imports:
+import '../my_progress_theme.dart';
 import '../ui_view/body_measurement.dart';
 import '../ui_view/glass_view.dart';
 import '../ui_view/mediterranesn_diet_view.dart';
 import '../ui_view/title_view.dart';
-import '../my_progress_theme.dart';
 import 'meals_list_view.dart';
 import 'water_view.dart';
-import 'package:flutter/material.dart';
 
 class StudyPanelHomeScreen extends StatefulWidget {
   const StudyPanelHomeScreen({Key key, this.animationController}) : super(key: key);

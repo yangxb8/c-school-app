@@ -1,7 +1,14 @@
-import '../my_progress_theme.dart';
-import 'package:supercharged/supercharged.dart';
-import 'package:flutter/material.dart';
+// 🎯 Dart imports:
 import 'dart:math' as math;
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:supercharged/supercharged.dart';
+
+// 🌎 Project imports:
+import '../my_progress_theme.dart';
 
 class MediterranesnDietView extends StatelessWidget {
   final AnimationController animationController;

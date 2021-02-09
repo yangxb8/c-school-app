@@ -1,14 +1,18 @@
+// 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
-import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/app/model/searchable.dart';
+import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 
 part 'word.flamingo.dart';
 
 /// id is used as primary key for any word
-class Word extends Document<Word>{
+class Word extends Document<Word> implements Searchable{
   static LectureService lectureService = Get.find<LectureService>();
 
   Word({
@@ -16,7 +20,8 @@ class Word extends Document<Word>{
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
   })  : wordId = id,
-        tags = id == null? []:[id.split('-').first], // Assign lectureId to tags
+        tags =
+            id == null ? [] : [id.split('-').first], // Assign lectureId to tags
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
@@ -24,45 +29,45 @@ class Word extends Document<Word>{
 
   /// Example: [['我'],[们]]
   @Field()
-  List<String> word;
+  List<String> word = [];
 
   /// Example: [['wo'],['men']]
   @Field()
-  List<String> pinyin;
+  List<String> pinyin = [];
 
   /// Usage and other information about this word
   @Field()
-  String detail;
+  String explanation = '';
 
   @Field()
-  String partOfSentence;
+  String partOfSentence = '';
 
   @Field()
-  String hint;
+  String hint = '';
 
   /// 日语意思
   @ModelField()
-  List<WordMeaning> wordMeanings;
+  List<WordMeaning> wordMeanings = [];
 
   /// related word in examples
   @Field()
-  List<String> _relatedWordIds;
-  
+  List<String> _relatedWordIds = [];
+
   /// Same word but with different meanings
   @Field()
-  List<String> _otherMeaningIds;
+  List<String> _otherMeaningIds = [];
 
   /// 拆字
   @Field()
-  List<String> breakdowns;
+  List<String> breakdowns = [];
 
   /// Converted from WordTag enum
   @Field()
-  List<String> tags;
+  List<String> tags = [];
 
   /// Hash of word pic for display by blurhash
   @Field()
-  String picHash;
+  String picHash = '';
 
   /// If the word has pic in cloud storage
   @StorageField()
@@ -84,8 +89,8 @@ class Word extends Document<Word>{
   }
 
   set relatedWordIDs(List<String> relatedWordIDs) =>
-      _relatedWordIds = relatedWordIDs;  
-  
+      _relatedWordIds = relatedWordIDs;
+
   List<Word> get otherMeanings {
     if (_otherMeaningIds.isBlank) {
       return [];
@@ -97,8 +102,7 @@ class Word extends Document<Word>{
   set otherMeaningIds(List<String> otherMeaningIds) =>
       _otherMeaningIds = otherMeaningIds;
 
-  Lecture get lecture =>
-      lectureService.findLectureById(lectureId);
+  Lecture get lecture => lectureService.findLectureById(lectureId);
 
   String get lectureId => id.split('-').first;
 
@@ -115,6 +119,14 @@ class Word extends Document<Word>{
 
   @override
   void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> get searchableProperties => {
+    'wordAsString': wordAsString,
+    'pinyin':pinyin,
+    'wordMeanings': wordMeanings.map((m) => m.meaning),
+    'tags':tags
+  };
 }
 
 enum WordMemoryStatus { REMEMBERED, NORMAL, FORGOT, NOT_REVIEWED }

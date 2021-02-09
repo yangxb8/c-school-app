@@ -17,7 +17,6 @@ enum AppUserKey {
   reviewedClassHistory,
   reviewedWordHistory,
   userMemos,
-  controllerTracks,
 }
 
 extension AppUserKeyExtension on AppUserKey {
@@ -41,8 +40,6 @@ extension AppUserKeyExtension on AppUserKey {
         return 'reviewedWordHistory';
       case AppUserKey.userMemos:
         return 'userMemos';
-      case AppUserKey.controllerTracks:
-        return 'controllerTracks';
       default:
         return null;
     }
@@ -64,7 +61,6 @@ Map<String, dynamic> _$toData(AppUser doc) {
   Helper.writeModelListNotNull(
       data, 'reviewedWordHistory', doc.reviewedWordHistory);
   Helper.writeModelListNotNull(data, 'userMemos', doc.userMemos);
-  Helper.writeModelListNotNull(data, 'controllerTracks', doc.controllerTracks);
 
   return data;
 }
@@ -126,16 +122,5 @@ void _$fromData(AppUser doc, Map<String, dynamic> data) {
         .toList();
   } else {
     doc.userMemos = null;
-  }
-
-  final _controllerTracks =
-      Helper.valueMapListFromKey<String, dynamic>(data, 'controllerTracks');
-  if (_controllerTracks != null) {
-    doc.controllerTracks = _controllerTracks
-        .where((d) => d != null)
-        .map((d) => ControllerTrack(values: d))
-        .toList();
-  } else {
-    doc.controllerTracks = null;
   }
 }

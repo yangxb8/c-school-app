@@ -1,12 +1,17 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:get/get.dart';
-import 'package:c_school_app/controller/main_app_controller.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/main_app_controller.dart';
 import '../i18n/main_app_home_screen.i18n.dart';
 import 'discover_panel/discover_panel_home_screen.dart';
 import 'review_panel/review_panel_home_screen.dart';
-import 'study_panel/study_panel_home_screen.dart';
 import 'setting_panel/setting_panel_home_screen.dart';
+import 'study_panel/study_panel_home_screen.dart';
 
 class MainAppHomeScreen extends StatefulWidget {
   @override

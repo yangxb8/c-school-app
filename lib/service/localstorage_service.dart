@@ -1,3 +1,4 @@
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,18 +15,20 @@ class LocalStorageService extends GetxService{
   }
 
   int getStartCountAndIncrease(){
-    int currentCount = _getFromDisk(AppStartCountKey) ?? 0;
-    _saveToDisk(AppStartCountKey, currentCount +1);
+    int currentCount = getFromDisk(AppStartCountKey) ?? 0;
+    saveToDisk(AppStartCountKey, currentCount +1);
     return currentCount;
   }
 
-  dynamic _getFromDisk(String key) {
+  bool containsKey(String key) => _preferences.containsKey(key);
+
+  dynamic getFromDisk(String key) {
     var value  = _preferences.get(key);
     print('(TRACE) LocalStorageService:_getFromDisk. key: $key value: $value');
     return value;
   }
 
-  void _saveToDisk<T>(String key, T content){
+  void saveToDisk<T>(String key, T content){
     print('(TRACE) LocalStorageService:_saveToDisk. key: $key value: $content');
 
     if(content is String) {

@@ -1,3 +1,4 @@
+// 📦 Package imports:
 import 'package:json_annotation/json_annotation.dart';
 
 part 'speech_evaluation_result.g.dart';

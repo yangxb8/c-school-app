@@ -1,9 +1,11 @@
-import 'package:c_school_app/controller/trackable_controller_interface.dart';
+// 📦 Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/model/user_lecture_history.dart';
 import 'package:c_school_app/model/user_memo.dart';
 import 'package:c_school_app/model/user_rank.dart';
@@ -39,8 +41,6 @@ class AppUser extends Document<AppUser> {
   List<String> likedWords = [];
   @ModelField()
   List<UserMemo> userMemos = [];
-  @ModelField()
-  List<ControllerTrack> controllerTracks = [];
 
   User firebaseUser;
 
@@ -58,16 +58,6 @@ class AppUser extends Document<AppUser> {
   int get userRankNow => rankHistory.last.rank;
   //TODO: get userScoreCoeff(For speech evaluation) properly
   double get userScoreCoeff => userRankNow.toDouble();
-
-  /// Get track by named ControllerTrackInterface. if nothing found, return null
-  T getControllerTrack<T extends ControllerTrack>() {
-    var tracks = controllerTracks.whereType<T>();
-    if (tracks.isNotEmpty) {
-      return tracks.single;
-    } else {
-      return null;
-    }
-  }
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

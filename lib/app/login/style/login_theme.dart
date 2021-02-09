@@ -1,6 +1,11 @@
+// 🎯 Dart imports:
 import 'dart:ui';
-import 'package:supercharged/supercharged.dart';
+
+// 🐦 Flutter imports:
 import 'package:flutter/cupertino.dart';
+
+// 📦 Package imports:
+import 'package:supercharged/supercharged.dart';
 
 class Colors {
 

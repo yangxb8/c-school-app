@@ -1,52 +1,57 @@
+// 🎯 Dart imports:
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:c_school_app/app/model/exam_base.dart';
-import 'package:c_school_app/service/user_service.dart';
-import 'package:c_school_app/util/functions.dart';
+import 'dart:math';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// 📦 Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:csv/csv.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:pedantic/pedantic.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flamingo/flamingo.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pedantic/pedantic.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:uuid/uuid.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/exam_base.dart';
 import 'package:c_school_app/app/model/lecture.dart';
-import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
-import 'package:uuid/uuid.dart';
+import 'package:c_school_app/service/user_service.dart';
+import 'package:c_school_app/util/functions.dart';
+import '../i18n/api_service.i18n.dart';
 import '../model/user.dart';
 import './logger_service.dart';
-import '../i18n/api_service.i18n.dart';
 
 final logger = LoggerService.logger;
 
 class ApiService extends GetxService {
   static ApiService _instance;
-  static FirebaseApp _firebaseApp;
   static bool _isFirebaseInitilized = false;
   static _FirebaseAuthApi _firebaseAuthApi;
   static _FirestoreApi _firestoreApi;
-  static _CloudStorageApi _cloudStorageApi;
   static _TencentApi _tencentApi;
 
   static Future<ApiService> getInstance() async {
     _instance ??= ApiService();
 
     if (!_isFirebaseInitilized) {
-      _firebaseApp = await Firebase.initializeApp();
+      await Firebase.initializeApp();
       _firebaseAuthApi = _FirebaseAuthApi.getInstance();
       _firestoreApi = _FirestoreApi.getInstance();
-      _cloudStorageApi = _CloudStorageApi.getInstance(_firebaseApp);
       _tencentApi = _TencentApi.getInstance();
       _isFirebaseInitilized = true;
     }
@@ -56,7 +61,6 @@ class ApiService extends GetxService {
 
   _FirebaseAuthApi get firebaseAuthApi => _firebaseAuthApi;
   _FirestoreApi get firestoreApi => _firestoreApi;
-  _CloudStorageApi get cloudStorageApi => _cloudStorageApi;
   _TencentApi get tencentApi => _tencentApi;
 }
 
@@ -89,7 +93,7 @@ class _FirebaseAuthApi {
   User get currentUser => _firebaseAuth.currentUser;
 
   void listenToFirebaseAuth(Function func) {
-    _firebaseAuth.authStateChanges().listen((User user) => func());
+    _firebaseAuth.authStateChanges().listen((_) async => await func());
   }
 
   // Already return fromm every conditions
@@ -149,6 +153,9 @@ class _FirebaseAuthApi {
     try {
       // Trigger the authentication flow
       final googleUser = await _googleSignIn.signIn();
+      if(googleUser==null){
+        return 'abort';
+      }
       // Obtain the auth details from the request
       final googleAuth = await googleUser.authentication;
       // Create a new credential
@@ -177,9 +184,61 @@ class _FirebaseAuthApi {
     throw UnimplementedError();
   }
 
-  //TODO: implement this
   Future<String> loginWithApple() async {
-    throw UnimplementedError();
+    /// Generates a cryptographically secure random nonce, to be included in a
+    /// credential request.
+    String generateNonce([int length = 32]) {
+      final charset =
+          '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+      final random = Random.secure();
+      return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+          .join();
+    }
+
+    /// Returns the sha256 hash of [input] in hex notation.
+    String sha256ofString(String input) {
+      final bytes = utf8.encode(input);
+      final digest = sha256.convert(bytes);
+      return digest.toString();
+    }
+    // To prevent replay attacks with the credential returned from Apple, we
+    // include a nonce in the credential request. When signing in in with
+    // Firebase, the nonce in the id token returned by Apple, is expected to
+    // match the sha256 hash of `rawNonce`.
+    final rawNonce = generateNonce();
+    final nonce = sha256ofString(rawNonce);
+    try {
+      // Request credential for the currently signed in Apple account.
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
+      final oauthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+
+      // Sign in the user with Firebase. If the nonce we generated earlier does
+      // not match the nonce in `appleCredential.identityToken`, sign in will fail.
+      var userCredential =
+          await _firebaseAuth.signInWithCredential(oauthCredential);
+      // If the user is not in our DB, create it
+      if (_firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
+          null) {
+        _firestoreApi._registerAppUser(
+            firebaseUser: userCredential.user,
+            nickname: appleCredential.givenName);
+      }
+      return 'ok';
+    } catch (e) {
+      logger.e(e.toString());
+      return 'Unexpected internal error occurs'.i18nApi;
+    }
   }
 
   //TODO: implement this
@@ -187,20 +246,10 @@ class _FirebaseAuthApi {
     throw UnimplementedError();
   }
 
-  //TODO: implement this, after logout, login as anonymous.
   Future<String> logout() async {
-    throw UnimplementedError();
-    await loginAnonymous();
-  }
-
-  Future<String> loginAnonymous() async {
-    try {
-      await FirebaseAuth.instance.signInAnonymously();
-      return 'ok';
-    } catch (e) {
-      logger.e(e.toString());
-      return 'Unexpected internal error occurs'.i18nApi;
-    }
+    await FirebaseAuth.instance.signOut();
+    //TODO: Login out from 3rd party OAuth
+    return 'ok';
   }
 }
 
@@ -218,7 +267,7 @@ class _FirestoreApi {
       _instance = _FirestoreApi();
       _firestore = FirebaseFirestore.instance;
       _documentAccessor = DocumentAccessor();
-      _setupEmulator();
+      // _setupEmulator(); //TODO: Uncomment this to use firestore simulator
       _currentUser = _FirebaseAuthApi().currentUser;
     }
 
@@ -286,21 +335,20 @@ class _FirestoreApi {
 
   /// Upload words to firestore and cloud storage
   void uploadWordsByCsv() async {
-    final COLUMN_WORD_ID = 0;
-    final COLUMN_WORD = 1;
-    final COLUMN_PART_OF_SENTENCE = 2;
-    final COLUMN_MEANING = 3;
-    final COLUMN_PINYIN = 5;
-    final COLUMN_HINT = 6;
-    final COLUMN_OTHER_MEANING_ID = 7;
-    final COLUMN_DETAIL = 8;
-    final COLUMN_EXAMPLE = 9;
-    final COLUMN_EXAMPLE_MEANING = 10;
-    final COLUMN_EXAMPLE_PINYIN = 11;
-    final COLUMN_RELATED_WORD_ID = 14;
-    final COLUMN_WORD_PROCESS_STATUS = 18;
-    final COLUMN_PIC_HASH = 19;
-    final WORD_PROCESS_STATUS_NEW = 0;
+    final COLUMN_WORD_PROCESS_STATUS = 0;
+    final COLUMN_WORD_ID = 1;
+    final COLUMN_WORD = COLUMN_WORD_ID+1;
+    final COLUMN_PART_OF_SENTENCE = COLUMN_WORD_ID+2;
+    final COLUMN_MEANING = COLUMN_WORD_ID+3;
+    final COLUMN_PINYIN = COLUMN_WORD_ID+5;
+    final COLUMN_OTHER_MEANING_ID = COLUMN_WORD_ID+6;
+    final COLUMN_DETAIL = COLUMN_WORD_ID+7;
+    final COLUMN_EXAMPLE = COLUMN_WORD_ID+8;
+    final COLUMN_EXAMPLE_MEANING = COLUMN_WORD_ID+9;
+    final COLUMN_EXAMPLE_PINYIN = COLUMN_WORD_ID+10;
+    final COLUMN_RELATED_WORD_ID = COLUMN_WORD_ID+13;
+    final COLUMN_PIC_HASH = COLUMN_WORD_ID+17;
+    final WORD_PROCESS_STATUS_UPLOAD = 2;
     final SEPARATOR = '/';
     final PINYIN_SEPARATOR = '-';
 
@@ -312,7 +360,7 @@ class _FirestoreApi {
       csv = CsvToListConverter()
           .convert(await rootBundle.loadString('assets/upload/words.csv'))
             ..removeWhere((w) =>
-                WORD_PROCESS_STATUS_NEW != w[COLUMN_WORD_PROCESS_STATUS] ||
+                WORD_PROCESS_STATUS_UPLOAD != w[COLUMN_WORD_PROCESS_STATUS] ||
                 w[COLUMN_WORD] == null);
     } catch (_) {
       print('No words.csv found, will skip!');
@@ -324,18 +372,29 @@ class _FirestoreApi {
           ..word = row[COLUMN_WORD].trim().split('')
           ..pinyin = row[COLUMN_PINYIN].trim().split(PINYIN_SEPARATOR)
           ..partOfSentence = row[COLUMN_PART_OF_SENTENCE].trim()
-          ..detail = row[COLUMN_DETAIL].trim()
+          ..explanation = row[COLUMN_DETAIL].trim()
           ..picHash = row[COLUMN_PIC_HASH].trim()
           ..wordMeanings = [
             WordMeaning(
-                meaning: row[COLUMN_MEANING].trim().replaceAll(SEPARATOR, ','),
-                examples: row[COLUMN_EXAMPLE].trim().split(SEPARATOR),
+                meaning: row[COLUMN_MEANING].toString().trim().replaceAll(
+                    SEPARATOR, ','),
+                examples: row[COLUMN_EXAMPLE].toString().trim() == ''
+                    ? []
+                    : row[COLUMN_EXAMPLE].toString().trim().split(SEPARATOR),
                 exampleMeanings:
-                    row[COLUMN_EXAMPLE_MEANING].trim().split(SEPARATOR),
-                examplePinyins:
-                    row[COLUMN_EXAMPLE_PINYIN].trim().split(SEPARATOR).toList())
+                    row[COLUMN_EXAMPLE_MEANING].toString().trim() == ''
+                        ? []
+                        : row[COLUMN_EXAMPLE_MEANING]
+                            .toString()
+                            .trim()
+                            .split(SEPARATOR),
+                examplePinyins: row[COLUMN_EXAMPLE_PINYIN].trim() == ''
+                    ? []
+                    : row[COLUMN_EXAMPLE_PINYIN]
+                        .trim()
+                        .split(SEPARATOR)
+                        .toList())
           ]
-          ..hint = row[COLUMN_HINT].trim()
           ..relatedWordIDs = row[COLUMN_RELATED_WORD_ID].trim().split(SEPARATOR)
           ..otherMeaningIds =
               row[COLUMN_OTHER_MEANING_ID].trim().split(SEPARATOR))
@@ -428,13 +487,14 @@ class _FirestoreApi {
   }
 
   void uploadLecturesByCsv() async {
-    final COLUMN_ID = 0;
-    final COLUMN_LEVEL = 1;
-    final COLUMN_TITLE = 2;
-    final COLUMN_DESCRIPTION = 3;
-    final COLUMN_PROCESS_STATUS = 5;
-    final COLUMN_PIC_HASH = 6;
-    final WORD_PROCESS_STATUS_NEW = 0;
+    final columnId = 0;
+    final columnLevel = 1;
+    final columnTitle = 2;
+    final columnDescription = 3;
+    final columnProcessStatus = 5;
+    final columnPicHash = 6;
+    final processStatusNew = 0;
+    final processStatusModified = 1;
 
     final storage = Storage()..fetch();
     final documentAccessor = DocumentAccessor();
@@ -445,18 +505,19 @@ class _FirestoreApi {
       csv = CsvToListConverter()
           .convert(await rootBundle.loadString('assets/upload/lectures.csv'))
             ..removeWhere((w) =>
-                WORD_PROCESS_STATUS_NEW != w[COLUMN_PROCESS_STATUS] ||
-                w[COLUMN_TITLE] == null);
+                ![processStatusNew, processStatusModified]
+                    .contains(w[columnProcessStatus]) ||
+                w[columnTitle] == null);
     } catch (_) {
       print('No lectures.csv found, will skip!');
       return;
     }
 
     var lectures =
-        csv.map((row) => Lecture(id: row[COLUMN_ID], level: row[COLUMN_LEVEL])
-          ..title = row[COLUMN_TITLE].trim() // Title should not be null
-          ..description = row[COLUMN_DESCRIPTION]?.trim()
-          ..picHash = row[COLUMN_PIC_HASH]?.trim());
+        csv.map((row) => Lecture(id: row[columnId], level: row[columnLevel])
+          ..title = row[columnTitle].trim() // Title should not be null
+          ..description = row[columnDescription]?.trim()
+          ..picHash = row[columnPicHash]?.trim());
 
     // Checking status
     storage.uploader.listen((data) {
@@ -581,22 +642,6 @@ class _FirestoreApi {
   }
 }
 
-//TODO: implement this class
-class _CloudStorageApi {
-  static _CloudStorageApi _instance;
-  static FirebaseStorage _firebaseStorage;
-
-  static _CloudStorageApi getInstance(FirebaseApp firebaseApp) {
-    if (_instance == null) {
-      _instance = _CloudStorageApi();
-      _firebaseStorage = FirebaseStorage.instanceFor(
-          app: firebaseApp, bucket: 'gs://spoken-chinese.appspot.com');
-    }
-
-    return _instance;
-  }
-}
-
 /// This API only have native method
 class _TencentApi {
   static _TencentApi _instance;
@@ -613,7 +658,8 @@ class _TencentApi {
   }
 
   Future<void> soeStartRecord(SpeechExam exam) async {
-    final audioPath = '${(await getTemporaryDirectory()).path}/${Uuid().v1()}.mp3';
+    final audioPath =
+        '${(await getTemporaryDirectory()).path}/${Uuid().v1()}.mp3';
     try {
       // await soeChannel.invokeMethod('soeStartRecord',<String, dynamic>{
       //   'refText': exam.refText,
@@ -640,8 +686,8 @@ class _TencentApi {
     try {
       final resultRaw =
           await soeChannel.invokeMapMethod('soeStopRecordAndEvaluate');
-      result['evaluationResult'] =
-          SentenceInfo.fromJson(jsonDecode(resultRaw['evaluationResult']).single);
+      result['evaluationResult'] = SentenceInfo.fromJson(
+          jsonDecode(resultRaw['evaluationResult']).single);
       result['audioPath'] = resultRaw['audioPath'];
       // Save result to cloud storage, but won't await it
       unawaited(Get.find<ApiService>().firestoreApi.saveUserSpeech(
