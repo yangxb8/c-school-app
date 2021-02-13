@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,15 +8,161 @@ class SelectableAutoSizeText extends StatelessWidget {
   ///
   /// If the [style] argument is null, the text will use the style from the
   /// closest enclosing [DefaultTextStyle].
-  const SelectableAutoSizeText(this.data, {Key key, this.textKey, this.style, this.strutStyle, this.minFontSize = 12, this.maxFontSize = double.infinity, this.stepGranularity = 1, this.presetFontSizes, this.textAlign, this.textDirection, this.locale, this.softWrap, this.wrapWords = true, this.overflow, this.overflowReplacement, this.textScaleFactor, this.maxLines, this.semanticsLabel, this.selectable})
+  const SelectableAutoSizeText(this.data,
+      {Key key,
+      this.textKey,
+      this.style,
+      this.strutStyle,
+      this.minFontSize = 12,
+      this.maxFontSize = double.infinity,
+      this.stepGranularity = 1,
+      this.presetFontSizes,
+      this.textAlign,
+      this.textDirection,
+      this.wrapWords = true,
+      this.overflow,
+      this.overflowReplacement,
+      this.textScaleFactor,
+      this.maxLines,
+      this.focusNode,
+      this.autofocus = false,
+      this.showCursor = false,
+      this.cursorWidth = 2.0,
+      this.cursorHeight,
+      this.cursorRadius,
+      this.cursorColor,
+      this.enableInteractiveSelection = true,
+      this.dragStartBehavior = DragStartBehavior.start,
+      this.toolbarOptions,
+      this.onTap,
+      this.scrollPhysics,
+      this.textHeightBehavior,
+      this.textWidthBasis})
       : assert(data != null, 'A non-null String must be provided to a AutoSizeText widget.'),
+        selectable = true,
         textSpan = null,
+        locale = null,
+        softWrap = null,
+        semanticsLabel = null,
+        super(key: key);
+
+  const SelectableAutoSizeText.unselectable(
+    this.data, {
+    Key key,
+    this.textKey,
+    this.style,
+    this.strutStyle,
+    this.minFontSize = 12,
+    this.maxFontSize = double.infinity,
+    this.stepGranularity = 1,
+    this.presetFontSizes,
+    this.textAlign,
+    this.textDirection,
+    this.locale,
+    this.softWrap,
+    this.wrapWords = true,
+    this.overflow,
+    this.overflowReplacement,
+    this.textScaleFactor,
+    this.maxLines,
+    this.semanticsLabel,
+  })  : assert(data != null, 'A non-null String must be provided to a AutoSizeText widget.'),
+        textSpan = null,
+        selectable = false,
+        focusNode = null,
+        autofocus = null,
+        showCursor = null,
+        cursorWidth = null,
+        cursorHeight = null,
+        cursorRadius = null,
+        cursorColor = null,
+        enableInteractiveSelection = null,
+        dragStartBehavior = null,
+        toolbarOptions = null,
+        onTap = null,
+        scrollPhysics = null,
+        textHeightBehavior = null,
+        textWidthBasis = null,
         super(key: key);
 
   /// Creates a [AutoSizeText] widget with a [TextSpan].
-  const SelectableAutoSizeText.rich(this.textSpan, {Key key, this.textKey, this.style, this.strutStyle, this.minFontSize = 12, this.maxFontSize = double.infinity, this.stepGranularity = 1, this.presetFontSizes, this.textAlign, this.textDirection, this.locale, this.softWrap, this.wrapWords = true, this.overflow, this.overflowReplacement, this.textScaleFactor, this.maxLines, this.semanticsLabel, this.selectable})
-      : assert(textSpan != null, 'A non-null TextSpan must be provided to a AutoSizeText.rich widget.'),
+  const SelectableAutoSizeText.rich(this.textSpan,
+      {Key key,
+      this.textKey,
+      this.style,
+      this.strutStyle,
+      this.minFontSize = 12,
+      this.maxFontSize = double.infinity,
+      this.stepGranularity = 1,
+      this.presetFontSizes,
+      this.textAlign,
+      this.textDirection,
+      this.wrapWords = true,
+      this.overflow,
+      this.overflowReplacement,
+      this.textScaleFactor,
+      this.maxLines,
+      this.focusNode,
+      this.autofocus = false,
+      this.showCursor = false,
+      this.cursorWidth = 2.0,
+      this.cursorHeight,
+      this.cursorRadius,
+      this.cursorColor,
+      this.enableInteractiveSelection = true,
+      this.dragStartBehavior = DragStartBehavior.start,
+      this.toolbarOptions,
+      this.onTap,
+      this.scrollPhysics,
+      this.textHeightBehavior,
+      this.textWidthBasis})
+      : assert(textSpan != null,
+            'A non-null TextSpan must be provided to a AutoSizeText.rich widget.'),
         data = null,
+        selectable = true,
+        locale = null,
+        softWrap = null,
+        semanticsLabel = null,
+        super(key: key);
+
+  const SelectableAutoSizeText.richUnselectable(
+    this.textSpan, {
+    Key key,
+    this.textKey,
+    this.style,
+    this.strutStyle,
+    this.minFontSize = 12,
+    this.maxFontSize = double.infinity,
+    this.stepGranularity = 1,
+    this.presetFontSizes,
+    this.textAlign,
+    this.textDirection,
+    this.locale,
+    this.softWrap,
+    this.wrapWords = true,
+    this.overflow,
+    this.overflowReplacement,
+    this.textScaleFactor,
+    this.maxLines,
+    this.semanticsLabel,
+  })  : assert(textSpan != null,
+            'A non-null TextSpan must be provided to a AutoSizeText.rich widget.'),
+        data = null,
+        selectable = false,
+        focusNode = null,
+        autofocus = null,
+        showCursor = null,
+        cursorWidth = null,
+        cursorHeight = null,
+        cursorRadius = null,
+        cursorColor = null,
+        enableInteractiveSelection = null,
+        dragStartBehavior = null,
+        toolbarOptions = null,
+        onTap = null,
+        scrollPhysics = null,
+        textHeightBehavior = null,
+        textWidthBasis = null,
         super(key: key);
 
   /// Sets the key for the resulting [Text] widget.
@@ -167,6 +314,91 @@ class SelectableAutoSizeText extends StatelessWidget {
   /// True if the text is selectable
   final bool selectable;
 
+  /// Defines the focus for this widget.
+  ///
+  /// Text is only selectable when widget is focused.
+  ///
+  /// The [focusNode] is a long-lived object that's typically managed by a
+  /// [StatefulWidget] parent. See [FocusNode] for more information.
+  ///
+  /// To give the focus to this widget, provide a [focusNode] and then
+  /// use the current [FocusScope] to request the focus:
+  ///
+  /// ```dart
+  /// FocusScope.of(context).requestFocus(myFocusNode);
+  /// ```
+  ///
+  /// This happens automatically when the widget is tapped.
+  ///
+  /// To be notified when the widget gains or loses the focus, add a listener
+  /// to the [focusNode]:
+  ///
+  /// ```dart
+  /// focusNode.addListener(() { print(myFocusNode.hasFocus); });
+  /// ```
+  ///
+  /// If null, this widget will create its own [FocusNode].
+  final FocusNode focusNode;
+
+  /// {@macro flutter.widgets.editableText.autofocus}
+  final bool autofocus;
+
+  /// {@macro flutter.widgets.editableText.showCursor}
+  final bool showCursor;
+
+  /// {@macro flutter.widgets.editableText.cursorWidth}
+  final double cursorWidth;
+
+  /// {@macro flutter.widgets.editableText.cursorHeight}
+  final double cursorHeight;
+
+  /// {@macro flutter.widgets.editableText.cursorRadius}
+  final Radius cursorRadius;
+
+  /// The color to use when painting the cursor.
+  ///
+  /// Defaults to the theme's `cursorColor` when null.
+  final Color cursorColor;
+
+  /// {@macro flutter.widgets.editableText.enableInteractiveSelection}
+  final bool enableInteractiveSelection;
+
+  /// {@macro flutter.widgets.scrollable.dragStartBehavior}
+  final DragStartBehavior dragStartBehavior;
+
+  /// Configuration of toolbar options.
+  ///
+  /// Paste and cut will be disabled regardless.
+  ///
+  /// If not set, select all and copy will be enabled by default.
+  final ToolbarOptions toolbarOptions;
+
+  /// Called when the user taps on this selectable text.
+  ///
+  /// The selectable text builds a [GestureDetector] to handle input events like tap,
+  /// to trigger focus requests, to move the caret, adjust the selection, etc.
+  /// Handling some of those events by wrapping the selectable text with a competing
+  /// GestureDetector is problematic.
+  ///
+  /// To unconditionally handle taps, without interfering with the selectable text's
+  /// internal gesture detector, provide this callback.
+  ///
+  /// To be notified when the text field gains or loses the focus, provide a
+  /// [focusNode] and add a listener to that.
+  ///
+  /// To listen to arbitrary pointer events without competing with the
+  /// selectable text's internal gesture detector, use a [Listener].
+  final GestureTapCallback onTap;
+
+  /// {@macro flutter.widgets.editableText.scrollPhysics}
+  final ScrollPhysics scrollPhysics;
+
+  /// {@macro flutter.dart:ui.textHeightBehavior}
+  final TextHeightBehavior textHeightBehavior;
+
+  /// {@macro flutter.painting.textPainter.textWidthBasis}
+  final TextWidthBasis textWidthBasis;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, size) {
@@ -201,18 +433,23 @@ class SelectableAutoSizeText extends StatelessWidget {
   }
 
   void _sanityCheck(TextStyle style, int maxLines) {
-    assert(overflow == null || overflowReplacement == null, 'Either overflow or overflowReplacement have to be null.');
+    assert(overflow == null || overflowReplacement == null,
+        'Either overflow or overflowReplacement have to be null.');
     assert(maxLines == null || maxLines > 0, 'MaxLines has to be grater than or equal to 1.');
     assert(key == null || key != textKey, 'Key and textKey cannot be the same.');
 
     if (presetFontSizes == null) {
-      assert(stepGranularity >= 0.1, 'StepGranularity has to be greater than or equal to 0.1. It is not a good idea to resize the font with a higher accuracy.');
+      assert(stepGranularity >= 0.1,
+          'StepGranularity has to be greater than or equal to 0.1. It is not a good idea to resize the font with a higher accuracy.');
       assert(minFontSize >= 0, 'MinFontSize has to be greater than or equal to 0.');
       assert(maxFontSize > 0, 'MaxFontSize has to be greater than 0.');
-      assert(minFontSize <= maxFontSize, 'MinFontSize has to be smaller or equal than maxFontSize.');
-      assert(minFontSize / stepGranularity % 1 == 0, 'MinFontSize has to be multiples of stepGranularity.');
+      assert(
+          minFontSize <= maxFontSize, 'MinFontSize has to be smaller or equal than maxFontSize.');
+      assert(minFontSize / stepGranularity % 1 == 0,
+          'MinFontSize has to be multiples of stepGranularity.');
       if (maxFontSize != double.infinity) {
-        assert(maxFontSize / stepGranularity % 1 == 0, 'MaxFontSize has to be multiples of stepGranularity.');
+        assert(maxFontSize / stepGranularity % 1 == 0,
+            'MaxFontSize has to be multiples of stepGranularity.');
       }
     } else {
       assert(presetFontSizes.isNotEmpty, 'PresetFontSizes has to be nonempty.');
@@ -237,10 +474,7 @@ class SelectableAutoSizeText extends StatelessWidget {
       var defaultFontSize = style.fontSize.clamp(minFontSize, maxFontSize);
       var defaultScale = defaultFontSize * userScale / style.fontSize;
       if (_checkTextFits(span, defaultScale, maxLines, size)) {
-        return [
-          defaultFontSize * userScale,
-          true
-        ];
+        return [defaultFontSize * userScale, true];
       }
 
       left = (minFontSize / stepGranularity).floor();
@@ -278,10 +512,7 @@ class SelectableAutoSizeText extends StatelessWidget {
       fontSize = adjustedPresetFontSizes[right] * userScale;
     }
 
-    return [
-      fontSize,
-      lastValueFits
-    ];
+    return [fontSize, lastValueFits];
   }
 
   bool _checkTextFits(TextSpan text, double scale, int maxLines, BoxConstraints constraints) {
@@ -320,33 +551,59 @@ class SelectableAutoSizeText extends StatelessWidget {
 
     tp.layout(maxWidth: constraints.maxWidth);
 
-    return !(tp.didExceedMaxLines || tp.height > constraints.maxHeight || tp.width > constraints.maxWidth);
+    return !(tp.didExceedMaxLines ||
+        tp.height > constraints.maxHeight ||
+        tp.width > constraints.maxWidth);
   }
 
   Widget _buildText(double fontSize, TextStyle style, int maxLines) {
     if (selectable) {
       if (data != null) {
-        return SelectableText(
-          data,
-          key: textKey,
-          style: style.copyWith(fontSize: fontSize),
-          strutStyle: strutStyle,
-          textAlign: textAlign,
-          textDirection: textDirection,
-          textScaleFactor: 1,
-          maxLines: maxLines,
-        );
+        return SelectableText(data,
+            key: textKey,
+            focusNode: focusNode,
+            style: style,
+            strutStyle: strutStyle,
+            textAlign: textAlign,
+            textDirection: textDirection,
+            textScaleFactor: fontSize / style.fontSize,
+            showCursor: showCursor,
+            autofocus: autofocus,
+            toolbarOptions: toolbarOptions,
+            maxLines: maxLines,
+            cursorWidth: cursorWidth,
+            cursorHeight: cursorHeight,
+            cursorRadius: cursorRadius,
+            cursorColor: cursorColor,
+            dragStartBehavior: dragStartBehavior,
+            enableInteractiveSelection: enableInteractiveSelection,
+            onTap: onTap,
+            scrollPhysics: scrollPhysics,
+            textHeightBehavior: textHeightBehavior,
+            textWidthBasis: textWidthBasis);
       } else {
-        return SelectableText.rich(
-          textSpan,
-          key: textKey,
-          style: style,
-          strutStyle: strutStyle,
-          textAlign: textAlign,
-          textDirection: textDirection,
-          textScaleFactor: fontSize / style.fontSize,
-          maxLines: maxLines,
-        );
+        return SelectableText.rich(textSpan,
+            key: textKey,
+            focusNode: focusNode,
+            style: style,
+            strutStyle: strutStyle,
+            textAlign: textAlign,
+            textDirection: textDirection,
+            textScaleFactor: fontSize / style.fontSize,
+            showCursor: showCursor,
+            autofocus: autofocus,
+            toolbarOptions: toolbarOptions,
+            maxLines: maxLines,
+            cursorWidth: cursorWidth,
+            cursorHeight: cursorHeight,
+            cursorRadius: cursorRadius,
+            cursorColor: cursorColor,
+            dragStartBehavior: dragStartBehavior,
+            enableInteractiveSelection: enableInteractiveSelection,
+            onTap: onTap,
+            scrollPhysics: scrollPhysics,
+            textHeightBehavior: textHeightBehavior,
+            textWidthBasis: textWidthBasis);
       }
     } else {
       if (data != null) {
