@@ -35,15 +35,15 @@ class UserService extends GetxService {
   /// Return Empty AppUser if firebase user is null, otherwise,
   /// return AppUser fetched from firestore
   static Future<AppUser> _getCurrentUser() async {
-    if (_apiService.firebaseAuthApi.currentUser == null) {
+    final currentUser = await _apiService.firebaseAuthApi.getCurrentUser();
+    if (currentUser == null) {
       return AppUser();
     } else {
-      return await _apiService.firestoreApi
-          .fetchAppUser(firebaseUser: _apiService.firebaseAuthApi.currentUser);
+      return await _apiService.firestoreApi.fetchAppUser(firebaseUser: currentUser);
     }
   }
 
-  static void _refreshAppUser() async{
+  static void _refreshAppUser() async {
     user = await _getCurrentUser();
     if (user != null && user.isLogin() && isLectureServiceInitialized.isfalse) {
       await Get.putAsync<LectureService>(() async => await LectureService.getInstance());
@@ -64,8 +64,8 @@ class UserService extends GetxService {
   }
 
   static void showWireDash() {
-    Wiredash.of(Get.context).setUserProperties(
-        userId: user.userId, userEmail: user.firebaseUser.email);
+    Wiredash.of(Get.context)
+        .setUserProperties(userId: user.userId, userEmail: user.firebaseUser.email);
     Wiredash.of(Get.context).show();
   }
 

@@ -50,8 +50,8 @@ class ApiService extends GetxService {
 
     if (!_isFirebaseInitilized) {
       await Firebase.initializeApp();
-      _firebaseAuthApi = _FirebaseAuthApi.getInstance();
-      _firestoreApi = _FirestoreApi.getInstance();
+      _firebaseAuthApi = await _FirebaseAuthApi.getInstance();
+      _firestoreApi = await _FirestoreApi.getInstance();
       _tencentApi = _TencentApi.getInstance();
       _isFirebaseInitilized = true;
     }
@@ -69,9 +69,8 @@ class _FirebaseAuthApi {
   static bool _isFirebaseAuthInitilized = false;
   static FirebaseAuth _firebaseAuth;
   static GoogleSignIn _googleSignIn;
-  static final _FirestoreApi _firestoreApi = _FirestoreApi.getInstance();
 
-  static _FirebaseAuthApi getInstance() {
+  static Future<_FirebaseAuthApi> getInstance() async{
     _instance ??= _FirebaseAuthApi();
 
     if (!_isFirebaseAuthInitilized) {
@@ -90,7 +89,7 @@ class _FirebaseAuthApi {
     return _instance;
   }
 
-  User get currentUser => _firebaseAuth.currentUser;
+  Future<User> getCurrentUser() async => await _firebaseAuth.authStateChanges().first;
 
   void listenToFirebaseAuth(Function func) {
     _firebaseAuth.authStateChanges().listen((_) async => await func());
@@ -104,7 +103,7 @@ class _FirebaseAuthApi {
       var userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       // Email verify by showing popup on provided context
-      _firestoreApi._registerAppUser(
+      Get.find<ApiService>().firestoreApi._registerAppUser(
           firebaseUser: userCredential.user, nickname: nickname);
       if (!userCredential.user.emailVerified) {
         await sendVerifyEmail();
@@ -123,8 +122,8 @@ class _FirebaseAuthApi {
   }
 
   Future<void> sendVerifyEmail() async {
-    await currentUser.reload();
-    await currentUser.sendEmailVerification();
+    await (await getCurrentUser()).reload();
+    await (await getCurrentUser()).sendEmailVerification();
   }
 
   // Already return fromm every conditions
@@ -142,6 +141,8 @@ class _FirebaseAuthApi {
         return 'No user found for that email.'.i18nApi;
       } else if (e.code == 'wrong-password') {
         return 'Wrong password provided for that user.'.i18nApi;
+      } else {
+        return 'Unexpected internal error occurs'.i18nApi;
       }
     } catch (e) {
       logger.e(e.toString());
@@ -166,9 +167,9 @@ class _FirebaseAuthApi {
       // Once signed in, return the UserCredential
       var userCredential = await _firebaseAuth.signInWithCredential(credential);
       // If the user is not in our DB, create it
-      if (_firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
+      if (Get.find<ApiService>().firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
           null) {
-        _firestoreApi._registerAppUser(
+        Get.find<ApiService>().firestoreApi._registerAppUser(
             firebaseUser: userCredential.user,
             nickname: googleUser.displayName);
       }
@@ -228,9 +229,9 @@ class _FirebaseAuthApi {
       var userCredential =
           await _firebaseAuth.signInWithCredential(oauthCredential);
       // If the user is not in our DB, create it
-      if (_firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
+      if (Get.find<ApiService>().firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
           null) {
-        _firestoreApi._registerAppUser(
+        Get.find<ApiService>().firestoreApi._registerAppUser(
             firebaseUser: userCredential.user,
             nickname: appleCredential.givenName);
       }
@@ -262,13 +263,13 @@ class _FirestoreApi {
   static DocumentAccessor _documentAccessor;
   static User _currentUser;
 
-  static _FirestoreApi getInstance() {
+  static Future<_FirestoreApi> getInstance() async{
     if (_instance == null) {
       _instance = _FirestoreApi();
       _firestore = FirebaseFirestore.instance;
       _documentAccessor = DocumentAccessor();
       // _setupEmulator(); //TODO: Uncomment this to use firestore simulator
-      _currentUser = _FirebaseAuthApi().currentUser;
+      _currentUser = await _FirebaseAuthApi().getCurrentUser();
     }
 
     return _instance;
