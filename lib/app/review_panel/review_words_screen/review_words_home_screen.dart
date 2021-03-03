@@ -19,7 +19,6 @@ import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
 import 'package:c_school_app/app/ui_view/search_bar.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import '../../../c_school_icons.dart';
-import '../../../i18n/review_words.i18n.dart';
 import '../../../util/extensions.dart';
 import 'review_words_theme.dart';
 
@@ -36,7 +35,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
               child: Column(
                 children: <Widget>[
                   Text(
-                    'My Words'.i18n,
+                    'review.word.home.myWord.title'.tr,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -47,7 +46,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                     ),
                   ).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
                   _buildSpecialLectureCard().expanded(),
-                  Text('All Course'.i18n,
+                  Text('review.word.home.allCourse.title'.tr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -108,7 +107,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                   size: bigIconSize*0.8, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListForgotten.toList()),
-              tooltip: 'Forgotten words'.i18n,
+              tooltip: 'review.word.home.myWord.forgottenWord'.tr,
             ),
             _buildWordsCount(controller.wordsListForgotten)
           ],
@@ -119,7 +118,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListLiked.toList()),
               icon: Icon(CSchool.heart, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
-              tooltip: 'Liked words'.i18n,
+              tooltip: 'review.word.home.myWord.likedWord'.tr,
             ),
             _buildWordsCount(controller.wordsListLiked)
           ],
@@ -132,7 +131,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                   Icon(CSchool.books_stack_of_three, size: bigIconSize*1.2, color: ReviewWordsTheme.darkBlue),
               onPressed: () =>
                   navigateToReviewWordScreen(wordsList: controller.wordsListAll.toList()),
-              tooltip: 'All words'.i18n,
+              tooltip: 'review.word.home.myWord.allWord'.tr,
             ),
             _buildWordsCount(controller.wordsListAll)
           ],
@@ -297,7 +296,7 @@ void navigateToReviewWordScreen({Lecture lecture, int index, List<Word> wordsLis
       title: '',
       barrierDismissible: true,
       content: Text(
-        'Oops, No words here'.i18n,
+        'review.word.home.error.noWord'.tr,
         style: ReviewWordsTheme.lectureCardTitle,
       ).paddingOnly(top: 10),
     );

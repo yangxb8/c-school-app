@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/main_app_controller.dart';
-import '../i18n/main_app_home_screen.i18n.dart';
 import 'discover_panel/discover_panel_home_screen.dart';
 import 'review_panel/review_panel_home_screen.dart';
 import 'setting_panel/setting_panel_home_screen.dart';
@@ -42,10 +41,10 @@ class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProvid
           backgroundColor: Colors.lightBlue,
           style: TabStyle.textIn,
           items: [
-            TabItem(icon: Icons.border_color, title: 'Study'.i18n),
-            TabItem(icon: Icons.explore, title: 'Discover'.i18n),
-            TabItem(icon: Icons.library_books, title: 'Review'.i18n),
-            TabItem(icon: Icons.supervisor_account, title: 'Account'.i18n),
+            TabItem(icon: Icons.border_color, title: 'home.panel.study.title'.tr),
+            TabItem(icon: Icons.explore, title: 'home.panel.discover.title'.tr),
+            TabItem(icon: Icons.library_books, title: 'home.panel.review.title'.tr),
+            TabItem(icon: Icons.supervisor_account, title: 'home.panel.account.title'.tr),
           ],
           onTap: (int i) => controller.panelIndex.value = i,
         ),
