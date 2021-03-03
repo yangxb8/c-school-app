@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
-import 'package:i18n_extension/i18n_widget.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/review_panel/controller/review_words_home_screen_controller.dart';
@@ -26,27 +25,26 @@ class AppRouter {
     return [
       GetPage(
           name: '/login',
-          page: () => I18n(initialLocale: DEFAULT_LOCALE, child: LoginPage()),
+          page: () => LoginPage(),
           binding: BindingsBuilder(
               () => {Get.lazyPut<LoginController>(() => LoginController())})),
       GetPage(
           middlewares: [HomeRouteMiddleware()],
           name: '/home',
           page: () =>
-              I18n(initialLocale: DEFAULT_LOCALE, child: MainAppHomeScreen()),
+              MainAppHomeScreen(),
           binding: BindingsBuilder(() =>
               {Get.lazyPut<MainAppController>(() => MainAppController())})),
       GetPage(
           name: '/review/words/home',
-          page: () => I18n(
-              initialLocale: DEFAULT_LOCALE, child: ReviewWordsHomeScreen()),
+          page: () => ReviewWordsHomeScreen(),
           binding: BindingsBuilder(() => {
                 Get.lazyPut<ReviewWordsHomeController>(
                     () => ReviewWordsHomeController())
               })),
       GetPage(
           name: '/review/words',
-          page: () => I18n(initialLocale: DEFAULT_LOCALE, child: ReviewWords()),
+          page: () => ReviewWords(),
           binding: BindingsBuilder(() => {
                 Get.lazyPut<ReviewWordsController>(
                     () => ReviewWordsController())
@@ -56,7 +54,6 @@ class AppRouter {
 }
 
 class HomeRouteMiddleware extends GetMiddleware{
-  
   @override
   RouteSettings redirect(String route) {
     if(UserService.user.isLogin()){

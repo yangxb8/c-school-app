@@ -10,7 +10,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 // 🌎 Project imports:
 import 'package:c_school_app/app/ui_view/separator.dart';
 import '../../c_school_icons.dart';
-import '../../i18n/login_page.i18n.dart';
 import 'controller/login_controller.dart';
 import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
@@ -36,13 +35,13 @@ class _LoginPageState extends State<LoginPage>
   final LoginController controller = Get.find();
 
   final passwordValidator = MultiValidator([
-    RequiredValidator(errorText: 'Required'.i18n),
-    MinLengthValidator(6, errorText: '6 digits or more'.i18n),
+    RequiredValidator(errorText: 'login.common.error.required'.tr),
+    MinLengthValidator(6, errorText: 'login.register.error.tooShort'.tr),
   ]);
 
   final emailValidator = MultiValidator([
-    EmailValidator(errorText: "That doesn't looks like an Email".i18n),
-    RequiredValidator(errorText: 'Required'.i18n)
+    EmailValidator(errorText: 'login.common.error.emailFormat'.tr),
+    RequiredValidator(errorText: 'login.common.error.required'.tr)
   ]);
 
   bool _obscureTextLogin = true;
@@ -193,7 +192,7 @@ class _LoginPageState extends State<LoginPage>
                 highlightColor: Colors.transparent,
                 onPressed: _onSignInButtonPress,
                 child: Text(
-                  'Existing'.i18n,
+                  'login.login.tab.title'.tr,
                   style: TextStyle(
                       color: left,
                       fontSize: 16.0,
@@ -208,7 +207,7 @@ class _LoginPageState extends State<LoginPage>
                 highlightColor: Colors.transparent,
                 onPressed: _onSignUpButtonPress,
                 child: Text(
-                  'New'.i18n,
+                  'login.register.tab.title'.tr,
                   style: TextStyle(
                       color: right,
                       fontSize: 16.0,
@@ -262,7 +261,7 @@ class _LoginPageState extends State<LoginPage>
                               color: Colors.black,
                               size: 22.0,
                             ),
-                            hintText: 'Email Address'.i18n,
+                            hintText: 'login.common.email'.tr,
                             hintStyle: TextStyle(
                                 fontFamily: 'WorkSansSemiBold', fontSize: 17.0),
                           ),
@@ -282,7 +281,7 @@ class _LoginPageState extends State<LoginPage>
                           onChanged: (val) =>
                               controller.formTexts['loginPassword'] = val,
                           validator:
-                              RequiredValidator(errorText: 'Required'.i18n),
+                              RequiredValidator(errorText: 'login.common.error.required'.tr),
                           obscureText: _obscureTextLogin,
                           style: TextStyle(
                               fontFamily: 'WorkSansSemiBold',
@@ -295,7 +294,7 @@ class _LoginPageState extends State<LoginPage>
                               size: 22.0,
                               color: Colors.black,
                             ),
-                            hintText: 'Password'.i18n,
+                            hintText: 'login.common.password'.tr,
                             hintStyle: TextStyle(
                                 fontFamily: 'WorkSansSemiBold', fontSize: 17.0),
                             suffixIcon: GestureDetector(
@@ -353,7 +352,7 @@ class _LoginPageState extends State<LoginPage>
                       padding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 42.0),
                       child: Text(
-                        'LOGIN'.i18n,
+                        'login.login.button.login'.tr,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 25.0,
@@ -369,7 +368,7 @@ class _LoginPageState extends State<LoginPage>
             child: FlatButton(
                 onPressed: controller.handleForgetPassword,
                 child: Text(
-                  'Forgot Password?'.i18n,
+                  'login.register.button.forgotPassword'.tr,
                   style: TextStyle(
                       decoration: TextDecoration.underline,
                       color: Colors.white,
@@ -505,8 +504,8 @@ class _LoginPageState extends State<LoginPage>
                           focusNode: myFocusNodeName,
                           onChanged: (val) => controller.formTexts['signupName'] = val,
                           validator: MultiValidator([
-                            RequiredValidator(errorText: 'Required'.i18n),
-                            MaxLengthValidator(50, errorText: 'Too long'.i18n)
+                            RequiredValidator(errorText: 'login.common.error.required'.tr),
+                            MaxLengthValidator(50, errorText: 'login.register.error.tooLong'.tr)
                           ]),
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
@@ -520,7 +519,7 @@ class _LoginPageState extends State<LoginPage>
                               CSchool.user_circle,
                               color: Colors.black,
                             ),
-                            hintText: 'Name'.i18n,
+                            hintText: 'login.register.form.name'.tr,
                             hintStyle: TextStyle(
                                 fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                           ),
@@ -550,7 +549,7 @@ class _LoginPageState extends State<LoginPage>
                               CSchool.envelope,
                               color: Colors.black,
                             ),
-                            hintText: 'Email Address'.i18n,
+                            hintText: 'login.common.email'.tr,
                             hintStyle: TextStyle(
                                 fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                           ),
@@ -581,7 +580,7 @@ class _LoginPageState extends State<LoginPage>
                               CSchool.unlock_alt,
                               color: Colors.black,
                             ),
-                            hintText: 'Password'.i18n,
+                            hintText: 'login.common.password'.tr,
                             hintStyle: TextStyle(
                                 fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                             suffixIcon: GestureDetector(
@@ -608,7 +607,7 @@ class _LoginPageState extends State<LoginPage>
                         child: TextFormField(
                           key: controller.signupConfirmPasswordlKey,
                           validator: (val) => MatchValidator(
-                                  errorText: 'Passwords do not match'.i18n)
+                                  errorText: 'login.register.error.passwordConfirmError'.tr)
                               .validateMatch(
                                   val, controller.formTexts['signupPassword']),
                           obscureText: _obscureTextSignupConfirm,
@@ -622,7 +621,7 @@ class _LoginPageState extends State<LoginPage>
                               CSchool.unlock_alt,
                               color: Colors.black,
                             ),
-                            hintText: 'Confirmation'.i18n,
+                            hintText: 'login.register.form.passwordConfirm'.tr,
                             hintStyle: TextStyle(
                                 fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                             suffixIcon: GestureDetector(
@@ -680,7 +679,7 @@ class _LoginPageState extends State<LoginPage>
                       padding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 42.0),
                       child: Text(
-                        'SIGN UP'.i18n,
+                        'login.register.button.signUp'.tr,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 25.0,

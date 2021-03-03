@@ -10,8 +10,6 @@ import 'package:get/get.dart';
 // 🌎 Project imports:
 import 'package:c_school_app/service/app_state_service.dart';
 import 'package:c_school_app/service/user_service.dart';
-import '../../../i18n/api_service.i18n.dart';
-import '../../../i18n/login_page.i18n.dart';
 import '../../../service/api_service.dart';
 
 class LoginController extends GetxController {
@@ -74,9 +72,9 @@ class LoginController extends GetxController {
         .loginWithEmail(formTexts['loginEmail'], formTexts['loginPassword']);
     if (result == 'ok') {
       _showLoginSuccessPopup();
-    } else if (result == 'Please verify your email.'.i18nApi) {
+    } else if (result == 'login.login.error.unverifiedEmail'.tr) {
       _showErrorPopup(result, extraAction: {
-        'label': 'Resend email'.i18n,
+        'label': 'login.login.dialog.resentEmail'.tr,
         'onPressed': () {
           apiService.firebaseAuthApi.sendVerifyEmail();
           Get.back();
@@ -93,7 +91,7 @@ class LoginController extends GetxController {
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else {
-      _showErrorPopup('Something is wrong!'.i18nApi);
+      _showErrorPopup('error.unknown.title'.tr);
     }
   }
 
@@ -104,7 +102,7 @@ class LoginController extends GetxController {
     } else if(result=='abort'){
       return;
     }else{
-      _showErrorPopup('Something is wrong!'.i18nApi);
+      _showErrorPopup('error.unknown.title'.tr);
     }
   }
 
@@ -113,7 +111,7 @@ class LoginController extends GetxController {
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else {
-      _showErrorPopup('Something is wrong!'.i18nApi);
+      _showErrorPopup('error.unknown.title'.tr);
     }
   }
 
@@ -124,7 +122,7 @@ class LoginController extends GetxController {
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else {
-      _showErrorPopup('Something is wrong!'.i18n);
+      _showErrorPopup('error.unknown.title'.tr);
     }
   }
 
@@ -135,7 +133,7 @@ class LoginController extends GetxController {
     );
     final actions = [
       popup.button(
-        label: 'Close'.i18n,
+        label: 'button.close'.tr,
         onPressed: () => Get.back(),
       )
     ];
@@ -143,7 +141,7 @@ class LoginController extends GetxController {
       actions.add(popup.button(
           label: extraAction['label'], onPressed: extraAction['onPressed']));
     }
-    popup.show(title: 'Oops?'.i18n, content: content, actions: actions
+    popup.show(title: 'error.oops'.tr, content: content, actions: actions
         // bool barrierDismissible = false,
         // Widget close,
         );
@@ -156,7 +154,7 @@ class LoginController extends GetxController {
     );
     final actions = [
       popup.button(
-        label: 'Close'.i18n,
+        label: 'button.close'.tr,
         onPressed: () {
           if (UserService.isLectureServiceInitialized.isTrue) {
             Get.offAllNamed('/home');
@@ -170,12 +168,11 @@ class LoginController extends GetxController {
         },
       )
     ];
-    final content = 'You have study for %d times!'
-        .i18n
-        .fill([AppStateService.startCount + 1]);
+    final content = 'login.login.dialog.success.content'
+        .trParams({'studyCount':'${AppStateService.startCount + 1}'});
 
     popup.show(
-        title: 'Welcome Back!'.i18n,
+        title: 'login.login.dialog.success.title'.tr,
         content: content,
         actions: actions,
         close: Container());
@@ -187,14 +184,13 @@ class LoginController extends GetxController {
       template: TemplateSuccess,
     );
     popup.show(
-      title: 'Almost there'.i18nApi,
+      title: 'login.register.confirmEmail.title'.tr,
       content:
-          'We have sent your an Email at %s, follow the link there to verify your account!'
-              .i18nApi
-              .fill([email]),
+          'login.register.confirmEmail.content'
+              .trParams({'email':email}),
       actions: [
         popup.button(
-          label: 'Close'.i18nApi,
+          label: 'button.close'.tr,
           onPressed: Navigator.of(context).pop,
         ),
       ],
