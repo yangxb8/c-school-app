@@ -12,7 +12,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flamingo/flamingo.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:logger/logger.dart';
@@ -25,6 +24,7 @@ import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 import './service/app_state_service.dart';
 import 'app_theme.dart';
+import 'i18n/messages.dart';
 import 'router.dart';
 import 'service/api_service.dart';
 import 'service/localstorage_service.dart';
@@ -81,15 +81,9 @@ class CSchoolApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           textTheme: AppTheme.textTheme,
         ),
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en'),
-          const Locale('ja', 'JP'),
-        ],
+        translations: Messages(),
+        locale: Get.deviceLocale,
+        fallbackLocale: const Locale('ja', 'JP'),
         getPages: AppRouter.setupRouter(),
         navigatorObservers: [
           FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),

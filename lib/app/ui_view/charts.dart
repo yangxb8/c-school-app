@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:syncfusion_flutter_charts/charts.dart';
-
-// 🌎 Project imports:
-import '../../i18n/ui_view.i18n.dart';
+import 'package:get/get.dart';
 
 class SpeechEvaluationRadialBarChart extends StatelessWidget {
   /// Must be converted to double with max value of 100
@@ -19,7 +17,7 @@ class SpeechEvaluationRadialBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfCircularChart(
-        title: ChartTitle(text: 'Summary'.i18n),
+        title: ChartTitle(text: 'ui.charts.summary'.tr),
         legend: Legend(isVisible: true),
         annotations: <CircularChartAnnotation>[
           CircularChartAnnotation(widget: Text(totalScore.toInt().toString()))
