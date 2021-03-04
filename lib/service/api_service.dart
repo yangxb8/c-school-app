@@ -424,7 +424,7 @@ class _TencentApi {
     } on PlatformException catch (e, t) {
       logger.e('Error calling native soe stop method', e, t);
       result['evaluationResult'] = null;
-      result['data'] = null;
+      result['audioPath'] = null;
     } finally {
       return result;
     }

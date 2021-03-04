@@ -90,7 +90,7 @@ class PhoneInfo {
   Map<String, dynamic> toJson() => _$PhoneInfoToJson(this);
 }
 
-enum MatchResult { MATCH, ADDED, LACKED, WRONG, UNDETECTED }
+enum MatchResult { match, added, lacked, wrong, undetected }
 
 extension MatchResultUtil on MatchResult {
   static MatchResult fromInt(int matchResultInt) {
