@@ -29,7 +29,7 @@ class _SampleLectureScreenState extends State<SampleLectureScreen>
   }
 
   Future<void> setData() async {
-    animationController.forward();
+    await animationController.forward();
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
     setState(() {
       opacity1 = 1.0;
