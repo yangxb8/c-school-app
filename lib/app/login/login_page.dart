@@ -158,8 +158,8 @@ class _LoginPageState extends State<LoginPage>
 
   void showInSnackBar(String value) {
     FocusScope.of(context).requestFocus(FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         value,
         textAlign: TextAlign.center,
@@ -187,9 +187,7 @@ class _LoginPageState extends State<LoginPage>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              child: TextButton(
                 onPressed: _onSignInButtonPress,
                 child: Text(
                   'login.login.tab.title'.tr,
@@ -202,9 +200,7 @@ class _LoginPageState extends State<LoginPage>
             ),
             //Container(height: 33.0, width: 1.0, color: Colors.white),
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              child: TextButton(
                 onPressed: _onSignUpButtonPress,
                 child: Text(
                   'login.register.tab.title'.tr,
@@ -365,7 +361,7 @@ class _LoginPageState extends State<LoginPage>
               )),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
-            child: FlatButton(
+            child: TextButton(
                 onPressed: controller.handleForgetPassword,
                 child: Text(
                   'login.register.button.forgotPassword'.tr,
