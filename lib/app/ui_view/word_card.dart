@@ -1,10 +1,10 @@
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/ui_view/selectable_autosize_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flippable_box/flippable_box.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:get/get.dart';
@@ -31,15 +31,20 @@ class WordCard extends StatelessWidget {
   /// Whether we should load the image
   final bool loadImage;
   final WordCardController controller;
-  WordCard({Key key, @required this.word, this.loadImage = true})
-      : controller = Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
+  WordCard({Key key, @required this.word, this.loadImage = true, isDialog = false})
+      : controller = isDialog
+            ? WordCardController(word)
+            : Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     ;
     final emptyImage = Container(
-      color: ReviewWordsTheme.lightBlue,
+      decoration: BoxDecoration(
+        color: ReviewWordsTheme.lightBlue,
+        border: Border.all(color:ReviewWordsTheme.lightBlue, width: 0),
+      ),
     );
     var frontCardContent = Column(
       mainAxisSize: MainAxisSize.max,
@@ -51,7 +56,7 @@ class WordCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ...word.wordMeanings
-                    .map((e) => AutoSizeText(
+                    .map((e) => SelectableAutoSizeText.unselectable(
                           e.meaning,
                           style: ReviewWordsTheme.wordCardMeaning,
                           maxLines: 1,
@@ -62,7 +67,7 @@ class WordCard extends StatelessWidget {
           ],
         ).expanded(),
         AspectRatio(
-          aspectRatio: 4/3,
+          aspectRatio: 4 / 3,
           child: loadImage
               ? BlurHashImageWithFallback(
                   fallbackImg: emptyImage, mainImgUrl: word.pic?.url, blurHash: word.picHash)
@@ -80,7 +85,7 @@ class WordCard extends StatelessWidget {
             icon: Icon(CSchool.heart),
             // key: favoriteButtonKey,
             color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
-            iconSize: icon_size *0.9,
+            iconSize: icon_size * 0.9,
             onPressed: () => controller.toggleFavoriteCard(),
           ),
         ),
@@ -91,7 +96,7 @@ class WordCard extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: cardAspectRatio,
         child: SimpleGestureDetector(
-          onTap: controller.flipCard,
+          onDoubleTap: controller.flipCard,
           child: Obx(
             () => FlippableBox(
               duration: 0.3,
@@ -146,11 +151,11 @@ class WordCard extends StatelessWidget {
     // explanation part
     var partExplanation = word.explanation.isEmpty
         ? SizedBox.shrink()
-        : AutoSizeText(
+        : SelectableAutoSizeText.unselectable(
             '💡 ${word.explanation}',
             maxLines: 5,
             style: ReviewWordsTheme.wordCardExplanation,
-          ).decorated(
+          ).paddingAll(10).decorated(
             borderRadius: BorderRadius.circular(10), color: ReviewWordsTheme.extremeLightBlue);
     // meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
@@ -190,7 +195,7 @@ class WordCard extends StatelessWidget {
                 icon: ObxValue(
                     (key) => Icon(
                           CSchool.volume,
-                          color: key.value == audioKey ?  ReviewWordsTheme.lightYellow: Colors.grey,
+                          color: key.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
                           size: icon_size,
                         ),
                     controller.audioService.clientKey),
@@ -208,7 +213,7 @@ class WordCard extends StatelessWidget {
             ).expanded()
           ],
         ),
-        AutoSizeText(
+        SelectableAutoSizeText.unselectable(
           wordExample.meaning,
           style: ReviewWordsTheme.exampleMeaning,
         ).alignment(Alignment.centerLeft).paddingOnly(left: 50),

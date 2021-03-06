@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:audioplayers/audioplayers.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -20,7 +19,6 @@ import 'package:c_school_app/service/app_state_service.dart';
 import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/service/logger_service.dart';
-import '../../../i18n/review_words.i18n.dart';
 import '../../../util/extensions.dart';
 
 const LAN_CODE_CN = 'zh-cn';
@@ -152,9 +150,11 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     speakerGender.value =
         speakerGender.value == SpeakerGender.male ? SpeakerGender.female : SpeakerGender.male;
     Fluttertoast.showToast(
-        msg: 'Change to %s speaker'
-            .i18n
-            .fill([EnumToString.convertToString(speakerGender.value).i18n]));
+        msg: 'review.word.toast.changeSpeaker'.trParams({
+      'gender': speakerGender.value == SpeakerGender.male
+          ? 'review.word.toast.changeSpeaker.male'.tr
+          : 'review.word.toast.changeSpeaker.female'.tr
+    }));
   }
 
   /// Handle autoPlay button pressed, will start play in card mode from beginning.
@@ -234,8 +234,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
         backToFirstCard = false;
       } else {
         await Fluttertoast.showToast(
-            gravity: ToastGravity.CENTER,
-            msg: 'Last card reached. Swipe left will go to first card'.i18n);
+            gravity: ToastGravity.CENTER, msg: 'review.word.card.lastCard'.tr);
         backToFirstCard = true;
       }
     } else {
@@ -256,26 +255,26 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// Also, we check isAutoPlayMode in multiple stage so user
   /// can stop the play anytime
   void _autoPlayCard() async {
-    if (isAutoPlayMode.isfalse) {
+    if (isAutoPlayMode.isFalse) {
       searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
       return;
     }
     await primaryWordCardController.playMeanings(completionCallBack: () async {
       // after playMeanings
-      if (isAutoPlayMode.isfalse) {
+      if (isAutoPlayMode.isFalse) {
         searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
         return;
       }
       await Timer(0.5.seconds, primaryWordCardController.flipCard);
       await Timer(0.5.seconds, () async {
-        if (isAutoPlayMode.isfalse) {
+        if (isAutoPlayMode.isFalse) {
           searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
           return;
         }
         await primaryWordCardController.playWord(completionCallBack: () async {
           // after playWord
           // When we reach the last card or autoPlay turn off
-          if (isAutoPlayMode.isfalse || primaryWordIndex.value == 0) {
+          if (isAutoPlayMode.isFalse || primaryWordIndex.value == 0) {
             searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
             isAutoPlayMode.value = false;
           } else {

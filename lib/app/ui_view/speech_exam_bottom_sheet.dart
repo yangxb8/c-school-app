@@ -16,8 +16,7 @@ import 'controller/speech_recording_controller.dart';
 class FloatBottomSheetContainer extends StatelessWidget {
   final Widget child;
   final Color backgroundColor;
-  const FloatBottomSheetContainer({Key key, this.child, this.backgroundColor})
-      : super(key: key);
+  const FloatBottomSheetContainer({Key key, this.child, this.backgroundColor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,24 +50,17 @@ Future<T> showSpeechExamBottomSheet<T>({@required SpeechExam exam}) async {
   return result;
 }
 
-// SpeechExamBottomSheetController is prepared in main.initServices()
 class SpeechExamBottomSheet extends StatelessWidget {
-  final Color barBackgroundColor = const Color(0xff72d8bf);
-  final Duration animDuration = const Duration(milliseconds: 250);
-  final SpeechRecordingController controller;
   final SpeechExam exam;
   static final int MAX_SPEECHES_SHOWN = 4;
 
-  SpeechExamBottomSheet({Key key, @required this.exam})
-      : controller = Get.put(SpeechRecordingController.forExam(exam)),
-        super(key: key);
+  SpeechExamBottomSheet({Key key, @required this.exam}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // set exam of controller
-    return SafeArea(
-      top: false,
-      child: Column(
+    return GetBuilder(
+      init: SpeechRecordingController(exam),
+      builder: (controller) => Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
