@@ -43,7 +43,7 @@ class UserService extends GetxService {
     }
   }
 
-  static void _refreshAppUser() async {
+  static Future<void> _refreshAppUser() async {
     user = await _getCurrentUser();
     if (user != null && user.isLogin() && isLectureServiceInitialized.isFalse) {
       await Get.putAsync<LectureService>(() async => await LectureService.getInstance());

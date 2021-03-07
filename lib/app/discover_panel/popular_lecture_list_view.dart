@@ -45,6 +45,12 @@ class _PopularLectureListViewState extends State<PopularLectureListView>
               padding: const EdgeInsets.all(8),
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 32.0,
+                crossAxisSpacing: 32.0,
+                childAspectRatio: 0.8,
+              ),
               children: List<Widget>.generate(
                 Category.popularCourseList.length,
                 (int index) {
@@ -67,12 +73,6 @@ class _PopularLectureListViewState extends State<PopularLectureListView>
                     animationController: animationController,
                   );
                 },
-              ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 32.0,
-                crossAxisSpacing: 32.0,
-                childAspectRatio: 0.8,
               ),
             );
           }

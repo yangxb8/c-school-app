@@ -300,13 +300,13 @@ class _SampleLectureScreenState extends State<SampleLectureScreen>
                   child: InkWell(
                     borderRadius:
                         BorderRadius.circular(AppBar().preferredSize.height),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                     child: Icon(
                       Icons.arrow_back_ios,
                       color: DesignCourseAppTheme.nearlyBlack,
                     ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
                   ),
                 ),
               ),

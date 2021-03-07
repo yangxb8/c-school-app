@@ -315,7 +315,7 @@ class _FirestoreApi {
     final uuid = Uuid().v1();
     final meta = {'newPost': 'true','userId': userId, 'examId':exam.examId};
     final data = await storage.save(speechDataPath, speechData,
-        filename: '$uuid.${extension_audio}',
+        filename: '$uuid.$extension_audio',
         mimeType: mimeTypeMpeg,
         metadata: meta);
     final result = SpeechEvaluationResult(
@@ -326,7 +326,7 @@ class _FirestoreApi {
     // Save evaluation result
     await storage.save(
         speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
-        filename: '$uuid.${extension_json}',
+        filename: '$uuid.$extension_json',
         mimeType: 'application/json',
         metadata: meta);
   }

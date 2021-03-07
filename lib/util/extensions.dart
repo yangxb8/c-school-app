@@ -11,8 +11,8 @@ import 'package:c_school_app/util/classes.dart';
 
 extension DateTimeExtension on DateTime {
   String yyyyMMdd() {
-    var mm = month < 10 ? '0${month}' : '${month}';
-    var dd = day < 10 ? '0${day}' : '${day}';
+    var mm = month < 10 ? '0$month' : '$month';
+    var dd = day < 10 ? '0$day' : '$day';
     return '$this.year$mm$dd';
   }
 }
@@ -60,21 +60,21 @@ extension WidgetWrapper on Widget {
       Function didUpdateWidget,
       Function dispose}) {
     return StatefulWrapper(
-      child: this,
       onInit: onInit,
       afterFirstLayout: afterFirstLayout,
       deactivate: deactivate,
       didUpdateWidget: didUpdateWidget,
       dispose: dispose,
+      child: this,
     );
   }
 
   Widget onInit(Function onInit) {
-    return StatefulWrapper(child: this, onInit: onInit);
+    return StatefulWrapper(onInit: onInit,child: this);
   }
 
   Widget afterFirstLayout(Function afterFirstLayout) {
-    return StatefulWrapper(child: this, afterFirstLayout: afterFirstLayout);
+    return StatefulWrapper(afterFirstLayout: afterFirstLayout,child: this);
   }
 }
 

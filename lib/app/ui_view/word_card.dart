@@ -43,7 +43,7 @@ class WordCard extends StatelessWidget {
     final emptyImage = Container(
       decoration: BoxDecoration(
         color: ReviewWordsTheme.lightBlue,
-        border: Border.all(color:ReviewWordsTheme.lightBlue, width: 0),
+        border: Border.all(color: ReviewWordsTheme.lightBlue, width: 0),
       ),
     );
     var frontCardContent = Column(
@@ -171,13 +171,13 @@ class WordCard extends StatelessWidget {
     }).toList();
     return Column(
       children: <Widget>[
-        Expanded(child: partHanZi, flex: 2),
+        Expanded(flex: 2, child: partHanZi),
         Expanded(
+          flex: 4,
           child: ListView(
             shrinkWrap: true,
             children: [partExplanation, divider(), ...partMeanings],
           ),
-          flex: 4,
         ),
       ],
     ).paddingSymmetric(horizontal: 10).backgroundColor(ReviewWordsTheme.lightBlue);

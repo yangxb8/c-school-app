@@ -265,8 +265,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
         searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
         return;
       }
-      await Timer(0.5.seconds, primaryWordCardController.flipCard);
-      await Timer(0.5.seconds, () async {
+      Timer(0.5.seconds, primaryWordCardController.flipCard);
+      Timer(0.5.seconds, () async {
         if (isAutoPlayMode.isFalse) {
           searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
           return;

@@ -1,6 +1,5 @@
 // 📦 Package imports:
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
@@ -67,7 +66,7 @@ class AudioService extends GetxService {
   /// If void callback is provided, it will get called after play completed.
   ///
   /// WARN: If play was stopped (other audio want to play etc.), the callback will not be called.
-  Future<void> play(String uri, {VoidCallback callback, String key = ''}) async {
+  Future<void> play(String uri, {Function callback, String key = ''}) async {
     // Set clientKey to new key
     clientKey.value = key;
     // Always cache the audio
