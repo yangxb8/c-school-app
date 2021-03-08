@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
@@ -9,15 +8,11 @@ import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 
 // 📦 Package imports:
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/service/api_service.dart';
-import 'package:record_mp3/record_mp3.dart';
 import 'package:uuid/uuid.dart';
 
 class SpeechRecordingController extends GetxController {
@@ -39,9 +34,6 @@ class SpeechRecordingController extends GetxController {
 
   /// TencentApi
   final tencentApi = Get.find<ApiService>().tencentApi;
-
-  /// Reference to speech file recorded
-  String lastSpeechFilePath;
 
   SpeechRecordingController(this.exam);
 
@@ -70,22 +62,14 @@ class SpeechRecordingController extends GetxController {
   void _startRecord() async {
     assert(exam != null);
     if (recordingStatus.value != RecordingStatus.IDLE) return;
-    // Verify permission
-    var status = await Permission.microphone.request();
-    if (!status.isGranted) {
-      await Fluttertoast.showToast(msg: 'Please allow the microphone usage');
-    }
-    final tempDir = (await getTemporaryDirectory()).path;
-    lastSpeechFilePath = '$tempDir/${Uuid().v1()}';
-    RecordMp3.instance.start(lastSpeechFilePath, (type) => logger.e(type));
+    await audioService.startRecord();
     recordingStatus.value = RecordingStatus.RECORDING;
   }
 
   Future<SentenceInfo> _stopRecordAndEvaluate() async {
     if (recordingStatus.value != RecordingStatus.RECORDING) return null;
     recordingStatus.value = RecordingStatus.EVALUATING;
-    RecordMp3.instance.stop();
-    final file = File(lastSpeechFilePath);
+    final file = await audioService.stopRecord();
     final base64 = base64Encode(file.readAsBytesSync());
     final request = SoeRequest(
         ScoreCoeff: UserService.user.userScoreCoeff,

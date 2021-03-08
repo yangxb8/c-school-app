@@ -51,6 +51,7 @@ dependencies:
   modal_bottom_sheet: ^1.0.0+1
   permission_handler: ^5.1.0+2
   audioplayers: ^0.17.3
+  flutter_sound_lite: ^7.7.0+1
   path_provider: ^1.6.27
   json_annotation: ^3.1.1
   syncfusion_flutter_charts: ^18.4.46
@@ -75,7 +76,6 @@ dependencies:
   simple_animations: ^3.0.0
   fluttertoast: ^7.1.6
   shake: ^0.1.0
-  record_mp3: ^2.1.0
 
 dev_dependencies:
   flutter_test:

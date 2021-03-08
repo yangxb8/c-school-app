@@ -56,7 +56,7 @@ class SoeRequest {
   SoeRequest(
       {this.SeqId = 1,
       this.IsEnd = 1,
-      this.VoiceFileType = 3,
+      this.VoiceFileType = 2,
       this.VoiceEncodeType = 1,
       @required this.UserVoiceData,
       @required this.SessionId,
