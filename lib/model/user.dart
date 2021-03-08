@@ -55,7 +55,12 @@ class AppUser extends Document<AppUser> {
   }
 
   String get userId => firebaseUser?.uid ?? 'NO_FIREBASE_USER';
-  int get userRankNow => rankHistory.last.rank;
+  int get userRankNow {
+    if(rankHistory.isEmpty){
+      return 1;
+    }
+    return rankHistory.last.rank;
+  }
   //TODO: get userScoreCoeff(For speech evaluation) properly
   double get userScoreCoeff => userRankNow.toDouble();
 
