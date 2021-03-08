@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
 import 'package:flippable_box/flippable_box.dart';
-import 'package:supercharged/supercharged.dart';
+import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -160,7 +160,7 @@ class WordCard extends StatelessWidget {
     // meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
       var examples = meaning.examples
-          .mapIndexed((wordExample, index) =>
+          .mapIndexed((index, wordExample) =>
               _buildExampleRow(wordExample, index == meaning.examples.length - 1))
           .toList();
       var mainPart = examples.isEmpty

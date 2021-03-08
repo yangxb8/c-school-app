@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:supercharged/supercharged.dart';
+import 'package:collection/collection.dart';
 
 // 🌎 Project imports:
 import '../../app/model/speech_exam.dart';
@@ -81,7 +81,7 @@ class SpeechExamBottomSheet extends StatelessWidget {
             child: Row(
               children: exam.refText
                   .split('')
-                  .mapIndexed((element, index) => SimpleGestureDetector(
+                  .mapIndexed((index, element) => SimpleGestureDetector(
                         onTap: () => controller.wordSelected.value = index,
                         child: Text(element).paddingSymmetric(horizontal: 2),
                       ))
