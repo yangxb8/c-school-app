@@ -42,7 +42,7 @@ class SpeechRecordingController extends GetxController {
     // If recording, do nothing
     if ((recordingStatus.value != RecordingStatus.IDLE)) return;
     // If already playing, stop it and play selected buffer.
-    await audioService.play(speechDataPath);
+    await audioService.startPlayer(speechDataPath);
   }
 
   void handleRecordButtonPressed() {
@@ -62,14 +62,14 @@ class SpeechRecordingController extends GetxController {
   void _startRecord() async {
     assert(exam != null);
     if (recordingStatus.value != RecordingStatus.IDLE) return;
-    await audioService.startRecord();
+    await audioService.startRecorder();
     recordingStatus.value = RecordingStatus.RECORDING;
   }
 
   Future<SentenceInfo> _stopRecordAndEvaluate() async {
     if (recordingStatus.value != RecordingStatus.RECORDING) return null;
     recordingStatus.value = RecordingStatus.EVALUATING;
-    final file = await audioService.stopRecord();
+    final file = await audioService.stopRecorder();
     final base64 = base64Encode(file.readAsBytesSync());
     final request = SoeRequest(
         ScoreCoeff: UserService.user.userScoreCoeff,
@@ -77,7 +77,7 @@ class SpeechRecordingController extends GetxController {
         UserVoiceData: base64,
         SessionId: Uuid().v1());
     // Call native method and save result to latest userSpeech instance
-    var result = await tencentApi.soeStopRecordAndEvaluate(request, file);
+    var result = await tencentApi.soe(request, file);
     recordingStatus.value = RecordingStatus.IDLE;
     return result;
   }

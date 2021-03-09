@@ -372,7 +372,7 @@ class _FirestoreApi {
 
 class _TencentApi {
   /// SoeRequest is used for making soe request, file is used for saving speech
-  Future<SentenceInfo> soeStopRecordAndEvaluate(SoeRequest request, File file) async {
+  Future<SentenceInfo> soe(SoeRequest request, File file) async {
     SentenceInfo result;
     try {
       result = await SoeService().sendSoeRequest(request);

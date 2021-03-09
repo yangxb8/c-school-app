@@ -72,7 +72,7 @@ class WordCardController extends GetxController {
     if (wordAudio == null) {
       return;
     }
-    await audioService.play(wordAudio.url, key:audioKey, callback: completionCallBack);
+    await audioService.startPlayer(wordAudio.url, key:audioKey, callback: completionCallBack);
   }
 
   /// Play audio of the meanings one by one, now only tts is supported
@@ -89,7 +89,7 @@ class WordCardController extends GetxController {
     if (audio == null) {
       return;
     }
-    await audioService.play(audio.url, key: audioKey, callback: completionCallBack);
+    await audioService.startPlayer(audio.url, key: audioKey, callback: completionCallBack);
   }
 
   /// Default to Male

@@ -72,7 +72,6 @@ dependencies:
   convex_bottom_bar: ^2.7.1+2
   settings_ui: ^0.6.0
   modal_bottom_sheet: ^1.0.0+1
-  audioplayers: ^0.17.3
   simple_gesture_detector: ^0.2.0
   auto_size_text: ^2.1.0 # Use SelectableAutoSizeText in ui_view
   after_layout: ^1.0.7+2
