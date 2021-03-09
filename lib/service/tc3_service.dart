@@ -2,8 +2,11 @@ import 'dart:convert';
 
 import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/service/app_state_service.dart';
 import 'package:get/get.dart';
 import 'package:crypto/crypto.dart';
+
+import 'package:c_school_app/util/utility.dart';
 
 class SoeService extends GetConnect {
   static const action = 'TransmitOralProcessWithInit';
@@ -28,15 +31,15 @@ class SoeService extends GetConnect {
       'Content-Type': 'application/json',
       'Authorization': sign,
     });
-    return SentenceInfo.fromJson(jsonDecode(response.bodyString));
+    final content = await response.bodyBytes.bytesToString();
+    return SentenceInfo.fromJson(jsonDecode(content));
   }
 
   String _generateAuth(String payload, DateTime now) {
     // 时间处理, 获取世界时间日期
+    final utc = now.toUtc();
     final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();
-    // final timestamp = '1615105577';
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final date = utc.yyyy_MM_dd;
     // ************* 步骤 1：拼接规范请求串 *************
     final signedHeaders = 'content-type;host';
 
