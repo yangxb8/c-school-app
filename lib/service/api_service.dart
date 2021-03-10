@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:math';
 
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,7 +17,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
@@ -31,6 +31,7 @@ import 'package:c_school_app/service/user_service.dart';
 import 'package:c_school_app/util/functions.dart';
 import '../model/user.dart';
 import './logger_service.dart';
+import 'tc3_service.dart';
 
 final logger = LoggerService.logger;
 
@@ -48,7 +49,7 @@ class ApiService extends GetxService {
       await Firebase.initializeApp();
       _firebaseAuthApi = await _FirebaseAuthApi.getInstance();
       _firestoreApi = await _FirestoreApi.getInstance();
-      _tencentApi = _TencentApi.getInstance();
+      _tencentApi = _TencentApi();
       _isFirebaseInitilized = true;
     }
 
@@ -305,28 +306,31 @@ class _FirestoreApi {
   /// Save User speech, usually we won't await this.
   Future<void> saveUserSpeech(
       {@required File speechData,
-      @required String sentenceInfo,
+      @required SentenceInfo sentenceInfo,
       SpeechExam exam}) async {
     final storage = Storage()..fetch();
     final userId = UserService.user.userId;
 
     // Save speech data
     final speechDataPath = '/user_generated/speech_data';
+    final uuid = Uuid().v1();
+    final examId = exam?.examId?? 'freeSpeech';
+    final meta = {'newPost': 'true','userId': userId, 'examId':examId};
     final data = await storage.save(speechDataPath, speechData,
-        filename: '${userId}_${exam.examId}.${extension_audio}',
+        filename: '$uuid.$extension_audio',
         mimeType: mimeTypeMpeg,
-        metadata: {'newPost': 'true'});
+        metadata: meta);
     final result = SpeechEvaluationResult(
         userId: userId,
-        examId: exam.examId ?? 'freeSpeech',
+        examId: examId,
         speechDataPath: data.path,
-        sentenceInfo: SentenceInfo.fromJson(jsonDecode(sentenceInfo)));
+        sentenceInfo: sentenceInfo);
     // Save evaluation result
     await storage.save(
         speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
-        filename: '${userId}_${exam.examId}.${extension_json}',
+        filename: '$uuid.$extension_json',
         mimeType: 'application/json',
-        metadata: {'newPost': 'true'});
+        metadata: meta);
   }
 
   Future<List<Word>> fetchWords({List<String> tags}) async {
@@ -367,62 +371,18 @@ class _FirestoreApi {
   }
 }
 
-/// This API only have native method
 class _TencentApi {
-  static _TencentApi _instance;
-
-  /// Smart Oral Evaluation native channel
-  static const soeChannel = MethodChannel('soe');
-
-  /// Natural Language Processing native channel
-  static const nlpChannel = MethodChannel('nlp');
-
-  static _TencentApi getInstance() {
-    _instance ??= _TencentApi();
-    return _instance;
-  }
-
-  Future<void> soeStartRecord(SpeechExam exam) async {
-    final audioPath =
-        '${(await getTemporaryDirectory()).path}/${Uuid().v1()}.mp3';
+  /// SoeRequest is used for making soe request, file is used for saving speech
+  Future<SentenceInfo> soe(SoeRequest request, File file) async {
+    SentenceInfo result;
     try {
-      // await soeChannel.invokeMethod('soeStartRecord',<String, dynamic>{
-      //   'refText': exam.refText,
-      //   'scoreCoeff': Get.find<AppStateService>().user.userScoreCoeff,
-      //   'mode': exam.mode.toString(),// WORD, SENTENCE(default), PARAGRAPH, FREE
-      //   'audioPath': audioPath
-      // });
-      //TODO: for debug, delete me!!!
-      await soeChannel.invokeMethod('soeStartRecord', <String, dynamic>{
-        'refText': '大家好才是真的好',
-        'scoreCoeff': 4.0,
-        'mode': 'SENTENCE', // WORD, SENTENCE(default), PARAGRAPH, FREE
-        'audioPath': audioPath
-      });
-      logger.i('soe start recording!');
-    } on PlatformException catch (e, t) {
-      logger.e('Error calling native soe start method', e, t);
-    }
-  }
-
-  /// Return speech data in Uint8List and evaluation result as SpeechEvaluationResult
-  Future<Map<String, dynamic>> soeStopRecordAndEvaluate() async {
-    var result = <String, dynamic>{};
-    try {
-      final resultRaw =
-          await soeChannel.invokeMapMethod('soeStopRecordAndEvaluate');
-      result['evaluationResult'] = SentenceInfo.fromJson(
-          jsonDecode(resultRaw['evaluationResult']).single);
-      result['audioPath'] = resultRaw['audioPath'];
-      // Save result to cloud storage, but won't await it
+      result = await SoeService().sendSoeRequest(request);
       unawaited(Get.find<ApiService>().firestoreApi.saveUserSpeech(
-          speechData: File(result['dataPath']),
-          sentenceInfo: jsonEncode(result['evaluationResult'])));
+          speechData: file,
+          sentenceInfo: result));
       logger.i('soe stop recording and get evaluation result succeed!');
     } on PlatformException catch (e, t) {
-      logger.e('Error calling native soe stop method', e, t);
-      result['evaluationResult'] = null;
-      result['data'] = null;
+      logger.e('Error calling soe service', e, t);
     } finally {
       return result;
     }

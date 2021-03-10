@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:collection/collection.dart';
 
 // 🌎 Project imports:
 import '../../service/lecture_service.dart';

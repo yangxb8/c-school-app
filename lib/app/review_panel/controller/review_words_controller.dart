@@ -5,8 +5,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:audioplayers/audioplayers.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -16,7 +14,6 @@ import 'package:supercharged/supercharged.dart';
 import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/app/ui_view/controller/word_card_controller.dart';
-import 'package:c_school_app/service/app_state_service.dart';
 import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/service/logger_service.dart';
@@ -113,9 +110,6 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     if (associatedLecture != null) {
       lectureService.addLectureReviewedHistory(associatedLecture);
     }
-    if (AppStateService.isDebug) {
-      AudioPlayer.logEnabled = true;
-    }
     super.onInit();
   }
 
@@ -190,7 +184,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     if (wordAudio == null) {
       return;
     }
-    await audioService.play(wordAudio.url, key: audioKey);
+    await audioService.startPlayer(wordAudio.url, key: audioKey);
   }
 
   /// [WordsList] Jump to card in flash card mode
@@ -266,8 +260,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
         searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
         return;
       }
-      await Timer(0.5.seconds, primaryWordCardController.flipCard);
-      await Timer(0.5.seconds, () async {
+      Timer(0.5.seconds, primaryWordCardController.flipCard);
+      Timer(0.5.seconds, () async {
         if (isAutoPlayMode.isFalse) {
           searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
           return;

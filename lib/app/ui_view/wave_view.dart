@@ -31,7 +31,7 @@ class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
     animationController = AnimationController(duration: Duration(milliseconds: 2000), vsync: this);
     waveAnimationController = AnimationController(duration: Duration(milliseconds: 2000), vsync: this);
     animationController
-      ..addStatusListener((status) {
+      .addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           animationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
@@ -82,6 +82,7 @@ class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
         builder: (context, child) => Stack(
           children: <Widget>[
             ClipPath(
+              clipper: WaveClipper(animationController.value, animList1),
               child: Container(
                 decoration: BoxDecoration(
                   color: FintnessAppTheme.nearlyDarkBlue.withOpacity(0.5),
@@ -97,9 +98,9 @@ class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              clipper: WaveClipper(animationController.value, animList1),
             ),
             ClipPath(
+              clipper: WaveClipper(animationController.value, animList2),
               child: Container(
                 decoration: BoxDecoration(
                   color: FintnessAppTheme.nearlyDarkBlue,
@@ -115,7 +116,6 @@ class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
                       topRight: Radius.circular(80.0)),
                 ),
               ),
-              clipper: WaveClipper(animationController.value, animList2),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 48),

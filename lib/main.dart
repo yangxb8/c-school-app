@@ -117,6 +117,6 @@ Future<void> initServices() async {
   await Flamingo.initializeApp();
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   await Get.putAsync<UserService>(() async => await UserService.getInstance());
-  await Get.lazyPut<AudioService>(() => AudioService());
+  Get.lazyPut<AudioService>(() => AudioService());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.error;
 }

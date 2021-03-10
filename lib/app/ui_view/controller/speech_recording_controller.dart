@@ -1,100 +1,85 @@
 // 🐦 Flutter imports:
-import 'package:flutter/services.dart';
+import 'dart:convert';
+
+import 'package:c_school_app/app/model/soe_request.dart';
+import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/service/audio_service.dart';
+import 'package:c_school_app/service/logger_service.dart';
+import 'package:c_school_app/service/user_service.dart';
 
 // 📦 Package imports:
-import 'package:audioplayers/audioplayers.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // 🌎 Project imports:
-import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/service/api_service.dart';
-import 'package:c_school_app/service/app_state_service.dart';
+import 'package:uuid/uuid.dart';
 
 class SpeechRecordingController extends GetxController {
-  static const platform = MethodChannel('soe');
+  final logger = LoggerService.logger;
+  final audioService = Get.find<AudioService>();
+
   /// If recording, won't response to touch other than stopRecorder
   /// If in evaluation, won't response to any touch
-  RecordingStatus recordingStatus = RecordingStatus.IDLE;
-  /// Current evaluation result
-  SentenceInfo sentenceInfo;
+  Rx<RecordingStatus> recordingStatus = RecordingStatus.IDLE.obs;
+
   /// Current speechData file path
   String speechDataPath;
+
   /// Word been selected by user, default to 0 (first word in exam.question)
   final RxInt wordSelected = 0.obs;
+
   /// Exam this SpeechExamBottomSheet should control.
-  SpeechExam exam;
-  /// Used to play question and user speech
-  AudioPlayer _myPlayer;
+  final SpeechExam exam;
+
   /// TencentApi
   final tencentApi = Get.find<ApiService>().tencentApi;
 
-  SpeechRecordingController.forExam(this.exam);
-
-  @override
-  Future<void> onInit() async {
-    _myPlayer = await AudioPlayer();
-    AudioPlayer.logEnabled = AppStateService.isDebug;
-    super.onInit();
-  }
-
-  void startRecord() async {
-    assert(exam!= null);
-    // Verify permission
-    if (recordingStatus != RecordingStatus.IDLE) return;
-    var status = await Permission.microphone.request();
-    if (!status.isGranted) {
-      await Fluttertoast.showToast(msg: 'Please allow the microphone usage');
-    }
-    // Call native method
-    await tencentApi.soeStartRecord(exam);
-    recordingStatus = RecordingStatus.RECORDING;
-  }
-
-  void stopRecordAndEvaluate() async {
-    recordingStatus = RecordingStatus.EVALUATING;
-    // Call native method and save result to latest userSpeech instance
-    var result = await tencentApi.soeStopRecordAndEvaluate();
-    speechDataPath = result['audioPath'];
-    sentenceInfo = result['evaluationResult'];
-  }
+  SpeechRecordingController(this.exam);
 
   /// Most recent speech recorded by this controller
   void playUserSpeech() async {
-    _playFromPath(speechDataPath);
-  }
-
-  void _playFromPath(String path,{bool isLocal}) async {
     // If recording, do nothing
-    if ((recordingStatus != RecordingStatus.IDLE)) return;
+    if ((recordingStatus.value != RecordingStatus.IDLE)) return;
     // If already playing, stop it and play selected buffer.
-    await _myPlayer.stop();
-    await _myPlayer.play(speechDataPath, isLocal: isLocal);
-  }
-
-  /// Ensure resource are released
-  @override
-  void onClose() {
-    if (_myPlayer != null) {
-      _myPlayer.dispose();
-    }
-    super.onClose();
+    await audioService.startPlayer(speechDataPath);
   }
 
   void handleRecordButtonPressed() {
-    switch(recordingStatus){
+    switch (recordingStatus.value) {
       case RecordingStatus.IDLE:
-        startRecord();
+        _startRecord();
         break;
       case RecordingStatus.RECORDING:
-        stopRecordAndEvaluate();
+        _stopRecordAndEvaluate();
         break;
-        // If under evaluating do nothing
+      // If under evaluating do nothing
       case RecordingStatus.EVALUATING:
         break;
     }
+  }
+
+  void _startRecord() async {
+    assert(exam != null);
+    if (recordingStatus.value != RecordingStatus.IDLE) return;
+    await audioService.startRecorder();
+    recordingStatus.value = RecordingStatus.RECORDING;
+  }
+
+  Future<SentenceInfo> _stopRecordAndEvaluate() async {
+    if (recordingStatus.value != RecordingStatus.RECORDING) return null;
+    recordingStatus.value = RecordingStatus.EVALUATING;
+    final file = await audioService.stopRecorder();
+    final base64 = base64Encode(file.readAsBytesSync());
+    final request = SoeRequest(
+        ScoreCoeff: UserService.user.userScoreCoeff,
+        RefText: exam.refText,
+        UserVoiceData: base64,
+        SessionId: Uuid().v1());
+    // Call native method and save result to latest userSpeech instance
+    var result = await tencentApi.soe(request, file);
+    recordingStatus.value = RecordingStatus.IDLE;
+    return result;
   }
 }
 

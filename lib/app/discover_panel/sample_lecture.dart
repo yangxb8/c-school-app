@@ -29,7 +29,7 @@ class _SampleLectureScreenState extends State<SampleLectureScreen>
   }
 
   Future<void> setData() async {
-    animationController.forward();
+    await animationController.forward();
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
     setState(() {
       opacity1 = 1.0;
@@ -300,13 +300,13 @@ class _SampleLectureScreenState extends State<SampleLectureScreen>
                   child: InkWell(
                     borderRadius:
                         BorderRadius.circular(AppBar().preferredSize.height),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                     child: Icon(
                       Icons.arrow_back_ios,
                       color: DesignCourseAppTheme.nearlyBlack,
                     ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
                   ),
                 ),
               ),

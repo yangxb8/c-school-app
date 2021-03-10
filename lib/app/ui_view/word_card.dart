@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
 import 'package:flippable_box/flippable_box.dart';
-import 'package:supercharged/supercharged.dart';
+import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -43,7 +43,7 @@ class WordCard extends StatelessWidget {
     final emptyImage = Container(
       decoration: BoxDecoration(
         color: ReviewWordsTheme.lightBlue,
-        border: Border.all(color:ReviewWordsTheme.lightBlue, width: 0),
+        border: Border.all(color: ReviewWordsTheme.lightBlue, width: 0),
       ),
     );
     var frontCardContent = Column(
@@ -160,7 +160,7 @@ class WordCard extends StatelessWidget {
     // meaning part
     var partMeanings = word.wordMeanings.map((meaning) {
       var examples = meaning.examples
-          .mapIndexed((wordExample, index) =>
+          .mapIndexed((index, wordExample) =>
               _buildExampleRow(wordExample, index == meaning.examples.length - 1))
           .toList();
       var mainPart = examples.isEmpty
@@ -171,13 +171,13 @@ class WordCard extends StatelessWidget {
     }).toList();
     return Column(
       children: <Widget>[
-        Expanded(child: partHanZi, flex: 2),
+        Expanded(flex: 2, child: partHanZi),
         Expanded(
+          flex: 4,
           child: ListView(
             shrinkWrap: true,
             children: [partExplanation, divider(), ...partMeanings],
           ),
-          flex: 4,
         ),
       ],
     ).paddingSymmetric(horizontal: 10).backgroundColor(ReviewWordsTheme.lightBlue);

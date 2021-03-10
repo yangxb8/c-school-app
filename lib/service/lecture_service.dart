@@ -220,10 +220,10 @@ class LectureService extends GetxService {
   void showSingleWordCard(Word word) {
     Get.dialog(
       SimpleDialog(
-        children: [WordCard(word: word, isDialog: true,)],
         titlePadding: EdgeInsets.zero,
         contentPadding: EdgeInsets.zero,
         backgroundColor: Colors.transparent,
+        children: [WordCard(word: word, isDialog: true,)],
       ),
       barrierColor: Get.isDialogOpen ? Colors.transparent : null,
     );
