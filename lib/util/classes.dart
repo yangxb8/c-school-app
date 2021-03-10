@@ -1,9 +1,6 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 
-// 📦 Package imports:
-import 'package:after_layout/after_layout.dart';
-
 /// Wrapper for stateful functionality to provide onInit calls in stateles widget
 class StatefulWrapper extends StatefulWidget {
   final Function onInit;
@@ -68,4 +65,15 @@ class _StatefulWrapperState extends State<StatefulWrapper>
     }
     super.dispose();
   }
+}
+
+mixin AfterLayoutMixin<T extends StatefulWidget> on State<T> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => afterFirstLayout(context));
+  }
+
+  void afterFirstLayout(BuildContext context);
 }

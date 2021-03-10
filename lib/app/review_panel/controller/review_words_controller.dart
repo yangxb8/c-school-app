@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
@@ -144,8 +143,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   void toggleSpeakerGender() {
     speakerGender.value =
         speakerGender.value == SpeakerGender.male ? SpeakerGender.female : SpeakerGender.male;
-    Fluttertoast.showToast(
-        msg: 'review.word.toast.changeSpeaker'.trParams({
+    Get.snackbar('', 'review.word.toast.changeSpeaker'.trParams({
       'gender': speakerGender.value == SpeakerGender.male
           ? 'review.word.toast.changeSpeaker.male'.tr
           : 'review.word.toast.changeSpeaker.female'.tr
@@ -228,8 +226,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
         await _animateToFirstWord();
         backToFirstCard = false;
       } else {
-        await Fluttertoast.showToast(
-            gravity: ToastGravity.CENTER, msg: 'review.word.card.lastCard'.tr);
+        Get.snackbar('','review.word.card.lastCard'.tr);
         backToFirstCard = true;
       }
     } else {

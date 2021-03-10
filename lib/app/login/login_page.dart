@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // 📦 Package imports:
-import 'package:form_field_validator/form_field_validator.dart';
+import '../../util/utility.dart';
 import 'package:get/get.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/ui_view/separator.dart';
@@ -13,6 +12,7 @@ import '../../c_school_icons.dart';
 import 'controller/login_controller.dart';
 import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
+import '../ui_view/progress_hud.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             overscroll.disallowGlow();
           },
           child: Obx(
-            () => ModalProgressHUD(
+            () => ProgressHUD(
               inAsyncCall: controller.processing.value,
               child: SingleChildScrollView(
                 child: Container(

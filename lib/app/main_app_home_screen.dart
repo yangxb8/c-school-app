@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
@@ -37,14 +36,13 @@ class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: ConvexAppBar(
+        bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.lightBlue,
-          style: TabStyle.textIn,
-          items: [
-            TabItem(icon: Icons.border_color, title: 'home.panel.study.title'.tr),
-            TabItem(icon: Icons.explore, title: 'home.panel.discover.title'.tr),
-            TabItem(icon: Icons.library_books, title: 'home.panel.review.title'.tr),
-            TabItem(icon: Icons.supervisor_account, title: 'home.panel.account.title'.tr),
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.border_color), label: 'home.panel.study.title'.tr),
+            BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'home.panel.discover.title'.tr),
+            BottomNavigationBarItem(icon: Icon(Icons.library_books), label: 'home.panel.review.title'.tr),
+            BottomNavigationBarItem(icon: Icon(Icons.supervisor_account), label: 'home.panel.account.title'.tr),
           ],
           onTap: (int i) => controller.panelIndex.value = i,
         ),

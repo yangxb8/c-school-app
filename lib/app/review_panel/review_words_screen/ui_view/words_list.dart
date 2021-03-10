@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:animate_do/animate_do.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -24,34 +23,34 @@ class WordsList extends GetView<ReviewWordsController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 80.0),
-        child: StickyGroupedListView<Word, String>(
-          elements: controller.wordsList,
-          groupBy: (Word element) => element.lectureId,
-          groupComparator: (lectureId1, lectureId2) => lectureId1.compareTo(lectureId2),
-          itemComparator: (element1, element2) => element1.wordId.compareTo(element2.wordId),
-          // optional
-          order: StickyGroupedListOrder.ASC,
-          floatingHeader: true,
-          groupSeparatorBuilder: (Word element) => Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                element.lecture.title,
-                style: ReviewWordsTheme.wordListTitle,
-              ).paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10).decorated(
-                    color: ReviewWordsTheme.darkBlue,
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-            ],
-          ),
-          indexedItemBuilder: (_, Word word, index) => FadeInRight(
-            duration: 0.5.seconds,
-            // Delay the animation to create a staggered effect when first render
-            child: _WordMiniCard(word: word, index: index,),
-          ), // optional
-        ));
+      padding: const EdgeInsets.only(top: 80.0),
+      child: StickyGroupedListView<Word, String>(
+        elements: controller.wordsList,
+        groupBy: (Word element) => element.lectureId,
+        groupComparator: (lectureId1, lectureId2) => lectureId1.compareTo(lectureId2),
+        itemComparator: (element1, element2) => element1.wordId.compareTo(element2.wordId),
+        // optional
+        order: StickyGroupedListOrder.ASC,
+        floatingHeader: true,
+        groupSeparatorBuilder: (Word element) => Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              element.lecture.title,
+              style: ReviewWordsTheme.wordListTitle,
+            ).paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10).decorated(
+                  color: ReviewWordsTheme.darkBlue,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+          ],
+        ),
+        indexedItemBuilder: (_, Word word, index) => _WordMiniCard(
+          word: word,
+          index: index,
+        ),
+      ), // optional
+    );
   }
 }
 
@@ -72,13 +71,13 @@ class _WordMiniCard extends GetView<ReviewWordsController> {
         child: Row(
           children: [
             ObxValue(
-                    (data) => IconButton(
-                  color: data.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
-                  padding: EdgeInsets.only(left: 20),
-                  icon: Icon(CSchool.volume),
-                  iconSize: BUTTON_SIZE,
-                  onPressed: () => controller.playWord(word: word, audioKey: audioKey),
-                ),
+                (data) => IconButton(
+                      color: data.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
+                      padding: EdgeInsets.only(left: 20),
+                      icon: Icon(CSchool.volume),
+                      iconSize: BUTTON_SIZE,
+                      onPressed: () => controller.playWord(word: word, audioKey: audioKey),
+                    ),
                 controller.audioService.clientKey),
             PinyinAnnotatedParagraph(
               defaultTextStyle: ReviewWordsTheme.wordListItem,

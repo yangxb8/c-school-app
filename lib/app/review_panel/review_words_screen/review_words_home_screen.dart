@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 // 📦 Package imports:
-import 'package:animate_do/animate_do.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_beautiful_popup/main.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -63,14 +61,10 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                       groupSeparatorBuilder: (_) => const SizedBox.shrink(),
                       itemComparator: (element1, element2) =>
                           element1.lectureId.compareTo(element2.lectureId),
-                      indexedItemBuilder: (_, lecture, index) => FadeInRight(
-                          duration: 0.5.seconds,
-                          // Delay the animation to create a staggered effect
-                          // when first rendered
-                          child: LectureCard(
-                            lecture: lecture,
-                            index: index,
-                          ).paddingOnly(bottom: 5))).expanded(flex: 5)
+                      indexedItemBuilder: (_, lecture, index) => LectureCard(
+                        lecture: lecture,
+                        index: index,
+                      ).paddingOnly(bottom: 5)).expanded(flex: 5)
                 ],
               ),
             ).afterFirstLayout(controller.animateToTrackedLecture).paddingOnly(top: 40),
@@ -288,17 +282,9 @@ class LectureCard extends StatelessWidget {
 void navigateToReviewWordScreen({Lecture lecture, int index, List<Word> wordsList}) {
   final reviewWordsHomeController = Get.find<ReviewWordsHomeController>();
   if (lecture == null && wordsList.isBlank) {
-    final popup = BeautifulPopup(
-      context: Get.context,
-      template: TemplateNotification,
-    );
-    popup.show(
-      title: '',
-      barrierDismissible: true,
-      content: Text(
-        'review.word.home.error.noWord'.tr,
-        style: ReviewWordsTheme.lectureCardTitle,
-      ).paddingOnly(top: 10),
+    Get.defaultDialog(
+      title: 'error.oops'.tr,
+      content: Text('review.word.home.error.noWord'.tr),
     );
   } else {
     if (index != null) {

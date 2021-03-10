@@ -8,6 +8,7 @@ class Messages extends Translations {
           // Common
           'button.close': 'Close',
           'error.oops': 'Oops?',
+          'error.permission.mic':'Please allow the microphone usage',
           'error.unknown.title': 'Something is wrong!',
           'error.unknown.content': 'Unexpected internal error occurs',
           // Home
@@ -54,12 +55,13 @@ class Messages extends Translations {
           'review.word.toast.changeSpeaker.female': 'female',
           'review.word.card.lastCard': 'Last card reached. Swipe left will go to first card',
           // Ui view
-            'ui.charts.summary':'Summary',
+          'ui.charts.summary':'Summary',
         },
         'ja_JP': {
           // Common
           'button.close': '閉じる',
           'error.oops': 'あら？',
+          'error.permission.mic':'マイクの使用を許可してください',
           'error.unknown.title': '予想外のエラーです',
           'error.unknown.content': '予期せぬエラーが発生しました。',
           //Home

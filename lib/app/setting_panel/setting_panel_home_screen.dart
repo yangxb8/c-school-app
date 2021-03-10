@@ -1,5 +1,7 @@
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/ui_view/speech_exam_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 // 📦 Package imports:
 import 'package:settings_ui/settings_ui.dart';
@@ -7,7 +9,6 @@ import 'package:settings_ui/settings_ui.dart';
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/service/app_state_service.dart';
-import '../ui_view/speech_exam_bottom_sheet.dart';
 
 class SettingPanelHomeScreen extends StatelessWidget {
   @override
@@ -46,11 +47,15 @@ class SettingPanelHomeScreen extends StatelessWidget {
               title: 'Recorder dialog',
               leading: Icon(Icons.mic),
               //TODO: fetch exam properly
-              onPressed: (BuildContext _) => showSpeechExamBottomSheet(
+              onPressed: (_) => Get.bottomSheet(
+                  SpeechExamBottomSheet(
                   exam: SpeechExam()
                     ..refText = '大家好才是真的好。'
                     ..question = 'TEST'
-                    ..title = 'TEST')),
+                    ..title = 'TEST'),
+                elevation: 2.0
+              )
+          ),
         ],
       ),
     ];

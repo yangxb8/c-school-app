@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "14.0.0"
-  after_layout:
-    dependency: "direct main"
-    description:
-      name: after_layout
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.7+2"
   analyzer:
     dependency: transitive
     description:
@@ -22,13 +15,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.41.2"
-  animate_do:
-    dependency: "direct main"
-    description:
-      name: animate_do
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.7.5"
   archive:
     dependency: transitive
     description:
@@ -225,13 +211,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
-  convex_bottom_bar:
-    dependency: "direct main"
-    description:
-      name: convex_bottom_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.7.1+2"
   crypto:
     dependency: transitive
     description:
@@ -428,25 +407,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.0"
-  flippable_box:
-    dependency: "direct main"
-    description:
-      name: flippable_box
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.6"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_beautiful_popup:
-    dependency: "direct main"
-    description:
-      name: flutter_beautiful_popup
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.5.0"
   flutter_blurhash:
     dependency: "direct main"
     description:
@@ -521,19 +486,12 @@ packages:
     source: hosted
     version: "2.0.0"
   fluttertoast:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: fluttertoast
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.1.6"
-  form_field_validator:
-    dependency: "direct main"
-    description:
-      name: form_field_validator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   fuzzy:
     dependency: "direct main"
     description:
@@ -716,20 +674,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.7"
-  modal_bottom_sheet:
-    dependency: "direct main"
-    description:
-      name: modal_bottom_sheet
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0+1"
-  modal_progress_hud:
-    dependency: "direct main"
-    description:
-      name: modal_progress_hud
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.3"
   nested:
     dependency: transitive
     description:
@@ -906,12 +850,12 @@ packages:
     source: hosted
     version: "0.1.9"
   sensors:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sensors
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2+6"
+    version: "2.0.0"
   sentry:
     dependency: transitive
     description:
@@ -933,13 +877,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.0"
-  shake:
-    dependency: "direct main"
-    description:
-      name: shake
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   shared_preferences:
     dependency: "direct main"
     description:

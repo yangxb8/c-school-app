@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
-import 'package:flippable_box/flippable_box.dart';
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
@@ -20,6 +19,7 @@ import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
 import '../../c_school_icons.dart';
 import '../model/word.dart';
 import 'controller/word_card_controller.dart';
+import '../ui_view/flippable_box.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
 final icon_size = 40.0;
@@ -39,7 +39,6 @@ class WordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ;
     final emptyImage = Container(
       decoration: BoxDecoration(
         color: ReviewWordsTheme.lightBlue,

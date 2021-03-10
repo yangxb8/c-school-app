@@ -61,21 +61,12 @@ dependencies:
   wiredash: ^0.5.0
   fuzzy: ^0.3.0
   simple_animations: ^3.0.0
+  sensors: ^2.0.0
+  shared_preferences: ">=0.5.10 <2.0.0"
   ### Below is dependency we might consider removing
-  shared_preferences: ">=0.5.10 <2.0.0" # Change it to get_storage
-  flippable_box: ^1.0.6
-  fluttertoast: ^7.1.6
-  form_field_validator: ^1.0.1
-  flutter_beautiful_popup: ^1.5.0
-  modal_progress_hud: ^0.1.3
-  shake: ^0.1.0
-  convex_bottom_bar: ^2.7.1+2
+  simple_gesture_detector: ^0.2.0 # It's been maintained and expose easy to use swipe gesture
   settings_ui: ^0.6.0
-  modal_bottom_sheet: ^1.0.0+1
-  simple_gesture_detector: ^0.2.0
   auto_size_text: ^2.1.0 # Use SelectableAutoSizeText in ui_view
-  after_layout: ^1.0.7+2
-  animate_do: ^1.7.5
 
 dev_dependencies:
   flutter_test:

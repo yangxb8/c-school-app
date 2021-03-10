@@ -1,11 +1,11 @@
 // 📦 Package imports:
 import 'package:get/get.dart';
-import 'package:shake/shake.dart';
 import 'package:wiredash/wiredash.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/service/logger_service.dart';
 import '../model/user.dart';
+import '../util/utility.dart';
 import 'api_service.dart';
 import 'lecture_service.dart';
 

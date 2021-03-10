@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -124,7 +123,7 @@ class AudioService extends GetxService {
     // Verify permission
     var status = await Permission.microphone.request();
     if (!status.isGranted) {
-      await Fluttertoast.showToast(msg: 'Please allow the microphone usage');
+      Get.snackbar('error.oops'.tr, 'error.permission.mic'.tr);
     }
     if (_recorder.isRecording) {
       await _recorder.stopRecorder();
