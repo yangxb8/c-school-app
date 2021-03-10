@@ -1,14 +1,12 @@
 import 'dart:convert';
-
 import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
-import 'package:c_school_app/service/app_state_service.dart';
 import 'package:get/get.dart';
 import 'package:crypto/crypto.dart';
 
 import 'package:c_school_app/util/utility.dart';
 
-class SoeService extends GetConnect {
+class SoeService extends GetConnect{
   static const action = 'TransmitOralProcessWithInit';
   static const version = '2018-07-24';
   static const SECRET_ID = 'AKIDorfD1yrBxYu3w2zWGj0aAXpzqPib3yKP';
@@ -31,8 +29,9 @@ class SoeService extends GetConnect {
       'Content-Type': 'application/json',
       'Authorization': sign,
     });
-    final content = await response.bodyBytes.bytesToString();
-    return SentenceInfo.fromJson(jsonDecode(content));
+    // This is stupid but GetConnect doesn't allow to change default charset [latin1]
+    final content = utf8.decode(latin1.encode(response.bodyString));
+    return SentenceInfo.fromJson(jsonDecode(content)['Response']);
   }
 
   String _generateAuth(String payload, DateTime now) {

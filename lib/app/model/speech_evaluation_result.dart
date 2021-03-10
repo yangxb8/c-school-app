@@ -1,4 +1,5 @@
 // 📦 Package imports:
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'speech_evaluation_result.g.dart';
@@ -22,10 +23,15 @@ class SpeechEvaluationResult {
 
 @JsonSerializable()
 class SentenceInfo {
+  @JsonKey(name: 'SuggestedScore')
   final double suggestedScore;
+  @JsonKey(name: 'PronAccuracy')
   final double pronAccuracy;
+  @JsonKey(name: 'PronFluency')
   final double pronFluency;
+  @JsonKey(name: 'PronCompletion')
   final double pronCompletion;
+  @JsonKey(name: 'Words')
   final List<WordInfo> words;
 
   SentenceInfo(
@@ -41,14 +47,21 @@ class SentenceInfo {
 
 @JsonSerializable()
 class WordInfo {
+  @JsonKey(name: 'MemBeginTime')
   final int beginTime;
+  @JsonKey(name: 'MemEndTime')
   final int endTime;
+  @JsonKey(name: 'PronAccuracy')
   final double pronAccuracy;
+  @JsonKey(name: 'PronFluency')
   final double pronFluency;
+  @JsonKey(name: 'Word')
   final String word;
-  @JsonKey(fromJson: MatchResultUtil.fromInt, toJson: MatchResultUtil.toInt)
+  @JsonKey(name: 'MatchTag', fromJson: MatchResultUtil.fromInt, toJson: EnumToString.convertToString)
   final MatchResult matchTag;
+  @JsonKey(name: 'PhoneInfos')
   final List<PhoneInfo> phoneInfos;
+  @JsonKey(name: 'ReferenceWord')
   final String referenceWord;
 
   WordInfo(
@@ -67,15 +80,22 @@ class WordInfo {
 
 @JsonSerializable()
 class PhoneInfo {
+  @JsonKey(name: 'MemBeginTime')
   final int beginTime;
+  @JsonKey(name: 'MemEndTime')
   final int endTime;
+  @JsonKey(name: 'PronAccuracy')
   final double pronAccuracy;
+  @JsonKey(name: 'DetectedStress')
   final bool detectedStress;
-  @JsonKey(name: 'stress')
+  @JsonKey(name: 'Stress')
   final bool referenceStress;
-  @JsonKey(name: 'phone')
+  @JsonKey(name: 'Phone')
   final String detectedPhone;
+  @JsonKey(name: 'ReferencePhone')
   final String referencePhone;
+  @JsonKey(name: 'MatchTag', fromJson: MatchResultUtil.fromInt, toJson: EnumToString.convertToString)
+  final MatchResult matchTag;
 
   PhoneInfo(
       {this.beginTime,
@@ -84,7 +104,8 @@ class PhoneInfo {
       this.referencePhone,
       this.pronAccuracy,
       this.detectedStress,
-      this.detectedPhone});
+      this.detectedPhone,
+      this.matchTag});
   factory PhoneInfo.fromJson(Map<String, dynamic> json) =>
       _$PhoneInfoFromJson(json);
   Map<String, dynamic> toJson() => _$PhoneInfoToJson(this);
@@ -95,16 +116,5 @@ enum MatchResult { match, added, lacked, wrong, undetected }
 extension MatchResultUtil on MatchResult {
   static MatchResult fromInt(int matchResultInt) {
     return matchResultInt == null ? null : MatchResult.values[matchResultInt];
-  }
-
-  static int toInt(MatchResult matchResult) {
-    if (matchResult == null) return null;
-    for (var i = 0; i < MatchResult.values.length; i++) {
-      if (MatchResult.values[i] == matchResult) {
-        return i;
-      }
-    }
-    // impossible
-    return 0;
   }
 }
