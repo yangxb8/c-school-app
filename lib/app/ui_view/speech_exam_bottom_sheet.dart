@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
-import 'package:get/get.dart';
-import 'package:styled_widget/styled_widget.dart';
-import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:collection/collection.dart';
+import 'package:get/get.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:styled_widget/styled_widget.dart';
 
 // 🌎 Project imports:
 import '../../app/model/speech_exam.dart';
@@ -17,13 +17,13 @@ class SpeechExamBottomSheet extends StatelessWidget {
   final SpeechExam exam;
   static final int MAX_SPEECHES_SHOWN = 4;
 
-  SpeechExamBottomSheet({Key key, @required this.exam}) : super(key: key);
+  SpeechExamBottomSheet({Key? key, required this.exam}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
       init: SpeechRecordingController(exam),
-      builder: (controller) => Column(
+      builder: (dynamic controller) => Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
@@ -42,7 +42,7 @@ class SpeechExamBottomSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              children: exam.refText
+              children: exam.refText!
                   .split('')
                   .mapIndexed((index, element) => SimpleGestureDetector(
                         onTap: () => controller.wordSelected.value = index,

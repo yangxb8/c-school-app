@@ -1,6 +1,7 @@
+// 🎯 Dart imports:
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+// 📦 Package imports:
 import 'package:json_annotation/json_annotation.dart';
 
 part 'soe_request.g.dart';
@@ -40,7 +41,7 @@ class SoeRequest {
   final String UserVoiceData;
 
   /// 被评估语音对应的文本，句子模式下不超过个 20 单词或者中文文字，段落模式不超过 120 单词或者中文文字
-  final String RefText;
+  final String? RefText;
 
   /// 语音段唯一标识，一个完整语音一个SessionId
   final String SessionId;
@@ -58,12 +59,12 @@ class SoeRequest {
       this.IsEnd = 1,
       this.VoiceFileType = 2,
       this.VoiceEncodeType = 1,
-      @required this.UserVoiceData,
-      @required this.SessionId,
-      @required this.RefText,
+      required this.UserVoiceData,
+      required this.SessionId,
+      required this.RefText,
       this.WorkMode = 1,
       this.EvalMode = 1,
-      @required this.ScoreCoeff,
+      required this.ScoreCoeff,
       this.StorageMode = 0,
       this.SentenceInfoEnabled = 0,
       this.ServerType = 1,

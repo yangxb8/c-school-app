@@ -8,21 +8,21 @@ import 'package:supercharged/supercharged.dart';
 import '../my_progress_theme.dart';
 
 class GlassView extends StatelessWidget {
-  final AnimationController animationController;
-  final Animation animation;
+  final AnimationController? animationController;
+  final Animation? animation;
 
-  const GlassView({Key key, this.animationController, this.animation})
+  const GlassView({Key? key, this.animationController, this.animation})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: animationController,
-      builder: (BuildContext context, Widget child) {
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: animation as Animation<double>,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - animation.value), 0.0),
+                0.0, 30 * (1.0 - animation!.value), 0.0),
             child: Column(
               children: <Widget>[
                 Padding(

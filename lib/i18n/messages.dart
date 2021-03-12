@@ -105,7 +105,7 @@ class Messages extends Translations {
           'review.word.search.empty': 'なし',
           'review.word.toast.changeSpeaker': 'スピーカを@genderに変更',
           'review.word.toast.changeSpeaker.male': '男性',
-          'review.word.toast.changeSpeaker.female': '女性,',
+          'review.word.toast.changeSpeaker.female': '女性',
           'review.word.card.lastCard': '最後のカードです。左にスワイプすると初めに戻ります。',
           // Ui
           'ui.charts.summary':'総評',

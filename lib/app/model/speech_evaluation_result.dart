@@ -9,10 +9,10 @@ part 'speech_evaluation_result.g.dart';
 /// might be directly extracted from cloud storage for analysis in the future.
 @JsonSerializable()
 class SpeechEvaluationResult {
-  final String userId;
-  final String examId;
-  final String speechDataPath;
-  final SentenceInfo sentenceInfo;
+  final String? userId;
+  final String? examId;
+  final String? speechDataPath;
+  final SentenceInfo? sentenceInfo;
 
   SpeechEvaluationResult(
       {this.userId, this.examId, this.speechDataPath, this.sentenceInfo});
@@ -24,15 +24,15 @@ class SpeechEvaluationResult {
 @JsonSerializable()
 class SentenceInfo {
   @JsonKey(name: 'SuggestedScore')
-  final double suggestedScore;
+  final double? suggestedScore;
   @JsonKey(name: 'PronAccuracy')
-  final double pronAccuracy;
+  final double? pronAccuracy;
   @JsonKey(name: 'PronFluency')
-  final double pronFluency;
+  final double? pronFluency;
   @JsonKey(name: 'PronCompletion')
-  final double pronCompletion;
+  final double? pronCompletion;
   @JsonKey(name: 'Words')
-  final List<WordInfo> words;
+  final List<WordInfo>? words;
 
   SentenceInfo(
       {this.suggestedScore,
@@ -48,21 +48,21 @@ class SentenceInfo {
 @JsonSerializable()
 class WordInfo {
   @JsonKey(name: 'MemBeginTime')
-  final int beginTime;
+  final int? beginTime;
   @JsonKey(name: 'MemEndTime')
-  final int endTime;
+  final int? endTime;
   @JsonKey(name: 'PronAccuracy')
-  final double pronAccuracy;
+  final double? pronAccuracy;
   @JsonKey(name: 'PronFluency')
-  final double pronFluency;
+  final double? pronFluency;
   @JsonKey(name: 'Word')
-  final String word;
+  final String? word;
   @JsonKey(name: 'MatchTag', fromJson: MatchResultUtil.fromInt, toJson: EnumToString.convertToString)
-  final MatchResult matchTag;
+  final MatchResult? matchTag;
   @JsonKey(name: 'PhoneInfos')
-  final List<PhoneInfo> phoneInfos;
+  final List<PhoneInfo>? phoneInfos;
   @JsonKey(name: 'ReferenceWord')
-  final String referenceWord;
+  final String? referenceWord;
 
   WordInfo(
       {this.beginTime,
@@ -81,21 +81,21 @@ class WordInfo {
 @JsonSerializable()
 class PhoneInfo {
   @JsonKey(name: 'MemBeginTime')
-  final int beginTime;
+  final int? beginTime;
   @JsonKey(name: 'MemEndTime')
-  final int endTime;
+  final int? endTime;
   @JsonKey(name: 'PronAccuracy')
-  final double pronAccuracy;
+  final double? pronAccuracy;
   @JsonKey(name: 'DetectedStress')
-  final bool detectedStress;
+  final bool? detectedStress;
   @JsonKey(name: 'Stress')
-  final bool referenceStress;
+  final bool? referenceStress;
   @JsonKey(name: 'Phone')
-  final String detectedPhone;
+  final String? detectedPhone;
   @JsonKey(name: 'ReferencePhone')
-  final String referencePhone;
+  final String? referencePhone;
   @JsonKey(name: 'MatchTag', fromJson: MatchResultUtil.fromInt, toJson: EnumToString.convertToString)
-  final MatchResult matchTag;
+  final MatchResult? matchTag;
 
   PhoneInfo(
       {this.beginTime,
@@ -114,7 +114,7 @@ class PhoneInfo {
 enum MatchResult { match, added, lacked, wrong, undetected }
 
 extension MatchResultUtil on MatchResult {
-  static MatchResult fromInt(int matchResultInt) {
+  static MatchResult? fromInt(int? matchResultInt) {
     return matchResultInt == null ? null : MatchResult.values[matchResultInt];
   }
 }

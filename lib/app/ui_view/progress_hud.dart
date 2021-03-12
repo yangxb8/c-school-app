@@ -1,3 +1,4 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 
 ///
@@ -25,22 +26,20 @@ class ProgressHUD extends StatelessWidget {
   final double opacity;
   final Color color;
   final Widget progressIndicator;
-  final Offset offset;
+  final Offset? offset;
   final bool dismissible;
   final Widget child;
 
   ProgressHUD({
-    Key key,
-    @required this.inAsyncCall,
+    Key? key,
+    required this.inAsyncCall,
     this.opacity = 0.3,
     this.color = Colors.grey,
     this.progressIndicator = const CircularProgressIndicator(),
     this.offset,
     this.dismissible = false,
-    @required this.child,
-  })  : assert(child != null),
-        assert(inAsyncCall != null),
-        super(key: key);
+    required this.child,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +51,8 @@ class ProgressHUD extends StatelessWidget {
         layOutProgressIndicator = Center(child: progressIndicator);
       } else {
         layOutProgressIndicator = Positioned(
-          left: offset.dx,
-          top: offset.dy,
+          left: offset!.dx,
+          top: offset!.dy,
           child: progressIndicator,
         );
       }

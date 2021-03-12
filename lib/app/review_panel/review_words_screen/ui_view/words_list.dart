@@ -28,7 +28,7 @@ class WordsList extends GetView<ReviewWordsController> {
         elements: controller.wordsList,
         groupBy: (Word element) => element.lectureId,
         groupComparator: (lectureId1, lectureId2) => lectureId1.compareTo(lectureId2),
-        itemComparator: (element1, element2) => element1.wordId.compareTo(element2.wordId),
+        itemComparator: (element1, element2) => element1.wordId!.compareTo(element2.wordId!),
         // optional
         order: StickyGroupedListOrder.ASC,
         floatingHeader: true,
@@ -37,7 +37,7 @@ class WordsList extends GetView<ReviewWordsController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              element.lecture.title,
+              element.lecture!.title,
               style: ReviewWordsTheme.wordListTitle,
             ).paddingOnly(left: 30, right: 30, top: 10.0, bottom: 10).decorated(
                   color: ReviewWordsTheme.darkBlue,
@@ -55,7 +55,7 @@ class WordsList extends GetView<ReviewWordsController> {
 }
 
 class _WordMiniCard extends GetView<ReviewWordsController> {
-  _WordMiniCard({Key key, @required this.word, @required this.index}) : super(key: key);
+  _WordMiniCard({Key? key, required this.word, required this.index}) : super(key: key);
 
   final String audioKey = Uuid().v1();
   final int index;
@@ -71,7 +71,7 @@ class _WordMiniCard extends GetView<ReviewWordsController> {
         child: Row(
           children: [
             ObxValue(
-                (data) => IconButton(
+                (dynamic data) => IconButton(
                       color: data.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
                       padding: EdgeInsets.only(left: 20),
                       icon: Icon(CSchool.volume),
@@ -83,7 +83,7 @@ class _WordMiniCard extends GetView<ReviewWordsController> {
               defaultTextStyle: ReviewWordsTheme.wordListItem,
               paragraph: word.wordAsString,
               maxLines: 1,
-              pinyins: word.pinyin,
+              pinyins: word.pinyin!,
             ).center().expanded()
           ],
         ).card(

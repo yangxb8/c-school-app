@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 0.1.0+1
 
 environment:
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 scripts:
   build: flutter pub run build_runner build --delete-conflicting-outputs
@@ -27,58 +27,59 @@ scripts:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.7.0
-  firebase_analytics: ^7.0.1
-  firebase_performance: ^0.5.0+1
-  firebase_auth: ^0.20.0+1
-  cloud_firestore: ^0.16.0
-  firebase_storage: ^7.0.0
+  firebase_core: ^1.0.1
+  firebase_analytics: ^7.1.1
+  firebase_performance: ^0.6.0
+  firebase_auth: ^1.0.1
+  cloud_firestore: ^1.0.1
+  firebase_storage: ^8.0.0
   #  flutter_facebook_auth: "^0.2.3"
   #  twitter_login: ^2.1.3
-  google_sign_in: ^4.5.9
-  sign_in_with_apple: ^2.5.4
-  get: ^3.26.0
+  google_sign_in: ^5.0.0
+  sign_in_with_apple: ^3.0.0
+  get: ^4.0.0-nullsafety.2
   supercharged: ^2.0.0
-  logger: ^0.9.4
-  uuid: 2.2.2
-  enum_to_string: ^1.0.14
-  permission_handler: ^5.1.0+2
-  flutter_sound_lite: ^7.7.0+1
-  path_provider: ^1.6.27
-  json_annotation: ^3.1.1
-  syncfusion_flutter_charts: ^18.4.46
-  material_floating_search_bar: ^0.2.6
+  logger: ^1.0.0-nullsafety.0
+  uuid: ^3.0.1
+  enum_to_string: ^2.0.0-nullsafety.1
+  permission_handler: ^6.0.1+1
+  flutter_sound_lite: ^8.0.0+6
+  path_provider: ^2.0.1
+  json_annotation: ^4.0.0
+  syncfusion_flutter_charts: ^18.4.47
+  material_floating_search_bar: ^0.3.0
   sticky_grouped_list: ^1.3.0
-  flamingo: ^1.15.3
-  flamingo_annotation: ^0.4.0
-  flutter_tts: ^2.1.0
-  cached_network_image: ^2.5.0
-  flutter_blurhash: ^0.5.0
-  keyboard_dismisser: ^1.0.2
-  catcher: ^0.4.0
-  sentry_flutter: ^4.0.4
+  flamingo: ^2.0.0
+  flamingo_annotation: ^0.5.0
+  flutter_tts: ^3.0.0
+  cached_network_image: ^3.0.0-nullsafety
+  flutter_blurhash: ^0.5.4-nullsafety.0
+  keyboard_dismisser: ^2.0.0
+  catcher: ^0.6.1
+  sentry_flutter: ^4.0.6
   styled_widget: ^0.2.2
-  wiredash: ^0.5.0
-  fuzzy: ^0.3.0
-  simple_animations: ^3.0.0
+  wiredash: ^0.6.2
+  fuzzy: ^0.4.0-nullsafety.0
+  simple_animations: ^3.0.1
   sensors: ^2.0.0
-  shared_preferences: ">=0.5.10 <2.0.0"
+  shared_preferences: ^2.0.4
+  fluttertoast: ^8.0.1-nullsafety.0
   ### Below is dependency we might consider removing
   simple_gesture_detector: ^0.2.0 # It's been maintained and expose easy to use swipe gesture
   settings_ui: ^0.6.0
-  auto_size_text: ^2.1.0 # Use SelectableAutoSizeText in ui_view
+  auto_size_text: ^3.0.0-nullsafety.0  # Use SelectableAutoSizeText in ui_view
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  import_sorter: ^4.4.1
+  import_sorter: ^4.4.2
   pedantic: ^1.11.0
   build_runner: ^1.11.5
-  json_serializable: ^3.5.1
-  flamingo_generator: ^0.8.0
+  json_serializable: ^4.0.2
+  flamingo_generator: ^0.9.0
   change_app_package_name: ^0.1.2
-  csv: ^4.1.0
+  csv: ^5.0.0-nullsafety.0
   fluttericon: ^2.0.0
 
 # For information on the generic Dart part of this file, see the

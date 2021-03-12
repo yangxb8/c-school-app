@@ -31,7 +31,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
 
     Future<void> _onHorizontalSwipe(swipeDirection) async {
       // If in autoPlay mode, disable swipe
-      if (controller.isAutoPlayMode.value) return;
+      if (controller.isAutoPlayMode.value!) return;
       if (swipeDirection == SwipeDirection.right) {
         await controller.previousCard();
       } else {

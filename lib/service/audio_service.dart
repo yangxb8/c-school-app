@@ -1,6 +1,7 @@
-// 📦 Package imports:
+// 🎯 Dart imports:
 import 'dart:io';
 
+// 📦 Package imports:
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -31,14 +32,14 @@ class AudioService extends GetxService {
   /// to know if they still connected to the service
   final clientKey = ''.obs;
 
-  String _lastRecordPath;
+  String? _lastRecordPath;
 
   @override
   Future<void> onInit() async {
     // open audio session and keep it
     await _player.openAudioSession(mode: SessionMode.modeSpokenAudio);
     await _recorder.openAudioSession(mode: SessionMode.modeSpokenAudio);
-    ever(playerState, (state) {
+    ever(playerState, (dynamic state) {
       // When play complete, clientKey is cleared
       if (!_playerOccupiedState.contains(state)) {
         clientKey.value = '';
@@ -59,7 +60,7 @@ class AudioService extends GetxService {
   /// Play uri provided, if other thing is playing, stop it and play the new audio.
   /// Either web url or file path can be used, the type will be inferred automatically.
   /// If void callback is provided, it will get called after play completed.
-  Future<void> startPlayer(String uri, {Function callback, String key = ''}) async {
+  Future<void> startPlayer(String uri, {Function? callback, String? key = ''}) async {
     // If there is another file been played, stop it
     await stopPlayer();
     // Set clientKey to new key
@@ -100,7 +101,7 @@ class AudioService extends GetxService {
   }
 
   /// Only used to play
-  Future<void> speak(String text, {Function callback}) async {
+  Future<void> speak(String text, {Function? callback}) async {
     await _tts.awaitSpeakCompletion(true);
     await _tts.speak(text);
     if (callback != null) {
@@ -108,8 +109,8 @@ class AudioService extends GetxService {
     }
   }
 
-  Future<void> speakList(Iterable<String> texts, {Function callback}) async {
-    await Future.forEach(texts, (text) async {
+  Future<void> speakList(Iterable<String> texts, {Function? callback}) async {
+    await Future.forEach(texts, (dynamic text) async {
       await _tts.awaitSpeakCompletion(true);
       await _tts.speak(text);
     });
@@ -137,7 +138,7 @@ class AudioService extends GetxService {
   Future<File> stopRecorder() async {
     assert(_recorder.isRecording);
     await _recorder.stopRecorder();
-    return File(_lastRecordPath);
+    return File(_lastRecordPath!);
   }
 
   void refreshPlayerState() => playerState.value = _player.playerState;

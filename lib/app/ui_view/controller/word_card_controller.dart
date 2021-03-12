@@ -1,10 +1,6 @@
 // 🎯 Dart imports:
 import 'dart:async';
 
-// 🐦 Flutter imports:
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
@@ -40,7 +36,7 @@ class WordCardController extends GetxController {
 
   void toggleFavoriteCard() => lectureService.toggleWordLiked(word);
 
-  void toggleHint() => isHintShown.value = !isHintShown.value;
+  void toggleHint() => isHintShown.value = !isHintShown.value!;
 
   bool isWordLiked() => _userLikedWordIds.contains(word.wordId);
 
@@ -48,9 +44,9 @@ class WordCardController extends GetxController {
   void onInit() {
     /// Prepare audio file of this card
     <StorageFile>[
-      word.wordAudioFemale,
-      word.wordAudioMale,
-      ...word.wordMeanings.expand((m) => m.exampleFemaleAudios + m.exampleMaleAudios)
+      word.wordAudioFemale!,
+      word.wordAudioMale!,
+      ...word.wordMeanings!.expand((m) => m.exampleFemaleAudios! + m.exampleMaleAudios!)
     ].forEach((file) => audioService.prepareAudio(file.url));
     super.onInit();
   }
@@ -66,35 +62,29 @@ class WordCardController extends GetxController {
   }
 
   /// Play audio of the word
-  Future<void> playWord({String audioKey, Function completionCallBack}) async {
+  Future<void> playWord({String? audioKey, Function? completionCallBack}) async {
     var wordAudio =
-        reviewWordSpeakerGender == SpeakerGender.male ? word.wordAudioMale : word.wordAudioFemale;
-    if (wordAudio == null) {
-      return;
-    }
+        reviewWordSpeakerGender == SpeakerGender.male ? word.wordAudioMale! : word.wordAudioFemale!;
     await audioService.startPlayer(wordAudio.url, key:audioKey, callback: completionCallBack);
   }
 
   /// Play audio of the meanings one by one, now only tts is supported
-  Future<void> playMeanings({int meaningOrdinal = 0, Function completionCallBack}) async {
-    await audioService.speakList(word.wordMeanings.map((m) => m.meaning),
+  Future<void> playMeanings({int meaningOrdinal = 0, Function? completionCallBack}) async {
+    await audioService.speakList(word.wordMeanings!.map((m) => m.meaning!),
         callback: completionCallBack);
   }
 
   /// Play audio of the examples
-  Future<void> playExample({@required WordExample wordExample, @required String audioKey, Function completionCallBack}) async {
+  Future<void> playExample({required WordExample wordExample, required String audioKey, Function? completionCallBack}) async {
     var audio = reviewWordSpeakerGender == SpeakerGender.male
         ? wordExample.audioMale
         : wordExample.audioFemale;
-    if (audio == null) {
-      return;
-    }
     await audioService.startPlayer(audio.url, key: audioKey, callback: completionCallBack);
   }
 
   /// Default to Male
   SpeakerGender get reviewWordSpeakerGender => Get.isRegistered<ReviewWordsController>()
-      ? Get.find<ReviewWordsController>().speakerGender.value
+      ? Get.find<ReviewWordsController>().speakerGender.value!
       : SpeakerGender.male;
 
   @override

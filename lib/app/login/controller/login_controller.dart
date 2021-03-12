@@ -14,7 +14,6 @@ import '../../../service/api_service.dart';
 
 class LoginController extends GetxController {
   final ApiService apiService = Get.find();
-  final BuildContext context = Get.context;
   RxBool processing = false.obs;
 
   final GlobalKey<FormFieldState> loginEmailKey = GlobalKey<FormFieldState>();
@@ -35,20 +34,20 @@ class LoginController extends GetxController {
   Future<void> handleEmailSignUp() async {
     processing.value = true;
     var _validateAll = [
-      signupNamelKey.currentState.validate(),
-      signupEmailKey.currentState.validate(),
-      signupPasswordKey.currentState.validate(),
-      signupConfirmPasswordlKey.currentState.validate()
+      signupNamelKey.currentState!.validate(),
+      signupEmailKey.currentState!.validate(),
+      signupPasswordKey.currentState!.validate(),
+      signupConfirmPasswordlKey.currentState!.validate()
     ].every((e) => e);
     if (_validateAll) {
-      signupNamelKey.currentState.reset();
-      signupEmailKey.currentState.reset();
-      signupPasswordKey.currentState.reset();
-      signupConfirmPasswordlKey.currentState.reset();
+      signupNamelKey.currentState!.reset();
+      signupEmailKey.currentState!.reset();
+      signupPasswordKey.currentState!.reset();
+      signupConfirmPasswordlKey.currentState!.reset();
       var result = await apiService.firebaseAuthApi.signUpWithEmail(
-          formTexts['signupEmail'], formTexts['signupPassword'], formTexts['signupName']);
+          formTexts['signupEmail']!, formTexts['signupPassword']!, formTexts['signupName']!);
       if (result == 'need email verify') {
-        _showEmailVerificationPopup(context, formTexts['signupEmail']);
+        _showEmailVerificationPopup(formTexts['signupEmail']!);
       } else if (result != 'ok') {
         _showErrorPopup(result);
       }
@@ -59,12 +58,12 @@ class LoginController extends GetxController {
   Future<void> handleEmailLogin() async {
     processing.value = true;
     var _validateAll = [
-      loginEmailKey.currentState.validate(),
-      loginPasswordKey.currentState.validate()
+      loginEmailKey.currentState!.validate(),
+      loginPasswordKey.currentState!.validate()
     ].every((e) => e);
     if (!_validateAll) return;
     var result = await apiService.firebaseAuthApi
-        .loginWithEmail(formTexts['loginEmail'], formTexts['loginPassword']);
+        .loginWithEmail(formTexts['loginEmail']!, formTexts['loginPassword']!);
     if (result == 'ok') {
       _showLoginSuccessPopup();
     } else if (result == 'login.login.error.unverifiedEmail'.tr) {
@@ -137,14 +136,14 @@ class LoginController extends GetxController {
     Get.defaultDialog(
         title: 'login.login.dialog.success.title'.tr,
         content: Text('login.login.dialog.success.content'
-            .trParams({'studyCount': '${AppStateService.startCount + 1}'})),
+            .trParams({'studyCount': '${AppStateService.startCount + 1}'})!),
         textConfirm: 'button.close'.tr,
         onConfirm: () {
-          if (UserService.isLectureServiceInitialized.isTrue) {
+          if (UserService.isLectureServiceInitialized.isTrue!) {
             Get.offAllNamed('/home');
           } else {
             processing.value = true;
-            once(UserService.isLectureServiceInitialized, (_) {
+            once(UserService.isLectureServiceInitialized, (dynamic _) {
               processing.value = false;
               Get.offAllNamed('/home');
             });
@@ -152,10 +151,10 @@ class LoginController extends GetxController {
         });
   }
 
-  void _showEmailVerificationPopup(BuildContext context, String email) {
+  void _showEmailVerificationPopup(String email) {
     Get.defaultDialog(
       title: 'login.register.confirmEmail.title'.tr,
-      content: Text('login.register.confirmEmail.content'.trParams({'email': email})),
+      content: Text('login.register.confirmEmail.content'.trParams({'email': email})!),
       textConfirm: 'button.close'.tr,
       onConfirm: () => Get.back(),
     );

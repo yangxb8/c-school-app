@@ -18,7 +18,7 @@ class MainAppHomeScreen extends StatefulWidget {
 
 class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProviderStateMixin{
   final MainAppController controller = Get.find();
-  AnimationController animationController;
+  late final AnimationController animationController;
 
   @override
   void initState() {
@@ -46,10 +46,10 @@ class _MainAppHomeScreenState extends State<MainAppHomeScreen> with TickerProvid
           ],
           onTap: (int i) => controller.panelIndex.value = i,
         ),
-        body: Obx(() => activatePanel(controller.panelIndex.value)));
+        body: Obx(() => activatePanel(controller.panelIndex.value)!));
   }
 
-  Widget activatePanel(int panelIdx) {
+  Widget? activatePanel(int panelIdx) {
     switch (panelIdx) {
       case 0:
         return StudyPanelHomeScreen(

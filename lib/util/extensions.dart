@@ -34,15 +34,15 @@ extension HanziUtil on String {
 
 extension StringListUtil on Iterable<String> {
   /// Fuzzy search a list of String by keyword, options can be provided
-  List<String> searchFuzzy(String key, {FuzzyOptions options}) {
+  List<String> searchFuzzy(String key, {FuzzyOptions? options}) {
     options ??=
         FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
     final fuse = Fuzzy(toList(), options: options);
-    return fuse.search(key).map((r) => r.item.toString());
+    return fuse.search(key).map((r) => r.item.toString()) as List<String>;
   }
 
   /// Search if this string list contains key fuzzily
-  bool containsFuzzy(String key, {FuzzyOptions options}) {
+  bool containsFuzzy(String key, {FuzzyOptions? options}) {
     options ??=
         FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
     final fuse = Fuzzy(toList(), options: options);
@@ -52,18 +52,18 @@ extension StringListUtil on Iterable<String> {
 
 extension StringUtil on String {
   /// Search if this string contains key fuzzily
-  bool containsFuzzy(String key, {FuzzyOptions options}) {
+  bool containsFuzzy(String key, {FuzzyOptions? options}) {
     return [this].containsFuzzy(key, options: options);
   }
 }
 
 extension WidgetWrapper on Widget {
   Widget statefulWrapper(
-      {Function onInit,
-      Function afterFirstLayout,
-      Function deactivate,
-      Function didUpdateWidget,
-      Function dispose}) {
+      {Function? onInit,
+      Function? afterFirstLayout,
+      Function? deactivate,
+      Function? didUpdateWidget,
+      Function? dispose}) {
     return StatefulWrapper(
       onInit: onInit,
       afterFirstLayout: afterFirstLayout,
@@ -91,7 +91,7 @@ extension RxIntExtension on RxInt {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (value) => localStorageService.saveToDisk(key, value), time: 1.seconds);
+    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value), time: 1.seconds);
     return this;
   }
 }
@@ -104,7 +104,7 @@ extension RxDoubleExtension on RxDouble {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }
@@ -117,7 +117,7 @@ extension RxBoolExtension on RxBool {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }
@@ -130,7 +130,7 @@ extension RxStringExtension on RxString {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }
@@ -143,7 +143,7 @@ extension RxStringListExtension on RxList<String> {
     if (localStorageService.containsKey(key)) {
       assignAll(Get.find<LocalStorageService>().getFromDisk(key));
     }
-    debounce(this, (value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
     return this;
   }
 }

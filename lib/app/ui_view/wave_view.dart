@@ -13,14 +13,14 @@ import '../my_progress_theme.dart';
 class WaveView extends StatefulWidget {
   final double percentageValue;
 
-  const WaveView({Key key, this.percentageValue = 100.0}) : super(key: key);
+  const WaveView({Key? key, this.percentageValue = 100.0}) : super(key: key);
   @override
   _WaveViewState createState() => _WaveViewState();
 }
 
 class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
-  AnimationController animationController;
-  AnimationController waveAnimationController;
+  late AnimationController animationController;
+  late AnimationController waveAnimationController;
   Offset bottleOffset1 = Offset(0, 0);
   List<Offset> animList1 = [];
   Offset bottleOffset2 = Offset(60, 0);

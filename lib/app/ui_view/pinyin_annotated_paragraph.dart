@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
+import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:collection/collection.dart';
 
 // 🌎 Project imports:
 import '../../service/lecture_service.dart';
@@ -20,13 +20,13 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   final List<String> pinyins;
 
   /// Max line this paragraph can occupy. If this is set, fontSize will be adjusted to fit
-  final int maxLines;
+  final int? maxLines;
 
   /// Word to apply center word style
-  final Word centerWord;
+  final Word? centerWord;
 
   /// Word that can be linked to other words
-  final List<Word> linkedWords;
+  final List<Word>? linkedWords;
 
   /// TextStyle of paragraph and others if not other text style is specified
   final TextStyle defaultTextStyle;
@@ -41,7 +41,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   final TextStyle pinyinTextStyle;
 
   /// Widget been display before paragraph
-  final Widget leadingWidget;
+  final Widget? leadingWidget;
 
   /// False to hide pinyin
   final bool showPinyins;
@@ -53,11 +53,11 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   final double runSpacing;
 
   const PinyinAnnotatedParagraph(
-      {Key key,
-      @required this.paragraph,
-      @required this.pinyins,
+      {Key? key,
+      required this.paragraph,
+      required this.pinyins,
       this.maxLines,
-      @required this.defaultTextStyle,
+      required this.defaultTextStyle,
       this.centerWord,
       this.linkedWords,
       centerWordTextStyle,
@@ -84,22 +84,18 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
         adjustedDefaultFontSize =
             _calculateFontSize(size, paragraph, defaultTextStyle, maxLines)[0] as double;
         // If pinyin has its own style, adjust its font size too
-        adjustedPinyinFontSize = pinyinTextStyle == null
-            ? adjustedDefaultFontSize
-            : _calculateFontSize(size, pinyins.join(),
+        adjustedPinyinFontSize = _calculateFontSize(size, pinyins.join(),
                 pinyinTextStyle, maxLines)[0] as double;
       }
       final adjustedDefaultTextStyle = defaultTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
       final adjustedPinyinTextStyle =
-          pinyinTextStyle?.copyWith(fontSize: adjustedPinyinFontSize) ?? adjustedDefaultTextStyle;
+          pinyinTextStyle.copyWith(fontSize: adjustedPinyinFontSize);
       final adjustedCenterWordTextStyle =
-          centerWordTextStyle?.copyWith(fontSize: adjustedDefaultFontSize) ??
-              adjustedDefaultTextStyle;
+          centerWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
       final adjustedLinkedWordTextStyle =
-          linkedWordTextStyle?.copyWith(fontSize: adjustedDefaultFontSize) ??
-              adjustedDefaultTextStyle;
+          linkedWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
       // Build single hanzi
-      final elements = leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget];
+      final elements = leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget!];
       elements.addAll(_generateHanzis(adjustedDefaultTextStyle, adjustedPinyinTextStyle,
               adjustedCenterWordTextStyle, adjustedLinkedWordTextStyle)
           .map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)));
@@ -111,14 +107,14 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     });
   }
 
-  Widget _buildSingleHanzi({@required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+  Widget _buildSingleHanzi({required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
     final pinyinRow = showPinyins
         ? [Text(pinyinAnnotatedHanzi.pinyin, style: pinyinAnnotatedHanzi.pinyinStyle)]
         : [];
     final inner = IntrinsicWidth(
       child: Column(
         children: [
-          ...pinyinRow,
+          ...pinyinRow as Iterable<Widget>,
           Text(pinyinAnnotatedHanzi.hanzi, style: pinyinAnnotatedHanzi.hanziStyle),
         ],
       ),
@@ -137,9 +133,9 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       TextStyle centerWordStyle, TextStyle linkedWordStyle) {
     // Divide paragraph by center word and linked word
     final dividerWords = <String>[];
-    if (centerWord != null) dividerWords.add(centerWord.wordAsString);
+    if (centerWord != null) dividerWords.add(centerWord!.wordAsString);
     if (linkedWords != null) {
-      dividerWords.addAll(linkedWords.map((w) => w.wordAsString));
+      dividerWords.addAll(linkedWords!.map((w) => w.wordAsString));
     }
     final keywordsSeparatedParagraph = _divideExample(dividerWords, paragraph);
     return List<PinyinAnnotatedHanzi>.generate(paragraph.length, (idx) {
@@ -172,12 +168,12 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   }
 
   Map<ParagraphHanziType, Word> _calculateHanziType(
-      {@required int hanziIdx, @required List<String> keywordsSeparatedParagraph}) {
+      {required int hanziIdx, required List<String> keywordsSeparatedParagraph}) {
     var totalIdx = 0;
-    var result;
+    late var result;
     for (final part in keywordsSeparatedParagraph) {
       // Target hanzi is in range of this part of paragraph
-      final linkedWordList = linkedWords?.filter((w) => w.wordAsString == part) ?? [];
+      final linkedWordList = (linkedWords?.filter((w) => w.wordAsString == part) ?? []);
       if (totalIdx + part.length > hanziIdx) {
         if (centerWord?.wordAsString == part) {
           result = {ParagraphHanziType.center: null};
@@ -229,10 +225,10 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       exampleDivided.removeWhere((currentValue) => currentValue.isEmpty);
       return exampleDivided;
     }
-    return null;
+    return const [];
   }
 
-  List _calculateFontSize(BoxConstraints size, String text, TextStyle originStyle, int maxLines) {
+  List _calculateFontSize(BoxConstraints size, String text, TextStyle originStyle, int? maxLines) {
     // Apply wrap spacing to text style to correctly calculate the font size
     var style = originStyle.copyWith(letterSpacing: spacing);
     var span = TextSpan(
@@ -248,8 +244,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     const maxFontSize = double.infinity;
     const stepGranularity = 1;
 
-    var defaultFontSize = style.fontSize.clamp(minFontSize, maxFontSize);
-    var defaultScale = defaultFontSize * userScale / style.fontSize;
+    var defaultFontSize = style.fontSize!.clamp(minFontSize, maxFontSize);
+    var defaultScale = defaultFontSize * userScale / style.fontSize!;
     if (_checkTextFits(span, defaultScale, maxLines, size)) {
       return [defaultFontSize * userScale, true];
     }
@@ -261,7 +257,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     while (left <= right) {
       var mid = (left + (right - left) / 2).toInt();
       double scale;
-      scale = mid * userScale * stepGranularity / style.fontSize;
+      scale = mid * userScale * stepGranularity / style.fontSize!;
       if (_checkTextFits(span, scale, maxLines, size)) {
         left = mid + 1;
         lastValueFits = true;
@@ -280,7 +276,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     return [fontSize, lastValueFits];
   }
 
-  bool _checkTextFits(TextSpan text, double scale, int maxLines, BoxConstraints constraints) {
+  bool _checkTextFits(TextSpan text, double? scale, int? maxLines, BoxConstraints constraints) {
     var tp = TextPainter(
       text: text,
       textAlign: TextAlign.left,
@@ -306,13 +302,13 @@ class PinyinAnnotatedHanzi {
   final Word linkedWord;
 
   const PinyinAnnotatedHanzi(
-      {Key key,
-      @required this.hanzi,
-      @required this.pinyin,
-      @required this.hanziStyle,
-      @required this.pinyinStyle,
-      @required this.type,
-      @required this.linkedWord});
+      {Key? key,
+      required this.hanzi,
+      required this.pinyin,
+      required this.hanziStyle,
+      required this.pinyinStyle,
+      required this.type,
+      required this.linkedWord});
 }
 
 enum ParagraphHanziType { normal, linked, center }

@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // 📦 Package imports:
-import '../../util/utility.dart';
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/ui_view/separator.dart';
 import '../../c_school_icons.dart';
+import '../../util/utility.dart';
+import '../ui_view/progress_hud.dart';
 import 'controller/login_controller.dart';
 import 'style/login_theme.dart' as theme;
 import 'utils/bubble_indication_painter.dart';
-import '../ui_view/progress_hud.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   bool _obscureTextSignup = true;
   bool _obscureTextSignupConfirm = true;
 
-  PageController _pageController;
+  late final PageController _pageController;
 
   Color left = Colors.black;
   Color right = Colors.white;
@@ -60,10 +60,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           // ignore: missing_return
           onNotification: (overscroll) {
             overscroll.disallowGlow();
-          },
+          } as bool Function(OverscrollIndicatorNotification)?,
           child: Obx(
             () => ProgressHUD(
-              inAsyncCall: controller.processing.value,
+              inAsyncCall: controller.processing.value!,
               child: SingleChildScrollView(
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     myFocusNodePassword.dispose();
     myFocusNodeEmail.dispose();
     myFocusNodeName.dispose();
-    _pageController?.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -230,7 +230,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           key: controller.loginEmailKey,
                           focusNode: myFocusNodeEmailLogin,
                           onChanged: (val) => controller.formTexts['loginEmail'] = val,
-                          validator: emailValidator,
+                          validator: emailValidator as String? Function(String?)?,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
                               fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
@@ -257,7 +257,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           key: controller.loginPasswordKey,
                           focusNode: myFocusNodePasswordLogin,
                           onChanged: (val) => controller.formTexts['loginPassword'] = val,
-                          validator: RequiredValidator(errorText: 'login.common.error.required'.tr),
+                          validator: RequiredValidator(errorText: 'login.common.error.required'.tr) as String? Function(String?)?,
                           obscureText: _obscureTextLogin,
                           style: TextStyle(
                               fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
@@ -470,7 +470,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           validator: MultiValidator([
                             RequiredValidator(errorText: 'login.common.error.required'.tr),
                             MaxLengthValidator(50, errorText: 'login.register.error.tooLong'.tr)
-                          ]),
+                          ]) as String? Function(String?)?,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -497,7 +497,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           key: controller.signupEmailKey,
                           focusNode: myFocusNodeEmail,
                           onChanged: (val) => controller.formTexts['signupEmail'] = val,
-                          validator: emailValidator,
+                          validator: emailValidator as String? Function(String?)?,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
                               fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
@@ -523,7 +523,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           key: controller.signupPasswordKey,
                           focusNode: myFocusNodePassword,
                           onChanged: (val) => controller.formTexts['signupPassword'] = val,
-                          validator: passwordValidator,
+                          validator: passwordValidator as String? Function(String?)?,
                           obscureText: _obscureTextSignup,
                           style: TextStyle(
                               fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
@@ -640,7 +640,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   }
 
   void _onSignUpButtonPress() {
-    _pageController?.animateToPage(1,
+    _pageController.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
   }
 
