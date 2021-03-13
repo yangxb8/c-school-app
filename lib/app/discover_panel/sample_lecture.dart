@@ -12,8 +12,8 @@ class SampleLectureScreen extends StatefulWidget {
 class _SampleLectureScreenState extends State<SampleLectureScreen>
     with TickerProviderStateMixin {
   final double infoHeight = 364.0;
-  AnimationController animationController;
-  Animation<double> animation;
+  late AnimationController animationController;
+  Animation<double>? animation;
   double opacity1 = 0.0;
   double opacity2 = 0.0;
   double opacity3 = 0.0;

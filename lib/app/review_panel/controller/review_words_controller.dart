@@ -3,9 +3,9 @@ import 'dart:async';
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // 📦 Package imports:
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
@@ -26,7 +26,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   final logger = LoggerService.logger;
 
   /// If all words mode, there will be no associated lecture
-  Lecture associatedLecture;
+  Lecture? associatedLecture;
 
   /// WordsList for this lecture(s)
   List<Word> wordsList = [];
@@ -38,7 +38,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   RxBool isAutoPlayMode = false.obs;
 
   /// Animate icon shape, it will auto-play by worker when color change
-  AnimationController searchBarPlayIconController;
+  late final AnimationController searchBarPlayIconController;
 
   /// Animate icon color
   Rx<CustomAnimationControl> searchBarPlayIconControl = CustomAnimationControl.STOP.obs;
@@ -47,13 +47,13 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   Rx<SpeakerGender> speakerGender = SpeakerGender.male.obs;
 
   /// If this is set, afterFirstLayout will animate to the word instead of tracked one
-  int _jumpToWord;
+  int? _jumpToWord;
 
   /// Audio Service
   final AudioService audioService = Get.find();
 
   /// [WordsFlashcard] pageController
-  PageController pageController;
+  late final PageController pageController;
 
   /// [WordsFlashcard] Key for primaryWordIndex to save by localStorage
   static const primaryWordIndexKey = 'ReviewWordsController.primaryWordIndex';
@@ -62,7 +62,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   final primaryWordIndex = 0.obs;
 
   /// [WordsFlashcard] Controller of primary card
-  WordCardController primaryWordCardController;
+  WordCardController? primaryWordCardController;
 
   /// [WordsFlashcard] Reversed Words List for flashCard
   List<Word> reversedWordsList = [];
@@ -71,7 +71,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   Rx<WordMemoryStatus> wordMemoryStatus = WordMemoryStatus.NOT_REVIEWED.obs;
 
   /// [WordsFlashcard] Used to controller pagination of card
-  RxDouble pageFraction;
+  late final RxDouble pageFraction;
 
   /// [WordsFlashCard] If word card is first time rendered
   bool isCardFirstRender = true;
@@ -82,9 +82,9 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
 
   @override
   Future<void> onInit() async {
-    associatedLecture = lectureService.findLectureById(Get.parameters['lectureId']);
+    associatedLecture = lectureService.findLectureById(Get.parameters['lectureId']!);
     if (Get.arguments == null) {
-      wordsList = associatedLecture != null ? associatedLecture.words : LectureService.allWords;
+      wordsList = associatedLecture != null ? associatedLecture!.words : LectureService.allWords;
       // If wordsList is provided, use it
     } else if (Get.arguments is List<Word>) {
       wordsList = Get.arguments;
@@ -95,11 +95,11 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     pageController = PageController(initialPage: wordsList.length - 1);
     searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
     // Worker when primary card change
-    ever(primaryWordIndex, (_) {
+    ever(primaryWordIndex, (dynamic _) {
       flipBackPrimaryCard();
     });
     // Worker to sync color and icon change of playIcon
-    ever(searchBarPlayIconControl, (value) {
+    ever(searchBarPlayIconControl, (dynamic value) {
       if (value == CustomAnimationControl.PLAY_FROM_START) {
         searchBarPlayIconController.forward();
       } else if (value == CustomAnimationControl.PLAY_REVERSE_FROM_END) {
@@ -108,13 +108,13 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     });
     // If is a specific lecture, add it to history
     if (associatedLecture != null) {
-      lectureService.addLectureReviewedHistory(associatedLecture);
+      lectureService.addLectureReviewedHistory(associatedLecture!);
     }
     super.onInit();
   }
 
   /// Flashcard or List mode
-  WordsReviewMode get mode => _mode.value;
+  WordsReviewMode? get mode => _mode.value;
 
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
@@ -127,7 +127,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
     // If in autoPlay mode, stop it
-    if (isAutoPlayMode.value) {
+    if (isAutoPlayMode.value!) {
       isAutoPlayMode.value = false;
     }
     if (_mode.value == WordsReviewMode.flash_card) {
@@ -149,7 +149,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       'gender': speakerGender.value == SpeakerGender.male
           ? 'review.word.toast.changeSpeaker.male'.tr
           : 'review.word.toast.changeSpeaker.female'.tr
-    }));
+    })!);
   }
 
   /// Handle autoPlay button pressed, will start play in card mode from beginning.
@@ -162,7 +162,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       Timer(0.3.seconds, () => autoPlayPressed());
       return;
     }
-    if (!isAutoPlayMode.value) {
+    if (!isAutoPlayMode.value!) {
       searchBarPlayIconControl.value = CustomAnimationControl.PLAY_FROM_START;
       isAutoPlayMode.value = true;
       flipBackPrimaryCard();
@@ -177,8 +177,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// As we might need to play from word list.
   ///
   /// Play audio of the word
-  Future<void> playWord({@required Word word, @required String audioKey}) async {
-    if (isAutoPlayMode.value || word == null) return;
+  Future<void> playWord({required Word word, required String audioKey}) async {
+    if (isAutoPlayMode.value!) return;
     var wordAudio =
         speakerGender.value == SpeakerGender.male ? word.wordAudioMale : word.wordAudioFemale;
     if (wordAudio == null) {
@@ -208,15 +208,15 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// [WordsFlashcard] Save status to history
   void saveAndResetWordHistory() {
     if (wordMemoryStatus.value != WordMemoryStatus.NOT_REVIEWED) {
-      lectureService.addWordReviewedHistory(primaryWord, status: wordMemoryStatus.value);
+      lectureService.addWordReviewedHistory(primaryWord, status: wordMemoryStatus.value!);
       wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     }
   }
 
   /// [WordsFlashcard] Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if (primaryWordCardController != null && primaryWordCardController.isCardFlipped.isTrue) {
-      primaryWordCardController.flipCard();
+    if (primaryWordCardController!=null && primaryWordCardController!.isCardFlipped.isTrue!) {
+      primaryWordCardController!.flipCard();
     }
   }
 
@@ -254,19 +254,19 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
       return;
     }
-    await primaryWordCardController.playMeanings(completionCallBack: () async {
+    await primaryWordCardController!.playMeanings(completionCallBack: () async {
       // after playMeanings
       if (isAutoPlayMode.isFalse) {
         searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
         return;
       }
-      Timer(0.5.seconds, primaryWordCardController.flipCard);
+      Timer(0.5.seconds, primaryWordCardController!.flipCard);
       Timer(0.5.seconds, () async {
         if (isAutoPlayMode.isFalse) {
           searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
           return;
         }
-        await primaryWordCardController.playWord(completionCallBack: () async {
+        await primaryWordCardController!.playWord(completionCallBack: () async {
           // after playWord
           // When we reach the last card or autoPlay turn off
           if (isAutoPlayMode.isFalse || primaryWordIndex.value == 0) {
@@ -299,7 +299,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     // If _jumpToWord is set, animate to it. Otherwise animate to tracked word
     _jumpToWord ??= primaryWordIndex.value;
     if (pageController.hasClients) {
-      await pageController.animateToPage(_jumpToWord,
+      await pageController.animateToPage(_jumpToWord!,
           duration: 0.5.seconds, curve: Curves.easeInOut);
     }
     // Clear jumpToWord

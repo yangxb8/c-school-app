@@ -1,6 +1,3 @@
-// 🐦 Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 
@@ -12,9 +9,9 @@ class WordExample {
   final StorageFile audioMale;
   final StorageFile audioFemale;
   WordExample(
-      {@required this.example,
-        @required this.meaning,
-        @required this.pinyin,
-        @required this.audioMale,
-        @required this.audioFemale});
+      {required this.example,
+        required this.meaning,
+        required this.pinyin,
+        required this.audioMale,
+        required this.audioFemale});
 }

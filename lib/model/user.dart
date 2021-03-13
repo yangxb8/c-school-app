@@ -18,37 +18,37 @@ part 'user.flamingo.dart';
  */
 class AppUser extends Document<AppUser> {
   AppUser({
-    String id,
-    DocumentSnapshot snapshot,
-    Map<String, dynamic> values,
+    String? id,
+    DocumentSnapshot? snapshot,
+    Map<String, dynamic>? values,
   }) : super(id: id, snapshot: snapshot, values: values);
 
   @Field()
   String nickName = '';
   @Field()
-  List<String> _membershipTypes = [];
+  List<String>? _membershipTypes = [];
   @Field()
-  Timestamp membershipEndAt = Timestamp.fromDate(DateTime.now());
+  Timestamp? membershipEndAt = Timestamp.fromDate(DateTime.now());
   @ModelField()
-  List<UserRank> rankHistory = [];
+  List<UserRank>? rankHistory = [];
   @ModelField()
-  List<LectureHistory> reviewedClassHistory = [];
+  List<LectureHistory>? reviewedClassHistory = [];
   @ModelField()
-  List<WordHistory> reviewedWordHistory = [];
+  List<WordHistory>? reviewedWordHistory = [];
   @Field()
-  List<String> likedLectures = [];
+  List<String>? likedLectures = [];
   @Field()
-  List<String> likedWords = [];
+  List<String>? likedWords = [];
   @ModelField()
-  List<UserMemo> userMemos = [];
+  List<UserMemo>? userMemos = [];
 
-  User firebaseUser;
+  User? firebaseUser;
 
   set membershipTypes(List<MembershipType> types) =>
       _membershipTypes = EnumToString.toList(types);
 
   List<MembershipType> get membershipTypes =>
-      EnumToString.fromList(MembershipType.values, _membershipTypes);
+      EnumToString.fromList(MembershipType.values, _membershipTypes!) as List<MembershipType>;
 
   bool isLogin() {
     return firebaseUser != null;
@@ -56,10 +56,10 @@ class AppUser extends Document<AppUser> {
 
   String get userId => firebaseUser?.uid ?? 'NO_FIREBASE_USER';
   int get userRankNow {
-    if(rankHistory.isEmpty){
+    if(rankHistory!.isEmpty){
       return 1;
     }
-    return rankHistory.last.rank;
+    return rankHistory!.last.rank!;
   }
   //TODO: get userScoreCoeff(For speech evaluation) properly
   double get userScoreCoeff => userRankNow.toDouble();

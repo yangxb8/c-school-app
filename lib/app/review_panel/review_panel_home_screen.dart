@@ -9,16 +9,16 @@ import '../ui_view/title_view.dart';
 import '../ui_view/workout_view.dart';
 
 class ReviewPanelHomeScreen extends StatefulWidget {
-  const ReviewPanelHomeScreen({Key key, this.animationController}) : super(key: key);
-
-  final AnimationController animationController;
+  
   @override
   _ReviewPanelHomeScreenState createState() => _ReviewPanelHomeScreenState();
 }
 
 class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
     with TickerProviderStateMixin {
-  Animation<double> topBarAnimation;
+  late final AnimationController animationController;
+  
+  late Animation<double> topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
@@ -26,9 +26,12 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
 
   @override
   void initState() {
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 600), vsync: this);
+    
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
-            parent: widget.animationController,
+            parent: animationController,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
     addAllListData();
 
@@ -57,6 +60,12 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
   void addAllListData() {
     const count = 5;
 
@@ -65,29 +74,29 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
         titleTxt: 'Your program',
         subTxt: 'Details',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
+            parent: animationController,
             curve:
                 Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
+        animationController: animationController,
       ),
     );
 
     listViews.add(
       WorkoutView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
+            parent: animationController,
             curve:
                 Interval((1 / count) * 2, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
+        animationController: animationController,
       ),
     );
     listViews.add(
       RunningView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
+            parent: animationController,
             curve:
                 Interval((1 / count) * 3, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
+        animationController: animationController,
       ),
     );
 
@@ -96,10 +105,10 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
         titleTxt: 'Area of focus',
         subTxt: 'more',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
+            parent: animationController,
             curve:
                 Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
+        animationController: animationController,
       ),
     );
 
@@ -107,10 +116,10 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
       AreaListView(
         mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
             CurvedAnimation(
-                parent: widget.animationController,
+                parent: animationController,
                 curve: Interval((1 / count) * 5, 1.0,
                     curve: Curves.fastOutSlowIn))),
-        mainScreenAnimationController: widget.animationController,
+        mainScreenAnimationController: animationController,
       ),
     );
   }
@@ -157,7 +166,7 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
             itemCount: listViews.length,
             scrollDirection: Axis.vertical,
             itemBuilder: (BuildContext context, int index) {
-              widget.animationController.forward();
+              animationController.forward();
               return listViews[index];
             },
           );
@@ -170,8 +179,8 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
     return Column(
       children: <Widget>[
         AnimatedBuilder(
-          animation: widget.animationController,
-          builder: (BuildContext context, Widget child) {
+          animation: animationController,
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(

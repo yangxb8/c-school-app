@@ -5,8 +5,6 @@ import 'dart:io';
 import 'dart:math';
 
 // 🐦 Flutter imports:
-import 'package:c_school_app/app/model/soe_request.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // 📦 Package imports:
@@ -24,6 +22,7 @@ import 'package:uuid/uuid.dart';
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/exam_base.dart';
 import 'package:c_school_app/app/model/lecture.dart';
+import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/word.dart';
@@ -36,24 +35,24 @@ import 'tc3_service.dart';
 final logger = LoggerService.logger;
 
 class ApiService extends GetxService {
-  static ApiService _instance;
-  static bool _isFirebaseInitilized = false;
-  static _FirebaseAuthApi _firebaseAuthApi;
-  static _FirestoreApi _firestoreApi;
-  static _TencentApi _tencentApi;
+  static ApiService? _instance;
+  static bool _isFirebaseInitialized = false;
+  static late final _FirebaseAuthApi _firebaseAuthApi;
+  static late final _FirestoreApi _firestoreApi;
+  static late final _TencentApi _tencentApi;
 
   static Future<ApiService> getInstance() async {
     _instance ??= ApiService();
 
-    if (!_isFirebaseInitilized) {
+    if (!_isFirebaseInitialized) {
       await Firebase.initializeApp();
       _firebaseAuthApi = await _FirebaseAuthApi.getInstance();
       _firestoreApi = await _FirestoreApi.getInstance();
       _tencentApi = _TencentApi();
-      _isFirebaseInitilized = true;
+      _isFirebaseInitialized = true;
     }
 
-    return _instance;
+    return _instance!;
   }
 
   _FirebaseAuthApi get firebaseAuthApi => _firebaseAuthApi;
@@ -62,15 +61,15 @@ class ApiService extends GetxService {
 }
 
 class _FirebaseAuthApi {
-  static _FirebaseAuthApi _instance;
-  static bool _isFirebaseAuthInitilized = false;
-  static FirebaseAuth _firebaseAuth;
-  static GoogleSignIn _googleSignIn;
+  static _FirebaseAuthApi? _instance;
+  static bool _isFirebaseAuthInitialized = false;
+  static late final FirebaseAuth _firebaseAuth;
+  static late final GoogleSignIn _googleSignIn;
 
-  static Future<_FirebaseAuthApi> getInstance() async{
+  static Future<_FirebaseAuthApi> getInstance() async {
     _instance ??= _FirebaseAuthApi();
 
-    if (!_isFirebaseAuthInitilized) {
+    if (!_isFirebaseAuthInitialized) {
       _firebaseAuth = FirebaseAuth.instance;
       _googleSignIn = GoogleSignIn(
         scopes: [
@@ -80,13 +79,13 @@ class _FirebaseAuthApi {
           'https://www.googleapis.com/auth/user.organization.read'
         ],
       );
-      _isFirebaseAuthInitilized = true;
+      _isFirebaseAuthInitialized = true;
     }
 
-    return _instance;
+    return _instance!;
   }
 
-  Future<User> getCurrentUser() async => await _firebaseAuth.authStateChanges().first;
+  Future<User?> getCurrentUser() async => await _firebaseAuth.authStateChanges().first;
 
   void listenToFirebaseAuth(Function func) {
     _firebaseAuth.authStateChanges().listen((_) async => await func());
@@ -94,15 +93,15 @@ class _FirebaseAuthApi {
 
   // Already return fromm every conditions
   // ignore: missing_return
-  Future<String> signUpWithEmail(
-      String email, String password, String nickname) async {
+  Future<String> signUpWithEmail(String email, String password, String nickname) async {
     try {
       var userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       // Email verify by showing popup on provided context
-      Get.find<ApiService>().firestoreApi._registerAppUser(
-          firebaseUser: userCredential.user, nickname: nickname);
-      if (!userCredential.user.emailVerified) {
+      Get.find<ApiService>()
+          .firestoreApi
+          ._registerAppUser(firebaseUser: userCredential.user!, nickname: nickname);
+      if (!userCredential.user!.emailVerified) {
         await sendVerifyEmail();
         return 'need email verify';
       }
@@ -115,21 +114,23 @@ class _FirebaseAuthApi {
     } catch (e) {
       logger.e(e);
       return 'error.unknown.content'.tr;
+    } finally {
+      return 'error.unknown.content'.tr;
     }
   }
 
   Future<void> sendVerifyEmail() async {
-    await (await getCurrentUser()).reload();
-    await (await getCurrentUser()).sendEmailVerification();
+    await (await getCurrentUser())!.reload();
+    await (await getCurrentUser())!.sendEmailVerification();
   }
 
   // Already return fromm every conditions
   // ignore: missing_return
   Future<String> loginWithEmail(String email, String password) async {
     try {
-      var userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      if (!userCredential.user.emailVerified) {
+      var userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+      if (!userCredential.user!.emailVerified) {
         return 'login.login.error.unverifiedEmail'.tr;
       }
       return 'ok';
@@ -151,24 +152,25 @@ class _FirebaseAuthApi {
     try {
       // Trigger the authentication flow
       final googleUser = await _googleSignIn.signIn();
-      if(googleUser==null){
+      if (googleUser == null) {
         return 'abort';
       }
       // Obtain the auth details from the request
       final googleAuth = await googleUser.authentication;
       // Create a new credential
-      final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
-      );
+      ) as GoogleAuthCredential;
       // Once signed in, return the UserCredential
       var userCredential = await _firebaseAuth.signInWithCredential(credential);
       // If the user is not in our DB, create it
-      if (Get.find<ApiService>().firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
+      if (await Get.find<ApiService>()
+              .firestoreApi
+              .fetchAppUser(firebaseUser: userCredential.user) ==
           null) {
         Get.find<ApiService>().firestoreApi._registerAppUser(
-            firebaseUser: userCredential.user,
-            nickname: googleUser.displayName);
+            firebaseUser: userCredential.user!, nickname: googleUser.displayName!);
       }
       return 'ok';
     } catch (e) {
@@ -186,11 +188,9 @@ class _FirebaseAuthApi {
     /// Generates a cryptographically secure random nonce, to be included in a
     /// credential request.
     String generateNonce([int length = 32]) {
-      final charset =
-          '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+      final charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
       final random = Random.secure();
-      return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-          .join();
+      return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
     }
 
     /// Returns the sha256 hash of [input] in hex notation.
@@ -199,6 +199,7 @@ class _FirebaseAuthApi {
       final digest = sha256.convert(bytes);
       return digest.toString();
     }
+
     // To prevent replay attacks with the credential returned from Apple, we
     // include a nonce in the credential request. When signing in in with
     // Firebase, the nonce in the id token returned by Apple, is expected to
@@ -223,14 +224,14 @@ class _FirebaseAuthApi {
 
       // Sign in the user with Firebase. If the nonce we generated earlier does
       // not match the nonce in `appleCredential.identityToken`, sign in will fail.
-      var userCredential =
-          await _firebaseAuth.signInWithCredential(oauthCredential);
+      var userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
       // If the user is not in our DB, create it
-      if (Get.find<ApiService>().firestoreApi.fetchAppUser(firebaseUser: userCredential.user) ==
+      if (await Get.find<ApiService>()
+              .firestoreApi
+              .fetchAppUser(firebaseUser: userCredential.user) ==
           null) {
         Get.find<ApiService>().firestoreApi._registerAppUser(
-            firebaseUser: userCredential.user,
-            nickname: appleCredential.givenName);
+            firebaseUser: userCredential.user!, nickname: appleCredential.givenName!);
       }
       return 'ok';
     } catch (e) {
@@ -254,12 +255,12 @@ class _FirebaseAuthApi {
 class _FirestoreApi {
   static const extension_audio = 'mp3';
   static const extension_json = 'json';
-  static _FirestoreApi _instance;
-  static FirebaseFirestore _firestore;
-  static DocumentAccessor _documentAccessor;
-  static User _currentUser;
+  static _FirestoreApi? _instance;
+  static late final FirebaseFirestore _firestore;
+  static late final DocumentAccessor _documentAccessor;
+  static User? _currentUser;
 
-  static Future<_FirestoreApi> getInstance() async{
+  static Future<_FirestoreApi> getInstance() async {
     if (_instance == null) {
       _instance = _FirestoreApi();
       _firestore = FirebaseFirestore.instance;
@@ -268,28 +269,25 @@ class _FirestoreApi {
       _currentUser = await _FirebaseAuthApi().getCurrentUser();
     }
 
-    return _instance;
+    return _instance!;
   }
 
-  void _registerAppUser(
-      {@required User firebaseUser, @required String nickname}) {
+  void _registerAppUser({required User firebaseUser, required String nickname}) {
     if (firebaseUser.isAnonymous) return;
     var appUser = AppUser(id: firebaseUser.uid);
     appUser.nickName = nickname;
     _documentAccessor.save(appUser).catchError((e) => logger.e(e.printError()));
   }
 
-  Future<AppUser> fetchAppUser({User firebaseUser}) async {
+  Future<AppUser?> fetchAppUser({User? firebaseUser}) async {
     firebaseUser ??= _currentUser;
     if (firebaseUser == null) {
       logger.e('fetchAppUser was called on null firebaseUser');
       return null;
     }
-    var user =
-        await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
+    var user = await _documentAccessor.load<AppUser>(AppUser(id: firebaseUser.uid));
     if (user == null) {
-      logger.e(
-          'user ${firebaseUser.uid} not found in firestore, return empty user');
+      logger.e('user ${firebaseUser.uid} not found in firestore, return empty user');
       return AppUser();
     } else {
       user.firebaseUser = firebaseUser;
@@ -305,35 +303,25 @@ class _FirestoreApi {
 
   /// Save User speech, usually we won't await this.
   Future<void> saveUserSpeech(
-      {@required File speechData,
-      @required SentenceInfo sentenceInfo,
-      SpeechExam exam}) async {
+      {required File speechData, required SentenceInfo sentenceInfo, SpeechExam? exam}) async {
     final storage = Storage()..fetch();
     final userId = UserService.user.userId;
 
     // Save speech data
     final speechDataPath = '/user_generated/speech_data';
     final uuid = Uuid().v1();
-    final examId = exam?.examId?? 'freeSpeech';
-    final meta = {'newPost': 'true','userId': userId, 'examId':examId};
+    final examId = exam?.examId ?? 'freeSpeech';
+    final meta = {'newPost': 'true', 'userId': userId, 'examId': examId};
     final data = await storage.save(speechDataPath, speechData,
-        filename: '$uuid.$extension_audio',
-        mimeType: mimeTypeMpeg,
-        metadata: meta);
+        filename: '$uuid.$extension_audio', mimeType: mimeTypeMpeg, metadata: meta);
     final result = SpeechEvaluationResult(
-        userId: userId,
-        examId: examId,
-        speechDataPath: data.path,
-        sentenceInfo: sentenceInfo);
+        userId: userId, examId: examId, speechDataPath: data.path, sentenceInfo: sentenceInfo);
     // Save evaluation result
-    await storage.save(
-        speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
-        filename: '$uuid.$extension_json',
-        mimeType: 'application/json',
-        metadata: meta);
+    await storage.save(speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
+        filename: '$uuid.$extension_json', mimeType: 'application/json', metadata: meta);
   }
 
-  Future<List<Word>> fetchWords({List<String> tags}) async {
+  Future<List<Word>> fetchWords({List<String>? tags}) async {
     final collectionPaging = CollectionPaging<Word>(
       query: Word().collectionRef.orderBy('wordId'),
       limit: 10000,
@@ -343,7 +331,7 @@ class _FirestoreApi {
   }
 
   /// Fetch all entities extends exam
-  Future<List<Exam>> fetchExams({List<String> tags}) async {
+  Future<List<Exam>> fetchExams({List<String>? tags}) async {
     final collectionPaging = CollectionPaging<Exam>(
       query: Exam().collectionRef.orderBy('examId'),
       limit: 10000,
@@ -352,7 +340,7 @@ class _FirestoreApi {
     return await collectionPaging.load();
   }
 
-  Future<List<Lecture>> fetchLectures({List<String> tags}) async {
+  Future<List<Lecture>> fetchLectures({List<String>? tags}) async {
     final collectionPaging = CollectionPaging<Lecture>(
       query: Lecture().collectionRef.orderBy('lectureId'),
       limit: 10000,
@@ -373,13 +361,13 @@ class _FirestoreApi {
 
 class _TencentApi {
   /// SoeRequest is used for making soe request, file is used for saving speech
-  Future<SentenceInfo> soe(SoeRequest request, File file) async {
-    SentenceInfo result;
+  Future<SentenceInfo?> soe(SoeRequest request, File file) async {
+    SentenceInfo? result;
     try {
       result = await SoeService().sendSoeRequest(request);
-      unawaited(Get.find<ApiService>().firestoreApi.saveUserSpeech(
-          speechData: file,
-          sentenceInfo: result));
+      unawaited(Get.find<ApiService>()
+          .firestoreApi
+          .saveUserSpeech(speechData: file, sentenceInfo: result));
       logger.i('soe stop recording and get evaluation result succeed!');
     } on PlatformException catch (e, t) {
       logger.e('Error calling soe service', e, t);

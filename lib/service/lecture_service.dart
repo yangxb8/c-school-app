@@ -21,26 +21,26 @@ import 'api_service.dart';
 * words, etc.
 */
 class LectureService extends GetxService {
-  static LectureService _instance;
+  static LectureService? _instance;
   static final ApiService _apiService = Get.find();
 
   /// All classes available
-  static List<Lecture> allLectures;
+  static late final List<Lecture> allLectures;
 
   /// All words available
-  static List<Word> allWords;
+  static late final List<Word> allWords;
 
   /// All exams available
-  static List<Exam> allExams;
+  static late final List<Exam> allExams;
 
   /// Observable Liked words list for updating
-  static RxList<String> userLikedWordIds_Rx;
+  static late final RxList<String> userLikedWordIds_Rx;
 
   /// Observable Class History list for updating
-  static RxList<LectureHistory> userLecturesHistory_Rx;
+  static late final RxList<LectureHistory> userLecturesHistory_Rx;
 
   /// Observable Word History list for updating
-  static RxList<WordHistory> userWordsHistory_Rx;
+  static late final RxList<WordHistory> userWordsHistory_Rx;
 
   static Future<LectureService> getInstance() async {
     if (_instance == null) {
@@ -56,27 +56,28 @@ class LectureService extends GetxService {
       allExams = await _apiService.firestoreApi.fetchExams();
 
       /// This properties need to be observable and can be use to update AppUser
-      userLikedWordIds_Rx = List<String>.of(UserService.user.likedWords).obs;
+      userLikedWordIds_Rx = List<String>.of(UserService.user.likedWords!).obs;
 
       /// This properties need to be observable and can be use to update AppUser
-      userLecturesHistory_Rx = (List<LectureHistory>.of(UserService.user.reviewedClassHistory)).obs;
+      userLecturesHistory_Rx =
+          (List<LectureHistory>.of(UserService.user.reviewedClassHistory!)).obs;
 
       /// This properties need to be observable and can be use to update AppUser
-      userWordsHistory_Rx = (List<WordHistory>.of(UserService.user.reviewedWordHistory)).obs;
+      userWordsHistory_Rx = (List<WordHistory>.of(UserService.user.reviewedWordHistory!)).obs;
     }
 
-    return _instance;
+    return _instance!;
   }
 
   /// Get all words user liked
   List<Word> get getLikedWords => findWordsByIds(userLikedWordIds_Rx);
 
-  List<Word> findWordsByConditions({WordMemoryStatus wordMemoryStatus, String lectureId}) {
+  List<Word> findWordsByConditions({WordMemoryStatus? wordMemoryStatus, String? lectureId}) {
     if (wordMemoryStatus == null && lectureId == null) {
       return [];
     }
     var latestReviewHistory =
-        UserService.user.reviewedWordHistory.filter((record) => record.isLatest);
+        UserService.user.reviewedWordHistory!.filter((record) => record.isLatest!);
     var filteredHistory = latestReviewHistory.filter((record) {
       if (wordMemoryStatus != null && wordMemoryStatus != record.wordMemoryStatus) {
         return false;
@@ -87,11 +88,11 @@ class LectureService extends GetxService {
       return true;
     });
     var wordIdsOfMemoryStatus = filteredHistory.map((e) => e.wordId);
-    return findWordsByIds(wordIdsOfMemoryStatus.toList());
+    return findWordsByIds(wordIdsOfMemoryStatus.toList() as List<String>);
   }
 
   List<Word> findWordsByIds(List<String> ids) {
-    if (ids.isBlank) {
+    if (ids.isBlank!) {
       return [];
     } else {
       return allWords.filter((word) => ids.contains(word.wordId)).toList();
@@ -99,31 +100,31 @@ class LectureService extends GetxService {
   }
 
   List<Word> findWordsByTags(List<String> tags) {
-    if (tags.isBlank) {
+    if (tags.isBlank!) {
       return [];
     } else {
-      return allWords.filter((word) => tags.every((tag) => word.tags.contains(tag))).toList();
+      return allWords.filter((word) => tags.every((tag) => word.tags!.contains(tag))).toList();
     }
   }
 
   List<Exam> findExamsByTags(List<String> tags) {
-    if (tags.isBlank) {
+    if (tags.isBlank!) {
       return [];
     } else {
-      return allExams.filter((exam) => tags.every((tag) => exam.tags.contains(tag))).toList();
+      return allExams.filter((exam) => tags.every((tag) => exam.tags!.contains(tag))).toList();
     }
   }
 
-  Exam findExamById(String id) {
-    if (id.isBlank) {
+  Exam? findExamById(String id) {
+    if (id.isBlank!) {
       return null;
     } else {
       return allExams.filter((exam) => id == exam.examId).single;
     }
   }
 
-  Lecture findLectureById(String id) {
-    if (id.isBlank) {
+  Lecture? findLectureById(String id) {
+    if (id.isBlank!) {
       return null;
     } else {
       return allLectures.filter((lecture) => id == lecture.lectureId).single;
@@ -131,11 +132,11 @@ class LectureService extends GetxService {
   }
 
   List<Lecture> findLecturesByTags(List<String> tags) {
-    if (tags.isBlank) {
+    if (tags.isBlank!) {
       return [];
     } else {
       return allLectures
-          .filter((lecture) => tags.every((tag) => lecture.tags.contains(tag)))
+          .filter((lecture) => tags.every((tag) => lecture.tags!.contains(tag)))
           .toList();
     }
   }
@@ -145,28 +146,28 @@ class LectureService extends GetxService {
     if (wordViewedCount(word) == 0) {
       return WordMemoryStatus.NOT_REVIEWED;
     }
-    return UserService.user.reviewedWordHistory
-        .filter((record) => record.wordId == word.wordId && record.isLatest)
+    return UserService.user.reviewedWordHistory!
+        .filter((record) => record.wordId == word.wordId && record.isLatest!)
         .single
-        .wordMemoryStatus;
+        .wordMemoryStatus!;
   }
 
   /// If the word is in liked word list
-  bool isWordLiked(Word word) => UserService.user.likedWords.contains(word.wordId);
+  bool isWordLiked(Word word) => UserService.user.likedWords!.contains(word.wordId);
 
   /// Count how many times the word is viewed
   int wordViewedCount(Word word) =>
-      UserService.user.reviewedWordHistory.filter((record) => record.wordId == word.wordId).length;
+      UserService.user.reviewedWordHistory!.filter((record) => record.wordId == word.wordId).length;
 
   /// Return how many times the class is reviewed in words review mode
-  int lectureViewedCount(Lecture lecture) => UserService.user.reviewedClassHistory
+  int lectureViewedCount(Lecture lecture) => UserService.user.reviewedClassHistory!
       .filter((record) => record.lectureId == lecture.lectureId)
       .length;
 
   /// Like or unlike the word,
   void toggleWordLiked(Word word) {
     if (!userLikedWordIds_Rx.remove(word.wordId)) {
-      userLikedWordIds_Rx.add(word.wordId);
+      userLikedWordIds_Rx.add(word.wordId!);
     }
   }
 
@@ -174,7 +175,7 @@ class LectureService extends GetxService {
   void addWordReviewedHistory(Word word, {WordMemoryStatus status = WordMemoryStatus.NORMAL}) {
     // If have history, change it to not latest
     var relatedWordHistory =
-        userWordsHistory_Rx.filter((history) => history.wordId == word.wordId && history.isLatest);
+        userWordsHistory_Rx.filter((history) => history.wordId == word.wordId && history.isLatest!);
     if (relatedWordHistory.length == 1) {
       relatedWordHistory.single.isLatest = false;
     }
@@ -185,17 +186,17 @@ class LectureService extends GetxService {
   /// Find latest memory status in userWordHistory
   WordMemoryStatus findLatestMemoryStatusOfWord(Word word) {
     var relatedWordHistory =
-        userWordsHistory_Rx.filter((history) => history.wordId == word.wordId && history.isLatest);
+        userWordsHistory_Rx.filter((history) => history.wordId == word.wordId && history.isLatest!);
     return relatedWordHistory.isEmpty
         ? WordMemoryStatus.NOT_REVIEWED
-        : relatedWordHistory.single.wordMemoryStatus;
+        : relatedWordHistory.single.wordMemoryStatus!;
   }
 
   /// Add record to reviewedClassHistory, won't overwrite it
   void addLectureReviewedHistory(Lecture lecture) {
     // If have history, change it to not latest
     var relatedClassHistory = userLecturesHistory_Rx
-        .filter((history) => history.lectureId == lecture.lectureId && history.isLatest);
+        .filter((history) => history.lectureId == lecture.lectureId && history.isLatest!);
     if (relatedClassHistory.length == 1) {
       relatedClassHistory.single.isLatest = false;
     }
@@ -223,9 +224,14 @@ class LectureService extends GetxService {
         titlePadding: EdgeInsets.zero,
         contentPadding: EdgeInsets.zero,
         backgroundColor: Colors.transparent,
-        children: [WordCard(word: word, isDialog: true,)],
+        children: [
+          WordCard(
+            word: word,
+            isDialog: true,
+          )
+        ],
       ),
-      barrierColor: Get.isDialogOpen ? Colors.transparent : null,
+      barrierColor: Get.isDialogOpen! ? Colors.transparent : null,
     );
   }
 }

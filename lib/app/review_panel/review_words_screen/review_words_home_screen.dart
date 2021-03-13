@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 // 📦 Package imports:
-import 'package:animate_do/animate_do.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_beautiful_popup/main.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -62,15 +60,11 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                       groupBy: (Lecture element) => element.levelForDisplay,
                       groupSeparatorBuilder: (_) => const SizedBox.shrink(),
                       itemComparator: (element1, element2) =>
-                          element1.lectureId.compareTo(element2.lectureId),
-                      indexedItemBuilder: (_, lecture, index) => FadeInRight(
-                          duration: 0.5.seconds,
-                          // Delay the animation to create a staggered effect
-                          // when first rendered
-                          child: LectureCard(
-                            lecture: lecture,
-                            index: index,
-                          ).paddingOnly(bottom: 5))).expanded(flex: 5)
+                          element1.lectureId!.compareTo(element2.lectureId!),
+                      indexedItemBuilder: (_, lecture, index) => LectureCard(
+                        lecture: lecture,
+                        index: index,
+                      ).paddingOnly(bottom: 5)).expanded(flex: 5)
                 ],
               ),
             ).afterFirstLayout(controller.animateToTrackedLecture).paddingOnly(top: 40),
@@ -171,16 +165,16 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
 
 class LectureCard extends StatelessWidget {
   LectureCard({
-    Key key,
-    @required this.lecture,
+    Key? key,
+    required this.lecture,
     this.index,
-  })  : controller = Get.put(LectureCardController(lecture), tag: lecture.lectureId),
+  })  : controller = Get.put(LectureCardController(lecture), tag: lecture.lectureId)!,
         super(key: key);
 
   static const cardHeight = 120.0;
   static const DEFAULT_IMAGE = 'assets/review_panel/default.png';
   final Lecture lecture;
-  final int index;
+  final int? index;
   final LectureCardController controller;
   final LectureService lectureService = Get.find();
 
@@ -199,7 +193,7 @@ class LectureCard extends StatelessWidget {
               aspectRatio: 4/3,
               child: BlurHashImageWithFallback(
                 fallbackImg: DEFAULT_IMAGE,
-                mainImgUrl: lecture.pic.url,
+                mainImgUrl: lecture.pic!.url,
                 blurHash: lecture.picHash,
               ),
             ),
@@ -285,26 +279,18 @@ class LectureCard extends StatelessWidget {
 /// ReviewWordsController will find words by lectureId so wordsList if optional,
 /// Set index will make controller to memorize the lecture last viewed
 /// if both provided, will use wordsList
-void navigateToReviewWordScreen({Lecture lecture, int index, List<Word> wordsList}) {
+void navigateToReviewWordScreen({Lecture? lecture, int? index, List<Word>? wordsList}) {
   final reviewWordsHomeController = Get.find<ReviewWordsHomeController>();
-  if (lecture == null && wordsList.isBlank) {
-    final popup = BeautifulPopup(
-      context: Get.context,
-      template: TemplateNotification,
-    );
-    popup.show(
-      title: '',
-      barrierDismissible: true,
-      content: Text(
-        'review.word.home.error.noWord'.tr,
-        style: ReviewWordsTheme.lectureCardTitle,
-      ).paddingOnly(top: 10),
+  if (lecture == null && wordsList.isBlank!) {
+    Get.defaultDialog(
+      title: 'error.oops'.tr,
+      content: Text('review.word.home.error.noWord'.tr),
     );
   } else {
     if (index != null) {
       reviewWordsHomeController.lastViewedLectureIndex.value = index;
     }
-    Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}', arguments: wordsList)
+    Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}', arguments: wordsList)!
         .then((_) {
       // Refresh lecture card
       if (lecture != null) {

@@ -21,13 +21,15 @@
 ///         License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
 ///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 ///
+
+// 🐦 Flutter imports:
 import 'package:flutter/widgets.dart';
 
 class CSchool {
   CSchool._();
 
   static const _kFontFam = 'CSchool';
-  static const String _kFontPkg = null;
+  static const String? _kFontPkg = null;
 
   static const IconData volume = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData study = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);

@@ -1,11 +1,9 @@
 // 🐦 Flutter imports:
-import 'package:c_school_app/app/ui_view/selectable_autosize_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
-import 'package:flippable_box/flippable_box.dart';
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
@@ -17,8 +15,10 @@ import 'package:c_school_app/app/model/word_example.dart';
 import 'package:c_school_app/app/review_panel/review_words_screen/review_words_theme.dart';
 import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
 import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
+import 'package:c_school_app/app/ui_view/selectable_autosize_text.dart';
 import '../../c_school_icons.dart';
 import '../model/word.dart';
+import '../ui_view/flippable_box.dart';
 import 'controller/word_card_controller.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
@@ -31,15 +31,14 @@ class WordCard extends StatelessWidget {
   /// Whether we should load the image
   final bool loadImage;
   final WordCardController controller;
-  WordCard({Key key, @required this.word, this.loadImage = true, isDialog = false})
+  WordCard({Key? key, required this.word, this.loadImage = true, isDialog = false})
       : controller = isDialog
             ? WordCardController(word)
-            : Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
+            : Get.put<WordCardController>(WordCardController(word), tag: word.wordId)!,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ;
     final emptyImage = Container(
       decoration: BoxDecoration(
         color: ReviewWordsTheme.lightBlue,
@@ -55,9 +54,9 @@ class WordCard extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ...word.wordMeanings
+                ...word.wordMeanings!
                     .map((e) => SelectableAutoSizeText.unselectable(
-                          e.meaning,
+                          e.meaning!,
                           style: ReviewWordsTheme.wordCardMeaning,
                           maxLines: 1,
                         ).paddingSymmetric(vertical: 10))
@@ -129,7 +128,7 @@ class WordCard extends StatelessWidget {
         IconButton(
           padding: const EdgeInsets.only(top: 50),
           icon: ObxValue(
-              (audioKey) => Icon(
+              (dynamic audioKey) => Icon(
                     CSchool.volume,
                     color: audioKey.value == hanziAudioKey
                         ? ReviewWordsTheme.lightYellow
@@ -141,7 +140,7 @@ class WordCard extends StatelessWidget {
         ),
         PinyinAnnotatedParagraph(
           paragraph: word.wordAsString,
-          pinyins: word.pinyin,
+          pinyins: word.pinyin!,
           maxLines: 1,
           defaultTextStyle: ReviewWordsTheme.wordCardWord,
           pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
@@ -158,7 +157,7 @@ class WordCard extends StatelessWidget {
           ).paddingAll(10).decorated(
             borderRadius: BorderRadius.circular(10), color: ReviewWordsTheme.extremeLightBlue);
     // meaning part
-    var partMeanings = word.wordMeanings.map((meaning) {
+    var partMeanings = word.wordMeanings!.map((meaning) {
       var examples = meaning.examples
           .mapIndexed((index, wordExample) =>
               _buildExampleRow(wordExample, index == meaning.examples.length - 1))
@@ -193,7 +192,7 @@ class WordCard extends StatelessWidget {
             IconButton(
                 padding: const EdgeInsets.only(right: 2, top: 24),
                 icon: ObxValue(
-                    (key) => Icon(
+                    (dynamic key) => Icon(
                           CSchool.volume,
                           color: key.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
                           size: icon_size,

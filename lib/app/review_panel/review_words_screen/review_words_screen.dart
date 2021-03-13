@@ -39,7 +39,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
           style: ReviewWordsTheme.wordListItem,
         ).paddingOnly(left: 20),
         trailing: Text(
-          word.wordMeanings.first.meaning,
+          word.wordMeanings!.first.meaning!,
           style: ReviewWordsTheme.wordListItem,
         ),
       ).paddingOnly(right: 20),
@@ -54,8 +54,8 @@ class ReviewWords extends GetView<ReviewWordsController> {
         CircularButton(
           icon: Obx(
             () => CustomAnimation<Color>(
-              control: controller.searchBarPlayIconControl.value,
-              tween: Colors.grey.tweenTo(Colors.lightBlueAccent),
+              control: controller.searchBarPlayIconControl.value!,
+              tween: Colors.grey.tweenTo(Colors.lightBlueAccent) as Animatable<Color>,
               duration: 0.3.seconds,
               builder: (_, __, value) => AnimatedIcon(
                 icon: AnimatedIcons.play_pause,

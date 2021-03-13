@@ -5,13 +5,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TabIndicationPainter extends CustomPainter {
-  Paint painter;
+  late Paint painter;
   final double dxTarget;
   final double dxEntry;
   final double radius;
   final double dy;
 
-  final PageController pageController;
+  final PageController? pageController;
 
   TabIndicationPainter(
       {this.dxTarget = 125.0,
@@ -26,7 +26,7 @@ class TabIndicationPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
 
-    final pos = pageController.position;
+    final pos = pageController!.position;
     var fullExtent = (pos.maxScrollExtent - pos.minScrollExtent + pos.viewportDimension);
 
     var pageOffset = pos.extentBefore / fullExtent;

@@ -9,16 +9,16 @@ import '../discover_panel/discover_panel_theme.dart';
 import '../discover_panel/models/category.dart';
 
 class PopularLectureListView extends StatefulWidget {
-  const PopularLectureListView({Key key, this.callBack}) : super(key: key);
+  const PopularLectureListView({Key? key, this.callBack}) : super(key: key);
 
-  final Function callBack;
+  final Function? callBack;
   @override
   _PopularLectureListViewState createState() => _PopularLectureListViewState();
 }
 
 class _PopularLectureListViewState extends State<PopularLectureListView>
     with TickerProviderStateMixin {
-  AnimationController animationController;
+  AnimationController? animationController;
   @override
   void initState() {
     animationController = AnimationController(
@@ -58,15 +58,15 @@ class _PopularLectureListViewState extends State<PopularLectureListView>
                   final animation =
                       Tween<double>(begin: 0.0, end: 1.0).animate(
                     CurvedAnimation(
-                      parent: animationController,
+                      parent: animationController!,
                       curve: Interval((1 / count) * index, 1.0,
                           curve: Curves.fastOutSlowIn),
                     ),
                   );
-                  animationController.forward();
+                  animationController!.forward();
                   return CategoryView(
                     callback: () {
-                      widget.callBack();
+                      widget.callBack!();
                     },
                     category: Category.popularCourseList[index],
                     animation: animation,
@@ -84,32 +84,32 @@ class _PopularLectureListViewState extends State<PopularLectureListView>
 
 class CategoryView extends StatelessWidget {
   const CategoryView(
-      {Key key,
+      {Key? key,
       this.category,
       this.animationController,
       this.animation,
       this.callback})
       : super(key: key);
 
-  final VoidCallback callback;
-  final Category category;
-  final AnimationController animationController;
-  final Animation<dynamic> animation;
+  final VoidCallback? callback;
+  final Category? category;
+  final AnimationController? animationController;
+  final Animation<dynamic>? animation;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: animationController,
-      builder: (BuildContext context, Widget child) {
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: animation as Animation<double>,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation.value), 0.0),
+                0.0, 50 * (1.0 - animation!.value), 0.0),
             child: InkWell(
               splashColor: Colors.transparent,
               onTap: () {
-                callback();
+                callback!();
               },
               child: SizedBox(
                 height: 280,
@@ -138,7 +138,7 @@ class CategoryView extends StatelessWidget {
                                             padding: const EdgeInsets.only(
                                                 top: 16, left: 16, right: 16),
                                             child: Text(
-                                              category.title,
+                                              category!.title,
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w600,
@@ -163,7 +163,7 @@ class CategoryView extends StatelessWidget {
                                                   CrossAxisAlignment.center,
                                               children: <Widget>[
                                                 Text(
-                                                  '${category.lessonCount} lesson',
+                                                  '${category!.lessonCount} lesson',
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w200,
@@ -177,7 +177,7 @@ class CategoryView extends StatelessWidget {
                                                   child: Row(
                                                     children: <Widget>[
                                                       Text(
-                                                        '${category.rating}',
+                                                        '${category!.rating}',
                                                         textAlign:
                                                             TextAlign.left,
                                                         style: TextStyle(
@@ -241,7 +241,7 @@ class CategoryView extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(16.0)),
                             child: AspectRatio(
                                 aspectRatio: 1.28,
-                                child: Image.asset(category.imagePath)),
+                                child: Image.asset(category!.imagePath)),
                           ),
                         ),
                       ),

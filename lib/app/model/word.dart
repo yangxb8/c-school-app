@@ -16,24 +16,24 @@ class Word extends Document<Word> implements Searchable{
   static LectureService lectureService = Get.find<LectureService>();
 
   Word({
-    String id,
-    DocumentSnapshot snapshot,
-    Map<String, dynamic> values,
+    String? id,
+    DocumentSnapshot? snapshot,
+    Map<String, dynamic>? values,
   })  : wordId = id,
         tags =
             id == null ? [] : [id.split('-').first], // Assign lectureId to tags
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
-  String wordId;
+  String? wordId;
 
   /// Example: [['我'],[们]]
   @Field()
-  List<String> word = [];
+  List<String>? word = [];
 
   /// Example: [['wo'],['men']]
   @Field()
-  List<String> pinyin = [];
+  List<String>? pinyin = [];
 
   /// Usage and other information about this word
   @Field()
@@ -47,23 +47,23 @@ class Word extends Document<Word> implements Searchable{
 
   /// 日语意思
   @ModelField()
-  List<WordMeaning> wordMeanings = [];
+  List<WordMeaning>? wordMeanings = [];
 
   /// related word in examples
   @Field()
-  List<String> _relatedWordIds = [];
+  List<String>? _relatedWordIds = [];
 
   /// Same word but with different meanings
   @Field()
-  List<String> _otherMeaningIds = [];
+  List<String>? _otherMeaningIds = [];
 
   /// 拆字
   @Field()
-  List<String> breakdowns = [];
+  List<String>? breakdowns = [];
 
   /// Converted from WordTag enum
   @Field()
-  List<String> tags = [];
+  List<String>? tags = [];
 
   /// Hash of word pic for display by blurhash
   @Field()
@@ -71,20 +71,20 @@ class Word extends Document<Word> implements Searchable{
 
   /// If the word has pic in cloud storage
   @StorageField()
-  StorageFile pic;
+  StorageFile? pic;
 
   /// If the word has wordAudio in cloud storage
   @StorageField()
-  StorageFile wordAudioMale;
+  StorageFile? wordAudioMale;
 
   @StorageField()
-  StorageFile wordAudioFemale;
+  StorageFile? wordAudioFemale;
 
   List<Word> get relatedWords {
-    if (_relatedWordIds.isBlank) {
+    if (_relatedWordIds.isBlank!) {
       return [];
     } else {
-      return lectureService.findWordsByIds(_relatedWordIds);
+      return lectureService.findWordsByIds(_relatedWordIds!);
     }
   }
 
@@ -92,17 +92,17 @@ class Word extends Document<Word> implements Searchable{
       _relatedWordIds = relatedWordIDs;
 
   List<Word> get otherMeanings {
-    if (_otherMeaningIds.isBlank) {
+    if (_otherMeaningIds.isBlank!) {
       return [];
     } else {
-      return lectureService.findWordsByIds(_otherMeaningIds);
+      return lectureService.findWordsByIds(_otherMeaningIds!);
     }
   }
 
   set otherMeaningIds(List<String> otherMeaningIds) =>
       _otherMeaningIds = otherMeaningIds;
 
-  Lecture get lecture => lectureService.findLectureById(lectureId);
+  Lecture? get lecture => lectureService.findLectureById(lectureId);
 
   String get lectureId => id.split('-').first;
 
@@ -110,9 +110,9 @@ class Word extends Document<Word> implements Searchable{
 
   bool get isLiked => lectureService.isWordLiked(this);
 
-  String get wordAsString => word.join();
+  String get wordAsString => word!.join();
 
-  WordMemoryStatus get statue => lectureService.getMemoryStatusOfWord(this);
+  WordMemoryStatus get status => lectureService.getMemoryStatusOfWord(this);
 
   @override
   Map<String, dynamic> toData() => _$toData(this);
@@ -124,7 +124,7 @@ class Word extends Document<Word> implements Searchable{
   Map<String, dynamic> get searchableProperties => {
     'wordAsString': wordAsString,
     'pinyin':pinyin,
-    'wordMeanings': wordMeanings.map((m) => m.meaning),
+    'wordMeanings': wordMeanings!.map((m) => m.meaning),
     'tags':tags
   };
 }

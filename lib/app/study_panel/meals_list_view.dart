@@ -10,11 +10,11 @@ import '../my_progress_theme.dart';
 
 class MealsListView extends StatefulWidget {
   const MealsListView(
-      {Key key, this.mainScreenAnimationController, this.mainScreenAnimation})
+      {Key? key, this.mainScreenAnimationController, this.mainScreenAnimation})
       : super(key: key);
 
-  final AnimationController mainScreenAnimationController;
-  final Animation<dynamic> mainScreenAnimation;
+  final AnimationController? mainScreenAnimationController;
+  final Animation<dynamic>? mainScreenAnimation;
 
   @override
   _MealsListViewState createState() => _MealsListViewState();
@@ -22,7 +22,7 @@ class MealsListView extends StatefulWidget {
 
 class _MealsListViewState extends State<MealsListView>
     with TickerProviderStateMixin {
-  AnimationController animationController;
+  AnimationController? animationController;
   List<MealsListData> mealsListData = MealsListData.tabIconsList;
 
   @override
@@ -39,20 +39,20 @@ class _MealsListViewState extends State<MealsListView>
 
   @override
   void dispose() {
-    animationController.dispose();
+    animationController!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: widget.mainScreenAnimationController,
-      builder: (BuildContext context, Widget child) {
+      animation: widget.mainScreenAnimationController!,
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: widget.mainScreenAnimation,
+          opacity: widget.mainScreenAnimation as Animation<double>,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - widget.mainScreenAnimation.value), 0.0),
+                0.0, 30 * (1.0 - widget.mainScreenAnimation!.value), 0.0),
             child: Container(
               height: 216,
               width: double.infinity,
@@ -67,10 +67,10 @@ class _MealsListViewState extends State<MealsListView>
                   final animation =
                       Tween<double>(begin: 0.0, end: 1.0).animate(
                           CurvedAnimation(
-                              parent: animationController,
+                              parent: animationController!,
                               curve: Interval((1 / count) * index, 1.0,
                                   curve: Curves.fastOutSlowIn)));
-                  animationController.forward();
+                  animationController!.forward();
 
                   return MealsView(
                     mealsListData: mealsListData[index],
@@ -89,23 +89,23 @@ class _MealsListViewState extends State<MealsListView>
 
 class MealsView extends StatelessWidget {
   const MealsView(
-      {Key key, this.mealsListData, this.animationController, this.animation})
+      {Key? key, this.mealsListData, this.animationController, this.animation})
       : super(key: key);
 
-  final MealsListData mealsListData;
-  final AnimationController animationController;
-  final Animation<dynamic> animation;
+  final MealsListData? mealsListData;
+  final AnimationController? animationController;
+  final Animation<dynamic>? animation;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: animationController,
-      builder: (BuildContext context, Widget child) {
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: animation as Animation<double>,
           child: Transform(
             transform: Matrix4.translationValues(
-                100 * (1.0 - animation.value), 0.0, 0.0),
+                100 * (1.0 - animation!.value), 0.0, 0.0),
             child: SizedBox(
               width: 130,
               child: Stack(
@@ -117,15 +117,15 @@ class MealsView extends StatelessWidget {
                       decoration: BoxDecoration(
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                              color: mealsListData.endColor.toColor()
+                              color: mealsListData!.endColor.toColor()
                                   .withOpacity(0.6),
                               offset: const Offset(1.1, 4.0),
                               blurRadius: 8.0),
                         ],
                         gradient: LinearGradient(
                           colors: <Color>[
-                            mealsListData.startColor.toColor(),
-                            mealsListData.endColor.toColor(),
+                            mealsListData!.startColor.toColor(),
+                            mealsListData!.endColor.toColor(),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -145,7 +145,7 @@ class MealsView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              mealsListData.titleTxt,
+                              mealsListData!.titleTxt,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: FintnessAppTheme.fontName,
@@ -164,7 +164,7 @@ class MealsView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      mealsListData.meals.join('\n'),
+                                      mealsListData!.meals!.join('\n'),
                                       style: TextStyle(
                                         fontFamily: FintnessAppTheme.fontName,
                                         fontWeight: FontWeight.w500,
@@ -177,13 +177,13 @@ class MealsView extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            mealsListData.kacl != 0
+                            mealsListData!.kacl != 0
                                 ? Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                        mealsListData.kacl.toString(),
+                                        mealsListData!.kacl.toString(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: FintnessAppTheme.fontName,
@@ -226,7 +226,7 @@ class MealsView extends StatelessWidget {
                                       padding: const EdgeInsets.all(6.0),
                                       child: Icon(
                                         Icons.add,
-                                        color: mealsListData.endColor.toColor(),
+                                        color: mealsListData!.endColor.toColor(),
                                         size: 24,
                                       ),
                                     ),
@@ -254,7 +254,7 @@ class MealsView extends StatelessWidget {
                     child: SizedBox(
                       width: 80,
                       height: 80,
-                      child: Image.asset(mealsListData.imagePath),
+                      child: Image.asset(mealsListData!.imagePath),
                     ),
                   )
                 ],
