@@ -16,17 +16,17 @@ class Lecture extends Document<Lecture> implements Searchable{
   static LectureService lectureService = Get.find<LectureService>();
 
   Lecture({
-    String id,
-    int level,
-    DocumentSnapshot snapshot,
-    Map<String, dynamic> values,
+    String? id,
+    int level = 0,
+    DocumentSnapshot? snapshot,
+    Map<String, dynamic>? values,
   })  : lectureId = id,
         level = level,
         tags = id == null ? [] : ['$levelPrefix$level'],
         super(id: id, snapshot: snapshot, values: values);
 
   @Field()
-  String lectureId;
+  String? lectureId;
 
   /// For display
   @Field()
@@ -40,7 +40,7 @@ class Lecture extends Document<Lecture> implements Searchable{
 
   /// Converted from ClassTag enum
   @Field()
-  List<String> tags = [];
+  List<String>? tags = [];
 
   /// Hash of lecture pic for display by blurhash
   @Field()
@@ -48,20 +48,20 @@ class Lecture extends Document<Lecture> implements Searchable{
 
   /// If the lecture has pic in cloud storage
   @StorageField()
-  StorageFile pic;
+  StorageFile? pic;
 
   /// find words related
-  List<Word> get words => lectureService.findWordsByTags([lectureId]);
+  List<Word> get words => lectureService.findWordsByTags([lectureId!]);
 
   /// find exams related
-  List<Exam> get exams => lectureService.findExamsByTags([lectureId]);
+  List<Exam> get exams => lectureService.findExamsByTags([lectureId!]);
 
   int get lectureViewedCount => lectureService.lectureViewedCount(this);
 
   String get levelForDisplay => '$levelPrefix$level';
 
   /// 'C0001' => 1
-  int get intLectureId => int.parse(lectureId.numericOnly());
+  int get intLectureId => int.parse(lectureId!.numericOnly());
 
   @override
   Map<String, dynamic> toData() => _$toData(this);

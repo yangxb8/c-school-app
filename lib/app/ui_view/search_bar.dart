@@ -28,7 +28,7 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
   final List<Widget> tailingActions;
 
   /// Widget to show when result is empty
-  final Widget emptyWidget;
+  final Widget? emptyWidget;
 
   /// Builder for result items
   final SearchBarResultBuilder<T> searchResultBuilder;
@@ -37,7 +37,7 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
   final SearchResultTap<T> onSearchResultTap;
 
   /// If empty, all searchableProperties can be used. Or you can specify it by names
-  final List<String> searchEnableProperties;
+  final List<String>? searchEnableProperties;
 
   final automaticallyImplyBackButton;
 
@@ -45,16 +45,16 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
   final _SearchBarController<T> _controller;
 
   SearchBar({
-    Key key,
-    @required this.items,
-    @required this.searchResultBuilder,
-    @required this.onSearchResultTap,
+    Key? key,
+    required this.items,
+    required this.searchResultBuilder,
+    required this.onSearchResultTap,
     this.leadingActions = const [],
     this.tailingActions = const [],
     this.searchEnableProperties,
     this.emptyWidget = defaultEmptyResult,
     this.automaticallyImplyBackButton = false
-  })  : _controller = Get.put(_SearchBarController<T>(items)),
+  })  : _controller = Get.put(_SearchBarController<T>(items))!,
         super(key: key);
 
   @override
@@ -100,7 +100,7 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
 
   List<Widget> buildResult() {
     if (_controller.searchResult.isEmpty) {
-      return emptyWidget == null ? [defaultEmptyResult] : [emptyWidget];
+      return emptyWidget == null ? [defaultEmptyResult] : [emptyWidget!];
     } else {
       return _controller.searchResult
           .map((item) => SimpleGestureDetector(
@@ -127,17 +127,17 @@ class _SearchBarController<T extends Searchable> extends GetxController {
   @override
   void onInit() {
     // worker to monitor search query change and fire search function
-    debounce(searchQuery, (_) => search(), time: 0.5.seconds);
+    debounce(searchQuery, (dynamic _) => search(), time: 0.5.seconds);
     super.onInit();
   }
 
   /// Search card content, consider a match if word or meaning contains query
   void search() {
-    if (searchQuery.value.isBlank) {
+    if (searchQuery.value.isBlank!) {
       searchResult.clear();
       return;
     }
     searchResult.clear();
-    searchResult.addAll(items.searchFuzzy(searchQuery.value));
+    searchResult.addAll(items.searchFuzzy(searchQuery.value!));
   }
 }

@@ -71,7 +71,7 @@ class CSchoolApp extends StatelessWidget {
       secret: 'rbl6r14rthdvtkruhfu0lvlldp6rpq3pepclnowm1q6ui08u',
 
       /// We use Catcher's navigatorKey here also for Wiredash
-      navigatorKey: Catcher.navigatorKey,
+      navigatorKey: Catcher.navigatorKey!,
       child: GetMaterialApp(
         title: 'CSchool',
         debugShowCheckedModeBanner: false,

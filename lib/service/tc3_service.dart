@@ -1,9 +1,13 @@
+// 🎯 Dart imports:
 import 'dart:convert';
+
+// 📦 Package imports:
+import 'package:crypto/crypto.dart';
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
-import 'package:get/get.dart';
-import 'package:crypto/crypto.dart';
-
 import 'package:c_school_app/util/utility.dart';
 
 class SoeService extends GetConnect{
@@ -30,7 +34,7 @@ class SoeService extends GetConnect{
       'Authorization': sign,
     });
     // This is stupid but GetConnect doesn't allow to change default charset [latin1]
-    final content = utf8.decode(latin1.encode(response.bodyString));
+    final content = utf8.decode(latin1.encode(response.bodyString!));
     return SentenceInfo.fromJson(jsonDecode(content)['Response']);
   }
 

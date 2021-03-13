@@ -9,18 +9,18 @@ import '../my_progress_theme.dart';
 
 class AreaListView extends StatefulWidget {
   const AreaListView(
-      {Key key, this.mainScreenAnimationController, this.mainScreenAnimation})
+      {Key? key, this.mainScreenAnimationController, this.mainScreenAnimation})
       : super(key: key);
 
-  final AnimationController mainScreenAnimationController;
-  final Animation<dynamic> mainScreenAnimation;
+  final AnimationController? mainScreenAnimationController;
+  final Animation<dynamic>? mainScreenAnimation;
   @override
   _AreaListViewState createState() => _AreaListViewState();
 }
 
 class _AreaListViewState extends State<AreaListView>
     with TickerProviderStateMixin {
-  AnimationController animationController;
+  AnimationController? animationController;
   List<String> areaListData = <String>[
     'assets/main_app/area1.png',
     'assets/main_app/area2.png',
@@ -37,20 +37,20 @@ class _AreaListViewState extends State<AreaListView>
 
   @override
   void dispose() {
-    animationController.dispose();
+    animationController!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: widget.mainScreenAnimationController,
-      builder: (BuildContext context, Widget child) {
+      animation: widget.mainScreenAnimationController!,
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: widget.mainScreenAnimation,
+          opacity: widget.mainScreenAnimation as Animation<double>,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - widget.mainScreenAnimation.value), 0.0),
+                0.0, 30 * (1.0 - widget.mainScreenAnimation!.value), 0.0),
             child: AspectRatio(
               aspectRatio: 1.0,
               child: Padding(
@@ -73,12 +73,12 @@ class _AreaListViewState extends State<AreaListView>
                       final animation =
                           Tween<double>(begin: 0.0, end: 1.0).animate(
                         CurvedAnimation(
-                          parent: animationController,
+                          parent: animationController!,
                           curve: Interval((1 / count) * index, 1.0,
                               curve: Curves.fastOutSlowIn),
                         ),
                       );
-                      animationController.forward();
+                      animationController!.forward();
                       return AreaView(
                         imagePath: areaListData[index],
                         onTap: () async => await Get.toNamed('/review/words/home'),
@@ -99,28 +99,28 @@ class _AreaListViewState extends State<AreaListView>
 
 class AreaView extends StatelessWidget {
   const AreaView({
-    Key key,
+    Key? key,
     this.imagePath,
     this.onTap,
     this.animationController,
     this.animation,
   }) : super(key: key);
 
-  final String imagePath;
-  final Function onTap;
-  final AnimationController animationController;
-  final Animation<dynamic> animation;
+  final String? imagePath;
+  final Function? onTap;
+  final AnimationController? animationController;
+  final Animation<dynamic>? animation;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: animationController,
-      builder: (BuildContext context, Widget child) {
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: animation as Animation<double>,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation.value), 0.0),
+                0.0, 50 * (1.0 - animation!.value), 0.0),
             child: Container(
               decoration: BoxDecoration(
                 color: FintnessAppTheme.white,
@@ -145,13 +145,13 @@ class AreaView extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                   splashColor:
                       FintnessAppTheme.nearlyDarkBlue.withOpacity(0.2),
-                  onTap: onTap,
+                  onTap: onTap as void Function()?,
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(
                             top: 16, left: 16, right: 16),
-                        child: Image.asset(imagePath),
+                        child: Image.asset(imagePath!),
                       ),
                     ],
                   ),

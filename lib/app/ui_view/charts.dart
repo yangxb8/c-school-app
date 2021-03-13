@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class SpeechEvaluationRadialBarChart extends StatelessWidget {
   /// Must be converted to double with max value of 100
@@ -11,7 +11,7 @@ class SpeechEvaluationRadialBarChart extends StatelessWidget {
   final List<SpeechEvaluationRadialBarChartData> chartData;
 
   const SpeechEvaluationRadialBarChart(
-      {Key key, @required this.chartData, @required this.totalScore})
+      {Key? key, required this.chartData, required this.totalScore})
       : super(key: key);
 
   @override

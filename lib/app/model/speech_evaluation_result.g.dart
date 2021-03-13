@@ -9,9 +9,9 @@ part of 'speech_evaluation_result.dart';
 SpeechEvaluationResult _$SpeechEvaluationResultFromJson(
     Map<String, dynamic> json) {
   return SpeechEvaluationResult(
-    userId: json['userId'] as String,
-    examId: json['examId'] as String,
-    speechDataPath: json['speechDataPath'] as String,
+    userId: json['userId'] as String?,
+    examId: json['examId'] as String?,
+    speechDataPath: json['speechDataPath'] as String?,
     sentenceInfo: json['sentenceInfo'] == null
         ? null
         : SentenceInfo.fromJson(json['sentenceInfo'] as Map<String, dynamic>),
@@ -29,14 +29,13 @@ Map<String, dynamic> _$SpeechEvaluationResultToJson(
 
 SentenceInfo _$SentenceInfoFromJson(Map<String, dynamic> json) {
   return SentenceInfo(
-    suggestedScore: (json['SuggestedScore'] as num)?.toDouble(),
-    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
-    pronFluency: (json['PronFluency'] as num)?.toDouble(),
-    pronCompletion: (json['PronCompletion'] as num)?.toDouble(),
-    words: (json['Words'] as List)
-        ?.map((e) =>
-            e == null ? null : WordInfo.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    suggestedScore: (json['SuggestedScore'] as num?)?.toDouble(),
+    pronAccuracy: (json['PronAccuracy'] as num?)?.toDouble(),
+    pronFluency: (json['PronFluency'] as num?)?.toDouble(),
+    pronCompletion: (json['PronCompletion'] as num?)?.toDouble(),
+    words: (json['Words'] as List<dynamic>?)
+        ?.map((e) => WordInfo.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -51,17 +50,16 @@ Map<String, dynamic> _$SentenceInfoToJson(SentenceInfo instance) =>
 
 WordInfo _$WordInfoFromJson(Map<String, dynamic> json) {
   return WordInfo(
-    beginTime: json['MemBeginTime'] as int,
-    endTime: json['MemEndTime'] as int,
-    referenceWord: json['ReferenceWord'] as String,
-    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
-    pronFluency: (json['PronFluency'] as num)?.toDouble(),
-    word: json['Word'] as String,
-    matchTag: MatchResultUtil.fromInt(json['MatchTag'] as int),
-    phoneInfos: (json['PhoneInfos'] as List)
-        ?.map((e) =>
-            e == null ? null : PhoneInfo.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    beginTime: json['MemBeginTime'] as int?,
+    endTime: json['MemEndTime'] as int?,
+    referenceWord: json['ReferenceWord'] as String?,
+    pronAccuracy: (json['PronAccuracy'] as num?)?.toDouble(),
+    pronFluency: (json['PronFluency'] as num?)?.toDouble(),
+    word: json['Word'] as String?,
+    matchTag: MatchResultUtil.fromInt(json['MatchTag'] as int?),
+    phoneInfos: (json['PhoneInfos'] as List<dynamic>?)
+        ?.map((e) => PhoneInfo.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -78,14 +76,14 @@ Map<String, dynamic> _$WordInfoToJson(WordInfo instance) => <String, dynamic>{
 
 PhoneInfo _$PhoneInfoFromJson(Map<String, dynamic> json) {
   return PhoneInfo(
-    beginTime: json['MemBeginTime'] as int,
-    endTime: json['MemEndTime'] as int,
-    referenceStress: json['Stress'] as bool,
-    referencePhone: json['ReferencePhone'] as String,
-    pronAccuracy: (json['PronAccuracy'] as num)?.toDouble(),
-    detectedStress: json['DetectedStress'] as bool,
-    detectedPhone: json['Phone'] as String,
-    matchTag: MatchResultUtil.fromInt(json['MatchTag'] as int),
+    beginTime: json['MemBeginTime'] as int?,
+    endTime: json['MemEndTime'] as int?,
+    referenceStress: json['Stress'] as bool?,
+    referencePhone: json['ReferencePhone'] as String?,
+    pronAccuracy: (json['PronAccuracy'] as num?)?.toDouble(),
+    detectedStress: json['DetectedStress'] as bool?,
+    detectedPhone: json['Phone'] as String?,
+    matchTag: MatchResultUtil.fromInt(json['MatchTag'] as int?),
   );
 }
 

@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:animate_do/animate_do.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
@@ -32,7 +31,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
 
     Future<void> _onHorizontalSwipe(swipeDirection) async {
       // If in autoPlay mode, disable swipe
-      if (controller.isAutoPlayMode.value) return;
+      if (controller.isAutoPlayMode.value!) return;
       if (swipeDirection == SwipeDirection.right) {
         await controller.previousCard();
       } else {
@@ -40,8 +39,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
       }
     }
 
-    return FadeIn(
-      child: Padding(
+    return Padding(
         padding: const EdgeInsets.only(top: 60.0),
         child: SimpleGestureDetector(
           onHorizontalSwipe: _onHorizontalSwipe,
@@ -101,8 +99,7 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
