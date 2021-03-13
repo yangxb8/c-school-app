@@ -4,15 +4,13 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - audioplayers (0.0.1):
-    - Flutter
   - catcher (0.0.1):
     - Flutter
-  - cloud_firestore (0.16.0):
+  - cloud_firestore (1.0.1):
     - Firebase/Firestore (= 7.4.0)
     - firebase_core
     - Flutter
-  - device_info (0.0.1):
+  - device_info_plus (0.0.1):
     - Flutter
   - Firebase/Analytics (7.4.0):
     - Firebase/Core
@@ -33,22 +31,22 @@ PODS:
   - Firebase/Storage (7.4.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 7.4.0)
-  - firebase_analytics (7.0.1):
+  - firebase_analytics (7.1.1):
     - Firebase/Analytics (= 7.4.0)
     - firebase_core
     - Flutter
-  - firebase_auth (0.20.0-1):
+  - firebase_auth (1.0.1):
     - Firebase/Auth (= 7.4.0)
     - firebase_core
     - Flutter
-  - firebase_core (0.7.0):
+  - firebase_core (1.0.1):
     - Firebase/CoreOnly (= 7.4.0)
     - Flutter
-  - firebase_performance (0.5.0-1):
+  - firebase_performance (0.6.0):
     - Firebase/Performance (= 7.4.0)
     - firebase_core
     - Flutter
-  - firebase_storage (7.0.0):
+  - firebase_storage (8.0.0):
     - Firebase/Storage (= 7.4.0)
     - firebase_core
     - Flutter
@@ -104,6 +102,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_mailer (0.0.1):
     - Flutter
+  - "flutter_sound_lite (8.0.0+6)":
+    - Flutter
+    - "tau_sound_core (= 8.0.0+6)"
   - flutter_tts (0.0.1):
     - Flutter
   - fluttertoast (0.0.2):
@@ -183,13 +184,13 @@ PODS:
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
+  - "tau_sound_core (8.0.0+6)"
   - Toast (4.0.0)
 
 DEPENDENCIES:
-  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - catcher (from `.symlinks/plugins/catcher/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
-  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -198,6 +199,7 @@ DEPENDENCIES:
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `7.4.0`)
   - Flutter (from `Flutter`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
+  - flutter_sound_lite (from `.symlinks/plugins/flutter_sound_lite/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
@@ -234,17 +236,16 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - Sentry
+    - tau_sound_core
     - Toast
 
 EXTERNAL SOURCES:
-  audioplayers:
-    :path: ".symlinks/plugins/audioplayers/ios"
   catcher:
     :path: ".symlinks/plugins/catcher/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
-  device_info:
-    :path: ".symlinks/plugins/device_info/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_auth:
@@ -262,6 +263,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_mailer:
     :path: ".symlinks/plugins/flutter_mailer/ios"
+  flutter_sound_lite:
+    :path: ".symlinks/plugins/flutter_sound_lite/ios"
   flutter_tts:
     :path: ".symlinks/plugins/flutter_tts/ios"
   fluttertoast:
@@ -292,16 +295,15 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
-  catcher: e5585ed31458c849f4fd9c3719b2fcb0188b8918
-  cloud_firestore: 2fb97bf9db4a87b738693e514cefe453facb547d
-  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
+  catcher: 67a006a3c121c4bbf1202d1e5ea186afb7ef4a18
+  cloud_firestore: 514a9b890c7fb67a48932d4a4bfa951c2b12822a
+  device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   Firebase: 09fb40287b6dfc8ee65f726fa0b788719d3f2a07
-  firebase_analytics: 36ff05d90784465b17a1c1087b53c0ffefbebc05
-  firebase_auth: 5e2b3a8e503423a5b83c790e83a68b2cdf2503cc
-  firebase_core: 38d42222b645284c20a14c46a4e50e6544c45746
-  firebase_performance: 32e4eb893402cbd18b396f653a15feff83017deb
-  firebase_storage: 4cee06f090249cb79dd65d1e8a6b1e2df30e28d0
+  firebase_analytics: 1ce93dbba9a79802ed2da215377508464bbd8a8e
+  firebase_auth: 8c8f7092c60e900aa26652d3d4ab056a2452d44d
+  firebase_core: e82c7d31d622770c54c5302d842e8c44fce7a7be
+  firebase_performance: e0b8d50ffd65175dbe6c5d50c93021eaf53f5790
+  firebase_storage: 8b0f21a6b73badb1aa43e9050a323da3de5c17db
   FirebaseABTesting: e419991eb6e92772b3c0a02fa3a675f59da692f1
   FirebaseAnalytics: adb3c8f02f83d00661cdaac6dbb4d54e9720d1b6
   FirebaseAuth: d8dba8db90a1705ee2493857047282ca4f6e7598
@@ -312,8 +314,9 @@ SPEC CHECKSUMS:
   FirebasePerformance: a927934cd5a1a7e4c65f926f26bd81015e2354ca
   FirebaseRemoteConfig: 98dac0952e07858dbd70ad0f26d470eb7fa37ee4
   FirebaseStorage: e8726dfe21ebe068ccbe8e9c332ea90688eeadae
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
+  flutter_sound_lite: 0abaab31d35384388dcc185bfdd95ed8f13748c8
   flutter_tts: 0f492aab6accf87059b72354fcb4ba934304771d
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
@@ -336,6 +339,7 @@ SPEC CHECKSUMS:
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sign_in_with_apple: 34f3f5456a45fd7ac5fb42905e2ad31dae061b4a
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  tau_sound_core: c34a32074c96cc960a5b457c91e25211203707cf
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
 PODFILE CHECKSUM: 7c460a8045071bf8afcf9a35f70f2e1be75a4062
