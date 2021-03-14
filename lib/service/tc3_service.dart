@@ -1,7 +1,9 @@
 // 🎯 Dart imports:
 import 'dart:convert';
+import 'dart:typed_data';
 
 // 📦 Package imports:
+import 'package:c_school_app/app/model/tts_request.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 
@@ -11,18 +13,18 @@ import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/util/utility.dart';
 
 class SoeService extends GetConnect{
-  static const action = 'TransmitOralProcessWithInit';
-  static const version = '2018-07-24';
   static const SECRET_ID = 'AKIDorfD1yrBxYu3w2zWGj0aAXpzqPib3yKP';
   static const SECRET_KEY = 'rSqCKqlO6cz5wRWKGdoNaY6SaR0PhtgF';
-  static const endpoint = 'soe.tencentcloudapi.com';
-  static const service = 'soe';
 
   Future<SentenceInfo> sendSoeRequest(SoeRequest request) async{
+    const action = 'TransmitOralProcessWithInit';
+    const version = '2018-07-24';
+    const endpoint = 'soe.tencentcloudapi.com';
+    const service = 'soe';
     final now = DateTime.now();
     final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();
     final payload = request.toString();
-    final sign = _generateAuth(payload, now);
+    final sign = _generateAuth(endpoint:endpoint, service: service, payload:payload,now: now);
     final response = await post('https://$endpoint', payload, headers: {
       'Host': endpoint,
       'X-TC-Action': action,
@@ -38,7 +40,31 @@ class SoeService extends GetConnect{
     return SentenceInfo.fromJson(jsonDecode(content)['Response']);
   }
 
-  String _generateAuth(String payload, DateTime now) {
+  Future<Uint8List> sendTtsRequest(TtsRequest request) async{
+    const region = 'ap-shanghai';
+    const action = 'TextToVoice';
+    const version = '2019-08-23';
+    const endpoint = 'tts.tencentcloudapi.com';
+    const service = 'tts';
+    final now = DateTime.now();
+    final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();
+    final payload = request.toString();
+    final sign = _generateAuth(endpoint:endpoint, service:service,payload: payload,now: now);
+    final response = await post('https://$endpoint', payload, headers: {
+      'Host': endpoint,
+      'X-TC-Region': region,
+      'X-TC-Action': action,
+      'X-TC-RequestClient': GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
+      'X-TC-Timestamp': timestamp,
+      'X-TC-Version': version,
+      'X-TC-Language': 'zh-CN',
+      'Content-Type': 'application/json',
+      'Authorization': sign,
+    });
+    return base64Decode(response.body['Response']['Audio']);
+  }
+
+  String _generateAuth({required String endpoint, required String service, required String payload, required DateTime now}) {
     // 时间处理, 获取世界时间日期
     final utc = now.toUtc();
     final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();

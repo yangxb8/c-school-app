@@ -68,7 +68,7 @@ class SoeRequest {
       this.StorageMode = 0,
       this.SentenceInfoEnabled = 0,
       this.ServerType = 1,
-      this.IsAsync = 0}); //Uuid().v1();
+      this.IsAsync = 0});
   factory SoeRequest.fromJson(Map<String, dynamic> json) => _$SoeRequestFromJson(json);
   Map<String, dynamic> toJson() => _$SoeRequestToJson(this);
 
