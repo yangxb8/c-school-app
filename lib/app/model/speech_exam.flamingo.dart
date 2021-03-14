@@ -8,6 +8,7 @@ part of 'speech_exam.dart';
 
 /// Field value key
 enum SpeechExamKey {
+  refAudioTimeSeries,
   refText,
   _mode,
 
@@ -17,6 +18,8 @@ enum SpeechExamKey {
 extension SpeechExamKeyExtension on SpeechExamKey {
   String get value {
     switch (this) {
+      case SpeechExamKey.refAudioTimeSeries:
+        return 'refAudioTimeSeries';
       case SpeechExamKey.refText:
         return 'refText';
       case SpeechExamKey._mode:
@@ -32,6 +35,7 @@ extension SpeechExamKeyExtension on SpeechExamKey {
 /// For save data
 Map<String, dynamic> _$toData(SpeechExam doc) {
   final data = <String, dynamic>{};
+  Helper.writeNotNull(data, 'refAudioTimeSeries', doc.refAudioTimeSeries);
   Helper.writeNotNull(data, 'refText', doc.refText);
   Helper.writeNotNull(data, '_mode', doc._mode);
 
@@ -42,6 +46,8 @@ Map<String, dynamic> _$toData(SpeechExam doc) {
 
 /// For load data
 void _$fromData(SpeechExam doc, Map<String, dynamic> data) {
+  doc.refAudioTimeSeries =
+      Helper.valueListFromKey<int>(data, 'refAudioTimeSeries');
   doc.refText = Helper.valueFromKey<String>(data, 'refText');
   doc._mode = Helper.valueFromKey<String>(data, '_mode');
 

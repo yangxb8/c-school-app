@@ -365,7 +365,7 @@ class _TencentApi {
   Future<SentenceInfo?> soe(SoeRequest request, File file) async {
     SentenceInfo? result;
     try {
-      result = await SoeService().sendSoeRequest(request);
+      result = await TcService().sendSoeRequest(request);
       unawaited(Get.find<ApiService>()
           .firestoreApi
           .saveUserSpeech(speechData: file, sentenceInfo: result));

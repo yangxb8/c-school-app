@@ -18,9 +18,11 @@ class SpeechExam extends Exam<SpeechExam>{
   /// Audio data for the original speech
   @StorageField()
   StorageFile? refAudio;
+  @Field()
+  List<int>? refAudioTimeSeries = [];
   /// Text version of refAudio
   @Field()
-  String? refText;
+  String? refText = '';
   /// Speech Evaluation mode
   @Field()
   String? _mode;

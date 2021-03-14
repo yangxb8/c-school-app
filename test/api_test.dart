@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   test('tts', () async{
-    await SoeService().sendTtsRequest(TtsRequest.fromJson({
+    await TcService().sendTtsRequest(TtsRequest.fromJson({
       'Text': '你好',
       'SessionId': '1',
       'ModelType': 1,
@@ -16,7 +16,7 @@ void main() async {
   });
 
   test('soe', () async{
-    await SoeService().sendSoeRequest(SoeRequest.fromJson({
+    await TcService().sendSoeRequest(SoeRequest.fromJson({
       'SeqId': 1,
       'IsEnd': 1,
       'VoiceFileType': 2,

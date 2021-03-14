@@ -12,7 +12,7 @@ import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/util/utility.dart';
 
-class SoeService extends GetConnect{
+class TcService extends GetConnect{
   static const SECRET_ID = 'AKIDorfD1yrBxYu3w2zWGj0aAXpzqPib3yKP';
   static const SECRET_KEY = 'rSqCKqlO6cz5wRWKGdoNaY6SaR0PhtgF';
 
