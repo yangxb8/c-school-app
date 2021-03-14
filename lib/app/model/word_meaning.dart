@@ -33,9 +33,8 @@ class WordMeaning extends Model {
   // ignore: prefer_final_fields
   List<String>? _exampleMeanings;
 
-  @Field()
-
   /// Pinyin for each examples, pinyin is separated by '-' like 'wo-men'
+  @Field()
   // ignore: prefer_final_fields
   List<String>? _examplePinyins;
 
@@ -49,6 +48,14 @@ class WordMeaning extends Model {
   // ignore: prefer_final_fields
   List<StorageFile>? exampleFemaleAudios = [];
 
+  @Field()
+  /// Start time of each hanzi in milliseconds
+  List<List<int>>? exampleMaleAudioTimeSeries = [];
+
+  @Field()
+  /// Start time of each hanzi in milliseconds
+  List<List<int>>? exampleFemaleAudioTimeSeries = [];
+
   List<WordExample> get examples {
     var examples = <WordExample>[];
     for (var i = 0; i < _examples!.length; i++) {
@@ -56,8 +63,10 @@ class WordMeaning extends Model {
           example: _examples!.elementAtOrElse(i, () => ''),
           meaning: _exampleMeanings!.elementAtOrElse(i, () => ''),
           pinyin: _examplePinyins!.elementAtOrElse(i,()=>'').split(PINYIN_SEPARATOR),
-          audioMale: exampleMaleAudios!.elementAtOrNull(i)!,
-          audioFemale: exampleFemaleAudios!.elementAtOrNull(i)!));
+          audioMale: exampleMaleAudios![i],
+          audioFemale: exampleFemaleAudios![i],
+          audioMaleTimeSeries: exampleMaleAudioTimeSeries![i],
+          audioFemaleTimeSeries: exampleFemaleAudioTimeSeries![i]));
     }
     return examples;
   }

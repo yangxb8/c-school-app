@@ -80,6 +80,14 @@ class Word extends Document<Word> implements Searchable{
   @StorageField()
   StorageFile? wordAudioFemale;
 
+  /// Start time of each hanzi in milliseconds
+  @Field()
+  List<int>? wordAudioMaleTimeSeries = [];
+
+  /// Start time of each hanzi in milliseconds
+  @Field()
+  List<int>? wordAudioFemaleTimeSeries = [];
+
   List<Word> get relatedWords {
     if (_relatedWordIds.isBlank!) {
       return [];

@@ -19,6 +19,8 @@ enum WordKey {
   breakdowns,
   tags,
   picHash,
+  wordAudioMaleTimeSeries,
+  wordAudioFemaleTimeSeries,
   wordMeanings,
   pic,
   wordAudioMale,
@@ -50,6 +52,10 @@ extension WordKeyExtension on WordKey {
         return 'tags';
       case WordKey.picHash:
         return 'picHash';
+      case WordKey.wordAudioMaleTimeSeries:
+        return 'wordAudioMaleTimeSeries';
+      case WordKey.wordAudioFemaleTimeSeries:
+        return 'wordAudioFemaleTimeSeries';
       case WordKey.wordMeanings:
         return 'wordMeanings';
       case WordKey.pic:
@@ -78,6 +84,10 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, 'breakdowns', doc.breakdowns);
   Helper.writeNotNull(data, 'tags', doc.tags);
   Helper.writeNotNull(data, 'picHash', doc.picHash);
+  Helper.writeNotNull(
+      data, 'wordAudioMaleTimeSeries', doc.wordAudioMaleTimeSeries);
+  Helper.writeNotNull(
+      data, 'wordAudioFemaleTimeSeries', doc.wordAudioFemaleTimeSeries);
 
   Helper.writeModelListNotNull(data, 'wordMeanings', doc.wordMeanings);
 
@@ -105,6 +115,10 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
   doc.tags = Helper.valueListFromKey<String>(data, 'tags');
   doc.picHash = Helper.valueFromKey<String>(data, 'picHash');
+  doc.wordAudioMaleTimeSeries =
+      Helper.valueListFromKey<int>(data, 'wordAudioMaleTimeSeries');
+  doc.wordAudioFemaleTimeSeries =
+      Helper.valueListFromKey<int>(data, 'wordAudioFemaleTimeSeries');
 
   final _wordMeanings =
       Helper.valueMapListFromKey<String, dynamic>(data, 'wordMeanings');

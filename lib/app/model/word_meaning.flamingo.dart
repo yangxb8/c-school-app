@@ -12,6 +12,8 @@ enum WordMeaningKey {
   _examples,
   _exampleMeanings,
   _examplePinyins,
+  exampleMaleAudioTimeSeries,
+  exampleFemaleAudioTimeSeries,
 
   exampleMaleAudios,
   exampleFemaleAudios,
@@ -28,6 +30,10 @@ extension WordMeaningKeyExtension on WordMeaningKey {
         return '_exampleMeanings';
       case WordMeaningKey._examplePinyins:
         return '_examplePinyins';
+      case WordMeaningKey.exampleMaleAudioTimeSeries:
+        return 'exampleMaleAudioTimeSeries';
+      case WordMeaningKey.exampleFemaleAudioTimeSeries:
+        return 'exampleFemaleAudioTimeSeries';
       case WordMeaningKey.exampleMaleAudios:
         return 'exampleMaleAudios';
       case WordMeaningKey.exampleFemaleAudios:
@@ -45,6 +51,10 @@ Map<String, dynamic> _$toData(WordMeaning doc) {
   Helper.writeNotNull(data, '_examples', doc._examples);
   Helper.writeNotNull(data, '_exampleMeanings', doc._exampleMeanings);
   Helper.writeNotNull(data, '_examplePinyins', doc._examplePinyins);
+  Helper.writeNotNull(
+      data, 'exampleMaleAudioTimeSeries', doc.exampleMaleAudioTimeSeries);
+  Helper.writeNotNull(
+      data, 'exampleFemaleAudioTimeSeries', doc.exampleFemaleAudioTimeSeries);
 
   Helper.writeStorageListNotNull(
       data, 'exampleMaleAudios', doc.exampleMaleAudios,
@@ -64,6 +74,10 @@ void _$fromData(WordMeaning doc, Map<String, dynamic> data) {
       Helper.valueListFromKey<String>(data, '_exampleMeanings');
   doc._examplePinyins =
       Helper.valueListFromKey<String>(data, '_examplePinyins');
+  doc.exampleMaleAudioTimeSeries =
+      Helper.valueListFromKey<int>(data, 'exampleMaleAudioTimeSeries');
+  doc.exampleFemaleAudioTimeSeries =
+      Helper.valueListFromKey<int>(data, 'exampleFemaleAudioTimeSeries');
 
   doc.exampleMaleAudios = Helper.storageFiles(data, 'exampleMaleAudios');
   doc.exampleFemaleAudios = Helper.storageFiles(data, 'exampleFemaleAudios');
