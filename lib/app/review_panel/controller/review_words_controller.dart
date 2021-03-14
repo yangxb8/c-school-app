@@ -17,7 +17,7 @@ import 'package:c_school_app/app/ui_view/controller/word_card_controller.dart';
 import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import 'package:c_school_app/service/logger_service.dart';
-import '../../../util/extensions.dart';
+import '../../../util/utility.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 

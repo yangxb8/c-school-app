@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 // 🐦 Flutter imports:
 import 'package:flutter/services.dart';
@@ -27,7 +28,6 @@ import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/user_service.dart';
-import 'package:c_school_app/util/functions.dart';
 import '../model/user.dart';
 import './logger_service.dart';
 import 'tc3_service.dart';
@@ -317,7 +317,8 @@ class _FirestoreApi {
     final result = SpeechEvaluationResult(
         userId: userId, examId: examId, speechDataPath: data.path, sentenceInfo: sentenceInfo);
     // Save evaluation result
-    await storage.save(speechDataPath, await createFileFromString(jsonEncode(result.toJson())),
+    await storage.saveFromBytes(
+        speechDataPath, utf8.encode(jsonEncode(result.toJson())) as Uint8List,
         filename: '$uuid.$extension_json', mimeType: 'application/json', metadata: meta);
   }
 
@@ -374,5 +375,34 @@ class _TencentApi {
     } finally {
       return result;
     }
+  }
+}
+
+extension StorageExtension on Storage {
+  Future<StorageFile> saveFromBytes(
+    String folderPath,
+    Uint8List data, {
+    String? filename,
+    String? mimeType = mimeTypeApplicationOctetStream,
+    Map<String, String> metadata = const <String, String>{},
+    Map<String, dynamic> additionalData = const <String, dynamic>{},
+  }) async {
+    final refFilename = filename ?? Storage.fileName();
+    final refMimeType = mimeType ?? '';
+    final path = '$folderPath/$refFilename';
+    final ref = storage.ref().child(path);
+    final settableMetadata = SettableMetadata(contentType: refMimeType, customMetadata: metadata);
+    UploadTask uploadTask;
+    uploadTask = ref.putData(data, settableMetadata);
+    final snapshot = await uploadTask.whenComplete(() => null);
+    final downloadUrl = await snapshot.ref.getDownloadURL();
+    return StorageFile(
+      name: refFilename,
+      url: downloadUrl,
+      path: path,
+      mimeType: refMimeType,
+      metadata: metadata,
+      additionalData: additionalData,
+    );
   }
 }

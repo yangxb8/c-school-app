@@ -28,7 +28,7 @@ import 'i18n/messages.dart';
 import 'router.dart';
 import 'service/api_service.dart';
 import 'service/localstorage_service.dart';
-import 'util/extensions.dart';
+import 'util/utility.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

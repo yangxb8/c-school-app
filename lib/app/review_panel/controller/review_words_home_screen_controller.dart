@@ -10,7 +10,7 @@ import 'package:supercharged/supercharged.dart';
 import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/app/model/word.dart';
 import 'package:c_school_app/service/lecture_service.dart';
-import '../../../util/extensions.dart';
+import '../../../util/utility.dart';
 
 class ReviewWordsHomeController extends GetxController {
   final LectureService lectureService = Get.find();
