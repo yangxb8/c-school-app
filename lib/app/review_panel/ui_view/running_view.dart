@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // 🌎 Project imports:
-import '../my_progress_theme.dart';
+import '../../my_progress_theme.dart';
 
 class RunningView extends StatelessWidget {
   final AnimationController? animationController;

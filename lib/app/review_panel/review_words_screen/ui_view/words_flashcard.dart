@@ -14,7 +14,7 @@ import 'package:c_school_app/app/review_panel/controller/review_words_controller
 import 'package:c_school_app/app/ui_view/word_card.dart';
 import 'package:c_school_app/c_school_icons.dart';
 import 'package:c_school_app/service/logger_service.dart';
-import 'package:c_school_app/util/extensions.dart';
+import 'package:c_school_app/util/utility.dart';
 
 const BUTTON_SIZE = 50.0;
 const cardAspectRatio = 12.0 / 22.0;

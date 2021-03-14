@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
-import '../my_progress_theme.dart';
+import '../../my_progress_theme.dart';
 
 class AreaListView extends StatefulWidget {
   const AreaListView(

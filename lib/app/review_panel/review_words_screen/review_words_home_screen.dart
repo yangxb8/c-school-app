@@ -17,7 +17,7 @@ import 'package:c_school_app/app/ui_view/blurhash_image_with_fallback.dart';
 import 'package:c_school_app/app/ui_view/search_bar.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 import '../../../c_school_icons.dart';
-import '../../../util/extensions.dart';
+import '../../../util/utility.dart';
 import 'review_words_theme.dart';
 
 class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {

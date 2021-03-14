@@ -33,7 +33,7 @@ class SpeechExamBottomSheet extends StatelessWidget {
               children: <Widget>[
                 Icon(CSchool.comment_dots),
                 IconButton(
-                  icon: Icon(CSchool.microphone),
+                  icon: Icon(Icons.close),
                   onPressed: () => Get.back(),
                 )
               ],

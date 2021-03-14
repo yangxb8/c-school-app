@@ -9,8 +9,11 @@ import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
 import '../../service/lecture_service.dart';
-import '../../util/extensions.dart';
+import '../../util/utility.dart';
 import '../model/word.dart';
+
+typedef SingleHanziBuilder = Widget Function(
+    {required int index, required PinyinAnnotatedHanzi pinyinAnnotatedHanzi});
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
   /// Paragraph of chinese chars
@@ -52,6 +55,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   /// Spacing of lines
   final double runSpacing;
 
+  final SingleHanziBuilder? singleHanziBuilder;
+
   const PinyinAnnotatedParagraph(
       {Key? key,
       required this.paragraph,
@@ -66,7 +71,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       this.leadingWidget,
       this.showPinyins = true,
       this.spacing = 0,
-      this.runSpacing = 0})
+      this.runSpacing = 0,
+      this.singleHanziBuilder})
       : pinyinTextStyle = pinyinTextStyle ?? defaultTextStyle,
         linkedWordTextStyle = linkedWordTextStyle ?? defaultTextStyle,
         centerWordTextStyle = centerWordTextStyle ?? defaultTextStyle,
@@ -76,20 +82,19 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (_, originSize) {
       // Adjust font size to fit in lines
-      //TODO: 0.8 is magic number, maybe we need to calculate font size properly
-      var size = originSize.copyWith(maxWidth: originSize.maxWidth*0.8);
+      //TODO: 0.8 is magic number, we need to calculate font size properly
+      var size = originSize.copyWith(maxWidth: originSize.maxWidth * 0.8);
       var adjustedDefaultFontSize = defaultTextStyle.fontSize;
       var adjustedPinyinFontSize = pinyinTextStyle.fontSize;
       if (maxLines != null) {
         adjustedDefaultFontSize =
             _calculateFontSize(size, paragraph, defaultTextStyle, maxLines)[0] as double;
         // If pinyin has its own style, adjust its font size too
-        adjustedPinyinFontSize = _calculateFontSize(size, pinyins.join(),
-                pinyinTextStyle, maxLines)[0] as double;
+        adjustedPinyinFontSize =
+            _calculateFontSize(size, pinyins.join(), pinyinTextStyle, maxLines)[0] as double;
       }
       final adjustedDefaultTextStyle = defaultTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
-      final adjustedPinyinTextStyle =
-          pinyinTextStyle.copyWith(fontSize: adjustedPinyinFontSize);
+      final adjustedPinyinTextStyle = pinyinTextStyle.copyWith(fontSize: adjustedPinyinFontSize);
       final adjustedCenterWordTextStyle =
           centerWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
       final adjustedLinkedWordTextStyle =
@@ -98,7 +103,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       final elements = leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget!];
       elements.addAll(_generateHanzis(adjustedDefaultTextStyle, adjustedPinyinTextStyle,
               adjustedCenterWordTextStyle, adjustedLinkedWordTextStyle)
-          .map((hanzi) => _buildSingleHanzi(pinyinAnnotatedHanzi: hanzi)));
+          .mapIndexed(
+              (index, hanzi) => _buildSingleHanzi(index: index, pinyinAnnotatedHanzi: hanzi)));
       return Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: spacing,
@@ -107,7 +113,12 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     });
   }
 
-  Widget _buildSingleHanzi({required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+  Widget _buildSingleHanzi(
+      {required int index, required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+    // If builder is provided, use it to build hanzi
+    if (singleHanziBuilder != null) {
+      return singleHanziBuilder!(index: index, pinyinAnnotatedHanzi: pinyinAnnotatedHanzi);
+    }
     final pinyinRow = showPinyins
         ? [Text(pinyinAnnotatedHanzi.pinyin, style: pinyinAnnotatedHanzi.pinyinStyle)]
         : [];

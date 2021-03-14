@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // 🌎 Project imports:
 import '../my_progress_theme.dart';
-import '../ui_view/area_list_view.dart';
-import '../ui_view/running_view.dart';
+import 'ui_view/area_list_view.dart';
+import 'ui_view/running_view.dart';
 import '../ui_view/title_view.dart';
-import '../ui_view/workout_view.dart';
+import 'ui_view/workout_view.dart';
 
 class ReviewPanelHomeScreen extends StatefulWidget {
   
