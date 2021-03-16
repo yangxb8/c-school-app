@@ -11,7 +11,7 @@ import 'package:c_school_app/app/model/speech_exam.dart';
 import 'package:c_school_app/app/ui_view/speech_exam_bottom_sheet.dart';
 import 'package:c_school_app/service/app_state_service.dart';
 
-import '../ui_view/charts.dart';
+import '../ui_view/speech_evaluation_result.dart';
 
 class SettingPanelHomeScreen extends StatelessWidget {
   @override
