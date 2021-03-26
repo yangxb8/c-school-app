@@ -69,7 +69,7 @@ class WordCard extends StatelessWidget {
           aspectRatio: 4 / 3,
           child: loadImage
               ? BlurHashImageWithFallback(
-                  fallbackImg: emptyImage, mainImgUrl: word.pic?.url, blurHash: word.picHash)
+                  fallbackImg: emptyImage, mainImgUrl: word.pic?.url, blurHash: word.picHash!)
               : emptyImage,
         )
       ],
@@ -148,7 +148,7 @@ class WordCard extends StatelessWidget {
       ],
     ).paddingOnly(top: 40).center();
     // explanation part
-    var partExplanation = word.explanation.isEmpty
+    var partExplanation = word.explanation!.isEmpty
         ? SizedBox.shrink()
         : SelectableAutoSizeText.unselectable(
             '💡 ${word.explanation}',

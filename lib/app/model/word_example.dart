@@ -1,17 +1,13 @@
 // 📦 Package imports:
-import 'package:flamingo/flamingo.dart';
+import 'package:c_school_app/app/model/speech_audio.dart';
 
 /// Represent a single example of word
 class WordExample {
   final String example;
   final String meaning;
   final List<String> pinyin;
-  final StorageFile audioMale;
-  final StorageFile audioFemale;
-  /// Start time of each hanzi in milliseconds
-  final List<int> audioMaleTimeSeries;
-  /// Start time of each hanzi in milliseconds
-  final List<int> audioFemaleTimeSeries;
+  final SpeechAudio audioMale;
+  final SpeechAudio audioFemale;
 
   WordExample(
       {required this.example,
@@ -19,6 +15,5 @@ class WordExample {
         required this.pinyin,
         required this.audioMale,
         required this.audioFemale,
-        required this.audioMaleTimeSeries,
-        required this.audioFemaleTimeSeries,});
+      });
 }

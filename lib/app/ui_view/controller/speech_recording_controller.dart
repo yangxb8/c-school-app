@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 // 📦 Package imports:
+import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,13 +15,17 @@ import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/service/user_service.dart';
 
+import '../expand_box.dart';
+
 class SpeechRecordingController extends GetxController {
+  SpeechRecordingController(this.exam);
+
   final logger = LoggerService.logger;
   final audioService = Get.find<AudioService>();
 
   /// If recording, won't response to touch other than stopRecorder
   /// If in evaluation, won't response to any touch
-  Rx<RecordingStatus> recordingStatus = RecordingStatus.IDLE.obs;
+  Rx<RecordingStatus> recordingStatus = RecordingStatus.idle.obs;
 
   /// Word been selected by user, default to 0 (first word in exam.question)
   final RxInt wordSelected = 0.obs;
@@ -31,7 +36,11 @@ class SpeechRecordingController extends GetxController {
   /// TencentApi
   final tencentApi = Get.find<ApiService>().tencentApi;
 
-  SpeechRecordingController(this.exam);
+  /// Controller to expand or collapse summary
+  final summaryExpandController = ExpandBoxController();
+
+  /// Controller to expand or collapse detail
+  final detailExpandController = ExpandBoxController();
 
   /// Most recent speech recorded by this controller
   void playUserSpeech() async {
@@ -40,29 +49,38 @@ class SpeechRecordingController extends GetxController {
 
   void handleRecordButtonPressed() {
     switch (recordingStatus.value) {
-      case RecordingStatus.IDLE:
+      case RecordingStatus.idle:
         _startRecord();
         break;
-      case RecordingStatus.RECORDING:
+      case RecordingStatus.recording:
         _stopRecordAndEvaluate();
         break;
       // If under evaluating do nothing
-      case RecordingStatus.EVALUATING:
+      case RecordingStatus.evaluating:
         break;
       default:
         break;
     }
   }
 
+  /// Listener to sync behavior of summary and detail block
+  void detailExpandListener(AnimationStatus status) {
+    if(status==AnimationStatus.forward){
+      summaryExpandController.collapse();
+    } else if(status==AnimationStatus.reverse){
+      summaryExpandController.expand();
+    }
+  }
+
   void _startRecord() async {
-    if (recordingStatus.value != RecordingStatus.IDLE) return;
+    if (recordingStatus.value != RecordingStatus.idle) return;
     await audioService.startRecorder();
-    recordingStatus.value = RecordingStatus.RECORDING;
+    recordingStatus.value = RecordingStatus.recording;
   }
 
   Future<SentenceInfo?> _stopRecordAndEvaluate() async {
-    if (recordingStatus.value != RecordingStatus.RECORDING) return null;
-    recordingStatus.value = RecordingStatus.EVALUATING;
+    if (recordingStatus.value != RecordingStatus.recording) return null;
+    recordingStatus.value = RecordingStatus.evaluating;
     final file = await audioService.stopRecorder();
     final base64 = base64Encode(file.readAsBytesSync());
     final request = SoeRequest(
@@ -72,9 +90,9 @@ class SpeechRecordingController extends GetxController {
         SessionId: Uuid().v1());
     // Call native method and save result to latest userSpeech instance
     var result = await tencentApi.soe(request, file);
-    recordingStatus.value = RecordingStatus.IDLE;
+    recordingStatus.value = RecordingStatus.idle;
     return result;
   }
 }
 
-enum RecordingStatus { RECORDING, EVALUATING, IDLE }
+enum RecordingStatus { recording, evaluating, idle }

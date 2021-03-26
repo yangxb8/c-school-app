@@ -1,34 +1,48 @@
 // 🐦 Flutter imports:
 import 'package:c_school_app/app/ui_view/charts.dart';
+import 'package:c_school_app/app/ui_view/controller/speech_recording_controller.dart';
+import 'package:c_school_app/app/ui_view/expand_box.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
 import '../model/speech_evaluation_result.dart';
 
-class SpeechEvaluationRadialBarChart extends StatelessWidget {
+class SpeechEvaluationRadialBarChart extends GetView<SpeechRecordingController> {
   final SentenceInfo sentenceInfo;
   SpeechEvaluationRadialBarChart({required this.sentenceInfo});
 
   Map<String, double> get sentenceData => {
-    'pronAccuracy': sentenceInfo.displayPronAccuracy,
-    'pronCompletion': sentenceInfo.displayPronCompletion,
-    'pronFluency': sentenceInfo.displayPronFluency
-  };
+        'pronAccuracy': sentenceInfo.displayPronAccuracy,
+        'pronCompletion': sentenceInfo.displayPronCompletion,
+        'pronFluency': sentenceInfo.displayPronFluency
+      };
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        ExpandChild(
+        ExpandBox(
+          controller: controller.summaryExpandController,
+          hideArrow: true,
+          autoExpand: true,
           child: RadialBarChart(
             title: 'ui.charts.summary'.tr,
             data: sentenceData,
+            maxHeight: 250,
             centerWidget: Text(sentenceInfo.displaySuggestedScore.floor().toString()),
           ),
         ),
-        ExpandChild(
-          child: null,
+        ExpandBox(
+          controller: controller.detailExpandController,
+          listener: controller.detailExpandListener,
+          child: RadialBarChart(
+            title: '大家好',
+            data: sentenceData,
+            maxHeight: 250,
+            centerWidget: Text(sentenceInfo.displaySuggestedScore.floor().toString()),
+          ),
         )
       ],
     );

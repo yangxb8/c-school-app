@@ -9,6 +9,8 @@ import 'package:c_school_app/app/model/searchable.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:c_school_app/service/lecture_service.dart';
 
+import 'speech_audio.dart';
+
 part 'word.flamingo.dart';
 
 /// id is used as primary key for any word
@@ -37,13 +39,13 @@ class Word extends Document<Word> implements Searchable{
 
   /// Usage and other information about this word
   @Field()
-  String explanation = '';
+  String? explanation = '';
 
   @Field()
-  String partOfSentence = '';
+  String? partOfSentence = '';
 
   @Field()
-  String hint = '';
+  String? hint = '';
 
   /// 日语意思
   @ModelField()
@@ -67,26 +69,18 @@ class Word extends Document<Word> implements Searchable{
 
   /// Hash of word pic for display by blurhash
   @Field()
-  String picHash = '';
+  String? picHash = '';
 
   /// If the word has pic in cloud storage
   @StorageField()
   StorageFile? pic;
 
   /// If the word has wordAudio in cloud storage
-  @StorageField()
-  StorageFile? wordAudioMale;
+  @ModelField()
+  SpeechAudio? wordAudioMale;
 
-  @StorageField()
-  StorageFile? wordAudioFemale;
-
-  /// Start time of each hanzi in milliseconds
-  @Field()
-  List<int>? wordAudioMaleTimeSeries = [];
-
-  /// Start time of each hanzi in milliseconds
-  @Field()
-  List<int>? wordAudioFemaleTimeSeries = [];
+  @ModelField()
+  SpeechAudio? wordAudioFemale;
 
   List<Word> get relatedWords {
     if (_relatedWordIds.isBlank!) {

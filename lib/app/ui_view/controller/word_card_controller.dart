@@ -44,9 +44,12 @@ class WordCardController extends GetxController {
   void onInit() {
     /// Prepare audio file of this card
     <StorageFile>[
-      word.wordAudioFemale!,
-      word.wordAudioMale!,
-      ...word.wordMeanings!.expand((m) => m.exampleFemaleAudios! + m.exampleMaleAudios!)
+      word.wordAudioFemale!.audio!,
+      word.wordAudioMale!.audio!,
+      ...word.wordMeanings!.expand((m) =>
+          m.exampleMaleAudios!.map((e) => e.audio!)),
+      ...word.wordMeanings!.expand((m) =>
+          m.exampleFemaleAudios!.map((e) => e.audio!)),
     ].forEach((file) => audioService.prepareAudio(file.url));
     super.onInit();
   }
@@ -65,7 +68,7 @@ class WordCardController extends GetxController {
   Future<void> playWord({String? audioKey, Function? completionCallBack}) async {
     var wordAudio =
         reviewWordSpeakerGender == SpeakerGender.male ? word.wordAudioMale! : word.wordAudioFemale!;
-    await audioService.startPlayer(wordAudio.url, key:audioKey, callback: completionCallBack);
+    await audioService.startPlayer(wordAudio.audio!.url, key: audioKey, callback: completionCallBack);
   }
 
   /// Play audio of the meanings one by one, now only tts is supported
@@ -75,11 +78,14 @@ class WordCardController extends GetxController {
   }
 
   /// Play audio of the examples
-  Future<void> playExample({required WordExample wordExample, required String audioKey, Function? completionCallBack}) async {
-    var audio = reviewWordSpeakerGender == SpeakerGender.male
+  Future<void> playExample(
+      {required WordExample wordExample,
+      required String audioKey,
+      Function? completionCallBack}) async {
+    var speechAudio = reviewWordSpeakerGender == SpeakerGender.male
         ? wordExample.audioMale
         : wordExample.audioFemale;
-    await audioService.startPlayer(audio.url, key: audioKey, callback: completionCallBack);
+    await audioService.startPlayer(speechAudio.audio!.url, key: audioKey, callback: completionCallBack);
   }
 
   /// Default to Male

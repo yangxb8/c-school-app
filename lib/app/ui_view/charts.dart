@@ -1,33 +1,48 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 
+import 'package:styled_widget/styled_widget.dart';
+
 // 📦 Package imports:
-import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../model/speech_evaluation_result.dart';
-
 class RadialBarChart extends StatelessWidget {
-  final String title;
+  const RadialBarChart({
+    this.title,
+    required this.data,
+    this.centerWidget,
+    this.showLegend = true,
+    this.showTooltip = true,
+    this.maxHeight = double.infinity,
+    this.maxWidth = double.infinity,
+  });
+
+  /// Title of this table
+  final String? title;
+  final double maxHeight;
+
+  final double maxWidth;
 
   /// Name - value pair, value must be normalized to 100 max
   final Map<String, double> data;
 
   /// Widget to show in the center of circle chart
   final Widget? centerWidget;
+
+  /// Whether to show legend
   final bool showLegend;
 
-  const RadialBarChart(
-      {this.title = '', required this.data, this.centerWidget, this.showLegend = true});
+  /// Whether to show tooltip
+  final bool showTooltip;
 
-  List<RadialBarChartData> get chartData =>
-      data.entries.map((e) => RadialBarChartData(e)).toList();
+  List<RadialBarChartData> get chartData => data.entries.map((e) => RadialBarChartData(e)).toList();
 
   @override
   Widget build(BuildContext context) {
     return SfCircularChart(
-        title: ChartTitle(text: title),
-        legend: Legend(isVisible: showLegend),
+        title: title == null ? null : ChartTitle(text: title),
+        tooltipBehavior: TooltipBehavior(enable: showTooltip, opacity: 0.7),
+        legend: Legend(isVisible: showLegend, toggleSeriesVisibility: false),
         annotations: <CircularChartAnnotation>[
           CircularChartAnnotation(widget: centerWidget ?? const SizedBox.shrink())
         ],
@@ -38,7 +53,7 @@ class RadialBarChart extends StatelessWidget {
               yValueMapper: (RadialBarChartData data, _) => data.yData,
               cornerStyle: CornerStyle.bothCurve,
               maximumValue: 100),
-        ]);
+        ]).constrained(maxWidth: maxWidth, maxHeight: maxHeight);
   }
 }
 

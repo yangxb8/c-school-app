@@ -1,4 +1,5 @@
 // 📦 Package imports:
+import 'package:c_school_app/app/model/speech_audio.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:supercharged/supercharged.dart';
@@ -39,22 +40,14 @@ class WordMeaning extends Model {
   List<String>? _examplePinyins;
 
   /// Example ordinal : audio file
-  @StorageField()
+  @ModelField()
   // ignore: prefer_final_fields
-  List<StorageFile>? exampleMaleAudios = [];
+  List<SpeechAudio>? exampleMaleAudios = [];
 
   /// Example ordinal : audio file
-  @StorageField()
+  @ModelField()
   // ignore: prefer_final_fields
-  List<StorageFile>? exampleFemaleAudios = [];
-
-  @Field()
-  /// Start time of each hanzi in milliseconds
-  List<List<int>>? exampleMaleAudioTimeSeries = [];
-
-  @Field()
-  /// Start time of each hanzi in milliseconds
-  List<List<int>>? exampleFemaleAudioTimeSeries = [];
+  List<SpeechAudio>? exampleFemaleAudios = [];
 
   List<WordExample> get examples {
     var examples = <WordExample>[];
@@ -64,9 +57,8 @@ class WordMeaning extends Model {
           meaning: _exampleMeanings!.elementAtOrElse(i, () => ''),
           pinyin: _examplePinyins!.elementAtOrElse(i,()=>'').split(PINYIN_SEPARATOR),
           audioMale: exampleMaleAudios![i],
-          audioFemale: exampleFemaleAudios![i],
-          audioMaleTimeSeries: exampleMaleAudioTimeSeries![i],
-          audioFemaleTimeSeries: exampleFemaleAudioTimeSeries![i]));
+          audioFemale: exampleFemaleAudios![i]
+      ));
     }
     return examples;
   }

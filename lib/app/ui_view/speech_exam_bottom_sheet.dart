@@ -1,4 +1,5 @@
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/ui_view/speech_evaluation_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -6,7 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:styled_widget/styled_widget.dart';
 
 // 🌎 Project imports:
 import '../../app/model/speech_exam.dart';
@@ -14,16 +14,15 @@ import '../../c_school_icons.dart';
 import 'controller/speech_recording_controller.dart';
 
 class SpeechExamBottomSheet extends StatelessWidget {
-  final SpeechExam exam;
-  static final int MAX_SPEECHES_SHOWN = 4;
-
   SpeechExamBottomSheet({Key? key, required this.exam}) : super(key: key);
+
+  final SpeechExam exam;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
       init: SpeechRecordingController(exam),
-      builder: (dynamic controller) => Column(
+      builder: (SpeechRecordingController controller) => Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
@@ -53,11 +52,8 @@ class SpeechExamBottomSheet extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            //TODO: show result properly
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [],
-            ),
+            //TODO: remove test Data
+            child: SpeechEvaluationRadialBarChart(sentenceInfo: testData,),
           ),
           Center(
             child: IconButton(
@@ -67,7 +63,7 @@ class SpeechExamBottomSheet extends StatelessWidget {
             ),
           ),
         ],
-      ).borderRadius(all: 12).paddingSymmetric(horizontal: 20),
+      ).paddingSymmetric(horizontal: 20),
     );
   }
 }

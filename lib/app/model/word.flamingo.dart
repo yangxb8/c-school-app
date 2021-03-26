@@ -19,12 +19,10 @@ enum WordKey {
   breakdowns,
   tags,
   picHash,
-  wordAudioMaleTimeSeries,
-  wordAudioFemaleTimeSeries,
   wordMeanings,
-  pic,
   wordAudioMale,
   wordAudioFemale,
+  pic,
 }
 
 extension WordKeyExtension on WordKey {
@@ -52,18 +50,14 @@ extension WordKeyExtension on WordKey {
         return 'tags';
       case WordKey.picHash:
         return 'picHash';
-      case WordKey.wordAudioMaleTimeSeries:
-        return 'wordAudioMaleTimeSeries';
-      case WordKey.wordAudioFemaleTimeSeries:
-        return 'wordAudioFemaleTimeSeries';
       case WordKey.wordMeanings:
         return 'wordMeanings';
-      case WordKey.pic:
-        return 'pic';
       case WordKey.wordAudioMale:
         return 'wordAudioMale';
       case WordKey.wordAudioFemale:
         return 'wordAudioFemale';
+      case WordKey.pic:
+        return 'pic';
       default:
         throw Exception('Invalid data key.');
     }
@@ -84,18 +78,12 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, 'breakdowns', doc.breakdowns);
   Helper.writeNotNull(data, 'tags', doc.tags);
   Helper.writeNotNull(data, 'picHash', doc.picHash);
-  Helper.writeNotNull(
-      data, 'wordAudioMaleTimeSeries', doc.wordAudioMaleTimeSeries);
-  Helper.writeNotNull(
-      data, 'wordAudioFemaleTimeSeries', doc.wordAudioFemaleTimeSeries);
 
   Helper.writeModelListNotNull(data, 'wordMeanings', doc.wordMeanings);
+  Helper.writeModelNotNull(data, 'wordAudioMale', doc.wordAudioMale);
+  Helper.writeModelNotNull(data, 'wordAudioFemale', doc.wordAudioFemale);
 
   Helper.writeStorageNotNull(data, 'pic', doc.pic, isSetNull: true);
-  Helper.writeStorageNotNull(data, 'wordAudioMale', doc.wordAudioMale,
-      isSetNull: true);
-  Helper.writeStorageNotNull(data, 'wordAudioFemale', doc.wordAudioFemale,
-      isSetNull: true);
 
   return data;
 }
@@ -115,10 +103,6 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
   doc.tags = Helper.valueListFromKey<String>(data, 'tags');
   doc.picHash = Helper.valueFromKey<String>(data, 'picHash');
-  doc.wordAudioMaleTimeSeries =
-      Helper.valueListFromKey<int>(data, 'wordAudioMaleTimeSeries');
-  doc.wordAudioFemaleTimeSeries =
-      Helper.valueListFromKey<int>(data, 'wordAudioFemaleTimeSeries');
 
   final _wordMeanings =
       Helper.valueMapListFromKey<String, dynamic>(data, 'wordMeanings');
@@ -131,7 +115,21 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
     doc.wordMeanings = null;
   }
 
+  final _wordAudioMale =
+      Helper.valueMapFromKey<String, dynamic>(data, 'wordAudioMale');
+  if (_wordAudioMale != null) {
+    doc.wordAudioMale = SpeechAudio(values: _wordAudioMale);
+  } else {
+    doc.wordAudioMale = null;
+  }
+
+  final _wordAudioFemale =
+      Helper.valueMapFromKey<String, dynamic>(data, 'wordAudioFemale');
+  if (_wordAudioFemale != null) {
+    doc.wordAudioFemale = SpeechAudio(values: _wordAudioFemale);
+  } else {
+    doc.wordAudioFemale = null;
+  }
+
   doc.pic = Helper.storageFile(data, 'pic');
-  doc.wordAudioMale = Helper.storageFile(data, 'wordAudioMale');
-  doc.wordAudioFemale = Helper.storageFile(data, 'wordAudioFemale');
 }

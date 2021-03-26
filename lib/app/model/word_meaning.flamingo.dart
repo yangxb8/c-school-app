@@ -12,9 +12,6 @@ enum WordMeaningKey {
   _examples,
   _exampleMeanings,
   _examplePinyins,
-  exampleMaleAudioTimeSeries,
-  exampleFemaleAudioTimeSeries,
-
   exampleMaleAudios,
   exampleFemaleAudios,
 }
@@ -30,10 +27,6 @@ extension WordMeaningKeyExtension on WordMeaningKey {
         return '_exampleMeanings';
       case WordMeaningKey._examplePinyins:
         return '_examplePinyins';
-      case WordMeaningKey.exampleMaleAudioTimeSeries:
-        return 'exampleMaleAudioTimeSeries';
-      case WordMeaningKey.exampleFemaleAudioTimeSeries:
-        return 'exampleFemaleAudioTimeSeries';
       case WordMeaningKey.exampleMaleAudios:
         return 'exampleMaleAudios';
       case WordMeaningKey.exampleFemaleAudios:
@@ -51,17 +44,11 @@ Map<String, dynamic> _$toData(WordMeaning doc) {
   Helper.writeNotNull(data, '_examples', doc._examples);
   Helper.writeNotNull(data, '_exampleMeanings', doc._exampleMeanings);
   Helper.writeNotNull(data, '_examplePinyins', doc._examplePinyins);
-  Helper.writeNotNull(
-      data, 'exampleMaleAudioTimeSeries', doc.exampleMaleAudioTimeSeries);
-  Helper.writeNotNull(
-      data, 'exampleFemaleAudioTimeSeries', doc.exampleFemaleAudioTimeSeries);
 
-  Helper.writeStorageListNotNull(
-      data, 'exampleMaleAudios', doc.exampleMaleAudios,
-      isSetNull: true);
-  Helper.writeStorageListNotNull(
-      data, 'exampleFemaleAudios', doc.exampleFemaleAudios,
-      isSetNull: true);
+  Helper.writeModelListNotNull(
+      data, 'exampleMaleAudios', doc.exampleMaleAudios);
+  Helper.writeModelListNotNull(
+      data, 'exampleFemaleAudios', doc.exampleFemaleAudios);
 
   return data;
 }
@@ -74,11 +61,26 @@ void _$fromData(WordMeaning doc, Map<String, dynamic> data) {
       Helper.valueListFromKey<String>(data, '_exampleMeanings');
   doc._examplePinyins =
       Helper.valueListFromKey<String>(data, '_examplePinyins');
-  doc.exampleMaleAudioTimeSeries =
-      Helper.valueListFromKey<int>(data, 'exampleMaleAudioTimeSeries');
-  doc.exampleFemaleAudioTimeSeries =
-      Helper.valueListFromKey<int>(data, 'exampleFemaleAudioTimeSeries');
 
-  doc.exampleMaleAudios = Helper.storageFiles(data, 'exampleMaleAudios');
-  doc.exampleFemaleAudios = Helper.storageFiles(data, 'exampleFemaleAudios');
+  final _exampleMaleAudios =
+      Helper.valueMapListFromKey<String, dynamic>(data, 'exampleMaleAudios');
+  if (_exampleMaleAudios != null) {
+    doc.exampleMaleAudios = _exampleMaleAudios
+        .where((d) => d != null)
+        .map((d) => SpeechAudio(values: d))
+        .toList();
+  } else {
+    doc.exampleMaleAudios = null;
+  }
+
+  final _exampleFemaleAudios =
+      Helper.valueMapListFromKey<String, dynamic>(data, 'exampleFemaleAudios');
+  if (_exampleFemaleAudios != null) {
+    doc.exampleFemaleAudios = _exampleFemaleAudios
+        .where((d) => d != null)
+        .map((d) => SpeechAudio(values: d))
+        .toList();
+  } else {
+    doc.exampleFemaleAudios = null;
+  }
 }

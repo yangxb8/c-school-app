@@ -37,8 +37,10 @@ class AudioService extends GetxService {
   @override
   Future<void> onInit() async {
     // open audio session and keep it
-    await _player.openAudioSession(mode: SessionMode.modeSpokenAudio);
-    await _recorder.openAudioSession(mode: SessionMode.modeSpokenAudio);
+    if(!_player.isOpen()){
+      await _player.openAudioSession();
+    }
+    await _recorder.openAudioSession();
     ever(playerState, (dynamic state) {
       // When play complete, clientKey is cleared
       if (!_playerOccupiedState.contains(state)) {
