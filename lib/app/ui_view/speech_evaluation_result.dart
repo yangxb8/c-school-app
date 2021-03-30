@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'package:c_school_app/app/ui_view/charts.dart';
-import 'package:c_school_app/app/ui_view/controller/speech_recording_controller.dart';
 import 'package:c_school_app/app/ui_view/expand_box.dart';
 import 'package:flutter/material.dart';
 
@@ -8,14 +7,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../model/speech_evaluation_result.dart';
 
-class SpeechEvaluationRadialBarChart extends GetView<SpeechRecordingController> {
+class SpeechEvaluationRadialBarChart extends StatelessWidget {
+  SpeechEvaluationRadialBarChart(
+      {required this.sentenceInfo,
+      required this.summaryExpandController,
+      required this.detailExpandController,
+      required this.detailHanziIndex});
+
   final SentenceInfo sentenceInfo;
-  SpeechEvaluationRadialBarChart({required this.sentenceInfo});
+  final ExpandBoxController summaryExpandController;
+  final ExpandBoxController detailExpandController;
+  final RxInt detailHanziIndex;
 
   Map<String, double> get sentenceData => {
-        'pronAccuracy': sentenceInfo.displayPronAccuracy,
-        'pronCompletion': sentenceInfo.displayPronCompletion,
-        'pronFluency': sentenceInfo.displayPronFluency
+        'pronAccuracy'.tr: sentenceInfo.displayPronAccuracy,
+        'pronCompletion'.tr: sentenceInfo.displayPronCompletion,
+        'pronFluency'.tr: sentenceInfo.displayPronFluency
+      };
+
+  Map<String, double> hanziData(int index) => {
+        'pronAccuracy'.tr: sentenceInfo.words![index].displayPronAccuracy,
+        'pronFluency'.tr: sentenceInfo.words![index].displayPronFluency
       };
 
   @override
@@ -24,25 +36,36 @@ class SpeechEvaluationRadialBarChart extends GetView<SpeechRecordingController> 
       mainAxisSize: MainAxisSize.min,
       children: [
         ExpandBox(
-          controller: controller.summaryExpandController,
+          controller: summaryExpandController,
           hideArrow: true,
           autoExpand: true,
           child: RadialBarChart(
-            title: 'ui.charts.summary'.tr,
+            title: 'ui.speech.evaluation.result.summary'.tr,
             data: sentenceData,
             maxHeight: 250,
             centerWidget: Text(sentenceInfo.displaySuggestedScore.floor().toString()),
           ),
         ),
         ExpandBox(
-          controller: controller.detailExpandController,
-          listener: controller.detailExpandListener,
-          child: RadialBarChart(
-            title: '大家好',
-            data: sentenceData,
-            maxHeight: 250,
-            centerWidget: Text(sentenceInfo.displaySuggestedScore.floor().toString()),
-          ),
+          controller: detailExpandController,
+          listener: (AnimationStatus status) {
+            if (status == AnimationStatus.forward) {
+              summaryExpandController.collapse();
+            } else if (status == AnimationStatus.reverse) {
+              summaryExpandController.expand();
+            }
+          },
+          child: ObxValue(
+              (RxInt index) => RadialBarChart(
+                    title: sentenceInfo.words![detailHanziIndex.value].word,
+                    data: hanziData(index.value),
+                    maxHeight: 250,
+                    centerWidget: Text(sentenceInfo
+                        .words![detailHanziIndex.value].displaySuggestedScore
+                        .floor()
+                        .toString()),
+                  ),
+              detailHanziIndex),
         )
       ],
     );

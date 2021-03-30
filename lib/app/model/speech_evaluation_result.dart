@@ -77,6 +77,13 @@ class WordInfo {
 
   double get displayPronAccuracy => pronAccuracy ?? -1.0;
   double get displayPronFluency => pronFluency == null ? -1.0 : pronFluency! * 100;
+  double get displaySuggestedScore {
+    if (pronFluency == null || pronFluency == null) {
+      return -1.0;
+    } else {
+      return pronFluency! * pronAccuracy!;
+    }
+  }
 
   factory WordInfo.fromJson(Map<String, dynamic> json) => _$WordInfoFromJson(json);
   Map<String, dynamic> toJson() => _$WordInfoToJson(this);

@@ -56,6 +56,9 @@ class Messages extends Translations {
           'review.word.card.lastCard': 'Last card reached. Swipe left will go to first card',
           // Ui view
           'ui.charts.summary':'Summary',
+          'ui.speech.evaluation.result.pronAccuracy':'Accuracy',
+          'ui.speech.evaluation.result.pronCompletion':'Completion',
+          'ui.speech.evaluation.result.pronFluency':'Fluency',
         },
         'ja_JP': {
           // Common
@@ -108,7 +111,10 @@ class Messages extends Translations {
           'review.word.toast.changeSpeaker.female': '女性',
           'review.word.card.lastCard': '最後のカードです。左にスワイプすると初めに戻ります。',
           // Ui
-          'ui.charts.summary':'総評',
+          'ui.speech.evaluation.result.summary':'総評',
+          'ui.speech.evaluation.result.pronAccuracy':'精確度',
+          'ui.speech.evaluation.result.pronCompletion':'完成度',
+          'ui.speech.evaluation.result.pronFluency':'流暢度',
         }
       };
 }

@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 // 📦 Package imports:
-import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -42,6 +41,12 @@ class SpeechRecordingController extends GetxController {
   /// Controller to expand or collapse detail
   final detailExpandController = ExpandBoxController();
 
+  /// Index of hanzi been shown in detail radial chart
+  final detailHanziIndex = 0.obs;
+
+  /// latest evaluation result as SetenceInfo
+  final Rx<SentenceInfo?> lastResult = null.obs;
+
   /// Most recent speech recorded by this controller
   void playUserSpeech() async {
     throw UnimplementedError();
@@ -63,22 +68,15 @@ class SpeechRecordingController extends GetxController {
     }
   }
 
-  /// Listener to sync behavior of summary and detail block
-  void detailExpandListener(AnimationStatus status) {
-    if(status==AnimationStatus.forward){
-      summaryExpandController.collapse();
-    } else if(status==AnimationStatus.reverse){
-      summaryExpandController.expand();
-    }
-  }
-
   void _startRecord() async {
     if (recordingStatus.value != RecordingStatus.idle) return;
     await audioService.startRecorder();
+    detailHanziIndex.value = 0;
+    lastResult.value = null;
     recordingStatus.value = RecordingStatus.recording;
   }
 
-  Future<SentenceInfo?> _stopRecordAndEvaluate() async {
+  void _stopRecordAndEvaluate() async {
     if (recordingStatus.value != RecordingStatus.recording) return null;
     recordingStatus.value = RecordingStatus.evaluating;
     final file = await audioService.stopRecorder();
@@ -88,10 +86,8 @@ class SpeechRecordingController extends GetxController {
         RefText: exam.refText,
         UserVoiceData: base64,
         SessionId: Uuid().v1());
-    // Call native method and save result to latest userSpeech instance
-    var result = await tencentApi.soe(request, file);
     recordingStatus.value = RecordingStatus.idle;
-    return result;
+    lastResult.value = await tencentApi.soe(request, file);
   }
 }
 
