@@ -52,8 +52,16 @@ class SpeechExamBottomSheet extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            //TODO: remove test Data
-            child: SpeechEvaluationRadialBarChart(sentenceInfo: testData,),
+            child: Obx(
+              () => controller.lastResult.value == null
+                  ? const SizedBox.shrink()
+                  : SpeechEvaluationRadialBarChart(
+                      sentenceInfo: testData, //TODO: controller.lastResult.value!
+                      summaryExpandController: controller.summaryExpandController,
+                      detailExpandController: controller.detailExpandController,
+                      detailHanziIndex: controller.detailHanziIndex,
+                    ),
+            ),
           ),
           Center(
             child: IconButton(
