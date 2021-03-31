@@ -68,7 +68,7 @@ class WordCardController extends GetxController {
   Future<void> playWord({String? audioKey, Function? completionCallBack}) async {
     var wordAudio =
         reviewWordSpeakerGender == SpeakerGender.male ? word.wordAudioMale! : word.wordAudioFemale!;
-    await audioService.startPlayer(wordAudio.audio!.url, key: audioKey, callback: completionCallBack);
+    await audioService.startPlayer(uri:wordAudio.audio!.url, key: audioKey, callback: completionCallBack);
   }
 
   /// Play audio of the meanings one by one, now only tts is supported
@@ -85,7 +85,7 @@ class WordCardController extends GetxController {
     var speechAudio = reviewWordSpeakerGender == SpeakerGender.male
         ? wordExample.audioMale
         : wordExample.audioFemale;
-    await audioService.startPlayer(speechAudio.audio!.url, key: audioKey, callback: completionCallBack);
+    await audioService.startPlayer(uri:speechAudio.audio!.url, key: audioKey, callback: completionCallBack);
   }
 
   /// Default to Male

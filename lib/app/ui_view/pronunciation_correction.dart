@@ -1,24 +1,33 @@
+import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
 import 'pinyin_annotated_paragraph.dart';
 
-class PronunciationCorrection extends StatelessWidget {
-  const PronunciationCorrection(
-      {Key? key,
-      required this.pinyinList,
-      required this.refPinyinList,
-      required this.hanziList,
-      required this.refHanziList})
-      : super(key: key);
+typedef HanziTapCallback = void Function(int index);
 
+class PronunciationCorrection extends StatelessWidget {
+  PronunciationCorrection(
+      {Key? key,
+      required this.result,
+      required this.refPinyinList,
+      required this.refHanziList,
+      this.hanziTapCallback})
+      : hanziList = result.words!.map((w) => w.referenceWord ?? w.word!).toList(),
+        pinyinList = result.words!.map((w) => w.pinyin).toList(),
+        super(key: key);
+
+  static const TextStyle correctStyle = TextStyle(color: Colors.lightBlueAccent);
+  static const TextStyle errorStyle =
+      TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold);
+
+  final SentenceInfo result;
   final List<String> hanziList;
   final List<String> refHanziList;
   final List<String> pinyinList;
   final List<String> refPinyinList;
-  static const TextStyle correctStyle = TextStyle(color: Colors.lightBlueAccent);
-  static const TextStyle errorStyle =
-      TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold);
+  final HanziTapCallback? hanziTapCallback;
 
   /// Return list of index where pinyin doesn't match refPinyin
   List<int> _calculateWrongPinyinIndex(String pinyin, String refPinyin) {
@@ -53,12 +62,19 @@ class PronunciationCorrection extends StatelessWidget {
                     .mapIndexed(
                         (index, element) => TextSpan(text: element, style: pinyinStyles[index]))
                     .toList()));
-        return IntrinsicWidth(
-          child: Column(
-            children: [
-              pinyinWidget,
-              hanziWidget,
-            ],
+        return SimpleGestureDetector(
+          onTap: () {
+            if (hanziTapCallback != null) {
+              hanziTapCallback!(index);
+            }
+          },
+          child: IntrinsicWidth(
+            child: Column(
+              children: [
+                pinyinWidget,
+                hanziWidget,
+              ],
+            ),
           ),
         );
       };

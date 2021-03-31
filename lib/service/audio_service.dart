@@ -1,5 +1,6 @@
 // 🎯 Dart imports:
 import 'dart:io';
+import 'dart:typed_data';
 
 // 📦 Package imports:
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -37,7 +38,7 @@ class AudioService extends GetxService {
   @override
   Future<void> onInit() async {
     // open audio session and keep it
-    if(!_player.isOpen()){
+    if (!_player.isOpen()) {
       await _player.openAudioSession();
     }
     await _recorder.openAudioSession();
@@ -62,21 +63,32 @@ class AudioService extends GetxService {
   /// Play uri provided, if other thing is playing, stop it and play the new audio.
   /// Either web url or file path can be used, the type will be inferred automatically.
   /// If void callback is provided, it will get called after play completed.
-  Future<void> startPlayer(String uri, {Function? callback, String? key = ''}) async {
+  Future<void> startPlayer(
+      {String? uri,
+      Uint8List? bytes,
+      Function? callback,
+      String? key = '',
+      Duration? from,
+      Duration? to}) async {
+    assert(uri != null || bytes != null);
     // If there is another file been played, stop it
     await stopPlayer();
     // Set clientKey to new key
     clientKey.value = key;
     // Always cache the audio
-    final bytes = (await DefaultCacheManager().getSingleFile(uri)).readAsBytesSync();
+    final data = bytes ?? (await DefaultCacheManager().getSingleFile(uri!)).readAsBytesSync();
     await _player.startPlayer(
-        fromDataBuffer: bytes,
+        fromDataBuffer: data,
         whenFinished: () {
           if (callback != null) {
             callback();
           }
           refreshPlayerState();
         });
+    if (from != null) {
+      await _player.seekToPlayer(from);
+    }
+    //TODO: implement stop at [to]
     refreshPlayerState();
   }
 

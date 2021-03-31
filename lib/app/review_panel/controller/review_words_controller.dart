@@ -184,7 +184,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     if (wordAudio == null) {
       return;
     }
-    await audioService.startPlayer(wordAudio.audio!.url, key: audioKey);
+    await audioService.startPlayer(uri:wordAudio.audio!.url, key: audioKey);
   }
 
   /// [WordsList] Jump to card in flash card mode

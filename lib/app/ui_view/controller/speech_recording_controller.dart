@@ -47,9 +47,18 @@ class SpeechRecordingController extends GetxController {
   /// latest evaluation result as SetenceInfo
   final Rx<SentenceInfo?> lastResult = null.obs;
 
-  /// Most recent speech recorded by this controller
-  void playUserSpeech() async {
+  /// When hanzi in result is tapped
+  void onHanziTap(int index) => detailHanziIndex.value=index;
+
+  /// Play userSpeech. If wordIndex is specified, play the single word
+  void playUserSpeech({int? wordIndex}) async {
+    //TODO: implement this!
     throw UnimplementedError();
+  }
+
+  /// Play ref speech of exam. If wordIndex is specified, play the single word
+  void playRefSpeech({int? wordIndex}) async {
+    await audioService.startPlayer(uri:exam.refSpeech!.audio!.url);
   }
 
   void handleRecordButtonPressed() {
@@ -89,6 +98,7 @@ class SpeechRecordingController extends GetxController {
     recordingStatus.value = RecordingStatus.idle;
     lastResult.value = await tencentApi.soe(request, file);
   }
+
 }
 
 enum RecordingStatus { recording, evaluating, idle }

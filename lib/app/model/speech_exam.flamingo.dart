@@ -8,24 +8,23 @@ part of 'speech_exam.dart';
 
 /// Field value key
 enum SpeechExamKey {
-  refAudioTimeSeries,
   refText,
+  refPinyins,
   _mode,
-
-  refAudio,
+  refSpeech,
 }
 
 extension SpeechExamKeyExtension on SpeechExamKey {
   String get value {
     switch (this) {
-      case SpeechExamKey.refAudioTimeSeries:
-        return 'refAudioTimeSeries';
       case SpeechExamKey.refText:
         return 'refText';
+      case SpeechExamKey.refPinyins:
+        return 'refPinyins';
       case SpeechExamKey._mode:
         return '_mode';
-      case SpeechExamKey.refAudio:
-        return 'refAudio';
+      case SpeechExamKey.refSpeech:
+        return 'refSpeech';
       default:
         throw Exception('Invalid data key.');
     }
@@ -35,21 +34,25 @@ extension SpeechExamKeyExtension on SpeechExamKey {
 /// For save data
 Map<String, dynamic> _$toData(SpeechExam doc) {
   final data = <String, dynamic>{};
-  Helper.writeNotNull(data, 'refAudioTimeSeries', doc.refAudioTimeSeries);
   Helper.writeNotNull(data, 'refText', doc.refText);
+  Helper.writeNotNull(data, 'refPinyins', doc.refPinyins);
   Helper.writeNotNull(data, '_mode', doc._mode);
 
-  Helper.writeStorageNotNull(data, 'refAudio', doc.refAudio, isSetNull: true);
+  Helper.writeModelNotNull(data, 'refSpeech', doc.refSpeech);
 
   return data;
 }
 
 /// For load data
 void _$fromData(SpeechExam doc, Map<String, dynamic> data) {
-  doc.refAudioTimeSeries =
-      Helper.valueListFromKey<int>(data, 'refAudioTimeSeries');
   doc.refText = Helper.valueFromKey<String>(data, 'refText');
+  doc.refPinyins = Helper.valueListFromKey<String>(data, 'refPinyins');
   doc._mode = Helper.valueFromKey<String>(data, '_mode');
 
-  doc.refAudio = Helper.storageFile(data, 'refAudio');
+  final _refSpeech = Helper.valueMapFromKey<String, dynamic>(data, 'refSpeech');
+  if (_refSpeech != null) {
+    doc.refSpeech = SpeechAudio(values: _refSpeech);
+  } else {
+    doc.refSpeech = null;
+  }
 }

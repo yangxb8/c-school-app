@@ -1,4 +1,5 @@
 // 📦 Package imports:
+import 'package:c_school_app/app/model/speech_audio.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
@@ -16,13 +17,13 @@ class SpeechExam extends Exam<SpeechExam>{
   })  : super(id: id, snapshot: snapshot, values: values);
 
   /// Audio data for the original speech
-  @StorageField()
-  StorageFile? refAudio;
-  @Field()
-  List<int>? refAudioTimeSeries = [];
+  @ModelField()
+  SpeechAudio? refSpeech;
   /// Text version of refAudio
   @Field()
   String? refText = '';
+  @Field()
+  List<String>? refPinyins = [];
   /// Speech Evaluation mode
   @Field()
   String? _mode;

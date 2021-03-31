@@ -84,6 +84,7 @@ class WordInfo {
       return pronFluency! * pronAccuracy!;
     }
   }
+  String get pinyin => phoneInfos!.map((p) => p.referencePhone??p.detectedPhone!).join();
 
   factory WordInfo.fromJson(Map<String, dynamic> json) => _$WordInfoFromJson(json);
   Map<String, dynamic> toJson() => _$WordInfoToJson(this);
