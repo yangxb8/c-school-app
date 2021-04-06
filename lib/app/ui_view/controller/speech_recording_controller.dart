@@ -1,9 +1,11 @@
 // 🎯 Dart imports:
 import 'dart:convert';
+import 'dart:typed_data';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/soe_request.dart';
@@ -44,21 +46,37 @@ class SpeechRecordingController extends GetxController {
   /// Index of hanzi been shown in detail radial chart
   final detailHanziIndex = 0.obs;
 
+  /// Last speech recorded by user
+  Uint8List? lastSpeech;
+
   /// latest evaluation result as SetenceInfo
   final Rx<SentenceInfo?> lastResult = null.obs;
 
   /// When hanzi in result is tapped
-  void onHanziTap(int index) => detailHanziIndex.value=index;
+  void onHanziTap(int index) => detailHanziIndex.value = index;
 
   /// Play userSpeech. If wordIndex is specified, play the single word
   void playUserSpeech({int? wordIndex}) async {
-    //TODO: implement this!
-    throw UnimplementedError();
+    var from;
+    var to;
+    if (wordIndex != null) {
+      from = lastResult.value?.words?[wordIndex].beginTime;
+      to = lastResult.value?.words?.elementAtOrNull(wordIndex+1)?.beginTime;
+    }
+    await audioService.startPlayer(
+        bytes: lastSpeech, key: '${exam.refText!}:user', from: from, to: to);
   }
 
   /// Play ref speech of exam. If wordIndex is specified, play the single word
   void playRefSpeech({int? wordIndex}) async {
-    await audioService.startPlayer(uri:exam.refSpeech!.audio!.url);
+    var from;
+    var to;
+    if (wordIndex != null) {
+      from = exam.refSpeech!.timeSeries![wordIndex];
+      to = exam.refSpeech!.timeSeries!.elementAtOrNull(wordIndex+1);
+    }
+    await audioService.startPlayer(
+        uri: exam.refSpeech!.audio!.url, key: '${exam.refText!}:ref', from: from, to: to);
   }
 
   void handleRecordButtonPressed() {
@@ -89,7 +107,8 @@ class SpeechRecordingController extends GetxController {
     if (recordingStatus.value != RecordingStatus.recording) return null;
     recordingStatus.value = RecordingStatus.evaluating;
     final file = await audioService.stopRecorder();
-    final base64 = base64Encode(file.readAsBytesSync());
+    lastSpeech = file.readAsBytesSync();
+    final base64 = base64Encode(lastSpeech!);
     final request = SoeRequest(
         ScoreCoeff: UserService.user.userScoreCoeff,
         RefText: exam.refText,
@@ -98,7 +117,6 @@ class SpeechRecordingController extends GetxController {
     recordingStatus.value = RecordingStatus.idle;
     lastResult.value = await tencentApi.soe(request, file);
   }
-
 }
 
 enum RecordingStatus { recording, evaluating, idle }

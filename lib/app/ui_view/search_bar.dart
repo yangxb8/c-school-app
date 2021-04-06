@@ -66,7 +66,6 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
       transitionDuration: const Duration(milliseconds: 800),
       transitionCurve: Curves.easeInOut,
       physics: const BouncingScrollPhysics(),
-      maxWidth: 600,
       debounceDelay: const Duration(milliseconds: 500),
       automaticallyImplyBackButton: automaticallyImplyBackButton,
       onQueryChanged: (query) {
@@ -138,6 +137,6 @@ class _SearchBarController<T extends Searchable> extends GetxController {
       return;
     }
     searchResult.clear();
-    searchResult.addAll(items.searchFuzzy(searchQuery.value!));
+    searchResult.addAll(items.searchFuzzy(searchQuery.value));
   }
 }

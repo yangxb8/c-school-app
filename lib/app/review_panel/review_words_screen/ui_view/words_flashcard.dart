@@ -26,12 +26,12 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
   @override
   Widget build(BuildContext context) {
     controller.pageController.addListener(() {
-      controller.pageFraction.value = controller.pageController.page;
+      controller.pageFraction.value = controller.pageController.page!;
     });
 
     Future<void> _onHorizontalSwipe(swipeDirection) async {
       // If in autoPlay mode, disable swipe
-      if (controller.isAutoPlayMode.value!) return;
+      if (controller.isAutoPlayMode.value) return;
       if (swipeDirection == SwipeDirection.right) {
         await controller.previousCard();
       } else {

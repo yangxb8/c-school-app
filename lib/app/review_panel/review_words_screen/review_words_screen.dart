@@ -54,7 +54,7 @@ class ReviewWords extends GetView<ReviewWordsController> {
         CircularButton(
           icon: Obx(
             () => CustomAnimation<Color>(
-              control: controller.searchBarPlayIconControl.value!,
+              control: controller.searchBarPlayIconControl.value,
               tween: Colors.grey.tweenTo(Colors.lightBlueAccent) as Animatable<Color>,
               duration: 0.3.seconds,
               builder: (_, __, value) => AnimatedIcon(

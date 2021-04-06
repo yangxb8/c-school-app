@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // 📦 Package imports:
-import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 

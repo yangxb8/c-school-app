@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
 import 'pinyin_annotated_paragraph.dart';
+import '../../util/utility.dart';
 
 typedef HanziTapCallback = void Function(int index);
 
@@ -14,8 +15,11 @@ class PronunciationCorrection extends StatelessWidget {
       required this.refPinyinList,
       required this.refHanziList,
       this.hanziTapCallback})
-      : hanziList = result.words!.map((w) => w.referenceWord ?? w.word!).toList(),
-        pinyinList = result.words!.map((w) => w.pinyin).toList(),
+      : hanziList = PinyinUtil.appendPunctuation(
+            origin: result.words!.map((w) => w.referenceWord ?? w.word!).toList(),
+            ref: refHanziList),
+        pinyinList = PinyinUtil.appendPunctuation(
+            origin: result.words!.map((w) => w.pinyin).toList(), ref: refHanziList),
         super(key: key);
 
   static const TextStyle correctStyle = TextStyle(color: Colors.lightBlueAccent);

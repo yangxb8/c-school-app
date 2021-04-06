@@ -36,7 +36,7 @@ class WordCardController extends GetxController {
 
   void toggleFavoriteCard() => lectureService.toggleWordLiked(word);
 
-  void toggleHint() => isHintShown.value = !isHintShown.value!;
+  void toggleHint() => isHintShown.value = !isHintShown.value;
 
   bool isWordLiked() => _userLikedWordIds.contains(word.wordId);
 
@@ -65,7 +65,7 @@ class WordCardController extends GetxController {
   }
 
   /// Play audio of the word
-  Future<void> playWord({String? audioKey, Function? completionCallBack}) async {
+  Future<void> playWord({required String audioKey, Function? completionCallBack}) async {
     var wordAudio =
         reviewWordSpeakerGender == SpeakerGender.male ? word.wordAudioMale! : word.wordAudioFemale!;
     await audioService.startPlayer(uri:wordAudio.audio!.url, key: audioKey, callback: completionCallBack);
@@ -90,8 +90,7 @@ class WordCardController extends GetxController {
 
   /// Default to Male
   SpeakerGender get reviewWordSpeakerGender => Get.isRegistered<ReviewWordsController>()
-      ? Get.find<ReviewWordsController>().speakerGender.value!
-      : SpeakerGender.male;
+      ? Get.find<ReviewWordsController>().speakerGender.value: SpeakerGender.male;
 
   @override
   void onClose() {

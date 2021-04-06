@@ -1,6 +1,7 @@
 // 📦 Package imports:
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../../util/utility.dart';
 
 part 'speech_evaluation_result.g.dart';
 
@@ -84,7 +85,9 @@ class WordInfo {
       return pronFluency! * pronAccuracy!;
     }
   }
-  String get pinyin => phoneInfos!.map((p) => p.referencePhone??p.detectedPhone!).join();
+
+  String get pinyin => PinyinUtil.transformPinyin(
+      [phoneInfos!.map((p) => p.referencePhone ?? p.detectedPhone!).join()]).single;
 
   factory WordInfo.fromJson(Map<String, dynamic> json) => _$WordInfoFromJson(json);
   Map<String, dynamic> toJson() => _$WordInfoToJson(this);

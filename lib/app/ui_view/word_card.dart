@@ -34,7 +34,7 @@ class WordCard extends StatelessWidget {
   WordCard({Key? key, required this.word, this.loadImage = true, isDialog = false})
       : controller = isDialog
             ? WordCardController(word)
-            : Get.put<WordCardController>(WordCardController(word), tag: word.wordId)!,
+            : Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
         super(key: key);
 
   @override

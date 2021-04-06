@@ -1,3 +1,5 @@
+import 'utility.dart';
+
 /// Pinyinizer Adds proper (Mandarin) Chinese tone diacritics to a string.
 ///
 /// The four tones of Chinese are commonly represented by the numbers 1-4.
@@ -5,12 +7,10 @@
 /// and transforming it into a string with proper tone diacritics.
 ///
 class PinyinUtil {
-  static final RegExp _tonePtn = RegExp(
-      r"([aeiouvü]{1,2}(n|ng|r|\'er|N|NG|R|\'ER){0,1}[1234])",
-      caseSensitive: false,
-      multiLine: false);
-  static final RegExp _suffixPtn = RegExp(r"(n|ng|r|\'er|N|NG|R|\'ER)$",
+  static final RegExp _tonePtn = RegExp(r"([aeiouvü]{1,2}(n|ng|r|\'er|N|NG|R|\'ER){0,1}[1234])",
       caseSensitive: false, multiLine: false);
+  static final RegExp _suffixPtn =
+      RegExp(r"(n|ng|r|\'er|N|NG|R|\'ER)$", caseSensitive: false, multiLine: false);
 
   static const _toneMap = {
     'a': ['ā', 'á', 'ǎ', 'à'],
@@ -37,8 +37,20 @@ class PinyinUtil {
   };
 
   /// [wo3,ai4,ni3] -> [wǒ,ài,nǐ]
-  static List<String> transformPinyin(List<String> pinyins){
+  static List<String> transformPinyin(List<String> pinyins) {
     return _transform(pinyins.join('-')).split('-');
+  }
+
+  /// ['我','，','爱','你']+['wǒ','ài','nǐ'] => [wǒ,'，',ài,nǐ]
+  static List<String> appendPunctuation(
+      {required List<String> origin, required List<String> ref}) {
+    var copy = origin.map((e) => e).toList();
+    for(var i=0;i<ref.length;i++){
+      if(!ref[i].isSingleHanzi){
+        copy.insert(i, ref[i]);
+      }
+    }
+    return copy;
   }
 
   static String _transform(String text) {

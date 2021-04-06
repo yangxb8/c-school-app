@@ -127,7 +127,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// In autoPlay, user is restricted to card mode, this might need to be changed for better UX
   void changeMode() {
     // If in autoPlay mode, stop it
-    if (isAutoPlayMode.value!) {
+    if (isAutoPlayMode.value) {
       isAutoPlayMode.value = false;
     }
     if (_mode.value == WordsReviewMode.flash_card) {
@@ -162,7 +162,7 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       Timer(0.3.seconds, () => autoPlayPressed());
       return;
     }
-    if (!isAutoPlayMode.value!) {
+    if (!isAutoPlayMode.value) {
       searchBarPlayIconControl.value = CustomAnimationControl.PLAY_FROM_START;
       isAutoPlayMode.value = true;
       flipBackPrimaryCard();
@@ -178,13 +178,13 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   ///
   /// Play audio of the word
   Future<void> playWord({required Word word, required String audioKey}) async {
-    if (isAutoPlayMode.value!) return;
+    if (isAutoPlayMode.value) return;
     var wordAudio =
         speakerGender.value == SpeakerGender.male ? word.wordAudioMale : word.wordAudioFemale;
     if (wordAudio == null) {
       return;
     }
-    await audioService.startPlayer(uri:wordAudio.audio!.url, key: audioKey);
+    await audioService.startPlayer(uri: wordAudio.audio!.url, key: audioKey);
   }
 
   /// [WordsList] Jump to card in flash card mode
@@ -208,14 +208,14 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// [WordsFlashcard] Save status to history
   void saveAndResetWordHistory() {
     if (wordMemoryStatus.value != WordMemoryStatus.NOT_REVIEWED) {
-      lectureService.addWordReviewedHistory(primaryWord, status: wordMemoryStatus.value!);
+      lectureService.addWordReviewedHistory(primaryWord, status: wordMemoryStatus.value);
       wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     }
   }
 
   /// [WordsFlashcard] Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if (primaryWordCardController!=null && primaryWordCardController!.isCardFlipped.isTrue!) {
+    if (primaryWordCardController != null && primaryWordCardController!.isCardFlipped.isTrue) {
       primaryWordCardController!.flipCard();
     }
   }
@@ -266,17 +266,19 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
           searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
           return;
         }
-        await primaryWordCardController!.playWord(completionCallBack: () async {
-          // after playWord
-          // When we reach the last card or autoPlay turn off
-          if (isAutoPlayMode.isFalse || primaryWordIndex.value == 0) {
-            searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
-            isAutoPlayMode.value = false;
-          } else {
-            await nextCard();
-            Future.delayed(1.seconds, _autoPlayCard);
-          }
-        });
+        await primaryWordCardController!.playWord(
+            audioKey: primaryWord.id,
+            completionCallBack: () async {
+              // after playWord
+              // When we reach the last card or autoPlay turn off
+              if (isAutoPlayMode.isFalse || primaryWordIndex.value == 0) {
+                searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+                isAutoPlayMode.value = false;
+              } else {
+                await nextCard();
+                Future.delayed(1.seconds, _autoPlayCard);
+              }
+            });
       });
     });
   }

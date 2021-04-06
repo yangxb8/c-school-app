@@ -13,6 +13,7 @@ class SpeechAudio extends Model{
   @StorageField()
   StorageFile? audio;
 
+  /// Start times of each hanzi
   @Field()
   List<int>? timeSeries;
 

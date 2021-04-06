@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           } as bool Function(OverscrollIndicatorNotification)?,
           child: Obx(
             () => ProgressHUD(
-              inAsyncCall: controller.processing.value!,
+              inAsyncCall: controller.processing.value,
               child: SingleChildScrollView(
                 child: Container(
                   width: MediaQuery.of(context).size.width,

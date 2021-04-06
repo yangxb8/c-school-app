@@ -41,7 +41,7 @@ class ExpandBox extends StatelessWidget {
       children: [
         Obx(
           () => CustomAnimation<double>(
-            control: controller.control.value!,
+            control: controller.control.value,
             tween: 0.0.tweenTo(1.0),
             duration: duration ?? default_duration,
             curve: Curves.easeInOut,
@@ -63,7 +63,7 @@ class ExpandBox extends StatelessWidget {
             : SimpleGestureDetector(
                 onTap: controller.handleTap,
                 child: Obx(() => CustomAnimation<double>(
-                      control: controller.control.value!,
+                      control: controller.control.value,
                       tween: 0.0.tweenTo(pi),
                       duration: duration ?? default_duration,
                       builder: (context, child, value) {

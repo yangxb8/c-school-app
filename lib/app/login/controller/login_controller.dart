@@ -139,7 +139,7 @@ class LoginController extends GetxController {
             .trParams({'studyCount': '${AppStateService.startCount + 1}'})!),
         textConfirm: 'button.close'.tr,
         onConfirm: () {
-          if (UserService.isLectureServiceInitialized.isTrue!) {
+          if (UserService.isLectureServiceInitialized.isTrue) {
             Get.offAllNamed('/home');
           } else {
             processing.value = true;

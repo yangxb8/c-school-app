@@ -40,7 +40,7 @@ class RadialBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfCircularChart(
-        title: title == null ? null : ChartTitle(text: title),
+        title: title == null ? null : ChartTitle(text: title!),
         tooltipBehavior: TooltipBehavior(enable: showTooltip, opacity: 0.7),
         legend: Legend(isVisible: showLegend, toggleSeriesVisibility: false),
         annotations: <CircularChartAnnotation>[

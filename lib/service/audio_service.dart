@@ -1,4 +1,5 @@
 // 🎯 Dart imports:
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -31,7 +32,10 @@ class AudioService extends GetxService {
 
   /// Key of client using this service, one can observe this key
   /// to know if they still connected to the service
-  final clientKey = ''.obs;
+  final RxString clientKey = ''.obs;
+
+  /// Timer of last player
+  Timer? currentTimer;
 
   String? _lastRecordPath;
 
@@ -46,6 +50,8 @@ class AudioService extends GetxService {
       // When play complete, clientKey is cleared
       if (!_playerOccupiedState.contains(state)) {
         clientKey.value = '';
+        // If there is a timer, stop it
+        currentTimer?.cancel();
       }
     });
     // Set up tts
@@ -60,35 +66,54 @@ class AudioService extends GetxService {
     DefaultCacheManager().getSingleFile(url);
   }
 
-  /// Play uri provided, if other thing is playing, stop it and play the new audio.
+  /// Play [uri] or [bytes] provided, if other thing is playing, stop it and play the new audio.
+  ///
   /// Either web url or file path can be used, the type will be inferred automatically.
-  /// If void callback is provided, it will get called after play completed.
+  /// If void [callback] is provided, it will get called after play completed.
+  ///
+  /// Use [from] and [to] to specify a range to play, when [to] is hit, player will be PAUSED.
+  /// This is ideal if you want to play a different range of the same audio, so we don't need the
+  /// stop -> start cycle. In which case, remember to provide the same key for both call of this method.
   Future<void> startPlayer(
       {String? uri,
       Uint8List? bytes,
       Function? callback,
-      String? key = '',
+      String key = '',
+      bool forceRestart = false,
       Duration? from,
       Duration? to}) async {
     assert(uri != null || bytes != null);
-    // If there is another file been played, stop it
-    await stopPlayer();
+    if (playerState.value != PlayerState.isStopped && // If stopped, not point to call stop again
+            forceRestart || // If forceRestart, restart
+        clientKey.value != key || // If a new audio, restart
+        key != '') {
+      // Event key is the same. If both are empty key, restart
+      await stopPlayer();
+    }
     // Set clientKey to new key
     clientKey.value = key;
     // Always cache the audio
     final data = bytes ?? (await DefaultCacheManager().getSingleFile(uri!)).readAsBytesSync();
-    await _player.startPlayer(
-        fromDataBuffer: data,
-        whenFinished: () {
-          if (callback != null) {
-            callback();
-          }
-          refreshPlayerState();
-        });
+    // If Player is stopped, start it
+    if (playerState.value == PlayerState.isStopped) {
+      await _player.startPlayer(
+          fromDataBuffer: data,
+          whenFinished: () {
+            if (callback != null) {
+              callback();
+            }
+            refreshPlayerState();
+          });
+    }
     if (from != null) {
       await _player.seekToPlayer(from);
+      await resumePlayer(); // Resume play if it was paused before
     }
-    //TODO: implement stop at [to]
+    if (to != null) {
+      var start = from ?? 0.seconds;
+      var duration = to - start;
+      Timer(duration, () => _player.pausePlayer());
+    }
     refreshPlayerState();
   }
 
