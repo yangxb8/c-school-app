@@ -40,12 +40,12 @@ Map<String, dynamic> _$toData(LectureHistory doc) {
 
 /// For load data
 void _$fromData(LectureHistory doc, Map<String, dynamic> data) {
-  doc.lectureId = Helper.valueFromKey<String>(data, 'lectureId');
+  doc.lectureId = Helper.valueFromKey<String?>(data, 'lectureId');
   if (data['timestamp'] is Map) {
     doc.timestamp = Helper.timestampFromMap(data, 'timestamp');
   } else {
-    doc.timestamp = Helper.valueFromKey<Timestamp>(data, 'timestamp');
+    doc.timestamp = Helper.valueFromKey<Timestamp?>(data, 'timestamp');
   }
 
-  doc.isLatest = Helper.valueFromKey<bool>(data, 'isLatest');
+  doc.isLatest = Helper.valueFromKey<bool?>(data, 'isLatest');
 }

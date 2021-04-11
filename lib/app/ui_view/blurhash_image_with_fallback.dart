@@ -34,12 +34,17 @@ class BlurHashImageWithFallback extends StatelessWidget {
       return CachedNetworkImage(
           fit: BoxFit.cover,
           imageUrl: mainImgUrl!,
-          placeholder: (context, url) =>
-              BlurHash(hash: blurHash, imageFit: boxFit, color: Colors.white70,),
-          errorWidget: (context, url, error) => (fallbackImg is String)? Image.asset(
-                fallbackImg,
-                fit: boxFit,
-              ):fallbackImg);
+          placeholder: (context, url) => BlurHash(
+                hash: blurHash,
+                imageFit: boxFit,
+                color: Colors.white70,
+              ),
+          errorWidget: (context, url, error) => (fallbackImg is String)
+              ? Image.asset(
+                  fallbackImg,
+                  fit: boxFit,
+                )
+              : fallbackImg);
     }
   }
 }

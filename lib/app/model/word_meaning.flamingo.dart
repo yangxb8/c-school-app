@@ -9,11 +9,7 @@ part of 'word_meaning.dart';
 /// Field value key
 enum WordMeaningKey {
   meaning,
-  _examples,
-  _exampleMeanings,
-  _examplePinyins,
-  exampleMaleAudios,
-  exampleFemaleAudios,
+  examples,
 }
 
 extension WordMeaningKeyExtension on WordMeaningKey {
@@ -21,16 +17,8 @@ extension WordMeaningKeyExtension on WordMeaningKey {
     switch (this) {
       case WordMeaningKey.meaning:
         return 'meaning';
-      case WordMeaningKey._examples:
-        return '_examples';
-      case WordMeaningKey._exampleMeanings:
-        return '_exampleMeanings';
-      case WordMeaningKey._examplePinyins:
-        return '_examplePinyins';
-      case WordMeaningKey.exampleMaleAudios:
-        return 'exampleMaleAudios';
-      case WordMeaningKey.exampleFemaleAudios:
-        return 'exampleFemaleAudios';
+      case WordMeaningKey.examples:
+        return 'examples';
       default:
         throw Exception('Invalid data key.');
     }
@@ -41,46 +29,24 @@ extension WordMeaningKeyExtension on WordMeaningKey {
 Map<String, dynamic> _$toData(WordMeaning doc) {
   final data = <String, dynamic>{};
   Helper.writeNotNull(data, 'meaning', doc.meaning);
-  Helper.writeNotNull(data, '_examples', doc._examples);
-  Helper.writeNotNull(data, '_exampleMeanings', doc._exampleMeanings);
-  Helper.writeNotNull(data, '_examplePinyins', doc._examplePinyins);
 
-  Helper.writeModelListNotNull(
-      data, 'exampleMaleAudios', doc.exampleMaleAudios);
-  Helper.writeModelListNotNull(
-      data, 'exampleFemaleAudios', doc.exampleFemaleAudios);
+  Helper.writeModelListNotNull(data, 'examples', doc.examples);
 
   return data;
 }
 
 /// For load data
 void _$fromData(WordMeaning doc, Map<String, dynamic> data) {
-  doc.meaning = Helper.valueFromKey<String>(data, 'meaning');
-  doc._examples = Helper.valueListFromKey<String>(data, '_examples');
-  doc._exampleMeanings =
-      Helper.valueListFromKey<String>(data, '_exampleMeanings');
-  doc._examplePinyins =
-      Helper.valueListFromKey<String>(data, '_examplePinyins');
+  doc.meaning = Helper.valueFromKey<String?>(data, 'meaning');
 
-  final _exampleMaleAudios =
-      Helper.valueMapListFromKey<String, dynamic>(data, 'exampleMaleAudios');
-  if (_exampleMaleAudios != null) {
-    doc.exampleMaleAudios = _exampleMaleAudios
+  final _examples =
+      Helper.valueMapListFromKey<String, dynamic>(data, 'examples');
+  if (_examples != null) {
+    doc.examples = _examples
         .where((d) => d != null)
-        .map((d) => SpeechAudio(values: d))
+        .map((d) => WordExample(values: d))
         .toList();
   } else {
-    doc.exampleMaleAudios = null;
-  }
-
-  final _exampleFemaleAudios =
-      Helper.valueMapListFromKey<String, dynamic>(data, 'exampleFemaleAudios');
-  if (_exampleFemaleAudios != null) {
-    doc.exampleFemaleAudios = _exampleFemaleAudios
-        .where((d) => d != null)
-        .map((d) => SpeechAudio(values: d))
-        .toList();
-  } else {
-    doc.exampleFemaleAudios = null;
+    doc.examples = null;
   }
 }

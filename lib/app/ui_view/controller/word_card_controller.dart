@@ -46,10 +46,10 @@ class WordCardController extends GetxController {
     <StorageFile>[
       word.wordAudioFemale!.audio!,
       word.wordAudioMale!.audio!,
-      ...word.wordMeanings!.expand((m) =>
-          m.exampleMaleAudios!.map((e) => e.audio!)),
-      ...word.wordMeanings!.expand((m) =>
-          m.exampleFemaleAudios!.map((e) => e.audio!)),
+      ...word.wordMeanings!
+          .expand((m) => m.examples!.map((e) => e.audioMale!.audio!)),
+      ...word.wordMeanings!
+          .expand((m) => m.examples!.map((e) => e.audioFemale!.audio!)),
     ].forEach((file) => audioService.prepareAudio(file.url));
     super.onInit();
   }
@@ -65,14 +65,18 @@ class WordCardController extends GetxController {
   }
 
   /// Play audio of the word
-  Future<void> playWord({required String audioKey, Function? completionCallBack}) async {
-    var wordAudio =
-        reviewWordSpeakerGender == SpeakerGender.male ? word.wordAudioMale! : word.wordAudioFemale!;
-    await audioService.startPlayer(uri:wordAudio.audio!.url, key: audioKey, callback: completionCallBack);
+  Future<void> playWord(
+      {required String audioKey, Function? completionCallBack}) async {
+    var wordAudio = reviewWordSpeakerGender == SpeakerGender.male
+        ? word.wordAudioMale!
+        : word.wordAudioFemale!;
+    await audioService.startPlayer(
+        uri: wordAudio.audio!.url, key: audioKey, callback: completionCallBack);
   }
 
   /// Play audio of the meanings one by one, now only tts is supported
-  Future<void> playMeanings({int meaningOrdinal = 0, Function? completionCallBack}) async {
+  Future<void> playMeanings(
+      {int meaningOrdinal = 0, Function? completionCallBack}) async {
     await audioService.speakList(word.wordMeanings!.map((m) => m.meaning!),
         callback: completionCallBack);
   }
@@ -85,12 +89,17 @@ class WordCardController extends GetxController {
     var speechAudio = reviewWordSpeakerGender == SpeakerGender.male
         ? wordExample.audioMale
         : wordExample.audioFemale;
-    await audioService.startPlayer(uri:speechAudio.audio!.url, key: audioKey, callback: completionCallBack);
+    await audioService.startPlayer(
+        uri: speechAudio!.audio!.url,
+        key: audioKey,
+        callback: completionCallBack);
   }
 
   /// Default to Male
-  SpeakerGender get reviewWordSpeakerGender => Get.isRegistered<ReviewWordsController>()
-      ? Get.find<ReviewWordsController>().speakerGender.value: SpeakerGender.male;
+  SpeakerGender get reviewWordSpeakerGender =>
+      Get.isRegistered<ReviewWordsController>()
+          ? Get.find<ReviewWordsController>().speakerGender.value
+          : SpeakerGender.male;
 
   @override
   void onClose() {

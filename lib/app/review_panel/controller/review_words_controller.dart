@@ -3,9 +3,9 @@ import 'dart:async';
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 // 📦 Package imports:
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
@@ -21,7 +21,8 @@ import '../../../util/utility.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
-class ReviewWordsController extends GetxController with SingleGetTickerProviderMixin {
+class ReviewWordsController extends GetxController
+    with SingleGetTickerProviderMixin {
   final LectureService lectureService = Get.find();
   final logger = LoggerService.logger;
 
@@ -41,7 +42,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   late final AnimationController searchBarPlayIconController;
 
   /// Animate icon color
-  Rx<CustomAnimationControl> searchBarPlayIconControl = CustomAnimationControl.STOP.obs;
+  Rx<CustomAnimationControl> searchBarPlayIconControl =
+      CustomAnimationControl.STOP.obs;
 
   /// Speaker gender of all audio (tts not supported)
   Rx<SpeakerGender> speakerGender = SpeakerGender.male.obs;
@@ -82,9 +84,12 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
 
   @override
   Future<void> onInit() async {
-    associatedLecture = lectureService.findLectureById(Get.parameters['lectureId']!);
+    associatedLecture =
+        lectureService.findLectureById(Get.parameters['lectureId']!);
     if (Get.arguments == null) {
-      wordsList = associatedLecture != null ? associatedLecture!.words : LectureService.allWords;
+      wordsList = associatedLecture != null
+          ? associatedLecture!.words
+          : LectureService.allWords;
       // If wordsList is provided, use it
     } else if (Get.arguments is List<Word>) {
       wordsList = Get.arguments;
@@ -93,7 +98,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
     reversedWordsList = wordsList.reversed.toList();
     pageFraction = (wordsList.length - 1.0).obs;
     pageController = PageController(initialPage: wordsList.length - 1);
-    searchBarPlayIconController = AnimationController(vsync: this, duration: 0.3.seconds);
+    searchBarPlayIconController =
+        AnimationController(vsync: this, duration: 0.3.seconds);
     // Worker when primary card change
     ever(primaryWordIndex, (dynamic _) {
       flipBackPrimaryCard();
@@ -142,8 +148,9 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
 
   /// Male or Female
   void toggleSpeakerGender() {
-    speakerGender.value =
-        speakerGender.value == SpeakerGender.male ? SpeakerGender.female : SpeakerGender.male;
+    speakerGender.value = speakerGender.value == SpeakerGender.male
+        ? SpeakerGender.female
+        : SpeakerGender.male;
     Fluttertoast.showToast(
         msg: 'review.word.toast.changeSpeaker'.trParams({
       'gender': speakerGender.value == SpeakerGender.male
@@ -168,7 +175,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
       flipBackPrimaryCard();
       _autoPlayCard();
     } else {
-      searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+      searchBarPlayIconControl.value =
+          CustomAnimationControl.PLAY_REVERSE_FROM_END;
       isAutoPlayMode.value = false;
     }
   }
@@ -179,8 +187,9 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// Play audio of the word
   Future<void> playWord({required Word word, required String audioKey}) async {
     if (isAutoPlayMode.value) return;
-    var wordAudio =
-        speakerGender.value == SpeakerGender.male ? word.wordAudioMale : word.wordAudioFemale;
+    var wordAudio = speakerGender.value == SpeakerGender.male
+        ? word.wordAudioMale
+        : word.wordAudioFemale;
     if (wordAudio == null) {
       return;
     }
@@ -208,14 +217,16 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// [WordsFlashcard] Save status to history
   void saveAndResetWordHistory() {
     if (wordMemoryStatus.value != WordMemoryStatus.NOT_REVIEWED) {
-      lectureService.addWordReviewedHistory(primaryWord, status: wordMemoryStatus.value);
+      lectureService.addWordReviewedHistory(primaryWord,
+          status: wordMemoryStatus.value);
       wordMemoryStatus.value = WordMemoryStatus.NOT_REVIEWED;
     }
   }
 
   /// [WordsFlashcard] Make sure primary card is front side when slide
   void flipBackPrimaryCard() {
-    if (primaryWordCardController != null && primaryWordCardController!.isCardFlipped.isTrue) {
+    if (primaryWordCardController != null &&
+        primaryWordCardController!.isCardFlipped.isTrue) {
       primaryWordCardController!.flipCard();
     }
   }
@@ -233,14 +244,16 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
         backToFirstCard = true;
       }
     } else {
-      await pageController.previousPage(duration: 300.milliseconds, curve: Curves.easeInOut);
+      await pageController.previousPage(
+          duration: 300.milliseconds, curve: Curves.easeInOut);
     }
   }
 
   /// [WordsFlashcard] animate to last card
   Future<void> previousCard() async {
     saveAndResetWordHistory();
-    await pageController.nextPage(duration: 300.milliseconds, curve: Curves.easeInOut);
+    await pageController.nextPage(
+        duration: 300.milliseconds, curve: Curves.easeInOut);
   }
 
   /// [WordsFlashcard] Tts package use listener to handler completion of speech
@@ -251,19 +264,22 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
   /// can stop the play anytime
   void _autoPlayCard() async {
     if (isAutoPlayMode.isFalse) {
-      searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+      searchBarPlayIconControl.value =
+          CustomAnimationControl.PLAY_REVERSE_FROM_END;
       return;
     }
     await primaryWordCardController!.playMeanings(completionCallBack: () async {
       // after playMeanings
       if (isAutoPlayMode.isFalse) {
-        searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+        searchBarPlayIconControl.value =
+            CustomAnimationControl.PLAY_REVERSE_FROM_END;
         return;
       }
       Timer(0.5.seconds, primaryWordCardController!.flipCard);
       Timer(0.5.seconds, () async {
         if (isAutoPlayMode.isFalse) {
-          searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+          searchBarPlayIconControl.value =
+              CustomAnimationControl.PLAY_REVERSE_FROM_END;
           return;
         }
         await primaryWordCardController!.playWord(
@@ -272,7 +288,8 @@ class ReviewWordsController extends GetxController with SingleGetTickerProviderM
               // after playWord
               // When we reach the last card or autoPlay turn off
               if (isAutoPlayMode.isFalse || primaryWordIndex.value == 0) {
-                searchBarPlayIconControl.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+                searchBarPlayIconControl.value =
+                    CustomAnimationControl.PLAY_REVERSE_FROM_END;
                 isAutoPlayMode.value = false;
               } else {
                 await nextCard();

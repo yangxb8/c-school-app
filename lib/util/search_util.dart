@@ -1,3 +1,4 @@
+// 📦 Package imports:
 import 'package:fuzzy/fuzzy.dart';
 
 extension StringListUtil on Iterable<String> {
@@ -6,7 +7,7 @@ extension StringListUtil on Iterable<String> {
     options ??=
         FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);
     final fuse = Fuzzy(toList(), options: options);
-    return fuse.search(key).map((r) => r.item.toString()) as List<String>;
+    return fuse.search(key).map((r) => r.item.toString()).toList();
   }
 
   /// Search if this string list contains key fuzzily

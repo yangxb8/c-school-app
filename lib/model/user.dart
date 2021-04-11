@@ -48,7 +48,8 @@ class AppUser extends Document<AppUser> {
       _membershipTypes = EnumToString.toList(types);
 
   List<MembershipType> get membershipTypes =>
-      EnumToString.fromList(MembershipType.values, _membershipTypes!) as List<MembershipType>;
+      EnumToString.fromList(MembershipType.values, _membershipTypes!)
+          as List<MembershipType>;
 
   bool isLogin() {
     return firebaseUser != null;
@@ -56,11 +57,12 @@ class AppUser extends Document<AppUser> {
 
   String get userId => firebaseUser?.uid ?? 'NO_FIREBASE_USER';
   int get userRankNow {
-    if(rankHistory!.isEmpty){
+    if (rankHistory!.isEmpty) {
       return 1;
     }
     return rankHistory!.last.rank!;
   }
+
   //TODO: get userScoreCoeff(For speech evaluation) properly
   double get userScoreCoeff => userRankNow.toDouble();
 

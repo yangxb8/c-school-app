@@ -12,7 +12,8 @@ import 'discover_panel_theme.dart';
 
 class DiscoverPanelHomeScreen extends StatefulWidget {
   @override
-  _DiscoverPanelHomeScreenState createState() => _DiscoverPanelHomeScreenState();
+  _DiscoverPanelHomeScreenState createState() =>
+      _DiscoverPanelHomeScreenState();
 }
 
 class _DiscoverPanelHomeScreenState extends State<DiscoverPanelHomeScreen> {

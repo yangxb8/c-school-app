@@ -6,9 +6,10 @@ import '../../my_progress_theme.dart';
 
 class RunningView extends StatelessWidget {
   final AnimationController? animationController;
-  final Animation? animation;
+  final Animation<double> animation;
 
-  const RunningView({Key? key, this.animationController, this.animation})
+  const RunningView(
+      {Key? key, this.animationController, required this.animation})
       : super(key: key);
 
   @override
@@ -17,10 +18,10 @@ class RunningView extends StatelessWidget {
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation as Animation<double>,
+          opacity: animation,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - animation!.value), 0.0),
+                0.0, 30 * (1.0 - animation.value), 0.0),
             child: Column(
               children: <Widget>[
                 Padding(
@@ -56,8 +57,8 @@ class RunningView extends StatelessWidget {
                                   height: 74,
                                   child: AspectRatio(
                                     aspectRatio: 1.714,
-                                    child: Image.asset(
-                                        'assets/main_app/back.png'),
+                                    child:
+                                        Image.asset('assets/main_app/back.png'),
                                   ),
                                 ),
                               ),

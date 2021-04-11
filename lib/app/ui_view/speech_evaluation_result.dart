@@ -1,10 +1,12 @@
 // 🐦 Flutter imports:
-import 'package:c_school_app/app/ui_view/charts.dart';
-import 'package:c_school_app/app/ui_view/expand_box.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/ui_view/charts.dart';
+import 'package:c_school_app/app/ui_view/expand_box.dart';
 import '../model/speech_evaluation_result.dart';
 
 class SpeechEvaluationRadialBarChart extends StatelessWidget {
@@ -43,7 +45,8 @@ class SpeechEvaluationRadialBarChart extends StatelessWidget {
             title: 'ui.speech.evaluation.result.summary'.tr,
             data: sentenceData,
             maxHeight: 250,
-            centerWidget: Text(sentenceInfo.displaySuggestedScore.floor().toString()),
+            centerWidget:
+                Text(sentenceInfo.displaySuggestedScore.floor().toString()),
           ),
         ),
         ExpandBox(

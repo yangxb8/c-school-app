@@ -8,7 +8,7 @@ class Messages extends Translations {
           // Common
           'button.close': 'Close',
           'error.oops': 'Oops?',
-          'error.permission.mic':'Please allow the microphone usage',
+          'error.permission.mic': 'Please allow the microphone usage',
           'error.unknown.title': 'Something is wrong!',
           'error.unknown.content': 'Unexpected internal error occurs',
           // Home
@@ -32,14 +32,18 @@ class Messages extends Translations {
           'login.register.error.tooShort': '6 digits or more',
           'login.register.error.tooLong': 'Too long',
           'login.register.error.passwordConfirmError': 'Passwords do not match',
-          'login.register.error.registeredEmail': 'The account already exists for that email.',
+          'login.register.error.registeredEmail':
+              'The account already exists for that email.',
           'login.login.tab.title': 'Existing',
           'login.login.button.login': 'LOGIN',
           'login.login.dialog.resentEmail': 'Resend email',
           'login.login.dialog.success.title': 'Welcome Back!',
-          'login.login.dialog.success.content': 'You have study for @studyCount times!',
-          'login.login.error.unregisteredEmail': 'No user found for that email.',
-          'login.login.error.wrongPassword': 'Wrong password provided for that user.',
+          'login.login.dialog.success.content':
+              'You have study for @studyCount times!',
+          'login.login.error.unregisteredEmail':
+              'No user found for that email.',
+          'login.login.error.wrongPassword':
+              'Wrong password provided for that user.',
           'login.login.error.unverifiedEmail': 'Please verify your email.',
           // Review Word
           'review.word.common.words': 'words',
@@ -53,18 +57,19 @@ class Messages extends Translations {
           'review.word.toast.changeSpeaker': 'Change to @gender speaker',
           'review.word.toast.changeSpeaker.male': 'male',
           'review.word.toast.changeSpeaker.female': 'female',
-          'review.word.card.lastCard': 'Last card reached. Swipe left will go to first card',
+          'review.word.card.lastCard':
+              'Last card reached. Swipe left will go to first card',
           // Ui view
-          'ui.charts.summary':'Summary',
-          'ui.speech.evaluation.result.pronAccuracy':'Accuracy',
-          'ui.speech.evaluation.result.pronCompletion':'Completion',
-          'ui.speech.evaluation.result.pronFluency':'Fluency',
+          'ui.charts.summary': 'Summary',
+          'ui.speech.evaluation.result.pronAccuracy': 'Accuracy',
+          'ui.speech.evaluation.result.pronCompletion': 'Completion',
+          'ui.speech.evaluation.result.pronFluency': 'Fluency',
         },
         'ja_JP': {
           // Common
           'button.close': '閉じる',
           'error.oops': 'あら？',
-          'error.permission.mic':'マイクの使用を許可してください',
+          'error.permission.mic': 'マイクの使用を許可してください',
           'error.unknown.title': '予想外のエラーです',
           'error.unknown.content': '予期せぬエラーが発生しました。',
           //Home
@@ -111,10 +116,10 @@ class Messages extends Translations {
           'review.word.toast.changeSpeaker.female': '女性',
           'review.word.card.lastCard': '最後のカードです。左にスワイプすると初めに戻ります。',
           // Ui
-          'ui.speech.evaluation.result.summary':'総評',
-          'ui.speech.evaluation.result.pronAccuracy':'精確度',
-          'ui.speech.evaluation.result.pronCompletion':'完成度',
-          'ui.speech.evaluation.result.pronFluency':'流暢度',
+          'ui.speech.evaluation.result.summary': '総評',
+          'ui.speech.evaluation.result.pronAccuracy': '精確度',
+          'ui.speech.evaluation.result.pronCompletion': '完成度',
+          'ui.speech.evaluation.result.pronFluency': '流暢度',
         }
       };
 }

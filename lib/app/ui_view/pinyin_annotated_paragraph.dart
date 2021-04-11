@@ -88,23 +88,29 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       var adjustedPinyinFontSize = pinyinTextStyle.fontSize;
       if (maxLines != null) {
         adjustedDefaultFontSize =
-            _calculateFontSize(size, paragraph, defaultTextStyle, maxLines)[0] as double;
+            _calculateFontSize(size, paragraph, defaultTextStyle, maxLines)[0];
         // If pinyin has its own style, adjust its font size too
-        adjustedPinyinFontSize =
-            _calculateFontSize(size, pinyins.join(), pinyinTextStyle, maxLines)[0] as double;
+        adjustedPinyinFontSize = _calculateFontSize(
+            size, pinyins.join(), pinyinTextStyle, maxLines)[0];
       }
-      final adjustedDefaultTextStyle = defaultTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
-      final adjustedPinyinTextStyle = pinyinTextStyle.copyWith(fontSize: adjustedPinyinFontSize);
+      final adjustedDefaultTextStyle =
+          defaultTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
+      final adjustedPinyinTextStyle =
+          pinyinTextStyle.copyWith(fontSize: adjustedPinyinFontSize);
       final adjustedCenterWordTextStyle =
           centerWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
       final adjustedLinkedWordTextStyle =
           linkedWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
       // Build single hanzi
-      final elements = leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget!];
-      elements.addAll(_generateHanzis(adjustedDefaultTextStyle, adjustedPinyinTextStyle,
-              adjustedCenterWordTextStyle, adjustedLinkedWordTextStyle)
-          .mapIndexed(
-              (index, hanzi) => _buildSingleHanzi(index: index, pinyinAnnotatedHanzi: hanzi)));
+      final elements =
+          leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget!];
+      elements.addAll(_generateHanzis(
+              adjustedDefaultTextStyle,
+              adjustedPinyinTextStyle,
+              adjustedCenterWordTextStyle,
+              adjustedLinkedWordTextStyle)
+          .mapIndexed((index, hanzi) =>
+              _buildSingleHanzi(index: index, pinyinAnnotatedHanzi: hanzi)));
       return Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: spacing,
@@ -114,19 +120,25 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   }
 
   Widget _buildSingleHanzi(
-      {required int index, required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+      {required int index,
+      required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
     // If builder is provided, use it to build hanzi
     if (singleHanziBuilder != null) {
-      return singleHanziBuilder!(index: index, pinyinAnnotatedHanzi: pinyinAnnotatedHanzi);
+      return singleHanziBuilder!(
+          index: index, pinyinAnnotatedHanzi: pinyinAnnotatedHanzi);
     }
     final pinyinRow = showPinyins
-        ? [Text(pinyinAnnotatedHanzi.pinyin, style: pinyinAnnotatedHanzi.pinyinStyle)]
+        ? [
+            Text(pinyinAnnotatedHanzi.pinyin,
+                style: pinyinAnnotatedHanzi.pinyinStyle)
+          ]
         : [];
     final inner = IntrinsicWidth(
       child: Column(
         children: [
-          ...pinyinRow as Iterable<Widget>,
-          Text(pinyinAnnotatedHanzi.hanzi, style: pinyinAnnotatedHanzi.hanziStyle),
+          ...pinyinRow,
+          Text(pinyinAnnotatedHanzi.hanzi,
+              style: pinyinAnnotatedHanzi.hanziStyle),
         ],
       ),
     );
@@ -134,14 +146,17 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       return inner;
     } else {
       return SimpleGestureDetector(
-          onTap: () =>
-              Get.find<LectureService>().showSingleWordCard(pinyinAnnotatedHanzi.linkedWord),
+          onTap: () => Get.find<LectureService>()
+              .showSingleWordCard(pinyinAnnotatedHanzi.linkedWord),
           child: inner);
     }
   }
 
-  List<PinyinAnnotatedHanzi> _generateHanzis(TextStyle defaultStyle, TextStyle pinyinStyle,
-      TextStyle centerWordStyle, TextStyle linkedWordStyle) {
+  List<PinyinAnnotatedHanzi> _generateHanzis(
+      TextStyle defaultStyle,
+      TextStyle pinyinStyle,
+      TextStyle centerWordStyle,
+      TextStyle linkedWordStyle) {
     // Divide paragraph by center word and linked word
     final dividerWords = <String>[];
     if (centerWord != null) dividerWords.add(centerWord!.wordAsString);
@@ -153,7 +168,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       final hanzi = paragraph[idx];
       var pinyin = hanzi.isSingleHanzi ? pinyins[idx] : '';
       final hanziTypeAndRelatedWord = _calculateHanziType(
-          hanziIdx: idx, keywordsSeparatedParagraph: keywordsSeparatedParagraph);
+          hanziIdx: idx,
+          keywordsSeparatedParagraph: keywordsSeparatedParagraph);
       final hanziType = hanziTypeAndRelatedWord.keys.single;
       final linkedWord = hanziTypeAndRelatedWord.values.single;
       var hanziStyle;
@@ -179,12 +195,14 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   }
 
   Map<ParagraphHanziType, Word> _calculateHanziType(
-      {required int hanziIdx, required List<String> keywordsSeparatedParagraph}) {
+      {required int hanziIdx,
+      required List<String> keywordsSeparatedParagraph}) {
     var totalIdx = 0;
     late var result;
     for (final part in keywordsSeparatedParagraph) {
       // Target hanzi is in range of this part of paragraph
-      final linkedWordList = (linkedWords?.filter((w) => w.wordAsString == part) ?? []);
+      final linkedWordList =
+          (linkedWords?.filter((w) => w.wordAsString == part) ?? []);
       if (totalIdx + part.length > hanziIdx) {
         if (centerWord?.wordAsString == part) {
           result = {ParagraphHanziType.center: null};
@@ -213,7 +231,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     if (keyword is List<String>) {
       var keywordSet = keyword.toSet();
       var exampleDivided = example;
-      keywordSet.forEach((k) => exampleDivided = _divideExample(k, exampleDivided));
+      keywordSet
+          .forEach((k) => exampleDivided = _divideExample(k, exampleDivided));
       return exampleDivided;
     }
     // When the String is already divided before
@@ -239,7 +258,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     return const [];
   }
 
-  List _calculateFontSize(BoxConstraints size, String text, TextStyle originStyle, int? maxLines) {
+  List _calculateFontSize(
+      BoxConstraints size, String text, TextStyle originStyle, int? maxLines) {
     // Apply wrap spacing to text style to correctly calculate the font size
     var style = originStyle.copyWith(letterSpacing: spacing);
     var span = TextSpan(
@@ -287,7 +307,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
     return [fontSize, lastValueFits];
   }
 
-  bool _checkTextFits(TextSpan text, double? scale, int? maxLines, BoxConstraints constraints) {
+  bool _checkTextFits(
+      TextSpan text, double? scale, int? maxLines, BoxConstraints constraints) {
     var tp = TextPainter(
       text: text,
       textAlign: TextAlign.left,

@@ -432,16 +432,19 @@ class SelectableAutoSizeText extends StatelessWidget {
   void _sanityCheck(TextStyle? style, int? maxLines) {
     assert(overflow == null || overflowReplacement == null,
         'Either overflow or overflowReplacement have to be null.');
-    assert(maxLines == null || maxLines > 0, 'MaxLines has to be grater than or equal to 1.');
-    assert(key == null || key != textKey, 'Key and textKey cannot be the same.');
+    assert(maxLines == null || maxLines > 0,
+        'MaxLines has to be grater than or equal to 1.');
+    assert(
+        key == null || key != textKey, 'Key and textKey cannot be the same.');
 
     if (presetFontSizes == null) {
       assert(stepGranularity >= 0.1,
           'StepGranularity has to be greater than or equal to 0.1. It is not a good idea to resize the font with a higher accuracy.');
-      assert(minFontSize >= 0, 'MinFontSize has to be greater than or equal to 0.');
+      assert(minFontSize >= 0,
+          'MinFontSize has to be greater than or equal to 0.');
       assert(maxFontSize > 0, 'MaxFontSize has to be greater than 0.');
-      assert(
-          minFontSize <= maxFontSize, 'MinFontSize has to be smaller or equal than maxFontSize.');
+      assert(minFontSize <= maxFontSize,
+          'MinFontSize has to be smaller or equal than maxFontSize.');
       assert(minFontSize / stepGranularity % 1 == 0,
           'MinFontSize has to be multiples of stepGranularity.');
       if (maxFontSize != double.infinity) {
@@ -449,11 +452,13 @@ class SelectableAutoSizeText extends StatelessWidget {
             'MaxFontSize has to be multiples of stepGranularity.');
       }
     } else {
-      assert(presetFontSizes!.isNotEmpty, 'PresetFontSizes has to be nonempty.');
+      assert(
+          presetFontSizes!.isNotEmpty, 'PresetFontSizes has to be nonempty.');
     }
   }
 
-  List _calculateFontSize(BoxConstraints size, TextStyle? style, int? maxLines) {
+  List _calculateFontSize(
+      BoxConstraints size, TextStyle? style, int? maxLines) {
     var span = TextSpan(
       style: textSpan?.style ?? style,
       text: textSpan?.text ?? data,
@@ -461,7 +466,8 @@ class SelectableAutoSizeText extends StatelessWidget {
       recognizer: textSpan?.recognizer,
     );
 
-    var userScale = textScaleFactor ?? MediaQuery.textScaleFactorOf(Get.context!);
+    var userScale =
+        textScaleFactor ?? MediaQuery.textScaleFactorOf(Get.context!);
 
     int left;
     int right;
@@ -512,7 +518,8 @@ class SelectableAutoSizeText extends StatelessWidget {
     return [fontSize, lastValueFits];
   }
 
-  bool _checkTextFits(TextSpan text, double? scale, int? maxLines, BoxConstraints constraints) {
+  bool _checkTextFits(
+      TextSpan text, double? scale, int? maxLines, BoxConstraints constraints) {
     if (!wrapWords) {
       var words = text.toPlainText().split(RegExp('\\s+'));
 
@@ -531,7 +538,8 @@ class SelectableAutoSizeText extends StatelessWidget {
 
       wordWrapTp.layout(maxWidth: constraints.maxWidth);
 
-      if (wordWrapTp.didExceedMaxLines || wordWrapTp.width > constraints.maxWidth) {
+      if (wordWrapTp.didExceedMaxLines ||
+          wordWrapTp.width > constraints.maxWidth) {
         return false;
       }
     }

@@ -115,9 +115,7 @@ class ReviewWordsTheme {
     color: darkBlue,
   );
 
-  static TextStyle wordCardExplanation = wordCardExample.copyWith(
-    fontSize: 20
-  );
+  static TextStyle wordCardExplanation = wordCardExample.copyWith(fontSize: 20);
 
   static TextStyle wordCardExamplePinyin = wordCardExample.copyWith(
     fontSize: 20,

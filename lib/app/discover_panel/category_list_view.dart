@@ -54,12 +54,11 @@ class _CategoryListViewState extends State<CategoryListView>
                   final count = Category.categoryList.length > 10
                       ? 10
                       : Category.categoryList.length;
-                  final animation =
-                      Tween<double>(begin: 0.0, end: 1.0).animate(
-                          CurvedAnimation(
-                              parent: animationController!,
-                              curve: Interval((1 / count) * index, 1.0,
-                                  curve: Curves.fastOutSlowIn)));
+                  final animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                          parent: animationController!,
+                          curve: Interval((1 / count) * index, 1.0,
+                              curve: Curves.fastOutSlowIn)));
                   animationController!.forward();
 
                   return CategoryView(
@@ -85,14 +84,14 @@ class CategoryView extends StatelessWidget {
       {Key? key,
       this.category,
       this.animationController,
-      this.animation,
+      required this.animation,
       this.callback})
       : super(key: key);
 
   final VoidCallback? callback;
   final Category? category;
   final AnimationController? animationController;
-  final Animation<dynamic>? animation;
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +99,10 @@ class CategoryView extends StatelessWidget {
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation as Animation<double>,
+          opacity: animation,
           child: Transform(
             transform: Matrix4.translationValues(
-                100 * (1.0 - animation!.value), 0.0, 0.0),
+                100 * (1.0 - animation.value), 0.0, 0.0),
             child: InkWell(
               splashColor: Colors.transparent,
               onTap: () {

@@ -21,7 +21,8 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FocusNode myFocusNodeEmailLogin = FocusNode();
@@ -56,78 +57,76 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: NotificationListener<OverscrollIndicatorNotification>(
-          // ignore: missing_return
-          onNotification: (overscroll) {
-            overscroll.disallowGlow();
-          } as bool Function(OverscrollIndicatorNotification)?,
-          child: Obx(
-            () => ProgressHUD(
-              inAsyncCall: controller.processing.value,
-              child: SingleChildScrollView(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height >= 775.0
-                      ? MediaQuery.of(context).size.height
-                      : 775.0,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [theme.Colors.loginGradientStart, theme.Colors.loginGradientEnd],
-                        begin: const FractionalOffset(0.0, 0.0),
-                        end: const FractionalOffset(1.0, 1.0),
-                        stops: [0.0, 1.0],
-                        tileMode: TileMode.clamp),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 85.0),
-                        child: Image(
-                            width: 250.0,
-                            height: 191.0,
-                            fit: BoxFit.fill,
-                            image: AssetImage('assets/login/login_logo.png')),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: _buildMenuBar(context),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: PageView(
-                          controller: _pageController,
-                          onPageChanged: (i) {
-                            if (i == 0) {
-                              setState(() {
-                                right = Colors.white;
-                                left = Colors.black;
-                              });
-                            } else if (i == 1) {
-                              setState(() {
-                                right = Colors.black;
-                                left = Colors.white;
-                              });
-                            }
-                          },
-                          children: <Widget>[
-                            ConstrainedBox(
-                              constraints: const BoxConstraints.expand(),
-                              child: _buildSignIn(context),
-                            ),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints.expand(),
-                              child: _buildSignUp(context),
-                            ),
-                          ],
-                        ),
-                      ),
+      body: Obx(
+        () => ProgressHUD(
+          inAsyncCall: controller.processing.value,
+          child: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height >= 775.0
+                  ? MediaQuery.of(context).size.height
+                  : 775.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [
+                      theme.Colors.loginGradientStart,
+                      theme.Colors.loginGradientEnd
                     ],
+                    begin: const FractionalOffset(0.0, 0.0),
+                    end: const FractionalOffset(1.0, 1.0),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 85.0),
+                    child: Image(
+                        width: 250.0,
+                        height: 191.0,
+                        fit: BoxFit.fill,
+                        image: AssetImage('assets/login/login_logo.png')),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: _buildMenuBar(context),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (i) {
+                        if (i == 0) {
+                          setState(() {
+                            right = Colors.white;
+                            left = Colors.black;
+                          });
+                        } else if (i == 1) {
+                          setState(() {
+                            right = Colors.black;
+                            left = Colors.white;
+                          });
+                        }
+                      },
+                      children: <Widget>[
+                        ConstrainedBox(
+                          constraints: const BoxConstraints.expand(),
+                          child: _buildSignIn(context),
+                        ),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints.expand(),
+                          child: _buildSignUp(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -159,7 +158,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       content: Text(
         value,
         textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.white, fontSize: 16.0, fontFamily: 'WorkSansSemiBold'),
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontFamily: 'WorkSansSemiBold'),
       ),
       backgroundColor: Colors.blue,
       duration: Duration(seconds: 3),
@@ -184,7 +186,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 onPressed: _onSignInButtonPress,
                 child: Text(
                   'login.login.tab.title'.tr,
-                  style: TextStyle(color: left, fontSize: 16.0, fontFamily: 'WorkSansSemiBold'),
+                  style: TextStyle(
+                      color: left,
+                      fontSize: 16.0,
+                      fontFamily: 'WorkSansSemiBold'),
                 ),
               ),
             ),
@@ -194,7 +199,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 onPressed: _onSignUpButtonPress,
                 child: Text(
                   'login.register.tab.title'.tr,
-                  style: TextStyle(color: right, fontSize: 16.0, fontFamily: 'WorkSansSemiBold'),
+                  style: TextStyle(
+                      color: right,
+                      fontSize: 16.0,
+                      fontFamily: 'WorkSansSemiBold'),
                 ),
               ),
             ),
@@ -225,15 +233,19 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
                           key: controller.loginEmailKey,
                           focusNode: myFocusNodeEmailLogin,
-                          onChanged: (val) => controller.formTexts['loginEmail'] = val,
-                          validator: emailValidator as String? Function(String?)?,
+                          onChanged: (val) =>
+                              controller.formTexts['loginEmail'] = val,
+                          validator: emailValidator,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
-                              fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
+                              fontFamily: 'WorkSansSemiBold',
+                              fontSize: 16.0,
+                              color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
@@ -242,7 +254,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               size: 22.0,
                             ),
                             hintText: 'login.common.email'.tr,
-                            hintStyle: TextStyle(fontFamily: 'WorkSansSemiBold', fontSize: 17.0),
+                            hintStyle: TextStyle(
+                                fontFamily: 'WorkSansSemiBold', fontSize: 17.0),
                           ),
                         ),
                       ),
@@ -252,15 +265,20 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
                           key: controller.loginPasswordKey,
                           focusNode: myFocusNodePasswordLogin,
-                          onChanged: (val) => controller.formTexts['loginPassword'] = val,
-                          validator: RequiredValidator(errorText: 'login.common.error.required'.tr) as String? Function(String?)?,
+                          onChanged: (val) =>
+                              controller.formTexts['loginPassword'] = val,
+                          validator: RequiredValidator(
+                              errorText: 'login.common.error.required'.tr),
                           obscureText: _obscureTextLogin,
                           style: TextStyle(
-                              fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
+                              fontFamily: 'WorkSansSemiBold',
+                              fontSize: 16.0,
+                              color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
@@ -269,11 +287,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               color: Colors.black,
                             ),
                             hintText: 'login.common.password'.tr,
-                            hintStyle: TextStyle(fontFamily: 'WorkSansSemiBold', fontSize: 17.0),
+                            hintStyle: TextStyle(
+                                fontFamily: 'WorkSansSemiBold', fontSize: 17.0),
                             suffixIcon: GestureDetector(
                               onTap: _toggleLogin,
                               child: Icon(
-                                _obscureTextLogin ? CSchool.eye : CSchool.eye_slash,
+                                _obscureTextLogin
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -306,7 +327,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                   ],
                   gradient: LinearGradient(
-                      colors: [theme.Colors.loginGradientEnd, theme.Colors.loginGradientStart],
+                      colors: [
+                        theme.Colors.loginGradientEnd,
+                        theme.Colors.loginGradientStart
+                      ],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
                       stops: [0.0, 1.0],
@@ -321,11 +345,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     await controller.handleEmailLogin();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 42.0),
                     child: Text(
                       'login.login.button.login'.tr,
                       style: TextStyle(
-                          color: Colors.white, fontSize: 25.0, fontFamily: 'WorkSansBold'),
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: 'WorkSansBold'),
                     ),
                   ),
                 ),
@@ -350,8 +377,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 padding: EdgeInsets.only(left: 15.0, right: 15.0),
                 child: Text(
                   'Or',
-                  style:
-                      TextStyle(color: Colors.white, fontSize: 16.0, fontFamily: 'WorkSansMedium'),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontFamily: 'WorkSansMedium'),
                 ),
               ),
             ),
@@ -462,19 +491,25 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
                           key: controller.signupNamelKey,
                           focusNode: myFocusNodeName,
-                          onChanged: (val) => controller.formTexts['signupName'] = val,
+                          onChanged: (val) =>
+                              controller.formTexts['signupName'] = val,
                           validator: MultiValidator([
-                            RequiredValidator(errorText: 'login.common.error.required'.tr),
-                            MaxLengthValidator(50, errorText: 'login.register.error.tooLong'.tr)
-                          ]) as String? Function(String?)?,
+                            RequiredValidator(
+                                errorText: 'login.common.error.required'.tr),
+                            MaxLengthValidator(50,
+                                errorText: 'login.register.error.tooLong'.tr)
+                          ]),
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
-                              fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
+                              fontFamily: 'WorkSansSemiBold',
+                              fontSize: 16.0,
+                              color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
@@ -482,7 +517,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               color: Colors.black,
                             ),
                             hintText: 'login.register.form.name'.tr,
-                            hintStyle: TextStyle(fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
+                            hintStyle: TextStyle(
+                                fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                           ),
                         ),
                       ),
@@ -492,15 +528,19 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
                           key: controller.signupEmailKey,
                           focusNode: myFocusNodeEmail,
-                          onChanged: (val) => controller.formTexts['signupEmail'] = val,
-                          validator: emailValidator as String? Function(String?)?,
+                          onChanged: (val) =>
+                              controller.formTexts['signupEmail'] = val,
+                          validator: emailValidator,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
-                              fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
+                              fontFamily: 'WorkSansSemiBold',
+                              fontSize: 16.0,
+                              color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
@@ -508,7 +548,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               color: Colors.black,
                             ),
                             hintText: 'login.common.email'.tr,
-                            hintStyle: TextStyle(fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
+                            hintStyle: TextStyle(
+                                fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                           ),
                         ),
                       ),
@@ -518,15 +559,19 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
                           key: controller.signupPasswordKey,
                           focusNode: myFocusNodePassword,
-                          onChanged: (val) => controller.formTexts['signupPassword'] = val,
-                          validator: passwordValidator as String? Function(String?)?,
+                          onChanged: (val) =>
+                              controller.formTexts['signupPassword'] = val,
+                          validator: passwordValidator,
                           obscureText: _obscureTextSignup,
                           style: TextStyle(
-                              fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
+                              fontFamily: 'WorkSansSemiBold',
+                              fontSize: 16.0,
+                              color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
@@ -534,11 +579,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               color: Colors.black,
                             ),
                             hintText: 'login.common.password'.tr,
-                            hintStyle: TextStyle(fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
+                            hintStyle: TextStyle(
+                                fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                             suffixIcon: GestureDetector(
                               onTap: _toggleSignup,
                               child: Icon(
-                                _obscureTextSignup ? CSchool.eye : CSchool.eye_slash,
+                                _obscureTextSignup
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -552,15 +600,21 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextFormField(
                           key: controller.signupConfirmPasswordlKey,
                           validator: (val) => MatchValidator(
-                                  errorText: 'login.register.error.passwordConfirmError'.tr)
-                              .validateMatch(val, controller.formTexts['signupPassword']),
+                                  errorText:
+                                      'login.register.error.passwordConfirmError'
+                                          .tr)
+                              .validateMatch(
+                                  val, controller.formTexts['signupPassword']),
                           obscureText: _obscureTextSignupConfirm,
                           style: TextStyle(
-                              fontFamily: 'WorkSansSemiBold', fontSize: 16.0, color: Colors.black),
+                              fontFamily: 'WorkSansSemiBold',
+                              fontSize: 16.0,
+                              color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
@@ -568,11 +622,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               color: Colors.black,
                             ),
                             hintText: 'login.register.form.passwordConfirm'.tr,
-                            hintStyle: TextStyle(fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
+                            hintStyle: TextStyle(
+                                fontFamily: 'WorkSansSemiBold', fontSize: 16.0),
                             suffixIcon: GestureDetector(
                               onTap: _toggleSignupConfirm,
                               child: Icon(
-                                _obscureTextSignupConfirm ? CSchool.eye : CSchool.eye_slash,
+                                _obscureTextSignupConfirm
+                                    ? CSchool.eye
+                                    : CSchool.eye_slash,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -605,7 +662,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                   ],
                   gradient: LinearGradient(
-                      colors: [theme.Colors.loginGradientEnd, theme.Colors.loginGradientStart],
+                      colors: [
+                        theme.Colors.loginGradientEnd,
+                        theme.Colors.loginGradientStart
+                      ],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
                       stops: [0.0, 1.0],
@@ -620,11 +680,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     await controller.handleEmailSignUp();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 42.0),
                     child: Text(
                       'login.register.button.signUp'.tr,
                       style: TextStyle(
-                          color: Colors.white, fontSize: 25.0, fontFamily: 'WorkSansBold'),
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: 'WorkSansBold'),
                     ),
                   ),
                 ),

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 extension WidgetWrapper on Widget {
   Widget statefulWrapper(
       {Function? onInit,
-        Function? afterFirstLayout,
-        Function? deactivate,
-        Function? didUpdateWidget,
-        Function? dispose}) {
+      Function? afterFirstLayout,
+      Function? deactivate,
+      Function? didUpdateWidget,
+      Function? dispose}) {
     return StatefulWrapper(
       onInit: onInit,
       afterFirstLayout: afterFirstLayout,
@@ -19,14 +19,13 @@ extension WidgetWrapper on Widget {
   }
 
   Widget onInit(Function onInit) {
-    return StatefulWrapper(onInit: onInit,child: this);
+    return StatefulWrapper(onInit: onInit, child: this);
   }
 
   Widget afterFirstLayout(Function afterFirstLayout) {
-    return StatefulWrapper(afterFirstLayout: afterFirstLayout,child: this);
+    return StatefulWrapper(afterFirstLayout: afterFirstLayout, child: this);
   }
 }
-
 
 /// Wrapper for stateful functionality to provide onInit calls in stateles widget
 class StatefulWrapper extends StatefulWidget {
@@ -70,11 +69,11 @@ class _StatefulWrapperState extends State<StatefulWrapper>
   }
 
   @override
-  void didUpdateWidget(Widget oldWidget) {
+  void didUpdateWidget(StatefulWrapper oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (widget.didUpdateWidget != null) {
       widget.didUpdateWidget!(oldWidget);
     }
-    super.didUpdateWidget(oldWidget as StatefulWrapper);
   }
 
   @override

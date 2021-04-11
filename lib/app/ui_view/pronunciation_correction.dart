@@ -1,10 +1,14 @@
-import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:collection/collection.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
-import 'pinyin_annotated_paragraph.dart';
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/speech_evaluation_result.dart';
 import '../../util/utility.dart';
+import 'pinyin_annotated_paragraph.dart';
 
 typedef HanziTapCallback = void Function(int index);
 
@@ -16,13 +20,16 @@ class PronunciationCorrection extends StatelessWidget {
       required this.refHanziList,
       this.hanziTapCallback})
       : hanziList = PinyinUtil.appendPunctuation(
-            origin: result.words!.map((w) => w.referenceWord ?? w.word!).toList(),
+            origin:
+                result.words!.map((w) => w.referenceWord ?? w.word!).toList(),
             ref: refHanziList),
         pinyinList = PinyinUtil.appendPunctuation(
-            origin: result.words!.map((w) => w.pinyin).toList(), ref: refHanziList),
+            origin: result.words!.map((w) => w.pinyin).toList(),
+            ref: refHanziList),
         super(key: key);
 
-  static const TextStyle correctStyle = TextStyle(color: Colors.lightBlueAccent);
+  static const TextStyle correctStyle =
+      TextStyle(color: Colors.lightBlueAccent);
   static const TextStyle errorStyle =
       TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold);
 
@@ -45,26 +52,30 @@ class PronunciationCorrection extends StatelessWidget {
     return list;
   }
 
-  SingleHanziBuilder hanziBuilder() =>
-      ({required int index, required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
+  SingleHanziBuilder hanziBuilder() => (
+          {required int index,
+          required PinyinAnnotatedHanzi pinyinAnnotatedHanzi}) {
         // Hanzi
-        final hanziStyle =
-            pinyinAnnotatedHanzi.hanzi == refHanziList[index] ? correctStyle : errorStyle;
+        final hanziStyle = pinyinAnnotatedHanzi.hanzi == refHanziList[index]
+            ? correctStyle
+            : errorStyle;
         final hanziWidget = Text(
           pinyinAnnotatedHanzi.hanzi,
           style: hanziStyle,
         );
         // Pinyin
-        final wrongPinyinList =
-            _calculateWrongPinyinIndex(pinyinAnnotatedHanzi.pinyin, refPinyinList[index]);
-        final pinyinStyles = List.generate(pinyinAnnotatedHanzi.pinyin.length,
-            (index) => wrongPinyinList.contains(index) ? errorStyle : correctStyle);
+        final wrongPinyinList = _calculateWrongPinyinIndex(
+            pinyinAnnotatedHanzi.pinyin, refPinyinList[index]);
+        final pinyinStyles = List.generate(
+            pinyinAnnotatedHanzi.pinyin.length,
+            (index) =>
+                wrongPinyinList.contains(index) ? errorStyle : correctStyle);
         final pinyinWidget = RichText(
             text: TextSpan(
                 children: pinyinAnnotatedHanzi.pinyin
                     .split('')
-                    .mapIndexed(
-                        (index, element) => TextSpan(text: element, style: pinyinStyles[index]))
+                    .mapIndexed((index, element) =>
+                        TextSpan(text: element, style: pinyinStyles[index]))
                     .toList()));
         return SimpleGestureDetector(
           onTap: () {

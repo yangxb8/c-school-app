@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:supercharged/supercharged.dart';
 
 class Colors {
-
   const Colors();
 
   static final Color loginGradientStart = '#B5D0FA'.toColor();

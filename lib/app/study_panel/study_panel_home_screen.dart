@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // 🌎 Project imports:
 import '../my_progress_theme.dart';
+import '../ui_view/title_view.dart';
 import 'ui_view/body_measurement.dart';
 import 'ui_view/glass_view.dart';
-import 'ui_view/mediterranesn_diet_view.dart';
-import '../ui_view/title_view.dart';
 import 'ui_view/meals_list_view.dart';
+import 'ui_view/mediterranesn_diet_view.dart';
 import 'ui_view/water_view.dart';
 
 class StudyPanelHomeScreen extends StatefulWidget {
@@ -17,10 +17,9 @@ class StudyPanelHomeScreen extends StatefulWidget {
 
 class _StudyPanelHomeScreenState extends State<StudyPanelHomeScreen>
     with TickerProviderStateMixin {
-
   late final animationController;
 
-  late Animation topBarAnimation;
+  late Animation<double> topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
@@ -31,7 +30,7 @@ class _StudyPanelHomeScreenState extends State<StudyPanelHomeScreen>
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
 
-    topBarAnimation =  Tween<double>(begin: 0.0, end: 1.0).animate(
+    topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: animationController,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
@@ -226,7 +225,7 @@ class _StudyPanelHomeScreenState extends State<StudyPanelHomeScreen>
           animation: animationController,
           builder: (BuildContext context, Widget? child) {
             return FadeTransition(
-              opacity: topBarAnimation as Animation<double>,
+              opacity: topBarAnimation,
               child: Transform(
                 transform: Matrix4.translationValues(
                     0.0, 30 * (1.0 - topBarAnimation.value), 0.0),

@@ -1,5 +1,7 @@
+// 🎯 Dart imports:
 import 'dart:convert';
 
+// 📦 Package imports:
 import 'package:json_annotation/json_annotation.dart';
 
 part 'tts_request.g.dart';
@@ -21,7 +23,8 @@ class TtsRequest {
       this.ModelType = 1,
       this.VoiceType = 101009,
       this.Codec = 'mp3'});
-  factory TtsRequest.fromJson(Map<String, dynamic> json) => _$TtsRequestFromJson(json);
+  factory TtsRequest.fromJson(Map<String, dynamic> json) =>
+      _$TtsRequestFromJson(json);
   Map<String, dynamic> toJson() => _$TtsRequestToJson(this);
 
   /// String representation of this json object

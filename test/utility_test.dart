@@ -1,3 +1,4 @@
+// 🌎 Project imports:
 import 'package:c_school_app/util/pinyin_util.dart';
 
 void main() {

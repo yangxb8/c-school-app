@@ -42,9 +42,13 @@ void main() async {
   /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
   var releaseOptions = CatcherOptions(SilentReportMode(), [
     SentryHandler(SentryClient(SentryOptions(
-        dsn: 'https://6b7250fbad81463791e2036ffdd6b184@o455157.ingest.sentry.io/5446301')))
+        dsn:
+            'https://6b7250fbad81463791e2036ffdd6b184@o455157.ingest.sentry.io/5446301')))
   ]);
-  Catcher(rootWidget: CSchoolApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
+  Catcher(
+      rootWidget: CSchoolApp(),
+      debugConfig: debugOptions,
+      releaseConfig: releaseOptions);
 }
 
 class CSchoolApp extends StatelessWidget {
@@ -53,7 +57,8 @@ class CSchoolApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Platform.isAndroid ? Brightness.dark : Brightness.light,
+      statusBarBrightness:
+          Platform.isAndroid ? Brightness.dark : Brightness.light,
       systemNavigationBarColor: Colors.white,
       systemNavigationBarDividerColor: Colors.grey,
       systemNavigationBarIconBrightness: Brightness.dark,
@@ -63,7 +68,7 @@ class CSchoolApp extends StatelessWidget {
       options: WiredashOptionsData(
         customTranslations: {
           const Locale.fromSubtags(languageCode: 'jp'):
-          const CSchoolTranslations(),
+              const CSchoolTranslations(),
         },
         locale: const Locale('jp'),
       ),
@@ -112,7 +117,8 @@ class Splash extends StatelessWidget {
 }
 
 Future<void> initServices() async {
-  await Get.putAsync<LocalStorageService>(() async => await LocalStorageService.getInstance());
+  await Get.putAsync<LocalStorageService>(
+      () async => await LocalStorageService.getInstance());
   await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
   await Flamingo.initializeApp();
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);

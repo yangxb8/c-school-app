@@ -1,12 +1,16 @@
+// 🎯 Dart imports:
 import 'dart:math';
 
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
-import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-
-import 'package:supercharged/supercharged.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:supercharged/supercharged.dart';
 
+// 🌎 Project imports:
 import '../../util/utility.dart';
 
 class ExpandBox extends StatelessWidget {
@@ -76,8 +80,8 @@ class ExpandBox extends StatelessWidget {
                     )),
               )
       ],
-    ).afterFirstLayout((){
-      if(autoExpand){
+    ).afterFirstLayout(() {
+      if (autoExpand) {
         controller.expand();
       }
     });

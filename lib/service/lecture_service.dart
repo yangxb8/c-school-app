@@ -63,7 +63,8 @@ class LectureService extends GetxService {
           (List<LectureHistory>.of(UserService.user.reviewedClassHistory!)).obs;
 
       /// This properties need to be observable and can be use to update AppUser
-      userWordsHistory_Rx = (List<WordHistory>.of(UserService.user.reviewedWordHistory!)).obs;
+      userWordsHistory_Rx =
+          (List<WordHistory>.of(UserService.user.reviewedWordHistory!)).obs;
     }
 
     return _instance!;
@@ -72,14 +73,16 @@ class LectureService extends GetxService {
   /// Get all words user liked
   List<Word> get getLikedWords => findWordsByIds(userLikedWordIds_Rx);
 
-  List<Word> findWordsByConditions({WordMemoryStatus? wordMemoryStatus, String? lectureId}) {
+  List<Word> findWordsByConditions(
+      {WordMemoryStatus? wordMemoryStatus, String? lectureId}) {
     if (wordMemoryStatus == null && lectureId == null) {
       return [];
     }
-    var latestReviewHistory =
-        UserService.user.reviewedWordHistory!.filter((record) => record.isLatest!);
+    var latestReviewHistory = UserService.user.reviewedWordHistory!
+        .filter((record) => record.isLatest!);
     var filteredHistory = latestReviewHistory.filter((record) {
-      if (wordMemoryStatus != null && wordMemoryStatus != record.wordMemoryStatus) {
+      if (wordMemoryStatus != null &&
+          wordMemoryStatus != record.wordMemoryStatus) {
         return false;
       }
       if (lectureId != null && lectureId != record.lectureId) {
@@ -87,8 +90,8 @@ class LectureService extends GetxService {
       }
       return true;
     });
-    var wordIdsOfMemoryStatus = filteredHistory.map((e) => e.wordId);
-    return findWordsByIds(wordIdsOfMemoryStatus.toList() as List<String>);
+    var wordIdsOfMemoryStatus = filteredHistory.map((e) => e.wordId!);
+    return findWordsByIds(wordIdsOfMemoryStatus.toList());
   }
 
   List<Word> findWordsByIds(List<String> ids) {
@@ -103,7 +106,9 @@ class LectureService extends GetxService {
     if (tags.isBlank!) {
       return [];
     } else {
-      return allWords.filter((word) => tags.every((tag) => word.tags!.contains(tag))).toList();
+      return allWords
+          .filter((word) => tags.every((tag) => word.tags!.contains(tag)))
+          .toList();
     }
   }
 
@@ -111,7 +116,9 @@ class LectureService extends GetxService {
     if (tags.isBlank!) {
       return [];
     } else {
-      return allExams.filter((exam) => tags.every((tag) => exam.tags!.contains(tag))).toList();
+      return allExams
+          .filter((exam) => tags.every((tag) => exam.tags!.contains(tag)))
+          .toList();
     }
   }
 
@@ -153,16 +160,19 @@ class LectureService extends GetxService {
   }
 
   /// If the word is in liked word list
-  bool isWordLiked(Word word) => UserService.user.likedWords!.contains(word.wordId);
+  bool isWordLiked(Word word) =>
+      UserService.user.likedWords!.contains(word.wordId);
 
   /// Count how many times the word is viewed
-  int wordViewedCount(Word word) =>
-      UserService.user.reviewedWordHistory!.filter((record) => record.wordId == word.wordId).length;
+  int wordViewedCount(Word word) => UserService.user.reviewedWordHistory!
+      .filter((record) => record.wordId == word.wordId)
+      .length;
 
   /// Return how many times the class is reviewed in words review mode
-  int lectureViewedCount(Lecture lecture) => UserService.user.reviewedClassHistory!
-      .filter((record) => record.lectureId == lecture.lectureId)
-      .length;
+  int lectureViewedCount(Lecture lecture) =>
+      UserService.user.reviewedClassHistory!
+          .filter((record) => record.lectureId == lecture.lectureId)
+          .length;
 
   /// Like or unlike the word,
   void toggleWordLiked(Word word) {
@@ -172,21 +182,25 @@ class LectureService extends GetxService {
   }
 
   /// Add record to reviewedWordHistory, won't overwrite it
-  void addWordReviewedHistory(Word word, {WordMemoryStatus status = WordMemoryStatus.NORMAL}) {
+  void addWordReviewedHistory(Word word,
+      {WordMemoryStatus status = WordMemoryStatus.NORMAL}) {
     // If have history, change it to not latest
-    var relatedWordHistory =
-        userWordsHistory_Rx.filter((history) => history.wordId == word.wordId && history.isLatest!);
+    var relatedWordHistory = userWordsHistory_Rx.filter(
+        (history) => history.wordId == word.wordId && history.isLatest!);
     if (relatedWordHistory.length == 1) {
       relatedWordHistory.single.isLatest = false;
     }
     userWordsHistory_Rx.add(WordHistory(
-        wordId: word.wordId, wordMemoryStatus: status, timestamp: Timestamp.now(), isLatest: true));
+        wordId: word.wordId,
+        wordMemoryStatus: status,
+        timestamp: Timestamp.now(),
+        isLatest: true));
   }
 
   /// Find latest memory status in userWordHistory
   WordMemoryStatus findLatestMemoryStatusOfWord(Word word) {
-    var relatedWordHistory =
-        userWordsHistory_Rx.filter((history) => history.wordId == word.wordId && history.isLatest!);
+    var relatedWordHistory = userWordsHistory_Rx.filter(
+        (history) => history.wordId == word.wordId && history.isLatest!);
     return relatedWordHistory.isEmpty
         ? WordMemoryStatus.NOT_REVIEWED
         : relatedWordHistory.single.wordMemoryStatus!;
@@ -195,18 +209,20 @@ class LectureService extends GetxService {
   /// Add record to reviewedClassHistory, won't overwrite it
   void addLectureReviewedHistory(Lecture lecture) {
     // If have history, change it to not latest
-    var relatedClassHistory = userLecturesHistory_Rx
-        .filter((history) => history.lectureId == lecture.lectureId && history.isLatest!);
+    var relatedClassHistory = userLecturesHistory_Rx.filter((history) =>
+        history.lectureId == lecture.lectureId && history.isLatest!);
     if (relatedClassHistory.length == 1) {
       relatedClassHistory.single.isLatest = false;
     }
-    userLecturesHistory_Rx.add(
-        LectureHistory(lectureId: lecture.lectureId, timestamp: Timestamp.now(), isLatest: true));
+    userLecturesHistory_Rx.add(LectureHistory(
+        lectureId: lecture.lectureId,
+        timestamp: Timestamp.now(),
+        isLatest: true));
   }
 
   /// Get how many times this lecture is reviewed
-  int getLectureViewedCount(Lecture lecture) =>
-      userLecturesHistory_Rx.count((history) => history.lectureId == lecture.lectureId);
+  int getLectureViewedCount(Lecture lecture) => userLecturesHistory_Rx
+      .count((history) => history.lectureId == lecture.lectureId);
 
   /// Commit any changed made to _appUserForUpdate
   void commitChange() {

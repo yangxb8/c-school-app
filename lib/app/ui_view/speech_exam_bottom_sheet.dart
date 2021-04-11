@@ -1,7 +1,4 @@
 // 🐦 Flutter imports:
-import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
-import 'package:c_school_app/app/ui_view/pronunciation_correction.dart';
-import 'package:c_school_app/app/ui_view/speech_evaluation_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -10,6 +7,9 @@ import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
 // 🌎 Project imports:
+import 'package:c_school_app/app/ui_view/pinyin_annotated_paragraph.dart';
+import 'package:c_school_app/app/ui_view/pronunciation_correction.dart';
+import 'package:c_school_app/app/ui_view/speech_evaluation_result.dart';
 import '../../app/model/speech_exam.dart';
 import '../../c_school_icons.dart';
 import 'controller/speech_recording_controller.dart';
@@ -42,7 +42,7 @@ class SpeechExamBottomSheet extends StatelessWidget {
             ),
           ),
           SimpleGestureDetector(
-            onTap: ()=>controller.playRefSpeech(),
+            onTap: () => controller.playRefSpeech(),
             child: PinyinAnnotatedParagraph(
                 paragraph: exam.refText!,
                 pinyins: exam.refPinyins!,
@@ -56,7 +56,8 @@ class SpeechExamBottomSheet extends StatelessWidget {
                     result: controller.lastResult.value!,
                     refPinyinList: exam.refPinyins!,
                     refHanziList: exam.refText!.split(''),
-                    hanziTapCallback: controller.onHanziTap,)),
+                    hanziTapCallback: controller.onHanziTap,
+                  )),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -65,9 +66,12 @@ class SpeechExamBottomSheet extends StatelessWidget {
                   ? const SizedBox.shrink()
                   : SingleChildScrollView(
                       child: SpeechEvaluationRadialBarChart(
-                        sentenceInfo: testData, //TODO: controller.lastResult.value!
-                        summaryExpandController: controller.summaryExpandController,
-                        detailExpandController: controller.detailExpandController,
+                        sentenceInfo:
+                            testData, //TODO: controller.lastResult.value!
+                        summaryExpandController:
+                            controller.summaryExpandController,
+                        detailExpandController:
+                            controller.detailExpandController,
                         detailHanziIndex: controller.detailHanziIndex,
                       ),
                     ),

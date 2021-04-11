@@ -39,7 +39,7 @@ class ProgressHUD extends StatelessWidget {
     this.offset,
     this.dismissible = false,
     required this.child,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

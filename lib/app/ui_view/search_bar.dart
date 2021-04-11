@@ -44,17 +44,17 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
   /// Controller of this search bar
   final _SearchBarController<T> _controller;
 
-  SearchBar({
-    Key? key,
-    required this.items,
-    required this.searchResultBuilder,
-    required this.onSearchResultTap,
-    this.leadingActions = const [],
-    this.tailingActions = const [],
-    this.searchEnableProperties,
-    this.emptyWidget = defaultEmptyResult,
-    this.automaticallyImplyBackButton = false
-  })  : _controller = Get.put(_SearchBarController<T>(items))!,
+  SearchBar(
+      {Key? key,
+      required this.items,
+      required this.searchResultBuilder,
+      required this.onSearchResultTap,
+      this.leadingActions = const [],
+      this.tailingActions = const [],
+      this.searchEnableProperties,
+      this.emptyWidget = defaultEmptyResult,
+      this.automaticallyImplyBackButton = false})
+      : _controller = Get.put(_SearchBarController<T>(items))!,
         super(key: key);
 
   @override
@@ -74,13 +74,16 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
       // Specify a custom transition to be used for
       // animating between opened and closed stated.
       transition: CircularFloatingSearchBarTransition(),
-      leadingActions:
-          leadingActions.map((action) => FloatingSearchBarAction(child: action)).toList(),
+      leadingActions: leadingActions
+          .map((action) => FloatingSearchBarAction(child: action))
+          .toList(),
       actions: [
         FloatingSearchBarAction.searchToClear(
           showIfClosed: false,
         ),
-        ...tailingActions.map((action) => FloatingSearchBarAction(child: action)).toList()
+        ...tailingActions
+            .map((action) => FloatingSearchBarAction(child: action))
+            .toList()
       ],
       builder: (context, transition) {
         return ClipRRect(
@@ -89,8 +92,8 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
               color: Colors.white,
               elevation: 4.0,
               child: Obx(
-                () =>
-                    ListView(shrinkWrap: true, children: buildResult()).constrained(maxHeight: 400),
+                () => ListView(shrinkWrap: true, children: buildResult())
+                    .constrained(maxHeight: 400),
               ),
             ));
       },

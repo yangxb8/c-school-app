@@ -15,8 +15,9 @@ class WordHistory extends Model {
     this.timestamp,
     this.isLatest,
     Map<String, dynamic>? values,
-  })  : _wordMemoryStatus =
-            wordMemoryStatus == null ? null : EnumToString.convertToString(wordMemoryStatus),
+  })  : _wordMemoryStatus = wordMemoryStatus == null
+            ? null
+            : EnumToString.convertToString(wordMemoryStatus),
         super(values: values);
 
   @Field()

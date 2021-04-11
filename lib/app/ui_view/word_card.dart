@@ -31,10 +31,12 @@ class WordCard extends StatelessWidget {
   /// Whether we should load the image
   final bool loadImage;
   final WordCardController controller;
-  WordCard({Key? key, required this.word, this.loadImage = true, isDialog = false})
+  WordCard(
+      {Key? key, required this.word, this.loadImage = true, isDialog = false})
       : controller = isDialog
             ? WordCardController(word)
-            : Get.put<WordCardController>(WordCardController(word), tag: word.wordId),
+            : Get.put<WordCardController>(WordCardController(word),
+                tag: word.wordId),
         super(key: key);
 
   @override
@@ -69,7 +71,9 @@ class WordCard extends StatelessWidget {
           aspectRatio: 4 / 3,
           child: loadImage
               ? BlurHashImageWithFallback(
-                  fallbackImg: emptyImage, mainImgUrl: word.pic?.url, blurHash: word.picHash!)
+                  fallbackImg: emptyImage,
+                  mainImgUrl: word.pic?.url,
+                  blurHash: word.picHash!)
               : emptyImage,
         )
       ],
@@ -83,7 +87,9 @@ class WordCard extends StatelessWidget {
             splashRadius: 0.01,
             icon: Icon(CSchool.heart),
             // key: favoriteButtonKey,
-            color: controller.isWordLiked() ? ReviewWordsTheme.lightYellow : Colors.grey,
+            color: controller.isWordLiked()
+                ? ReviewWordsTheme.lightYellow
+                : Colors.grey,
             iconSize: icon_size * 0.9,
             onPressed: () => controller.toggleFavoriteCard(),
           ),
@@ -103,7 +109,8 @@ class WordCard extends StatelessWidget {
               curve: Curves.easeOut,
               back: Container(
                   constraints: BoxConstraints.expand(),
-                  child: Stack(children: [buildBackCardContent(), favoriteIcon])),
+                  child:
+                      Stack(children: [buildBackCardContent(), favoriteIcon])),
               front: Container(
                   constraints: BoxConstraints.expand(),
                   child: Stack(children: [frontCardContent, favoriteIcon])),
@@ -155,17 +162,19 @@ class WordCard extends StatelessWidget {
             maxLines: 5,
             style: ReviewWordsTheme.wordCardExplanation,
           ).paddingAll(10).decorated(
-            borderRadius: BorderRadius.circular(10), color: ReviewWordsTheme.extremeLightBlue);
+            borderRadius: BorderRadius.circular(10),
+            color: ReviewWordsTheme.extremeLightBlue);
     // meaning part
     var partMeanings = word.wordMeanings!.map((meaning) {
-      var examples = meaning.examples
-          .mapIndexed((index, wordExample) =>
-              _buildExampleRow(wordExample, index == meaning.examples.length - 1))
+      var examples = meaning.examples!
+          .mapIndexed((index, wordExample) => _buildExampleRow(
+              wordExample, index == meaning.examples!.length - 1))
           .toList();
       var mainPart = examples.isEmpty
           ? SizedBox.shrink()
           : Column(children: examples).paddingSymmetric(vertical: 10).decorated(
-              borderRadius: BorderRadius.circular(10), color: ReviewWordsTheme.extremeLightBlue);
+              borderRadius: BorderRadius.circular(10),
+              color: ReviewWordsTheme.extremeLightBlue);
       return mainPart;
     }).toList();
     return Column(
@@ -179,7 +188,9 @@ class WordCard extends StatelessWidget {
           ),
         ),
       ],
-    ).paddingSymmetric(horizontal: 10).backgroundColor(ReviewWordsTheme.lightBlue);
+    )
+        .paddingSymmetric(horizontal: 10)
+        .backgroundColor(ReviewWordsTheme.lightBlue);
   }
 
   Widget _buildExampleRow(WordExample wordExample, bool isLastRow) {
@@ -194,15 +205,17 @@ class WordCard extends StatelessWidget {
                 icon: ObxValue(
                     (dynamic key) => Icon(
                           CSchool.volume,
-                          color: key.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
+                          color: key.value == audioKey
+                              ? ReviewWordsTheme.lightYellow
+                              : Colors.grey,
                           size: icon_size,
                         ),
                     controller.audioService.clientKey),
-                onPressed: () =>
-                    controller.playExample(wordExample: wordExample, audioKey: audioKey)),
+                onPressed: () => controller.playExample(
+                    wordExample: wordExample, audioKey: audioKey)),
             PinyinAnnotatedParagraph(
-              paragraph: wordExample.example,
-              pinyins: wordExample.pinyin,
+              paragraph: wordExample.example!,
+              pinyins: wordExample.pinyin!,
               defaultTextStyle: ReviewWordsTheme.wordCardExample,
               pinyinTextStyle: ReviewWordsTheme.wordCardExamplePinyin,
               centerWord: word,
@@ -213,7 +226,7 @@ class WordCard extends StatelessWidget {
           ],
         ),
         SelectableAutoSizeText.unselectable(
-          wordExample.meaning,
+          wordExample.meaning!,
           style: ReviewWordsTheme.exampleMeaning,
         ).alignment(Alignment.centerLeft).paddingOnly(left: 50),
         isLastRow ? const SizedBox.shrink() : Divider()

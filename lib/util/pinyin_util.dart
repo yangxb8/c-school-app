@@ -1,3 +1,4 @@
+// 🌎 Project imports:
 import 'utility.dart';
 
 /// Pinyinizer Adds proper (Mandarin) Chinese tone diacritics to a string.
@@ -7,10 +8,12 @@ import 'utility.dart';
 /// and transforming it into a string with proper tone diacritics.
 ///
 class PinyinUtil {
-  static final RegExp _tonePtn = RegExp(r"([aeiouvü]{1,2}(n|ng|r|\'er|N|NG|R|\'ER){0,1}[1234])",
+  static final RegExp _tonePtn = RegExp(
+      r"([aeiouvü]{1,2}(n|ng|r|\'er|N|NG|R|\'ER){0,1}[1234])",
+      caseSensitive: false,
+      multiLine: false);
+  static final RegExp _suffixPtn = RegExp(r"(n|ng|r|\'er|N|NG|R|\'ER)$",
       caseSensitive: false, multiLine: false);
-  static final RegExp _suffixPtn =
-      RegExp(r"(n|ng|r|\'er|N|NG|R|\'ER)$", caseSensitive: false, multiLine: false);
 
   static const _toneMap = {
     'a': ['ā', 'á', 'ǎ', 'à'],
@@ -45,8 +48,8 @@ class PinyinUtil {
   static List<String> appendPunctuation(
       {required List<String> origin, required List<String> ref}) {
     var copy = origin.map((e) => e).toList();
-    for(var i=0;i<ref.length;i++){
-      if(!ref[i].isSingleHanzi){
+    for (var i = 0; i < ref.length; i++) {
+      if (!ref[i].isSingleHanzi) {
         copy.insert(i, ref[i]);
       }
     }

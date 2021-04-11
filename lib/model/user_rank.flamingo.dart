@@ -36,10 +36,10 @@ Map<String, dynamic> _$toData(UserRank doc) {
 
 /// For load data
 void _$fromData(UserRank doc, Map<String, dynamic> data) {
-  doc.rank = Helper.valueFromKey<int>(data, 'rank');
+  doc.rank = Helper.valueFromKey<int?>(data, 'rank');
   if (data['timestamp'] is Map) {
     doc.timestamp = Helper.timestampFromMap(data, 'timestamp');
   } else {
-    doc.timestamp = Helper.valueFromKey<Timestamp>(data, 'timestamp');
+    doc.timestamp = Helper.valueFromKey<Timestamp?>(data, 'timestamp');
   }
 }

@@ -44,12 +44,12 @@ Map<String, dynamic> _$toData(UserMemo doc) {
 
 /// For load data
 void _$fromData(UserMemo doc, Map<String, dynamic> data) {
-  doc.title = Helper.valueFromKey<String>(data, 'title');
-  doc.content = Helper.valueFromKey<String>(data, 'content');
-  doc.relatedClassId = Helper.valueFromKey<String>(data, 'relatedClassId');
+  doc.title = Helper.valueFromKey<String?>(data, 'title');
+  doc.content = Helper.valueFromKey<String?>(data, 'content');
+  doc.relatedClassId = Helper.valueFromKey<String?>(data, 'relatedClassId');
   if (data['timestamp'] is Map) {
     doc.timestamp = Helper.timestampFromMap(data, 'timestamp');
   } else {
-    doc.timestamp = Helper.valueFromKey<Timestamp>(data, 'timestamp');
+    doc.timestamp = Helper.valueFromKey<Timestamp?>(data, 'timestamp');
   }
 }

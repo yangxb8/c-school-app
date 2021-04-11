@@ -9,9 +9,10 @@ import '../../my_progress_theme.dart';
 
 class WorkoutView extends StatelessWidget {
   final AnimationController? animationController;
-  final Animation? animation;
+  final Animation<double> animation;
 
-  const WorkoutView({Key? key, this.animationController, this.animation})
+  const WorkoutView(
+      {Key? key, this.animationController, required this.animation})
       : super(key: key);
 
   @override
@@ -20,10 +21,10 @@ class WorkoutView extends StatelessWidget {
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation as Animation<double>,
+          opacity: animation,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - animation!.value), 0.0),
+                0.0, 30 * (1.0 - animation.value), 0.0),
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 24, right: 24, top: 16, bottom: 18),

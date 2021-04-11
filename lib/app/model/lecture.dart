@@ -11,7 +11,7 @@ import 'exam_base.dart';
 
 part 'lecture.flamingo.dart';
 
-class Lecture extends Document<Lecture> implements Searchable{
+class Lecture extends Document<Lecture> implements Searchable {
   static const levelPrefix = 'Level';
   static LectureService lectureService = Get.find<LectureService>();
 
@@ -71,10 +71,10 @@ class Lecture extends Document<Lecture> implements Searchable{
 
   @override
   Map<String, dynamic> get searchableProperties => {
-    'title': title,
-    'lectureId': lectureId,
-    'description':  description,
-    'level': level.toString(),
-    'tags': tags,
-  };
+        'title': title,
+        'lectureId': lectureId,
+        'description': description,
+        'level': level.toString(),
+        'tags': tags,
+      };
 }

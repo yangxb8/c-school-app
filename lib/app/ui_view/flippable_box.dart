@@ -15,7 +15,17 @@ class FlippableBox extends StatelessWidget {
 
   final bool? isFlipped;
 
-  const FlippableBox({Key? key, this.isFlipped = false, this.front, this.back, this.bg, this.clipRadius, this.duration = 1, this.curve = Curves.easeOut, this.flipVt = false}) : super(key: key);
+  const FlippableBox(
+      {Key? key,
+      this.isFlipped = false,
+      this.front,
+      this.back,
+      this.bg,
+      this.clipRadius,
+      this.duration = 1,
+      this.curve = Curves.easeOut,
+      this.flipVt = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +36,11 @@ class FlippableBox extends StatelessWidget {
       builder: (context, dynamic value, child) {
         var content = value >= 90 ? back : front;
         return Rotation3d(
-          rotationY: !flipVt? value : 0,
-          rotationX: flipVt? value : 0,
+          rotationY: !flipVt ? value : 0,
+          rotationX: flipVt ? value : 0,
           child: Rotation3d(
-            rotationY: !flipVt? (value > 90 ? 180 : 0) : 0,
-            rotationX: flipVt? (value > 90 ? 180 : 0) : 0,
+            rotationY: !flipVt ? (value > 90 ? 180 : 0) : 0,
+            rotationX: flipVt ? (value > 90 ? 180 : 0) : 0,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(clipRadius ?? 0),
               child: AnimatedBackground(
@@ -54,7 +64,13 @@ class Rotation3d extends StatelessWidget {
   final double rotationY;
   final double rotationZ;
 
-  const Rotation3d({Key? key, required this.child, this.rotationY = 0, this.rotationZ = 0, this.rotationX}) : super(key: key);
+  const Rotation3d(
+      {Key? key,
+      required this.child,
+      this.rotationY = 0,
+      this.rotationZ = 0,
+      this.rotationX})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +89,8 @@ class AnimatedBackground extends StatelessWidget {
   final Container? child;
   final BoxDecoration? decoration;
 
-  const AnimatedBackground({Key? key, this.child, this.decoration}) : super(key: key);
+  const AnimatedBackground({Key? key, this.child, this.decoration})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

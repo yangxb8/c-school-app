@@ -83,7 +83,9 @@ class AudioService extends GetxService {
       Duration? from,
       Duration? to}) async {
     assert(uri != null || bytes != null);
-    if (playerState.value != PlayerState.isStopped && // If stopped, not point to call stop again
+    if (playerState.value !=
+                PlayerState
+                    .isStopped && // If stopped, not point to call stop again
             forceRestart || // If forceRestart, restart
         clientKey.value != key || // If a new audio, restart
         key != '') {
@@ -93,7 +95,8 @@ class AudioService extends GetxService {
     // Set clientKey to new key
     clientKey.value = key;
     // Always cache the audio
-    final data = bytes ?? (await DefaultCacheManager().getSingleFile(uri!)).readAsBytesSync();
+    final data = bytes ??
+        (await DefaultCacheManager().getSingleFile(uri!)).readAsBytesSync();
     // If Player is stopped, start it
     if (playerState.value == PlayerState.isStopped) {
       await _player.startPlayer(
@@ -170,7 +173,8 @@ class AudioService extends GetxService {
     }
     final tempDir = (await getTemporaryDirectory()).path;
     _lastRecordPath = '$tempDir/${Uuid().v1()}';
-    await _recorder.startRecorder(toFile: _lastRecordPath, codec: Codec.pcm16WAV);
+    await _recorder.startRecorder(
+        toFile: _lastRecordPath, codec: Codec.pcm16WAV);
   }
 
   /// Stop recording and return recorded file

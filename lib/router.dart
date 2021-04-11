@@ -30,8 +30,7 @@ class AppRouter {
       GetPage(
           middlewares: [HomeRouteMiddleware()],
           name: '/home',
-          page: () =>
-              MainAppHomeScreen()),
+          page: () => MainAppHomeScreen()),
       GetPage(
           name: '/review/words/home',
           page: () => ReviewWordsHomeScreen(),
@@ -50,16 +49,16 @@ class AppRouter {
   }
 }
 
-class HomeRouteMiddleware extends GetMiddleware{
+class HomeRouteMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    if(UserService.user.isLogin()){
-      if(AppStateService.isDebug){
+    if (UserService.user.isLogin()) {
+      if (AppStateService.isDebug) {
         return null;
       }
       return RouteSettings(name: '/review/words/home'); //TODO: For beta test
     } else {
-    return RouteSettings(name: '/login');
+      return RouteSettings(name: '/login');
     }
   }
 }

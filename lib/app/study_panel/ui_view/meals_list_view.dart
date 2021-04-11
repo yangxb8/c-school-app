@@ -10,11 +10,13 @@ import '../../my_progress_theme.dart';
 
 class MealsListView extends StatefulWidget {
   const MealsListView(
-      {Key? key, this.mainScreenAnimationController, this.mainScreenAnimation})
+      {Key? key,
+      this.mainScreenAnimationController,
+      required this.mainScreenAnimation})
       : super(key: key);
 
   final AnimationController? mainScreenAnimationController;
-  final Animation<dynamic>? mainScreenAnimation;
+  final Animation<double> mainScreenAnimation;
 
   @override
   _MealsListViewState createState() => _MealsListViewState();
@@ -49,10 +51,10 @@ class _MealsListViewState extends State<MealsListView>
       animation: widget.mainScreenAnimationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: widget.mainScreenAnimation as Animation<double>,
+          opacity: widget.mainScreenAnimation,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - widget.mainScreenAnimation!.value), 0.0),
+                0.0, 30 * (1.0 - widget.mainScreenAnimation.value), 0.0),
             child: Container(
               height: 216,
               width: double.infinity,
@@ -64,12 +66,11 @@ class _MealsListViewState extends State<MealsListView>
                 itemBuilder: (BuildContext context, int index) {
                   final count =
                       mealsListData.length > 10 ? 10 : mealsListData.length;
-                  final animation =
-                      Tween<double>(begin: 0.0, end: 1.0).animate(
-                          CurvedAnimation(
-                              parent: animationController!,
-                              curve: Interval((1 / count) * index, 1.0,
-                                  curve: Curves.fastOutSlowIn)));
+                  final animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                          parent: animationController!,
+                          curve: Interval((1 / count) * index, 1.0,
+                              curve: Curves.fastOutSlowIn)));
                   animationController!.forward();
 
                   return MealsView(
@@ -89,12 +90,15 @@ class _MealsListViewState extends State<MealsListView>
 
 class MealsView extends StatelessWidget {
   const MealsView(
-      {Key? key, this.mealsListData, this.animationController, this.animation})
+      {Key? key,
+      this.mealsListData,
+      this.animationController,
+      required this.animation})
       : super(key: key);
 
   final MealsListData? mealsListData;
   final AnimationController? animationController;
-  final Animation<dynamic>? animation;
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +106,10 @@ class MealsView extends StatelessWidget {
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation as Animation<double>,
+          opacity: animation,
           child: Transform(
             transform: Matrix4.translationValues(
-                100 * (1.0 - animation!.value), 0.0, 0.0),
+                100 * (1.0 - animation.value), 0.0, 0.0),
             child: SizedBox(
               width: 130,
               child: Stack(
@@ -117,7 +121,8 @@ class MealsView extends StatelessWidget {
                       decoration: BoxDecoration(
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                              color: mealsListData!.endColor.toColor()
+                              color: mealsListData!.endColor
+                                  .toColor()
                                   .withOpacity(0.6),
                               offset: const Offset(1.1, 4.0),
                               blurRadius: 8.0),
@@ -226,7 +231,8 @@ class MealsView extends StatelessWidget {
                                       padding: const EdgeInsets.all(6.0),
                                       child: Icon(
                                         Icons.add,
-                                        color: mealsListData!.endColor.toColor(),
+                                        color:
+                                            mealsListData!.endColor.toColor(),
                                         size: 24,
                                       ),
                                     ),

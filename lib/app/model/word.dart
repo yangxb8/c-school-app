@@ -8,13 +8,12 @@ import 'package:c_school_app/app/model/lecture.dart';
 import 'package:c_school_app/app/model/searchable.dart';
 import 'package:c_school_app/app/model/word_meaning.dart';
 import 'package:c_school_app/service/lecture_service.dart';
-
 import 'speech_audio.dart';
 
 part 'word.flamingo.dart';
 
 /// id is used as primary key for any word
-class Word extends Document<Word> implements Searchable{
+class Word extends Document<Word> implements Searchable {
   static LectureService lectureService = Get.find<LectureService>();
 
   Word({
@@ -124,11 +123,11 @@ class Word extends Document<Word> implements Searchable{
 
   @override
   Map<String, dynamic> get searchableProperties => {
-    'wordAsString': wordAsString,
-    'pinyin':pinyin,
-    'wordMeanings': wordMeanings!.map((m) => m.meaning),
-    'tags':tags
-  };
+        'wordAsString': wordAsString,
+        'pinyin': pinyin,
+        'wordMeanings': wordMeanings!.map((m) => m.meaning),
+        'tags': tags
+      };
 }
 
 enum WordMemoryStatus { REMEMBERED, NORMAL, FORGOT, NOT_REVIEWED }

@@ -12,10 +12,10 @@ import '../../my_progress_theme.dart';
 
 class MediterranesnDietView extends StatelessWidget {
   final AnimationController? animationController;
-  final Animation? animation;
+  final Animation<double> animation;
 
   const MediterranesnDietView(
-      {Key? key, this.animationController, this.animation})
+      {Key? key, this.animationController, required this.animation})
       : super(key: key);
 
   @override
@@ -24,10 +24,10 @@ class MediterranesnDietView extends StatelessWidget {
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation as Animation<double>,
+          opacity: animation,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - animation!.value), 0.0),
+                0.0, 30 * (1.0 - animation.value), 0.0),
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 24, right: 24, top: 16, bottom: 18),
@@ -65,7 +65,8 @@ class MediterranesnDietView extends StatelessWidget {
                                         height: 48,
                                         width: 2,
                                         decoration: BoxDecoration(
-                                          color: '#87A0E5'.toColor()
+                                          color: '#87A0E5'
+                                              .toColor()
                                               .withOpacity(0.5),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(4.0)),
@@ -113,7 +114,7 @@ class MediterranesnDietView extends StatelessWidget {
                                                       const EdgeInsets.only(
                                                           left: 4, bottom: 3),
                                                   child: Text(
-                                                    '${(1127 * animation!.value).toInt()}',
+                                                    '${(1127 * animation.value).toInt()}',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontFamily:
@@ -164,7 +165,8 @@ class MediterranesnDietView extends StatelessWidget {
                                         height: 48,
                                         width: 2,
                                         decoration: BoxDecoration(
-                                          color: '#F56E98'.toColor()
+                                          color: '#F56E98'
+                                              .toColor()
                                               .withOpacity(0.5),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(4.0)),
@@ -212,7 +214,7 @@ class MediterranesnDietView extends StatelessWidget {
                                                       const EdgeInsets.only(
                                                           left: 4, bottom: 3),
                                                   child: Text(
-                                                    '${(102 * animation!.value).toInt()}',
+                                                    '${(102 * animation.value).toInt()}',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontFamily:
@@ -287,7 +289,7 @@ class MediterranesnDietView extends StatelessWidget {
                                             CrossAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
-                                            '${(1503 * animation!.value).toInt()}',
+                                            '${(1503 * animation.value).toInt()}',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily:
@@ -327,7 +329,7 @@ class MediterranesnDietView extends StatelessWidget {
                                           ],
                                           angle: 140 +
                                               (360 - 140) *
-                                                  (1.0 - animation!.value)),
+                                                  (1.0 - animation.value)),
                                       child: SizedBox(
                                         width: 108,
                                         height: 108,
@@ -387,12 +389,13 @@ class MediterranesnDietView extends StatelessWidget {
                                     child: Row(
                                       children: <Widget>[
                                         Container(
-                                          width: ((70 / 1.2) * animation!.value),
+                                          width: ((70 / 1.2) * animation.value),
                                           height: 4,
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(colors: [
                                               '#87A0E5'.toColor(),
-                                              '#87A0E5'.toColor()
+                                              '#87A0E5'
+                                                  .toColor()
                                                   .withOpacity(0.5),
                                             ]),
                                             borderRadius: BorderRadius.all(
@@ -446,7 +449,8 @@ class MediterranesnDietView extends StatelessWidget {
                                         height: 4,
                                         width: 70,
                                         decoration: BoxDecoration(
-                                          color: '#F56E98'.toColor()
+                                          color: '#F56E98'
+                                              .toColor()
                                               .withOpacity(0.2),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(4.0)),
@@ -460,7 +464,8 @@ class MediterranesnDietView extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                 gradient:
                                                     LinearGradient(colors: [
-                                                  '#F56E98'.toColor()
+                                                  '#F56E98'
+                                                      .toColor()
                                                       .withOpacity(0.1),
                                                   '#F56E98'.toColor(),
                                                 ]),
@@ -517,7 +522,8 @@ class MediterranesnDietView extends StatelessWidget {
                                         height: 4,
                                         width: 70,
                                         decoration: BoxDecoration(
-                                          color: '#F1B440'.toColor()
+                                          color: '#F1B440'
+                                              .toColor()
                                               .withOpacity(0.2),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(4.0)),
@@ -531,7 +537,8 @@ class MediterranesnDietView extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                 gradient:
                                                     LinearGradient(colors: [
-                                                  '#F1B440'.toColor()
+                                                  '#F1B440'
+                                                      .toColor()
                                                       .withOpacity(0.1),
                                                   '#F1B440'.toColor(),
                                                 ]),

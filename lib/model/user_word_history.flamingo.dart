@@ -44,14 +44,14 @@ Map<String, dynamic> _$toData(WordHistory doc) {
 
 /// For load data
 void _$fromData(WordHistory doc, Map<String, dynamic> data) {
-  doc.wordId = Helper.valueFromKey<String>(data, 'wordId');
+  doc.wordId = Helper.valueFromKey<String?>(data, 'wordId');
   doc._wordMemoryStatus =
-      Helper.valueFromKey<String>(data, '_wordMemoryStatus');
+      Helper.valueFromKey<String?>(data, '_wordMemoryStatus');
   if (data['timestamp'] is Map) {
     doc.timestamp = Helper.timestampFromMap(data, 'timestamp');
   } else {
-    doc.timestamp = Helper.valueFromKey<Timestamp>(data, 'timestamp');
+    doc.timestamp = Helper.valueFromKey<Timestamp?>(data, 'timestamp');
   }
 
-  doc.isLatest = Helper.valueFromKey<bool>(data, 'isLatest');
+  doc.isLatest = Helper.valueFromKey<bool?>(data, 'isLatest');
 }

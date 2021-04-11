@@ -17,11 +17,14 @@ class LoginController extends GetxController {
   RxBool processing = false.obs;
 
   final GlobalKey<FormFieldState> loginEmailKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> loginPasswordKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> loginPasswordKey =
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> signupEmailKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupPasswordKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupPasswordKey =
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> signupNamelKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupConfirmPasswordlKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupConfirmPasswordlKey =
+      GlobalKey<FormFieldState>();
 
   Map<String, String> formTexts = {
     'loginEmail': '',
@@ -45,7 +48,9 @@ class LoginController extends GetxController {
       signupPasswordKey.currentState!.reset();
       signupConfirmPasswordlKey.currentState!.reset();
       var result = await apiService.firebaseAuthApi.signUpWithEmail(
-          formTexts['signupEmail']!, formTexts['signupPassword']!, formTexts['signupName']!);
+          formTexts['signupEmail']!,
+          formTexts['signupPassword']!,
+          formTexts['signupName']!);
       if (result == 'need email verify') {
         _showEmailVerificationPopup(formTexts['signupEmail']!);
       } else if (result != 'ok') {
@@ -154,7 +159,8 @@ class LoginController extends GetxController {
   void _showEmailVerificationPopup(String email) {
     Get.defaultDialog(
       title: 'login.register.confirmEmail.title'.tr,
-      content: Text('login.register.confirmEmail.content'.trParams({'email': email})!),
+      content: Text(
+          'login.register.confirmEmail.content'.trParams({'email': email})!),
       textConfirm: 'button.close'.tr,
       onConfirm: () => Get.back(),
     );

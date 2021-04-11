@@ -3,20 +3,20 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 // 📦 Package imports:
-import 'package:c_school_app/app/model/tts_request.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/soe_request.dart';
 import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/app/model/tts_request.dart';
 import 'package:c_school_app/util/utility.dart';
 
-class TcService extends GetConnect{
+class TcService extends GetConnect {
   static const SECRET_ID = 'AKIDorfD1yrBxYu3w2zWGj0aAXpzqPib3yKP';
   static const SECRET_KEY = 'rSqCKqlO6cz5wRWKGdoNaY6SaR0PhtgF';
 
-  Future<SentenceInfo> sendSoeRequest(SoeRequest request) async{
+  Future<SentenceInfo> sendSoeRequest(SoeRequest request) async {
     const action = 'TransmitOralProcessWithInit';
     const version = '2018-07-24';
     const endpoint = 'soe.tencentcloudapi.com';
@@ -24,11 +24,13 @@ class TcService extends GetConnect{
     final now = DateTime.now();
     final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();
     final payload = request.toString();
-    final sign = _generateAuth(endpoint:endpoint, service: service, payload:payload,now: now);
+    final sign = _generateAuth(
+        endpoint: endpoint, service: service, payload: payload, now: now);
     final response = await post('https://$endpoint', payload, headers: {
       'Host': endpoint,
       'X-TC-Action': action,
-      'X-TC-RequestClient': GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
+      'X-TC-RequestClient':
+          GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
       'X-TC-Timestamp': timestamp,
       'X-TC-Version': version,
       'X-TC-Language': 'zh-CN',
@@ -40,7 +42,7 @@ class TcService extends GetConnect{
     return SentenceInfo.fromJson(jsonDecode(content)['Response']);
   }
 
-  Future<Uint8List> sendTtsRequest(TtsRequest request) async{
+  Future<Uint8List> sendTtsRequest(TtsRequest request) async {
     const region = 'ap-shanghai';
     const action = 'TextToVoice';
     const version = '2019-08-23';
@@ -49,12 +51,14 @@ class TcService extends GetConnect{
     final now = DateTime.now();
     final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();
     final payload = request.toString();
-    final sign = _generateAuth(endpoint:endpoint, service:service,payload: payload,now: now);
+    final sign = _generateAuth(
+        endpoint: endpoint, service: service, payload: payload, now: now);
     final response = await post('https://$endpoint', payload, headers: {
       'Host': endpoint,
       'X-TC-Region': region,
       'X-TC-Action': action,
-      'X-TC-RequestClient': GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
+      'X-TC-RequestClient':
+          GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
       'X-TC-Timestamp': timestamp,
       'X-TC-Version': version,
       'X-TC-Language': 'zh-CN',
@@ -64,7 +68,11 @@ class TcService extends GetConnect{
     return base64Decode(response.body['Response']['Audio']);
   }
 
-  String _generateAuth({required String endpoint, required String service, required String payload, required DateTime now}) {
+  String _generateAuth(
+      {required String endpoint,
+      required String service,
+      required String payload,
+      required DateTime now}) {
     // 时间处理, 获取世界时间日期
     final utc = now.toUtc();
     final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();
@@ -72,11 +80,13 @@ class TcService extends GetConnect{
     // ************* 步骤 1：拼接规范请求串 *************
     final signedHeaders = 'content-type;host';
 
-    final hashedRequestPayload = sha256.convert(utf8.encode(payload)).toString();
+    final hashedRequestPayload =
+        sha256.convert(utf8.encode(payload)).toString();
     final httpRequestMethod = 'POST';
     final canonicalUri = '/';
     final canonicalQueryString = '';
-    final canonicalHeaders = 'content-type:application/json\n' 'host:' + endpoint + '\n';
+    final canonicalHeaders =
+        'content-type:application/json\n' 'host:' + endpoint + '\n';
 
     final canonicalRequest = httpRequestMethod +
         '\n' +
@@ -91,10 +101,16 @@ class TcService extends GetConnect{
         hashedRequestPayload;
     // ************* 步骤 2：拼接待签名字符串 *************
     final algorithm = 'TC3-HMAC-SHA256';
-    final hashedCanonicalRequest = sha256.convert(utf8.encode(canonicalRequest)).toString();
+    final hashedCanonicalRequest =
+        sha256.convert(utf8.encode(canonicalRequest)).toString();
     final credentialScope = date + '/' + service + '/' + 'tc3_request';
-    final stringToSign =
-        algorithm + '\n' + timestamp + '\n' + credentialScope + '\n' + hashedCanonicalRequest;
+    final stringToSign = algorithm +
+        '\n' +
+        timestamp +
+        '\n' +
+        credentialScope +
+        '\n' +
+        hashedCanonicalRequest;
     // ************* 步骤 3：计算签名 *************
     final kDate = _hmac256(date, 'TC3' + SECRET_KEY).bytes;
     final kService = _hmac256(service, kDate).bytes;

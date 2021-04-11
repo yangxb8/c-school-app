@@ -20,7 +20,8 @@ class CSchoolTranslations extends WiredashTranslations {
   String get captureSpotlightNavigateTitle => '画面遷移';
 
   @override
-  String get captureSpotlightScreenCapturedMsg => 'キャプチャが取れました！影響範囲などを自由にマークしてください。';
+  String get captureSpotlightScreenCapturedMsg =>
+      'キャプチャが取れました！影響範囲などを自由にマークしてください。';
 
   @override
   String get captureSpotlightScreenCapturedTitle => '描く';
@@ -44,13 +45,15 @@ class CSchoolTranslations extends WiredashTranslations {
   String get feedbackModeBugTitle => 'バグのレポート';
 
   @override
-  String get feedbackModeImprovementMsg => 'このアプリをより良くするためのアイデアがあればぜひシェアしてください！';
+  String get feedbackModeImprovementMsg =>
+      'このアプリをより良くするためのアイデアがあればぜひシェアしてください！';
 
   @override
   String get feedbackModeImprovementTitle => '機能のリクエスト';
 
   @override
-  String get feedbackModePraiseMsg => 'このアプリのどこが気に入れていますか？より良い機能を提供するためのヒントになります。';
+  String get feedbackModePraiseMsg =>
+      'このアプリのどこが気に入れていますか？より良い機能を提供するためのヒントになります。';
 
   @override
   String get feedbackModePraiseTitle => 'いいね';
@@ -62,7 +65,8 @@ class CSchoolTranslations extends WiredashTranslations {
   String get feedbackSend => 'フィードバックを送信';
 
   @override
-  String get feedbackStateEmailMsg => 'このフィードバックのに関する返信を希望する場合は、メールアドレスを入力してください。';
+  String get feedbackStateEmailMsg =>
+      'このフィードバックのに関する返信を希望する場合は、メールアドレスを入力してください。';
 
   @override
   String get feedbackStateEmailTitle => 'コンタクト';
@@ -129,5 +133,6 @@ class CSchoolTranslations extends WiredashTranslations {
 
   @override
   String get validationHintFeedbackLength => 'フィードバックが長すぎます。';
-/// override all the terms
+
+  /// override all the terms
 }

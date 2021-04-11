@@ -9,11 +9,13 @@ import '../../my_progress_theme.dart';
 
 class AreaListView extends StatefulWidget {
   const AreaListView(
-      {Key? key, this.mainScreenAnimationController, this.mainScreenAnimation})
+      {Key? key,
+      this.mainScreenAnimationController,
+      required this.mainScreenAnimation})
       : super(key: key);
 
   final AnimationController? mainScreenAnimationController;
-  final Animation<dynamic>? mainScreenAnimation;
+  final Animation<double> mainScreenAnimation;
   @override
   _AreaListViewState createState() => _AreaListViewState();
 }
@@ -47,10 +49,10 @@ class _AreaListViewState extends State<AreaListView>
       animation: widget.mainScreenAnimationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: widget.mainScreenAnimation as Animation<double>,
+          opacity: widget.mainScreenAnimation,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - widget.mainScreenAnimation!.value), 0.0),
+                0.0, 30 * (1.0 - widget.mainScreenAnimation.value), 0.0),
             child: AspectRatio(
               aspectRatio: 1.0,
               child: Padding(
@@ -81,7 +83,8 @@ class _AreaListViewState extends State<AreaListView>
                       animationController!.forward();
                       return AreaView(
                         imagePath: areaListData[index],
-                        onTap: () async => await Get.toNamed('/review/words/home'),
+                        onTap: () async =>
+                            await Get.toNamed('/review/words/home'),
                         animation: animation,
                         animationController: animationController,
                       );
@@ -103,13 +106,13 @@ class AreaView extends StatelessWidget {
     this.imagePath,
     this.onTap,
     this.animationController,
-    this.animation,
+    required this.animation,
   }) : super(key: key);
 
   final String? imagePath;
-  final Function? onTap;
+  final VoidCallback? onTap;
   final AnimationController? animationController;
-  final Animation<dynamic>? animation;
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -117,10 +120,10 @@ class AreaView extends StatelessWidget {
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation as Animation<double>,
+          opacity: animation,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation!.value), 0.0),
+                0.0, 50 * (1.0 - animation.value), 0.0),
             child: Container(
               decoration: BoxDecoration(
                 color: FintnessAppTheme.white,
@@ -143,14 +146,13 @@ class AreaView extends StatelessWidget {
                   highlightColor: Colors.transparent,
                   hoverColor: Colors.transparent,
                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                  splashColor:
-                      FintnessAppTheme.nearlyDarkBlue.withOpacity(0.2),
-                  onTap: onTap as void Function()?,
+                  splashColor: FintnessAppTheme.nearlyDarkBlue.withOpacity(0.2),
+                  onTap: onTap,
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 16, left: 16, right: 16),
+                        padding:
+                            const EdgeInsets.only(top: 16, left: 16, right: 16),
                         child: Image.asset(imagePath!),
                       ),
                     ],

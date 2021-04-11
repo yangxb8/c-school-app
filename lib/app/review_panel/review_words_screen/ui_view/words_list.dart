@@ -27,8 +27,10 @@ class WordsList extends GetView<ReviewWordsController> {
       child: StickyGroupedListView<Word, String>(
         elements: controller.wordsList,
         groupBy: (Word element) => element.lectureId,
-        groupComparator: (lectureId1, lectureId2) => lectureId1.compareTo(lectureId2),
-        itemComparator: (element1, element2) => element1.wordId!.compareTo(element2.wordId!),
+        groupComparator: (lectureId1, lectureId2) =>
+            lectureId1.compareTo(lectureId2),
+        itemComparator: (element1, element2) =>
+            element1.wordId!.compareTo(element2.wordId!),
         // optional
         order: StickyGroupedListOrder.ASC,
         floatingHeader: true,
@@ -55,7 +57,8 @@ class WordsList extends GetView<ReviewWordsController> {
 }
 
 class _WordMiniCard extends GetView<ReviewWordsController> {
-  _WordMiniCard({Key? key, required this.word, required this.index}) : super(key: key);
+  _WordMiniCard({Key? key, required this.word, required this.index})
+      : super(key: key);
 
   final String audioKey = Uuid().v1();
   final int index;
@@ -72,11 +75,14 @@ class _WordMiniCard extends GetView<ReviewWordsController> {
           children: [
             ObxValue(
                 (dynamic data) => IconButton(
-                      color: data.value == audioKey ? ReviewWordsTheme.lightYellow : Colors.grey,
+                      color: data.value == audioKey
+                          ? ReviewWordsTheme.lightYellow
+                          : Colors.grey,
                       padding: EdgeInsets.only(left: 20),
                       icon: Icon(CSchool.volume),
                       iconSize: BUTTON_SIZE,
-                      onPressed: () => controller.playWord(word: word, audioKey: audioKey),
+                      onPressed: () =>
+                          controller.playWord(word: word, audioKey: audioKey),
                     ),
                 controller.audioService.clientKey),
             PinyinAnnotatedParagraph(

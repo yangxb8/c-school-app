@@ -23,8 +23,9 @@ class ReviewWords extends GetView<ReviewWordsController> {
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Stack(fit: StackFit.expand, children: [
-            Obx(() =>
-                controller.mode == WordsReviewMode.flash_card ? WordsFlashcard() : WordsList()),
+            Obx(() => controller.mode == WordsReviewMode.flash_card
+                ? WordsFlashcard()
+                : WordsList()),
             _buildSearchBar(),
           ]),
         ));
@@ -47,15 +48,18 @@ class ReviewWords extends GetView<ReviewWordsController> {
       automaticallyImplyBackButton: true,
       leadingActions: [
         CircularButton(
-          icon: Obx(() =>
-              controller.mode == WordsReviewMode.list ? Icon(Icons.credit_card) : Icon(Icons.list)),
+          icon: Obx(() => controller.mode == WordsReviewMode.list
+              ? Icon(Icons.credit_card)
+              : Icon(Icons.list)),
           onPressed: controller.changeMode,
         ),
         CircularButton(
           icon: Obx(
             () => CustomAnimation<Color>(
               control: controller.searchBarPlayIconControl.value,
-              tween: Colors.grey.tweenTo(Colors.lightBlueAccent) as Animatable<Color>,
+              tween: Colors.grey
+                  .tweenTo(Colors.lightBlueAccent)
+                  .curved(Curves.bounceInOut) as Animatable<Color>,
               duration: 0.3.seconds,
               builder: (_, __, value) => AnimatedIcon(
                 icon: AnimatedIcons.play_pause,

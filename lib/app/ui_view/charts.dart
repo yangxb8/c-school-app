@@ -1,9 +1,8 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 
-import 'package:styled_widget/styled_widget.dart';
-
 // 📦 Package imports:
+import 'package:styled_widget/styled_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class RadialBarChart extends StatelessWidget {
@@ -35,7 +34,8 @@ class RadialBarChart extends StatelessWidget {
   /// Whether to show tooltip
   final bool showTooltip;
 
-  List<RadialBarChartData> get chartData => data.entries.map((e) => RadialBarChartData(e)).toList();
+  List<RadialBarChartData> get chartData =>
+      data.entries.map((e) => RadialBarChartData(e)).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,8 @@ class RadialBarChart extends StatelessWidget {
         tooltipBehavior: TooltipBehavior(enable: showTooltip, opacity: 0.7),
         legend: Legend(isVisible: showLegend, toggleSeriesVisibility: false),
         annotations: <CircularChartAnnotation>[
-          CircularChartAnnotation(widget: centerWidget ?? const SizedBox.shrink())
+          CircularChartAnnotation(
+              widget: centerWidget ?? const SizedBox.shrink())
         ],
         series: <RadialBarSeries<RadialBarChartData, String>>[
           RadialBarSeries<RadialBarChartData, String>(

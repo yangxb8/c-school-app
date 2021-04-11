@@ -48,7 +48,7 @@ Map<String, dynamic> _$toData(Exam doc) {
 
 /// For load data
 void _$fromData(Exam doc, Map<String, dynamic> data) {
-  doc.examId = Helper.valueFromKey<String>(data, 'examId');
+  doc.examId = Helper.valueFromKey<String?>(data, 'examId');
   doc.title = Helper.valueFromKey<String>(data, 'title');
   doc.question = Helper.valueFromKey<String>(data, 'question');
   doc.tags = Helper.valueListFromKey<String>(data, 'tags');

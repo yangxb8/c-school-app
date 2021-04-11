@@ -4,8 +4,8 @@ import 'dart:typed_data';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:uuid/uuid.dart';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/model/soe_request.dart';
@@ -15,7 +15,6 @@ import 'package:c_school_app/service/api_service.dart';
 import 'package:c_school_app/service/audio_service.dart';
 import 'package:c_school_app/service/logger_service.dart';
 import 'package:c_school_app/service/user_service.dart';
-
 import '../expand_box.dart';
 
 class SpeechRecordingController extends GetxController {
@@ -61,7 +60,7 @@ class SpeechRecordingController extends GetxController {
     var to;
     if (wordIndex != null) {
       from = lastResult.value?.words?[wordIndex].beginTime;
-      to = lastResult.value?.words?.elementAtOrNull(wordIndex+1)?.beginTime;
+      to = lastResult.value?.words?.elementAtOrNull(wordIndex + 1)?.beginTime;
     }
     await audioService.startPlayer(
         bytes: lastSpeech, key: '${exam.refText!}:user', from: from, to: to);
@@ -73,10 +72,13 @@ class SpeechRecordingController extends GetxController {
     var to;
     if (wordIndex != null) {
       from = exam.refSpeech!.timeSeries![wordIndex];
-      to = exam.refSpeech!.timeSeries!.elementAtOrNull(wordIndex+1);
+      to = exam.refSpeech!.timeSeries!.elementAtOrNull(wordIndex + 1);
     }
     await audioService.startPlayer(
-        uri: exam.refSpeech!.audio!.url, key: '${exam.refText!}:ref', from: from, to: to);
+        uri: exam.refSpeech!.audio!.url,
+        key: '${exam.refText!}:ref',
+        from: from,
+        to: to);
   }
 
   void handleRecordButtonPressed() {

@@ -1,6 +1,8 @@
 // 📦 Package imports:
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+// 🌎 Project imports:
 import '../../util/utility.dart';
 
 part 'speech_evaluation_result.g.dart';
@@ -15,7 +17,8 @@ class SpeechEvaluationResult {
   final String? speechDataPath;
   final SentenceInfo? sentenceInfo;
 
-  SpeechEvaluationResult({this.userId, this.examId, this.speechDataPath, this.sentenceInfo});
+  SpeechEvaluationResult(
+      {this.userId, this.examId, this.speechDataPath, this.sentenceInfo});
   factory SpeechEvaluationResult.fromJson(Map<String, dynamic> json) =>
       _$SpeechEvaluationResultFromJson(json);
   Map<String, dynamic> toJson() => _$SpeechEvaluationResultToJson(this);
@@ -35,14 +38,21 @@ class SentenceInfo {
   final List<WordInfo>? words;
 
   SentenceInfo(
-      {this.suggestedScore, this.pronAccuracy, this.pronFluency, this.pronCompletion, this.words});
+      {this.suggestedScore,
+      this.pronAccuracy,
+      this.pronFluency,
+      this.pronCompletion,
+      this.words});
 
   double get displaySuggestedScore => suggestedScore ?? -1.0;
   double get displayPronAccuracy => pronAccuracy ?? -1.0;
-  double get displayPronFluency => pronFluency == null ? -1.0 : pronFluency! * 100;
-  double get displayPronCompletion => pronCompletion == null ? -1.0 : pronCompletion! * 100;
+  double get displayPronFluency =>
+      pronFluency == null ? -1.0 : pronFluency! * 100;
+  double get displayPronCompletion =>
+      pronCompletion == null ? -1.0 : pronCompletion! * 100;
 
-  factory SentenceInfo.fromJson(Map<String, dynamic> json) => _$SentenceInfoFromJson(json);
+  factory SentenceInfo.fromJson(Map<String, dynamic> json) =>
+      _$SentenceInfoFromJson(json);
   Map<String, dynamic> toJson() => _$SentenceInfoToJson(this);
 }
 
@@ -59,7 +69,9 @@ class WordInfo {
   @JsonKey(name: 'Word')
   final String? word;
   @JsonKey(
-      name: 'MatchTag', fromJson: MatchResultUtil.fromInt, toJson: EnumToString.convertToString)
+      name: 'MatchTag',
+      fromJson: MatchResultUtil.fromInt,
+      toJson: EnumToString.convertToString)
   final MatchResult? matchTag;
   @JsonKey(name: 'PhoneInfos')
   final List<PhoneInfo>? phoneInfos;
@@ -77,7 +89,8 @@ class WordInfo {
       this.phoneInfos});
 
   double get displayPronAccuracy => pronAccuracy ?? -1.0;
-  double get displayPronFluency => pronFluency == null ? -1.0 : pronFluency! * 100;
+  double get displayPronFluency =>
+      pronFluency == null ? -1.0 : pronFluency! * 100;
   double get displaySuggestedScore {
     if (pronFluency == null || pronFluency == null) {
       return -1.0;
@@ -87,9 +100,11 @@ class WordInfo {
   }
 
   String get pinyin => PinyinUtil.transformPinyin(
-      [phoneInfos!.map((p) => p.referencePhone ?? p.detectedPhone!).join()]).single;
+          [phoneInfos!.map((p) => p.referencePhone ?? p.detectedPhone!).join()])
+      .single;
 
-  factory WordInfo.fromJson(Map<String, dynamic> json) => _$WordInfoFromJson(json);
+  factory WordInfo.fromJson(Map<String, dynamic> json) =>
+      _$WordInfoFromJson(json);
   Map<String, dynamic> toJson() => _$WordInfoToJson(this);
 }
 
@@ -110,7 +125,9 @@ class PhoneInfo {
   @JsonKey(name: 'ReferencePhone')
   final String? referencePhone;
   @JsonKey(
-      name: 'MatchTag', fromJson: MatchResultUtil.fromInt, toJson: EnumToString.convertToString)
+      name: 'MatchTag',
+      fromJson: MatchResultUtil.fromInt,
+      toJson: EnumToString.convertToString)
   final MatchResult? matchTag;
 
   PhoneInfo(
@@ -125,7 +142,8 @@ class PhoneInfo {
 
   double get displayPronAccuracy => pronAccuracy ?? -1.0;
 
-  factory PhoneInfo.fromJson(Map<String, dynamic> json) => _$PhoneInfoFromJson(json);
+  factory PhoneInfo.fromJson(Map<String, dynamic> json) =>
+      _$PhoneInfoFromJson(json);
   Map<String, dynamic> toJson() => _$PhoneInfoToJson(this);
 }
 

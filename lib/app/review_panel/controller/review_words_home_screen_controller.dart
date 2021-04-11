@@ -18,7 +18,8 @@ class ReviewWordsHomeController extends GetxController {
   /// Used to controller scroll of lectures list
   final groupedItemScrollController = GroupedItemScrollController();
 
-  static const lastViewedLectureIndexKey = 'ReviewWordsHomeController.lastViewedLectureIndex';
+  static const lastViewedLectureIndexKey =
+      'ReviewWordsHomeController.lastViewedLectureIndex';
 
   /// Last Lecture user has viewed, default to 0 (First lecture)
   final lastViewedLectureIndex = 0.obs.trackLocal(lastViewedLectureIndexKey);
@@ -41,19 +42,21 @@ class ReviewWordsHomeController extends GetxController {
   void animateToTrackedLecture() {
     if (groupedItemScrollController.isAttached) {
       groupedItemScrollController.scrollTo(
-          index: lastViewedLectureIndex.value, duration: 0.5.seconds, curve: Curves.bounceInOut);
+          index: lastViewedLectureIndex.value,
+          duration: 0.5.seconds,
+          curve: Curves.bounceInOut);
     }
   }
 
   void refreshState() {
     wordsListLiked.assignAll(lectureService.getLikedWords);
-    wordsListForgotten
-        .assignAll(lectureService.findWordsByConditions(wordMemoryStatus: WordMemoryStatus.FORGOT));
+    wordsListForgotten.assignAll(lectureService.findWordsByConditions(
+        wordMemoryStatus: WordMemoryStatus.FORGOT));
     wordsListAll.assignAll(LectureService.allWords);
   }
 }
 
-class LectureCardController extends GetxController{
+class LectureCardController extends GetxController {
   final LectureService lectureService = Get.find();
 
   /// Lecture this card is associated with
@@ -75,7 +78,8 @@ class LectureCardController extends GetxController{
 
   void refreshState() {
     forgottenWords.assignAll(lectureService.findWordsByConditions(
-        wordMemoryStatus: WordMemoryStatus.FORGOT, lectureId: lecture.lectureId));
+        wordMemoryStatus: WordMemoryStatus.FORGOT,
+        lectureId: lecture.lectureId));
     lectureViewCount.value = lectureService.getLectureViewedCount(lecture);
   }
 }

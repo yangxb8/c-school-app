@@ -90,19 +90,19 @@ Map<String, dynamic> _$toData(Word doc) {
 
 /// For load data
 void _$fromData(Word doc, Map<String, dynamic> data) {
-  doc.wordId = Helper.valueFromKey<String>(data, 'wordId');
+  doc.wordId = Helper.valueFromKey<String?>(data, 'wordId');
   doc.word = Helper.valueListFromKey<String>(data, 'word');
   doc.pinyin = Helper.valueListFromKey<String>(data, 'pinyin');
-  doc.explanation = Helper.valueFromKey<String>(data, 'explanation');
-  doc.partOfSentence = Helper.valueFromKey<String>(data, 'partOfSentence');
-  doc.hint = Helper.valueFromKey<String>(data, 'hint');
+  doc.explanation = Helper.valueFromKey<String?>(data, 'explanation');
+  doc.partOfSentence = Helper.valueFromKey<String?>(data, 'partOfSentence');
+  doc.hint = Helper.valueFromKey<String?>(data, 'hint');
   doc._relatedWordIds =
       Helper.valueListFromKey<String>(data, '_relatedWordIds');
   doc._otherMeaningIds =
       Helper.valueListFromKey<String>(data, '_otherMeaningIds');
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
   doc.tags = Helper.valueListFromKey<String>(data, 'tags');
-  doc.picHash = Helper.valueFromKey<String>(data, 'picHash');
+  doc.picHash = Helper.valueFromKey<String?>(data, 'picHash');
 
   final _wordMeanings =
       Helper.valueMapListFromKey<String, dynamic>(data, 'wordMeanings');

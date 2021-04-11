@@ -55,8 +55,7 @@ class _PopularLectureListViewState extends State<PopularLectureListView>
                 Category.popularCourseList.length,
                 (int index) {
                   final count = Category.popularCourseList.length;
-                  final animation =
-                      Tween<double>(begin: 0.0, end: 1.0).animate(
+                  final animation = Tween<double>(begin: 0.0, end: 1.0).animate(
                     CurvedAnimation(
                       parent: animationController!,
                       curve: Interval((1 / count) * index, 1.0,
@@ -87,14 +86,14 @@ class CategoryView extends StatelessWidget {
       {Key? key,
       this.category,
       this.animationController,
-      this.animation,
+      required this.animation,
       this.callback})
       : super(key: key);
 
   final VoidCallback? callback;
   final Category? category;
   final AnimationController? animationController;
-  final Animation<dynamic>? animation;
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +101,10 @@ class CategoryView extends StatelessWidget {
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation as Animation<double>,
+          opacity: animation,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation!.value), 0.0),
+                0.0, 50 * (1.0 - animation.value), 0.0),
             child: InkWell(
               splashColor: Colors.transparent,
               onTap: () {

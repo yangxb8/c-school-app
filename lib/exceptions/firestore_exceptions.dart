@@ -1,1 +1,1 @@
-class DocumentNotExistedError extends Error{}
+class DocumentNotExistedError extends Error {}

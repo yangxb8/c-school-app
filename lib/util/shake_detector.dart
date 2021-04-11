@@ -31,9 +31,9 @@ class ShakeDetector {
   /// This constructor automatically calls [startListening] and starts detection and callbacks.\
   ShakeDetector.autoStart(
       {this.onPhoneShake,
-        this.shakeThresholdGravity = 2.7,
-        this.shakeSlopTimeMS = 500,
-        this.shakeCountResetTime = 3000}) {
+      this.shakeThresholdGravity = 2.7,
+      this.shakeSlopTimeMS = 500,
+      this.shakeCountResetTime = 3000}) {
     startListening();
   }
 

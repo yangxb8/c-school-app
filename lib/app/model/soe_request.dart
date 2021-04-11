@@ -69,7 +69,8 @@ class SoeRequest {
       this.SentenceInfoEnabled = 0,
       this.ServerType = 1,
       this.IsAsync = 0});
-  factory SoeRequest.fromJson(Map<String, dynamic> json) => _$SoeRequestFromJson(json);
+  factory SoeRequest.fromJson(Map<String, dynamic> json) =>
+      _$SoeRequestFromJson(json);
   Map<String, dynamic> toJson() => _$SoeRequestToJson(this);
 
   /// String representation of this json object

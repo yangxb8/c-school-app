@@ -42,32 +42,39 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
                       decoration: TextDecoration.none,
                       color: ReviewWordsTheme.darkerText,
                     ),
-                  ).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
+                  )
+                      .paddingOnly(left: 20, top: 20)
+                      .alignment(Alignment.centerLeft),
                   _buildSpecialLectureCard().expanded(),
                   Text('review.word.home.allCourse.title'.tr,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 22,
-                        letterSpacing: 0.27,
-                        decoration: TextDecoration.none,
-                        color: ReviewWordsTheme.darkerText,
-                      )).paddingOnly(left: 20, top: 20).alignment(Alignment.centerLeft),
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22,
+                            letterSpacing: 0.27,
+                            decoration: TextDecoration.none,
+                            color: ReviewWordsTheme.darkerText,
+                          ))
+                      .paddingOnly(left: 20, top: 20)
+                      .alignment(Alignment.centerLeft),
                   StickyGroupedListView<Lecture, String>(
                       elements: LectureService.allLectures,
-                      itemScrollController: controller.groupedItemScrollController,
+                      itemScrollController:
+                          controller.groupedItemScrollController,
                       floatingHeader: true,
                       groupBy: (Lecture element) => element.levelForDisplay,
                       groupSeparatorBuilder: (_) => const SizedBox.shrink(),
                       itemComparator: (element1, element2) =>
                           element1.lectureId!.compareTo(element2.lectureId!),
                       indexedItemBuilder: (_, lecture, index) => LectureCard(
-                        lecture: lecture,
-                        index: index,
-                      ).paddingOnly(bottom: 5)).expanded(flex: 5)
+                            lecture: lecture,
+                            index: index,
+                          ).paddingOnly(bottom: 5)).expanded(flex: 5)
                 ],
               ),
-            ).afterFirstLayout(controller.animateToTrackedLecture).paddingOnly(top: 40),
+            )
+                .afterFirstLayout(controller.animateToTrackedLecture)
+                .paddingOnly(top: 40),
             _buildSearchBar()
           ],
         ),
@@ -83,7 +90,8 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             style: ReviewWordsTheme.lectureCardTitle,
           ),
         ),
-        onSearchResultTap: (lecture) => navigateToReviewWordScreen(lecture: lecture),
+        onSearchResultTap: (lecture) =>
+            navigateToReviewWordScreen(lecture: lecture),
       );
 
   Widget _buildSpecialLectureCard() {
@@ -96,11 +104,11 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              padding: EdgeInsets.only(top: 8,left: 8),
+              padding: EdgeInsets.only(top: 8, left: 8),
               icon: Icon(CSchool.wrong_box,
-                  size: bigIconSize*0.8, color: ReviewWordsTheme.darkBlue),
-              onPressed: () =>
-                  navigateToReviewWordScreen(wordsList: controller.wordsListForgotten.toList()),
+                  size: bigIconSize * 0.8, color: ReviewWordsTheme.darkBlue),
+              onPressed: () => navigateToReviewWordScreen(
+                  wordsList: controller.wordsListForgotten.toList()),
               tooltip: 'review.word.home.myWord.forgottenWord'.tr,
             ),
             _buildWordsCount(controller.wordsListForgotten)
@@ -109,9 +117,10 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              onPressed: () =>
-                  navigateToReviewWordScreen(wordsList: controller.wordsListLiked.toList()),
-              icon: Icon(CSchool.heart, size: bigIconSize, color: ReviewWordsTheme.darkBlue),
+              onPressed: () => navigateToReviewWordScreen(
+                  wordsList: controller.wordsListLiked.toList()),
+              icon: Icon(CSchool.heart,
+                  size: bigIconSize, color: ReviewWordsTheme.darkBlue),
               tooltip: 'review.word.home.myWord.likedWord'.tr,
             ),
             _buildWordsCount(controller.wordsListLiked)
@@ -120,11 +129,11 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
         Column(
           children: [
             IconButton(
-              padding: EdgeInsets.only(top: 5,left: 8),
-              icon:
-                  Icon(CSchool.books_stack_of_three, size: bigIconSize*1.2, color: ReviewWordsTheme.darkBlue),
-              onPressed: () =>
-                  navigateToReviewWordScreen(wordsList: controller.wordsListAll.toList()),
+              padding: EdgeInsets.only(top: 5, left: 8),
+              icon: Icon(CSchool.books_stack_of_three,
+                  size: bigIconSize * 1.2, color: ReviewWordsTheme.darkBlue),
+              onPressed: () => navigateToReviewWordScreen(
+                  wordsList: controller.wordsListAll.toList()),
               tooltip: 'review.word.home.myWord.allWord'.tr,
             ),
             _buildWordsCount(controller.wordsListAll)
@@ -145,7 +154,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
   }
 
   Widget _buildWordsCount(List<Word> words) => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             CSchool.word_card,
@@ -160,7 +169,7 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
             ),
           ).paddingOnly(left: 10)
         ],
-      ).paddingOnly(top:10);
+      ).paddingOnly(top: 10);
 }
 
 class LectureCard extends StatelessWidget {
@@ -168,7 +177,8 @@ class LectureCard extends StatelessWidget {
     Key? key,
     required this.lecture,
     this.index,
-  })  : controller = Get.put(LectureCardController(lecture), tag: lecture.lectureId)!,
+  })  : controller =
+            Get.put(LectureCardController(lecture), tag: lecture.lectureId)!,
         super(key: key);
 
   static const cardHeight = 120.0;
@@ -180,7 +190,7 @@ class LectureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(lecture.words.isEmpty){
+    if (lecture.words.isEmpty) {
       return const SizedBox.shrink();
     }
     return SimpleGestureDetector(
@@ -190,7 +200,7 @@ class LectureCard extends StatelessWidget {
         child: Row(
           children: [
             AspectRatio(
-              aspectRatio: 4/3,
+              aspectRatio: 4 / 3,
               child: BlurHashImageWithFallback(
                 fallbackImg: DEFAULT_IMAGE,
                 mainImgUrl: lecture.pic!.url,
@@ -232,7 +242,7 @@ class LectureCard extends StatelessWidget {
                           size: 20,
                         ),
                         Obx(
-                              () => Text(
+                          () => Text(
                             '${controller.forgottenWords.length}',
                             textAlign: TextAlign.left,
                             style: ReviewWordsTheme.lectureCardMeta,
@@ -276,10 +286,12 @@ class LectureCard extends StatelessWidget {
   }
 }
 
-/// ReviewWordsController will find words by lectureId so wordsList if optional,
-/// Set index will make controller to memorize the lecture last viewed
+/// ReviewWordsController will find words by lectureId so wordsList is optional,
 /// if both provided, will use wordsList
-void navigateToReviewWordScreen({Lecture? lecture, int? index, List<Word>? wordsList}) {
+///
+/// Set index will make controller to memorize the lecture last viewed
+void navigateToReviewWordScreen(
+    {Lecture? lecture, int? index, List<Word>? wordsList}) {
   final reviewWordsHomeController = Get.find<ReviewWordsHomeController>();
   if (lecture == null && wordsList.isBlank!) {
     Get.defaultDialog(
@@ -290,10 +302,11 @@ void navigateToReviewWordScreen({Lecture? lecture, int? index, List<Word>? words
     if (index != null) {
       reviewWordsHomeController.lastViewedLectureIndex.value = index;
     }
-    Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}', arguments: wordsList)!
+    Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}',
+            arguments: wordsList)!
         .then((_) {
       // Refresh lecture card
-      if (lecture != null) {
+      if (lecture != null || Get.isRegistered<LectureCardController>(tag: lecture!.lectureId)) {
         Get.find<LectureCardController>(tag: lecture.lectureId).refreshState();
       }
       // Refresh special card

@@ -40,66 +40,68 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
     }
 
     return Padding(
-        padding: const EdgeInsets.only(top: 60.0),
-        child: SimpleGestureDetector(
-          onHorizontalSwipe: _onHorizontalSwipe,
-          child: Column(
-            children: [
-              Stack(
-                children: <Widget>[
-                  // We only use this to control the controller.pageController behind screen
-                  Positioned.fill(
-                    child: PageView.builder(
-                      itemCount: controller.reversedWordsList.length,
-                      controller: controller.pageController,
-                      reverse: true,
-                      itemBuilder: (context, index) {
-                        return Container();
-                      },
+      padding: const EdgeInsets.only(top: 60.0),
+      child: SimpleGestureDetector(
+        onHorizontalSwipe: _onHorizontalSwipe,
+        child: Column(
+          children: [
+            Stack(
+              children: <Widget>[
+                // We only use this to control the controller.pageController behind screen
+                Positioned.fill(
+                  child: PageView.builder(
+                    itemCount: controller.reversedWordsList.length,
+                    controller: controller.pageController,
+                    reverse: true,
+                    itemBuilder: (context, index) {
+                      return Container();
+                    },
+                  ),
+                ),
+                Obx(() => CardScrollWidget(controller.pageFraction.value)),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                IconButton(
+                  padding: EdgeInsets.only(top: 4),
+                  splashRadius: 0.01,
+                  icon: Obx(
+                    () => Icon(
+                      CSchool.correct,
+                      color: controller.wordMemoryStatus.value ==
+                              WordMemoryStatus.REMEMBERED
+                          ? Colors.redAccent
+                          : Colors.grey,
+                      size: BUTTON_SIZE,
                     ),
                   ),
-                  Obx(() => CardScrollWidget(controller.pageFraction.value)),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  IconButton(
-                    padding: EdgeInsets.only(top: 4),
-                    splashRadius: 0.01,
-                    icon: Obx(
-                      () => Icon(
-                        CSchool.correct,
-                        color: controller.wordMemoryStatus.value == WordMemoryStatus.REMEMBERED
-                            ? Colors.redAccent
-                            : Colors.grey,
-                        size: BUTTON_SIZE,
-                      ),
+                  onPressed: () => controller
+                      .handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
+                ),
+                IconButton(
+                  splashRadius: 0.01,
+                  icon: Obx(
+                    () => Icon(
+                      CSchool.wrong,
+                      color: controller.wordMemoryStatus.value ==
+                              WordMemoryStatus.FORGOT
+                          ? Colors.blueAccent
+                          : Colors.grey,
+                      size: BUTTON_SIZE,
                     ),
-                    onPressed: () =>
-                        controller.handWordMemoryStatusPressed(WordMemoryStatus.REMEMBERED),
                   ),
-                  IconButton(
-                    splashRadius: 0.01,
-                    icon: Obx(
-                      () => Icon(
-                        CSchool.wrong,
-                        color: controller.wordMemoryStatus.value == WordMemoryStatus.FORGOT
-                            ? Colors.blueAccent
-                            : Colors.grey,
-                        size: BUTTON_SIZE,
-                      ),
-                    ),
-                    onPressed: () =>
-                        controller.handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
-                  ).paddingOnly(bottom: 12),
-                ],
-              ).paddingOnly(right: 20)
-            ],
-          ),
+                  onPressed: () => controller
+                      .handWordMemoryStatusPressed(WordMemoryStatus.FORGOT),
+                ).paddingOnly(bottom: 12),
+              ],
+            ).paddingOnly(right: 20)
+          ],
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -135,18 +137,21 @@ class CardScrollWidget extends GetView<ReviewWordsController> {
           var delta = i - pageFraction;
           var isPrimaryCard = delta >= 0 && delta.toInt() == 0;
           // If card is not visible, don't build it
-          if (delta>1 || -delta > MAX_CARDS_FRAME) {
+          if (delta > 1 || -delta > MAX_CARDS_FRAME) {
             continue;
           }
           var isOnRight = delta > 0;
 
-          var start =
-              padding + max(primaryCardLeft - horizontalInset * -delta * (isOnRight ? 40 : 1), 0.0);
+          var start = padding +
+              max(
+                  primaryCardLeft -
+                      horizontalInset * -delta * (isOnRight ? 40 : 1),
+                  0.0);
           var wordCard = WordCard(
-            // Key was added to prevent strange behavior of card flip status
+              // Key was added to prevent strange behavior of card flip status
               key: ValueKey(controller.reversedWordsList[i]),
               word: controller.reversedWordsList[i],
-              loadImage: delta.abs()<2);
+              loadImage: delta.abs() < 2);
           // Set primary card controller
           if (isPrimaryCard) {
             controller.primaryWordIndex.value = i;

@@ -1,9 +1,10 @@
+// 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 
 part 'speech_audio.flamingo.dart';
 
-class SpeechAudio extends Model{
+class SpeechAudio extends Model {
   SpeechAudio({
     this.audio,
     this.timeSeries,

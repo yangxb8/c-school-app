@@ -1,8 +1,10 @@
-// 🌎 Project imports:
-import 'package:c_school_app/app/model/tts_request.dart';
-import 'package:c_school_app/app/model/soe_request.dart';
-import 'package:c_school_app/service/tc3_service.dart';
+// 📦 Package imports:
 import 'package:flutter_test/flutter_test.dart';
+
+// 🌎 Project imports:
+import 'package:c_school_app/app/model/soe_request.dart';
+import 'package:c_school_app/app/model/tts_request.dart';
+import 'package:c_school_app/service/tc3_service.dart';
 
 void main() async {
   test('tts', () async{

@@ -21,11 +21,14 @@ class MainAppHomeScreen extends StatelessWidget {
               unselectedItemColor: Colors.grey,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.border_color), label: 'home.panel.study.title'.tr),
+                    icon: const Icon(Icons.border_color),
+                    label: 'home.panel.study.title'.tr),
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.explore), label: 'home.panel.discover.title'.tr),
+                    icon: const Icon(Icons.explore),
+                    label: 'home.panel.discover.title'.tr),
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.library_books), label: 'home.panel.review.title'.tr),
+                    icon: const Icon(Icons.library_books),
+                    label: 'home.panel.review.title'.tr),
                 BottomNavigationBarItem(
                     icon: const Icon(Icons.supervisor_account),
                     label: 'home.panel.account.title'.tr),

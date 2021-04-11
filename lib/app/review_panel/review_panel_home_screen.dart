@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 
 // 🌎 Project imports:
 import '../my_progress_theme.dart';
+import '../ui_view/title_view.dart';
 import 'ui_view/area_list_view.dart';
 import 'ui_view/running_view.dart';
-import '../ui_view/title_view.dart';
 import 'ui_view/workout_view.dart';
 
 class ReviewPanelHomeScreen extends StatefulWidget {
-  
   @override
   _ReviewPanelHomeScreenState createState() => _ReviewPanelHomeScreenState();
 }
@@ -17,7 +16,7 @@ class ReviewPanelHomeScreen extends StatefulWidget {
 class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
     with TickerProviderStateMixin {
   late final AnimationController animationController;
-  
+
   late Animation<double> topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
@@ -28,7 +27,7 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
-    
+
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: animationController,

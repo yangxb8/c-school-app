@@ -1,5 +1,7 @@
+// 📦 Package imports:
 import 'package:get/get.dart';
 
+// 🌎 Project imports:
 import '../service/localstorage_service.dart';
 
 extension RxIntExtension on RxInt {
@@ -10,7 +12,9 @@ extension RxIntExtension on RxInt {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value), time: 1.seconds);
+    debounce(
+        this, (dynamic value) => localStorageService.saveToDisk(key, value),
+        time: 1.seconds);
     return this;
   }
 }
@@ -23,7 +27,9 @@ extension RxDoubleExtension on RxDouble {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(
+        this, (dynamic value) => localStorageService.saveToDisk(key, value),
+        time: 1.seconds);
     return this;
   }
 }
@@ -36,7 +42,9 @@ extension RxBoolExtension on RxBool {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(
+        this, (dynamic value) => localStorageService.saveToDisk(key, value),
+        time: 1.seconds);
     return this;
   }
 }
@@ -49,7 +57,9 @@ extension RxStringExtension on RxString {
     if (localStorageService.containsKey(key)) {
       value = localStorageService.getFromDisk(key);
     }
-    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(
+        this, (dynamic value) => localStorageService.saveToDisk(key, value),
+        time: 1.seconds);
     return this;
   }
 }
@@ -62,7 +72,9 @@ extension RxStringListExtension on RxList<String> {
     if (localStorageService.containsKey(key)) {
       assignAll(Get.find<LocalStorageService>().getFromDisk(key));
     }
-    debounce(this, (dynamic value) => localStorageService.saveToDisk(key, value),time: 1.seconds);
+    debounce(
+        this, (dynamic value) => localStorageService.saveToDisk(key, value),
+        time: 1.seconds);
     return this;
   }
 }

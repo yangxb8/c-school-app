@@ -74,7 +74,7 @@ void _$fromData(AppUser doc, Map<String, dynamic> data) {
     doc.membershipEndAt = Helper.timestampFromMap(data, 'membershipEndAt');
   } else {
     doc.membershipEndAt =
-        Helper.valueFromKey<Timestamp>(data, 'membershipEndAt');
+        Helper.valueFromKey<Timestamp?>(data, 'membershipEndAt');
   }
 
   doc.likedLectures = Helper.valueListFromKey<String>(data, 'likedLectures');
