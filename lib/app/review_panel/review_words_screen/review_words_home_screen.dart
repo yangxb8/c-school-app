@@ -305,8 +305,9 @@ void navigateToReviewWordScreen(
     Get.toNamed('/review/words?lectureId=${lecture?.lectureId ?? ''}',
             arguments: wordsList)!
         .then((_) {
-      // Refresh lecture card
-      if (lecture != null || Get.isRegistered<LectureCardController>(tag: lecture!.lectureId)) {
+      // Refresh lecture card after user go back to the lecture list
+      if (lecture != null &&
+          Get.isRegistered<LectureCardController>(tag: lecture.lectureId)) {
         Get.find<LectureCardController>(tag: lecture.lectureId).refreshState();
       }
       // Refresh special card
