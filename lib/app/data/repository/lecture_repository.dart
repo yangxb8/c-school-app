@@ -9,15 +9,15 @@ import '../provider/lecture_provider.dart';
 /// Initialize at start of app and cache all lectures.
 class LectureRepository extends GetxService {
   static LectureRepository? _instance;
-  static final LectureProvider _provider = LectureFirebaseProvider();
-  static late List<Lecture> _allLectures;
+  final LectureProvider _provider = LectureFirebaseProvider();
+  late List<Lecture> _allLectures;
 
   LectureRepository._internal();
 
   static Future<LectureRepository> get instance async {
     if (_instance == null) {
       _instance ??= LectureRepository._internal();
-      _allLectures = await _provider.get();
+      _instance!._allLectures = await _instance!._provider.get();
     }
     return _instance!;
   }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/data/service/lecture_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -31,6 +32,7 @@ import 'app/core/values/strings/wiredash_translation.dart';
 import 'app/data/service/app_state_service.dart';
 import 'app/data/service/audio_service.dart';
 import 'app/data/service/localstorage_service.dart';
+import 'app/data/service/logger_service.dart';
 import 'app/data/service/wiredash_service.dart';
 import 'app/routes/router.dart';
 
@@ -129,14 +131,16 @@ Future<void> initServices() async {
       await Get.putAsync(() async => await LectureRepository.instance);
       await Get.putAsync(() async => await WordRepository.instance);
       await Get.putAsync(() async => await ExamRepository.instance);
+      Get.put(LectureService());
       AppStateService.fullyInitialized = true;
+      LoggerService.logger.i('App fully initialized!');
     }
   });
   await Get.putAsync(() async => await UserRepository.instance);
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   await Get.putAsync(
       () async => await LocalStorageService.instance);
-  await Get.putAsync(() async => AudioService.instance);
+  Get.put(AudioService());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.warning;
   WiredashService.startWireDashService();
 }

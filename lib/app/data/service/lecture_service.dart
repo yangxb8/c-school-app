@@ -14,18 +14,18 @@ import 'package:c_school_app/app/data/repository/exam_repository.dart';
 import 'package:c_school_app/app/data/repository/lecture_repository.dart';
 import 'package:c_school_app/app/data/repository/user_repository.dart';
 import 'package:c_school_app/app/data/repository/word_repository.dart';
-import '../../../data/model/exam/exam_base.dart';
-import '../../../data/model/lecture.dart';
-import '../../../data/model/user/user_lecture_history.dart';
-import '../../../data/model/user/user_word_history.dart';
-import '../../../data/model/word/word.dart';
-import '../../../global_widgets/word_card.dart';
+import '../model/exam/exam_base.dart';
+import '../model/lecture.dart';
+import '../model/user/user_lecture_history.dart';
+import '../model/user/user_word_history.dart';
+import '../model/word/word.dart';
+import '../../global_widgets/word_card.dart';
 
 /*
 * This class provide service related to Class, like fetching class,
 * words, etc.
 */
-class LectureHelper {
+class LectureService extends GetxService{
   static final userRepository = Get.find<UserRepository>();
   final user = userRepository.currentUser;
   final lectureRepository = Get.find<LectureRepository>();
@@ -34,17 +34,15 @@ class LectureHelper {
 
   /// Observable Liked words list for updating
   final RxList<String> userLikedWordIds_Rx =
-      List<String>.of(userRepository.currentUser.likedWords!).obs;
+      userRepository.currentUser.likedWords!.obs;
 
   /// Observable Class History list for updating
   final RxList<LectureHistory> userLecturesHistory_Rx =
-      List<LectureHistory>.of(userRepository.currentUser.reviewedClassHistory!)
-          .obs;
+      userRepository.currentUser.reviewedClassHistory!.obs;
 
   /// Observable Word History list for updating
   final RxList<WordHistory> userWordsHistory_Rx =
-      (List<WordHistory>.of(userRepository.currentUser.reviewedWordHistory!))
-          .obs;
+      userRepository.currentUser.reviewedWordHistory!.obs;
 
   List<Lecture> get allLecture => lectureRepository.allLectures;
 
@@ -53,7 +51,7 @@ class LectureHelper {
   List<Exam> get allExams => examRepository.allExams;
 
   Lecture? findLectureById(String? id) {
-    if (id == null) return null;
+    if (id == null || id.isEmpty) return null;
     var lecture = lectureRepository.findLectureBy({'lectureId': id});
     if (lecture.isEmpty) {
       logger.w('Not lecture of $id is found');

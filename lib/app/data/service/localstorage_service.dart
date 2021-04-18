@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService extends GetxService {
   static LocalStorageService? _instance;
-  static SharedPreferences? _preferences;
   static const String AppStartCountKey = 'app-start-count';
+  SharedPreferences? _preferences;
 
   static Future<LocalStorageService> get instance async {
     _instance ??= LocalStorageService();
-    _preferences ??= await SharedPreferences.getInstance();
+    _instance!._preferences ??= await SharedPreferences.getInstance();
 
     return _instance!;
   }

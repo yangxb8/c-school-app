@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:c_school_app/app/core/utils/filterable.dart';
 import 'package:c_school_app/app/data/repository/exam_repository.dart';
 import 'package:c_school_app/app/data/repository/word_repository.dart';
-import '../../core/utils/helper/lecture_helper.dart';
+import '../service/lecture_service.dart';
 import '../../core/utils/searchable.dart';
 import './word/word.dart';
 import 'exam/exam_base.dart';
@@ -77,7 +77,7 @@ class Lecture extends Document<Lecture> with Filterable implements Searchable {
   @override
   Map<String, dynamic> get filterableProperties => {
         'lectureId': lectureId,
-        'level': level.toString(),
+        'level': level,
         'tags': tags,
       };
 }
@@ -92,5 +92,5 @@ extension LectureUtil on Lecture {
       Get.find<ExamRepository>().findExamBy({'tags': lectureId});
 
   int get lectureViewedCount =>
-      Get.find<LectureHelper>().lectureViewedCount(this);
+      Get.find<LectureService>().lectureViewedCount(this);
 }

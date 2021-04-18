@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
 // 🌎 Project imports:
-import '../core/utils/helper/lecture_helper.dart';
+import '../data/service/lecture_service.dart';
 import '../core/utils/index.dart';
 import '../data/model/word/word.dart';
 
@@ -147,7 +147,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       return inner;
     } else {
       return SimpleGestureDetector(
-          onTap: () => Get.find<LectureHelper>()
+          onTap: () => Get.find<LectureService>()
               .showSingleWordCard(pinyinAnnotatedHanzi.linkedWord),
           child: inner);
     }

@@ -1,7 +1,6 @@
 // 📦 Package imports:
 
 // 📦 Package imports:
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:c_school_app/app/core/utils/filterable.dart';
 import 'package:c_school_app/app/data/repository/lecture_repository.dart';
 import 'package:c_school_app/app/data/repository/word_repository.dart';
-import '../../../core/utils/helper/lecture_helper.dart';
+import '../../service/lecture_service.dart';
 import '../../../core/utils/searchable.dart';
 import '../lecture.dart';
 import '../speech_audio.dart';
@@ -107,7 +106,7 @@ class Word extends Document<Word> with Filterable implements Searchable {
   Map<String, dynamic> get filterableProperties => {
         'wordId': wordId,
         'tags': tags,
-        'wordMemoryStatus': EnumToString.convertToString(status)
+        'wordMemoryStatus': status
       };
 }
 
@@ -140,10 +139,10 @@ extension WordUtil on Word {
   Lecture get lecture => Get.find<LectureRepository>()
       .findLectureBy({'lectureId': lectureId}).single;
 
-  int get viewedCount => Get.find<LectureHelper>().wordViewedCount(this);
+  int get viewedCount => Get.find<LectureService>().wordViewedCount(this);
 
-  bool get isLiked => Get.find<LectureHelper>().isWordLiked(this);
+  bool get isLiked => Get.find<LectureService>().isWordLiked(this);
 
   WordMemoryStatus get status =>
-      Get.find<LectureHelper>().getMemoryStatusOfWord(this);
+      Get.find<LectureService>().getMemoryStatusOfWord(this);
 }

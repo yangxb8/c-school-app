@@ -11,7 +11,7 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
-import '../../../core/utils/helper/lecture_helper.dart';
+import '../../../data/service/lecture_service.dart';
 import '../../../core/utils/index.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
@@ -21,15 +21,13 @@ import '../../../global_widgets/controller/word_card_controller.dart';
 
 // 🌎 Project imports:
 
-
-
 // 🌎 Project imports:
 
 const LAN_CODE_CN = 'zh-cn';
 
 class ReviewWordsController extends GetxController
     with SingleGetTickerProviderMixin {
-  final LectureHelper lectureHelper = LectureHelper();
+  final LectureService lectureHelper = Get.find<LectureService>();
   final logger = LoggerService.logger;
 
   /// If all words mode, there will be no associated lecture
@@ -110,11 +108,13 @@ class ReviewWordsController extends GetxController
     ever(primaryWordIndex, (dynamic _) {
       flipBackPrimaryCard();
     });
-    // Worker to sync color and icon change of playIcon
-    ever(searchBarPlayIconControl, (dynamic value) {
-      if (value == CustomAnimationControl.PLAY_FROM_START) {
+    ever<bool>(isAutoPlayMode, (isAutoPlayMode) {
+      if (isAutoPlayMode) {
+        searchBarPlayIconControl.value = CustomAnimationControl.PLAY_FROM_START;
         searchBarPlayIconController.forward();
-      } else if (value == CustomAnimationControl.PLAY_REVERSE_FROM_END) {
+      } else {
+        searchBarPlayIconControl.value =
+            CustomAnimationControl.PLAY_REVERSE_FROM_END;
         searchBarPlayIconController.reverse();
       }
     });
@@ -176,13 +176,10 @@ class ReviewWordsController extends GetxController
       return;
     }
     if (!isAutoPlayMode.value) {
-      searchBarPlayIconControl.value = CustomAnimationControl.PLAY_FROM_START;
       isAutoPlayMode.value = true;
       flipBackPrimaryCard();
       _autoPlayCard();
     } else {
-      searchBarPlayIconControl.value =
-          CustomAnimationControl.PLAY_REVERSE_FROM_END;
       isAutoPlayMode.value = false;
     }
   }
@@ -262,47 +259,34 @@ class ReviewWordsController extends GetxController
         duration: 300.milliseconds, curve: Curves.easeInOut);
   }
 
-  /// [WordsFlashcard] Tts package use listener to handler completion of speech
-  /// So we need to set logic after each tts speech inside a
-  /// callback function
-  ///
-  /// Also, we check isAutoPlayMode in multiple stage so user
+  /// Check isAutoPlayMode in multiple stage so user
   /// can stop the play anytime
   void _autoPlayCard() async {
     if (isAutoPlayMode.isFalse) {
-      searchBarPlayIconControl.value =
-          CustomAnimationControl.PLAY_REVERSE_FROM_END;
       return;
     }
-    await primaryWordCardController!.playMeanings(completionCallBack: () async {
-      // after playMeanings
+    await primaryWordCardController!.playMeanings();
+    // after playMeanings
+    if (isAutoPlayMode.isFalse) {
+      return;
+    }
+    Timer(0.5.seconds, primaryWordCardController!.flipCard);
+    Timer(1.seconds, () async {
       if (isAutoPlayMode.isFalse) {
-        searchBarPlayIconControl.value =
-            CustomAnimationControl.PLAY_REVERSE_FROM_END;
         return;
       }
-      Timer(0.5.seconds, primaryWordCardController!.flipCard);
-      Timer(0.5.seconds, () async {
-        if (isAutoPlayMode.isFalse) {
-          searchBarPlayIconControl.value =
-              CustomAnimationControl.PLAY_REVERSE_FROM_END;
-          return;
-        }
-        await primaryWordCardController!.playWord(
-            audioKey: primaryWord.id,
-            completionCallBack: () async {
-              // after playWord
-              // When we reach the last card or autoPlay turn off
-              if (isAutoPlayMode.isFalse || primaryWordIndex.value == 0) {
-                searchBarPlayIconControl.value =
-                    CustomAnimationControl.PLAY_REVERSE_FROM_END;
-                isAutoPlayMode.value = false;
-              } else {
-                await nextCard();
-                Future.delayed(1.seconds, _autoPlayCard);
-              }
-            });
-      });
+      await primaryWordCardController!.playWord(
+          audioKey: primaryWord.id,
+          completionCallBack: () async {
+            // after playWord
+            // When we reach the last card or autoPlay turn off
+            if (isAutoPlayMode.isFalse || primaryWordIndex.value == 0) {
+              isAutoPlayMode.value = false;
+            } else {
+              await nextCard();
+              Future.delayed(1.seconds, _autoPlayCard);
+            }
+          });
     });
   }
 

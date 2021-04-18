@@ -13,7 +13,7 @@ import 'package:styled_widget/styled_widget.dart';
 
 // 🌎 Project imports:
 import '../../../core/theme/review_words_theme.dart';
-import '../../../core/utils/helper/lecture_helper.dart';
+import '../../../data/service/lecture_service.dart';
 import '../../../core/utils/index.dart';
 import '../../../core/values/icons/c_school_icons.dart';
 import '../../../data/model/lecture.dart';
@@ -190,7 +190,7 @@ class LectureCard extends StatelessWidget {
   final Lecture lecture;
   final int? index;
   final LectureCardController controller;
-  final LectureHelper lectureService = Get.find();
+  final LectureService lectureHelper = Get.find<LectureService>();
 
   @override
   Widget build(BuildContext context) {

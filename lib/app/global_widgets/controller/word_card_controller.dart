@@ -6,7 +6,7 @@ import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
-import '../../core/utils/helper/lecture_helper.dart';
+import '../../data/service/lecture_service.dart';
 import '../../data/model/word/word.dart';
 import '../../data/model/word/word_example.dart';
 import '../../data/service/audio_service.dart';
@@ -19,10 +19,11 @@ class WordCardController extends GetxController {
   WordCardController(this.word);
 
   final Word word;
-  final LectureHelper lectureHelper = LectureHelper();
+  static final LectureService lectureHelper = Get.find<LectureService>();
 
   /// Words user favorite
-  late final RxList<String> _userLikedWordIds;
+  late final RxList<String> _userLikedWordIds =
+      lectureHelper.userLikedWordIds_Rx;
 
   /// Is hint shown under meaning
   final isHintShown = false.obs;
@@ -42,7 +43,6 @@ class WordCardController extends GetxController {
 
   @override
   void onInit() {
-    _userLikedWordIds = lectureHelper.userLikedWordIds_Rx;
     /// Prepare audio file of this card
     <StorageFile>[
       word.wordAudioFemale!.audio!,
@@ -77,9 +77,8 @@ class WordCardController extends GetxController {
 
   /// Play audio of the meanings one by one, now only tts is supported
   Future<void> playMeanings(
-      {int meaningOrdinal = 0, Function? completionCallBack}) async {
-    await audioService.speakList(word.wordMeanings!.map((m) => m.meaning!),
-        callback: completionCallBack);
+      {int meaningOrdinal = 0}) async {
+    await audioService.speakList(word.wordMeanings!.map((m) => m.meaning!));
   }
 
   /// Play audio of the examples

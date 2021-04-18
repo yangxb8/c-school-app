@@ -13,24 +13,22 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 class AudioService extends GetxService {
-  static AudioService? _instance;
-
   static const LAN_CODE_JP = 'ja';
 
   /// Main audio player we use
-  static final _player = FlutterSoundPlayer();
+  final _player = FlutterSoundPlayer();
 
   /// System Tts as fallback if no audio file is available
-  static final _tts = FlutterTts();
+  final _tts = FlutterTts();
 
   /// Recorder
-  static final _recorder = FlutterSoundRecorder();
+  final _recorder = FlutterSoundRecorder();
 
   /// State of main player
-  static final playerState = PlayerState.isStopped.obs;
+  final playerState = PlayerState.isStopped.obs;
 
   /// State indicate player is occupied
-  static final _playerOccupiedState = [PlayerState.isPlaying, PlayerState.isPaused];
+  final _playerOccupiedState = [PlayerState.isPlaying, PlayerState.isPaused];
 
   /// Key of client using this service, one can observe this key
   /// to know if they still connected to the service
@@ -41,26 +39,20 @@ class AudioService extends GetxService {
 
   String? _lastRecordPath;
 
-  AudioService._internal();
-
-  static Future<AudioService> get instance async{
-    if(_instance==null){
-      _instance == AudioService._internal();
-      await _player.openAudioSession();
-      await _recorder.openAudioSession();
-      ever(playerState, (dynamic state) {
-        // When play complete, clientKey is cleared
-        if (!_playerOccupiedState.contains(state)) {
-          _clientKey.value = '';
-          // If there is a timer, stop it
-          currentTimer?.cancel();
-        }
-      });
-      // Set up tts
-      await _tts.setSpeechRate(0.5);
-      await _tts.setLanguage(LAN_CODE_JP);
-    }
-    return _instance!;
+  @override
+  void onInit(){
+    super.onInit();
+    ever(playerState, (dynamic state) {
+      // When play complete, clientKey is cleared
+      if (!_playerOccupiedState.contains(state)) {
+        _clientKey.value = '';
+        // If there is a timer, stop it
+        currentTimer?.cancel();
+      }
+    });
+    // Set up tts
+    _tts.setSpeechRate(0.5);
+    _tts.setLanguage(LAN_CODE_JP);
   }
 
   RxString get clientKey => _clientKey;
@@ -88,13 +80,16 @@ class AudioService extends GetxService {
       Duration? from,
       Duration? to}) async {
     assert(uri != null || bytes != null);
-    if (playerState.value !=
-                PlayerState
-                    .isStopped && // If stopped, not point to call stop again
-            forceRestart || // If forceRestart, restart
-        clientKey.value != key || // If a new audio, restart
+    if (!_player.isOpen()) {
+      await _player.openAudioSession();
+    }
+    // If stopped, not point to call stop again
+    // If forceRestart, restart
+    // If a new audio, restart
+    // Event key is the same. If both are empty key, restart
+    if (playerState.value != PlayerState.isStopped && forceRestart ||
+        clientKey.value != key ||
         key != '') {
-      // Event key is the same. If both are empty key, restart
       await stopPlayer();
     }
     // Set clientKey to new key
@@ -148,21 +143,14 @@ class AudioService extends GetxService {
   }
 
   /// Only used to play
-  Future<void> speak(String text, {Function? callback}) async {
+  Future<void> speak(String text) async {
     await _tts.awaitSpeakCompletion(true);
     await _tts.speak(text);
-    if (callback != null) {
-      await callback();
-    }
   }
 
-  Future<void> speakList(Iterable<String> texts, {Function? callback}) async {
-    await Future.forEach(texts, (dynamic text) async {
-      await _tts.awaitSpeakCompletion(true);
-      await _tts.speak(text);
-    });
-    if (callback != null) {
-      await callback();
+  Future<void> speakList(Iterable<String> texts) async {
+    for(var text in texts) {
+      await speak(text);
     }
   }
 
@@ -172,9 +160,12 @@ class AudioService extends GetxService {
     var status = await Permission.microphone.request();
     if (!status.isGranted) {
       Get.snackbar('error.oops'.tr, 'error.permission.mic'.tr);
+      return;
     }
     if (_recorder.isRecording) {
       await _recorder.stopRecorder();
+    } else {
+      await _recorder.openAudioSession();
     }
     final tempDir = (await getTemporaryDirectory()).path;
     _lastRecordPath = '$tempDir/${Uuid().v1()}';
@@ -186,6 +177,7 @@ class AudioService extends GetxService {
   Future<File> stopRecorder() async {
     assert(_recorder.isRecording);
     await _recorder.stopRecorder();
+    await _recorder.closeAudioSession();
     return File(_lastRecordPath!);
   }
 

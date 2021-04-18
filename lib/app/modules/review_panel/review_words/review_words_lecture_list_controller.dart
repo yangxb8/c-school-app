@@ -5,19 +5,18 @@
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:get/get.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
-import '../../../core/utils/helper/lecture_helper.dart';
+import '../../../data/service/lecture_service.dart';
 import '../../../core/utils/index.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
 
 class ReviewWordsHomeController extends GetxController {
-  final LectureHelper lectureHelper = LectureHelper();
+  final LectureService lectureHelper = Get.find<LectureService>();
 
   /// Used to controller scroll of lectures list
   final groupedItemScrollController = GroupedItemScrollController();
@@ -55,14 +54,14 @@ class ReviewWordsHomeController extends GetxController {
   void refreshState() {
     wordsListLiked.assignAll(lectureHelper.likedWords);
     wordsListForgotten.assignAll(lectureHelper.findWordsBy({
-      'wordMemoryStatus': EnumToString.convertToString(WordMemoryStatus.FORGOT)
+      'wordMemoryStatus': WordMemoryStatus.FORGOT
     }));
     wordsListAll.assignAll(lectureHelper.allWords);
   }
 }
 
 class LectureCardController extends GetxController {
-  final LectureHelper lectureHelper = Get.find();
+  final LectureService lectureHelper = Get.find<LectureService>();
 
   /// Lecture this card is associated with
   final Lecture lecture;
@@ -83,7 +82,7 @@ class LectureCardController extends GetxController {
 
   void refreshState() {
     forgottenWords.assignAll(lectureHelper.findWordsBy({
-      'wordMemoryStatus': EnumToString.convertToString(WordMemoryStatus.FORGOT),
+      'wordMemoryStatus': WordMemoryStatus.FORGOT,
       'lectureId': lecture.lectureId
     }));
     lectureViewCount.value = lectureHelper.getLectureViewedCount(lecture);
