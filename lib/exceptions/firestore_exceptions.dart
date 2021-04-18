@@ -1,1 +1,0 @@
-class DocumentNotExistedError extends Error {}

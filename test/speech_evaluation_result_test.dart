@@ -5,7 +5,11 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 
 // 🌎 Project imports:
-import 'package:c_school_app/app/model/speech_evaluation_result.dart';
+import 'package:c_school_app/app/data/model/exam/speech_evaluation_result.dart';
+
+// 🌎 Project imports:
+
+// 🌎 Project imports:
 
 void main() {
   test('Speech evaluation result can be cast', () {
@@ -41,6 +45,6 @@ void main() {
     var json = jsonDecode(exampleJson);
     var result = SentenceInfo.fromJson(json['Response']);
     print(json);
-    expect(result.pronAccuracy,equals(65));
+    expect(result.pronAccuracy, equals(65));
   });
 }

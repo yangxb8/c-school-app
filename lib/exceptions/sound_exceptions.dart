@@ -1,1 +1,0 @@
-class NoVoiceDataException implements Exception {}

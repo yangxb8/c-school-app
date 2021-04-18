@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:catcher/catcher.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
@@ -19,16 +20,19 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wiredash/wiredash.dart';
 
 // 🌎 Project imports:
-import 'package:c_school_app/i18n/wiredash_translation.dart';
-import 'package:c_school_app/service/audio_service.dart';
-import 'package:c_school_app/service/user_service.dart';
-import './service/app_state_service.dart';
-import 'app_theme.dart';
-import 'i18n/messages.dart';
-import 'router.dart';
-import 'service/api_service.dart';
-import 'service/localstorage_service.dart';
-import 'util/utility.dart';
+import 'package:c_school_app/app/data/repository/exam_repository.dart';
+import 'package:c_school_app/app/data/repository/lecture_repository.dart';
+import 'package:c_school_app/app/data/repository/user_repository.dart';
+import 'package:c_school_app/app/data/repository/word_repository.dart';
+import 'app/core/theme/app_theme.dart';
+import 'app/core/utils/index.dart';
+import 'app/core/values/strings/messages.dart';
+import 'app/core/values/strings/wiredash_translation.dart';
+import 'app/data/service/app_state_service.dart';
+import 'app/data/service/audio_service.dart';
+import 'app/data/service/localstorage_service.dart';
+import 'app/data/service/wiredash_service.dart';
+import 'app/routes/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -117,12 +121,22 @@ class Splash extends StatelessWidget {
 }
 
 Future<void> initServices() async {
-  await Get.putAsync<LocalStorageService>(
-      () async => await LocalStorageService.getInstance());
-  await Get.putAsync<ApiService>(() async => await ApiService.getInstance());
+  await Firebase.initializeApp();
   await Flamingo.initializeApp();
+  // Only after login can user access other repository
+  once<bool>(UserRepository.isUserLogin, (isUserLogin) async {
+    if(isUserLogin){
+      await Get.putAsync(() async => await LectureRepository.instance);
+      await Get.putAsync(() async => await WordRepository.instance);
+      await Get.putAsync(() async => await ExamRepository.instance);
+      AppStateService.fullyInitialized = true;
+    }
+  });
+  await Get.putAsync(() async => await UserRepository.instance);
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
-  await Get.putAsync<UserService>(() async => await UserService.getInstance());
-  Get.lazyPut<AudioService>(() => AudioService());
-  Logger.level = AppStateService.isDebug ? Level.debug : Level.error;
+  await Get.putAsync(
+      () async => await LocalStorageService.instance);
+  await Get.putAsync(() async => AudioService.instance);
+  Logger.level = AppStateService.isDebug ? Level.debug : Level.warning;
+  WiredashService.startWireDashService();
 }
