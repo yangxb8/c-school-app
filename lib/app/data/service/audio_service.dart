@@ -32,10 +32,10 @@ class AudioService extends GetxService {
 
   /// Key of client using this service, one can observe this key
   /// to know if they still connected to the service
-  static final RxString _clientKey = ''.obs;
+  final RxString clientKey = ''.obs;
 
   /// Timer of last player
-  static Timer? currentTimer;
+  Timer? currentTimer;
 
   String? _lastRecordPath;
 
@@ -45,7 +45,7 @@ class AudioService extends GetxService {
     ever(playerState, (dynamic state) {
       // When play complete, clientKey is cleared
       if (!_playerOccupiedState.contains(state)) {
-        _clientKey.value = '';
+        clientKey.value = '';
         // If there is a timer, stop it
         currentTimer?.cancel();
       }
@@ -54,8 +54,6 @@ class AudioService extends GetxService {
     _tts.setSpeechRate(0.5);
     _tts.setLanguage(LAN_CODE_JP);
   }
-
-  RxString get clientKey => _clientKey;
 
   /// Pre-loading audio
   void prepareAudio(String url) {
