@@ -3,7 +3,6 @@ import 'dart:math' as math;
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:vector_math/vector_math.dart' as vector;
 
@@ -13,20 +12,28 @@ import '../../../core/theme/my_progress_theme.dart';
 // 🌎 Project imports:
 
 class WaveView extends StatefulWidget {
+  const WaveView({Key? key, this.percentageValue = 100.0}) : super(key: key);
+
   final double percentageValue;
 
-  const WaveView({Key? key, this.percentageValue = 100.0}) : super(key: key);
   @override
   _WaveViewState createState() => _WaveViewState();
 }
 
 class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
   late AnimationController animationController;
-  late AnimationController waveAnimationController;
-  Offset bottleOffset1 = Offset(0, 0);
   List<Offset> animList1 = [];
-  Offset bottleOffset2 = Offset(60, 0);
   List<Offset> animList2 = [];
+  Offset bottleOffset1 = Offset(0, 0);
+  Offset bottleOffset2 = Offset(60, 0);
+  late AnimationController waveAnimationController;
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    waveAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -72,13 +79,6 @@ class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
     waveAnimationController.repeat();
     animationController.forward();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    waveAnimationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -263,11 +263,10 @@ class _WaveViewState extends State<WaveView> with TickerProviderStateMixin {
 }
 
 class WaveClipper extends CustomClipper<Path> {
-  final double animation;
-
-  List<Offset> waveList1 = [];
-
   WaveClipper(this.animation, this.waveList1);
+
+  final double animation;
+  List<Offset> waveList1 = [];
 
   @override
   Path getClip(Size size) {

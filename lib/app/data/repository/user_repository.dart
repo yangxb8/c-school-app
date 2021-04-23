@@ -1,19 +1,28 @@
 // 📦 Package imports:
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
-
 // 🌎 Project imports:
 import 'package:c_school_app/app/data/model/user/user.dart';
 import 'package:c_school_app/app/data/provider/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 /// Make change directly to currentUser and call Update to save it
 class UserRepository extends GetxService {
-  static UserRepository? _instance;
+  UserRepository._internal();
+
   static final RxBool isUserLogin = false.obs;
-  final UserProvider _provider = UserFirebaseProvider();
+
   late AppUser currentUser;
 
-  UserRepository._internal();
+  static UserRepository? _instance;
+
+  final UserProvider _provider = UserFirebaseProvider();
+
+  @override
+  void onClose() {
+    // Commit all change before terminate
+    update();
+    super.onClose();
+  }
 
   static Future<UserRepository> get instance async {
     if (_instance == null) {
@@ -27,9 +36,9 @@ class UserRepository extends GetxService {
     final firebaseUser = await FirebaseAuth.instance.authStateChanges().first;
     var dbUser = await _provider.get(firebaseUser?.uid);
     if (dbUser != null) currentUser = dbUser;
-    if (firebaseUser != null && dbUser!= null) isUserLogin.value = true;
+    if (firebaseUser != null && dbUser != null) isUserLogin.value = true;
   }
-  
+
   User? get firebaseUser => FirebaseAuth.instance.currentUser;
 
   Future<void> update() async {
@@ -52,12 +61,5 @@ class UserRepository extends GetxService {
       currentUser = dbUser;
       isUserLogin.value = true;
     }
-  }
-
-  @override
-  void onClose() {
-    // Commit all change before terminate
-    update();
-    super.onClose();
   }
 }

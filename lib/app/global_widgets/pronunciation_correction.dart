@@ -1,11 +1,10 @@
 // 🐦 Flutter imports:
 // 🌎 Project imports:
 
-// 🐦 Flutter imports:
-import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:collection/collection.dart';
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
 // 🌎 Project imports:
@@ -33,15 +32,16 @@ class PronunciationCorrection extends StatelessWidget {
 
   static const TextStyle correctStyle =
       TextStyle(color: Colors.lightBlueAccent);
+
   static const TextStyle errorStyle =
       TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold);
 
-  final SentenceInfo result;
   final List<String> hanziList;
-  final List<String> refHanziList;
-  final List<String> pinyinList;
-  final List<String> refPinyinList;
   final HanziTapCallback? hanziTapCallback;
+  final List<String> pinyinList;
+  final List<String> refHanziList;
+  final List<String> refPinyinList;
+  final SentenceInfo result;
 
   /// Return list of index where pinyin doesn't match refPinyin
   List<int> _calculateWrongPinyinIndex(String pinyin, String refPinyin) {

@@ -1,16 +1,16 @@
 // 📦 Package imports:
 
+// 🌎 Project imports:
+import 'package:c_school_app/app/core/utils/filterable.dart';
+import 'package:c_school_app/app/data/repository/lecture_repository.dart';
+import 'package:c_school_app/app/data/repository/word_repository.dart';
 // 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
 
-// 🌎 Project imports:
-import 'package:c_school_app/app/core/utils/filterable.dart';
-import 'package:c_school_app/app/data/repository/lecture_repository.dart';
-import 'package:c_school_app/app/data/repository/word_repository.dart';
-import '../../service/lecture_service.dart';
 import '../../../core/utils/searchable.dart';
+import '../../service/lecture_service.dart';
 import '../lecture.dart';
 import '../speech_audio.dart';
 import 'word_meaning.dart';
@@ -27,9 +27,6 @@ class Word extends Document<Word> with Filterable implements Searchable {
         tags =
             id == null ? [] : [id.split('-').first], // Assign lectureId to tags
         super(id: id, snapshot: snapshot, values: values);
-
-  @Field()
-  String? wordId;
 
   /// Example: [['我'],[们]]
   @Field()
@@ -48,10 +45,6 @@ class Word extends Document<Word> with Filterable implements Searchable {
 
   @Field()
   String? hint = '';
-
-  /// 日语意思
-  @ModelField()
-  List<WordMeaning>? wordMeanings = [];
 
   /// related word in examples
   @Field()
@@ -73,6 +66,31 @@ class Word extends Document<Word> with Filterable implements Searchable {
   @Field()
   String? picHash = '';
 
+  /// 日语意思
+  @ModelField()
+  List<WordMeaning>? wordMeanings = [];
+
+  @override
+  Map<String, dynamic> get searchableProperties => {
+        'wordAsString': wordAsString,
+        'pinyin': pinyin,
+        'wordMeanings': wordMeanings!.map((m) => m.meaning),
+        'tags': tags
+      };
+
+  @override
+  Map<String, dynamic> get filterableProperties =>
+      {'wordId': wordId, 'tags': tags, 'wordMemoryStatus': status};
+
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
+  @Field()
+  String? wordId;
+
   /// If the word has pic in cloud storage
   @StorageField()
   StorageFile? pic;
@@ -87,27 +105,6 @@ class Word extends Document<Word> with Filterable implements Searchable {
   String get lectureId => id.split('-').first;
 
   String get wordAsString => word!.join();
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
-
-  @override
-  Map<String, dynamic> get searchableProperties => {
-        'wordAsString': wordAsString,
-        'pinyin': pinyin,
-        'wordMeanings': wordMeanings!.map((m) => m.meaning),
-        'tags': tags
-      };
-
-  @override
-  Map<String, dynamic> get filterableProperties => {
-        'wordId': wordId,
-        'tags': tags,
-        'wordMemoryStatus': status
-      };
 }
 
 enum WordMemoryStatus { REMEMBERED, NORMAL, FORGOT, NOT_REVIEWED }

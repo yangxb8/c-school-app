@@ -11,9 +11,10 @@ import 'localstorage_service.dart';
 * initialized first!
 */
 class AppStateService {
-  static final LocalStorageService _localStorageService = Get.find();
-  static final startCount = _localStorageService.getStartCountAndIncrease();
   static bool fullyInitialized = false;
+  static final startCount = _localStorageService.getStartCountAndIncrease();
+
+  static final LocalStorageService _localStorageService = Get.find();
 
   static bool get isDebug {
     var debugMode = false;

@@ -20,12 +20,16 @@ class ReviewPanelHomeScreen extends StatefulWidget {
 class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
     with TickerProviderStateMixin {
   late final AnimationController animationController;
-
-  late Animation<double> topBarAnimation;
-
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
+  late Animation<double> topBarAnimation;
   double topBarOpacity = 0.0;
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -61,12 +65,6 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
       }
     });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
   }
 
   void addAllListData() {
@@ -130,25 +128,6 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
     return true;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: FintnessAppTheme.background,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            getMainListViewUI(),
-            getAppBarUI(),
-            SizedBox(
-              height: MediaQuery.of(context).padding.bottom,
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   Widget getMainListViewUI() {
@@ -305,6 +284,25 @@ class _ReviewPanelHomeScreenState extends State<ReviewPanelHomeScreen>
           },
         )
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: FintnessAppTheme.background,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: <Widget>[
+            getMainListViewUI(),
+            getAppBarUI(),
+            SizedBox(
+              height: MediaQuery.of(context).padding.bottom,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

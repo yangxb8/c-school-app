@@ -29,12 +29,6 @@ extension WidgetWrapper on Widget {
 
 /// Wrapper for stateful functionality to provide onInit calls in stateles widget
 class StatefulWrapper extends StatefulWidget {
-  final Function? onInit;
-  final Function? didUpdateWidget;
-  final Function? deactivate;
-  final Function? dispose;
-  final Function? afterFirstLayout;
-  final Widget child;
   const StatefulWrapper(
       {this.onInit,
       this.afterFirstLayout,
@@ -42,6 +36,14 @@ class StatefulWrapper extends StatefulWidget {
       this.didUpdateWidget,
       this.deactivate,
       this.dispose});
+
+  final Function? afterFirstLayout;
+  final Widget child;
+  final Function? deactivate;
+  final Function? didUpdateWidget;
+  final Function? dispose;
+  final Function? onInit;
+
   @override
   _StatefulWrapperState createState() => _StatefulWrapperState();
 }
@@ -49,30 +51,9 @@ class StatefulWrapper extends StatefulWidget {
 class _StatefulWrapperState extends State<StatefulWrapper>
     with AfterLayoutMixin<StatefulWrapper> {
   @override
-  void initState() {
-    if (widget.onInit != null) {
-      widget.onInit!();
-    }
-    super.initState();
-  }
-
-  @override
   void afterFirstLayout(BuildContext context) {
     if (widget.afterFirstLayout != null) {
       widget.afterFirstLayout!();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
-
-  @override
-  void didUpdateWidget(StatefulWrapper oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.didUpdateWidget != null) {
-      widget.didUpdateWidget!(oldWidget);
     }
   }
 
@@ -85,11 +66,32 @@ class _StatefulWrapperState extends State<StatefulWrapper>
   }
 
   @override
+  void didUpdateWidget(StatefulWrapper oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.didUpdateWidget != null) {
+      widget.didUpdateWidget!(oldWidget);
+    }
+  }
+
+  @override
   void dispose() {
     if (widget.dispose != null) {
       widget.dispose!();
     }
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    if (widget.onInit != null) {
+      widget.onInit!();
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
 

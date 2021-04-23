@@ -1,11 +1,10 @@
 // 🐦 Flutter imports:
 
+// 📦 Package imports:
+import 'package:auto_size_text/auto_size_text.dart';
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
-// 📦 Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -13,11 +12,11 @@ import 'package:styled_widget/styled_widget.dart';
 
 // 🌎 Project imports:
 import '../../../core/theme/review_words_theme.dart';
-import '../../../data/service/lecture_service.dart';
 import '../../../core/utils/index.dart';
 import '../../../core/values/icons/c_school_icons.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
+import '../../../data/service/lecture_service.dart';
 import '../../../global_widgets/blurhash_image_with_fallback.dart';
 import '../../../global_widgets/search_bar.dart';
 import 'review_words_lecture_list_controller.dart';
@@ -25,67 +24,6 @@ import 'review_words_lecture_list_controller.dart';
 // 🌎 Project imports:
 
 class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    'review.word.home.myWord.title'.tr,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 22,
-                      letterSpacing: 0.27,
-                      decoration: TextDecoration.none,
-                      color: ReviewWordsTheme.darkerText,
-                    ),
-                  )
-                      .paddingOnly(left: 20, top: 20)
-                      .alignment(Alignment.centerLeft),
-                  _buildSpecialLectureCard().expanded(),
-                  Text('review.word.home.allCourse.title'.tr,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 22,
-                            letterSpacing: 0.27,
-                            decoration: TextDecoration.none,
-                            color: ReviewWordsTheme.darkerText,
-                          ))
-                      .paddingOnly(left: 20, top: 20)
-                      .alignment(Alignment.centerLeft),
-                  StickyGroupedListView<Lecture, String>(
-                      elements: controller.lectureHelper.allLecture,
-                      itemScrollController:
-                          controller.groupedItemScrollController,
-                      floatingHeader: true,
-                      groupBy: (Lecture element) => element.levelForDisplay,
-                      groupSeparatorBuilder: (_) => const SizedBox.shrink(),
-                      itemComparator: (element1, element2) =>
-                          element1.lectureId!.compareTo(element2.lectureId!),
-                      indexedItemBuilder: (_, lecture, index) => LectureCard(
-                            lecture: lecture,
-                            index: index,
-                          ).paddingOnly(bottom: 5)).expanded(flex: 5)
-                ],
-              ),
-            )
-                .afterFirstLayout(controller.animateToTrackedLecture)
-                .paddingOnly(top: 40),
-            _buildSearchBar()
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildSearchBar() => SearchBar<Lecture>(
         items: controller.lectureHelper.allLecture,
         searchResultBuilder: (lecture) => ListTile(
@@ -174,6 +112,67 @@ class ReviewWordsHomeScreen extends GetView<ReviewWordsHomeController> {
           ).paddingOnly(left: 10)
         ],
       ).paddingOnly(top: 10);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'review.word.home.myWord.title'.tr,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 22,
+                      letterSpacing: 0.27,
+                      decoration: TextDecoration.none,
+                      color: ReviewWordsTheme.darkerText,
+                    ),
+                  )
+                      .paddingOnly(left: 20, top: 20)
+                      .alignment(Alignment.centerLeft),
+                  _buildSpecialLectureCard().expanded(),
+                  Text('review.word.home.allCourse.title'.tr,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22,
+                            letterSpacing: 0.27,
+                            decoration: TextDecoration.none,
+                            color: ReviewWordsTheme.darkerText,
+                          ))
+                      .paddingOnly(left: 20, top: 20)
+                      .alignment(Alignment.centerLeft),
+                  StickyGroupedListView<Lecture, String>(
+                      elements: controller.lectureHelper.allLecture,
+                      itemScrollController:
+                          controller.groupedItemScrollController,
+                      floatingHeader: true,
+                      groupBy: (Lecture element) => element.levelForDisplay,
+                      groupSeparatorBuilder: (_) => const SizedBox.shrink(),
+                      itemComparator: (element1, element2) =>
+                          element1.lectureId!.compareTo(element2.lectureId!),
+                      indexedItemBuilder: (_, lecture, index) => LectureCard(
+                            lecture: lecture,
+                            index: index,
+                          ).paddingOnly(bottom: 5)).expanded(flex: 5)
+                ],
+              ),
+            )
+                .afterFirstLayout(controller.animateToTrackedLecture)
+                .paddingOnly(top: 40),
+            _buildSearchBar()
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class LectureCard extends StatelessWidget {
@@ -187,9 +186,10 @@ class LectureCard extends StatelessWidget {
 
   static const cardHeight = 120.0;
   static const DEFAULT_IMAGE = 'assets/review_panel/default.png';
-  final Lecture lecture;
-  final int? index;
+
   final LectureCardController controller;
+  final int? index;
+  final Lecture lecture;
   final LectureService lectureHelper = Get.find<LectureService>();
 
   @override

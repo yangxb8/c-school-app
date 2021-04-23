@@ -15,21 +15,6 @@ import 'package:uuid/uuid.dart';
 class AudioService extends GetxService {
   static const LAN_CODE_JP = 'ja';
 
-  /// Main audio player we use
-  final _player = FlutterSoundPlayer();
-
-  /// System Tts as fallback if no audio file is available
-  final _tts = FlutterTts();
-
-  /// Recorder
-  final _recorder = FlutterSoundRecorder();
-
-  /// State of main player
-  final playerState = PlayerState.isStopped.obs;
-
-  /// State indicate player is occupied
-  final _playerOccupiedState = [PlayerState.isPlaying, PlayerState.isPaused];
-
   /// Key of client using this service, one can observe this key
   /// to know if they still connected to the service
   final RxString clientKey = ''.obs;
@@ -37,10 +22,32 @@ class AudioService extends GetxService {
   /// Timer of last player
   Timer? currentTimer;
 
+  /// State of main player
+  final playerState = PlayerState.isStopped.obs;
+
   String? _lastRecordPath;
 
+  /// Main audio player we use
+  final _player = FlutterSoundPlayer();
+
+  /// State indicate player is occupied
+  final _playerOccupiedState = [PlayerState.isPlaying, PlayerState.isPaused];
+
+  /// Recorder
+  final _recorder = FlutterSoundRecorder();
+
+  /// System Tts as fallback if no audio file is available
+  final _tts = FlutterTts();
+
   @override
-  void onInit(){
+  void onClose() {
+    _player.closeAudioSession();
+    _recorder.closeAudioSession();
+    super.onClose();
+  }
+
+  @override
+  void onInit() {
     super.onInit();
     ever(playerState, (dynamic state) {
       // When play complete, clientKey is cleared
@@ -147,7 +154,7 @@ class AudioService extends GetxService {
   }
 
   Future<void> speakList(Iterable<String> texts) async {
-    for(var text in texts) {
+    for (var text in texts) {
       await speak(text);
     }
   }
@@ -180,11 +187,4 @@ class AudioService extends GetxService {
   }
 
   void refreshPlayerState() => playerState.value = _player.playerState;
-
-  @override
-  void onClose() {
-    _player.closeAudioSession();
-    _recorder.closeAudioSession();
-    super.onClose();
-  }
 }

@@ -3,13 +3,12 @@
 
 // 🌎 Project imports:
 
+// 📦 Package imports:
+import 'package:collection/collection.dart';
 // 🐦 Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-// 📦 Package imports:
-import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -31,11 +30,6 @@ final icon_size = 40.0;
 final verticalInset = 8.0;
 
 class WordCard extends StatelessWidget {
-  final Word word;
-
-  /// Whether we should load the image
-  final bool loadImage;
-  final WordCardController controller;
   WordCard(
       {Key? key, required this.word, this.loadImage = true, isDialog = false})
       : controller = isDialog
@@ -44,93 +38,12 @@ class WordCard extends StatelessWidget {
                 tag: word.wordId),
         super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    final emptyImage = Container(
-      decoration: BoxDecoration(
-        color: ReviewWordsTheme.lightBlue,
-        border: Border.all(color: ReviewWordsTheme.lightBlue, width: 0),
-      ),
-    );
-    var frontCardContent = Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ...word.wordMeanings!
-                    .map((e) => SelectableAutoSizeText.unselectable(
-                          e.meaning!,
-                          style: ReviewWordsTheme.wordCardMeaning,
-                          maxLines: 1,
-                        ).paddingSymmetric(vertical: 10))
-                    .toList(),
-              ],
-            ).backgroundColor(ReviewWordsTheme.lightBlue).expanded(),
-          ],
-        ).expanded(),
-        AspectRatio(
-          aspectRatio: 4 / 3,
-          child: loadImage
-              ? BlurHashImageWithFallback(
-                  fallbackImg: emptyImage,
-                  mainImgUrl: word.pic?.url,
-                  blurHash: word.picHash!)
-              : emptyImage,
-        )
-      ],
-    );
-    var favoriteIcon = Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Obx(
-          () => IconButton(
-            padding: EdgeInsets.only(top: 15, right: 15),
-            splashRadius: 0.01,
-            icon: Icon(CSchool.heart),
-            // key: favoriteButtonKey,
-            color: controller.isWordLiked()
-                ? ReviewWordsTheme.lightYellow
-                : Colors.grey,
-            iconSize: icon_size * 0.9,
-            onPressed: () => controller.toggleFavoriteCard(),
-          ),
-        ),
-      ],
-    );
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16.0),
-      child: AspectRatio(
-        aspectRatio: cardAspectRatio,
-        child: SimpleGestureDetector(
-          onDoubleTap: controller.flipCard,
-          child: Obx(
-            () => FlippableBox(
-              duration: 0.3,
-              isFlipped: controller.isCardFlipped.value,
-              curve: Curves.easeOut,
-              back: Container(
-                  constraints: BoxConstraints.expand(),
-                  child:
-                      Stack(children: [buildBackCardContent(), favoriteIcon])),
-              front: Container(
-                  constraints: BoxConstraints.expand(),
-                  child: Stack(children: [frontCardContent, favoriteIcon])),
-            ),
-          ),
-        ),
-      ),
-    ).card(
-      color: Colors.transparent,
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-    );
-  }
+  final WordCardController controller;
+
+  /// Whether we should load the image
+  final bool loadImage;
+
+  final Word word;
 
   Widget buildBackCardContent() {
     // Top hanzi part
@@ -240,4 +153,92 @@ class WordCard extends StatelessWidget {
   }
 
   Widget divider() => const SizedBox(height: 20);
+
+  @override
+  Widget build(BuildContext context) {
+    final emptyImage = Container(
+      decoration: BoxDecoration(
+        color: ReviewWordsTheme.lightBlue,
+        border: Border.all(color: ReviewWordsTheme.lightBlue, width: 0),
+      ),
+    );
+    var frontCardContent = Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ...word.wordMeanings!
+                    .map((e) => SelectableAutoSizeText.unselectable(
+                          e.meaning!,
+                          style: ReviewWordsTheme.wordCardMeaning,
+                          maxLines: 1,
+                        ).paddingSymmetric(vertical: 10))
+                    .toList(),
+              ],
+            ).backgroundColor(ReviewWordsTheme.lightBlue).expanded(),
+          ],
+        ).expanded(),
+        AspectRatio(
+          aspectRatio: 4 / 3,
+          child: loadImage
+              ? BlurHashImageWithFallback(
+                  fallbackImg: emptyImage,
+                  mainImgUrl: word.pic?.url,
+                  blurHash: word.picHash!)
+              : emptyImage,
+        )
+      ],
+    );
+    var favoriteIcon = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Obx(
+          () => IconButton(
+            padding: EdgeInsets.only(top: 15, right: 15),
+            splashRadius: 0.01,
+            icon: Icon(CSchool.heart),
+            // key: favoriteButtonKey,
+            color: controller.isWordLiked()
+                ? ReviewWordsTheme.lightYellow
+                : Colors.grey,
+            iconSize: icon_size * 0.9,
+            onPressed: () => controller.toggleFavoriteCard(),
+          ),
+        ),
+      ],
+    );
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16.0),
+      child: AspectRatio(
+        aspectRatio: cardAspectRatio,
+        child: SimpleGestureDetector(
+          onDoubleTap: controller.flipCard,
+          child: Obx(
+            () => FlippableBox(
+              duration: 0.3,
+              isFlipped: controller.isCardFlipped.value,
+              curve: Curves.easeOut,
+              back: Container(
+                  constraints: BoxConstraints.expand(),
+                  child:
+                      Stack(children: [buildBackCardContent(), favoriteIcon])),
+              front: Container(
+                  constraints: BoxConstraints.expand(),
+                  child: Stack(children: [frontCardContent, favoriteIcon])),
+            ),
+          ),
+        ),
+      ),
+    ).card(
+      color: Colors.transparent,
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+    );
+  }
 }

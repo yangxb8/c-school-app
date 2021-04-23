@@ -26,22 +26,36 @@ class AppUser extends Document<AppUser> {
 
   @Field()
   String nickName = '';
+
   @Field()
   List<String>? _membershipTypes = [];
+
   @Field()
   Timestamp? membershipEndAt = Timestamp.fromDate(DateTime.now());
-  @ModelField()
-  List<UserRank>? rankHistory = [];
-  @ModelField()
-  List<LectureHistory>? reviewedClassHistory = [];
-  @ModelField()
-  List<WordHistory>? reviewedWordHistory = [];
+
   @Field()
   List<String>? likedLectures = [];
+
   @Field()
   List<String>? likedWords = [];
+
+  @ModelField()
+  List<UserRank>? rankHistory = [];
+
+  @ModelField()
+  List<LectureHistory>? reviewedClassHistory = [];
+
+  @ModelField()
+  List<WordHistory>? reviewedWordHistory = [];
+
   @ModelField()
   List<UserMemo>? userMemos = [];
+
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
 
   set membershipTypes(List<MembershipType> types) =>
       _membershipTypes = EnumToString.toList(types);
@@ -59,12 +73,6 @@ class AppUser extends Document<AppUser> {
 
   //TODO: get userScoreCoeff(For speech evaluation) properly
   double get userScoreCoeff => userRankNow.toDouble();
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }
 
 enum MembershipType {

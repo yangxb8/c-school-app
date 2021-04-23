@@ -5,14 +5,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TabIndicationPainter extends CustomPainter {
-  late Paint painter;
-  final double dxTarget;
-  final double dxEntry;
-  final double radius;
-  final double dy;
-
-  final PageController? pageController;
-
   TabIndicationPainter(
       {this.dxTarget = 125.0,
       this.dxEntry = 25.0,
@@ -24,6 +16,13 @@ class TabIndicationPainter extends CustomPainter {
       ..color = Color(0xFFFFFFFF)
       ..style = PaintingStyle.fill;
   }
+
+  final double dxEntry;
+  final double dxTarget;
+  final double dy;
+  final PageController? pageController;
+  late Paint painter;
+  final double radius;
 
   @override
   void paint(Canvas canvas, Size size) {

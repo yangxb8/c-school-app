@@ -24,13 +24,22 @@ class WordHistory extends Model {
             : EnumToString.convertToString(wordMemoryStatus),
         super(values: values);
 
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
   @Field()
   String? wordId;
+
   @Field()
   // ignore: prefer_final_fields
   String? _wordMemoryStatus;
+
   @Field()
   Timestamp? timestamp;
+
   @Field()
   bool? isLatest;
 
@@ -39,10 +48,4 @@ class WordHistory extends Model {
       : EnumToString.fromString(WordMemoryStatus.values, _wordMemoryStatus!);
 
   String get lectureId => wordId!.split('-').first;
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }

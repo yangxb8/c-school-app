@@ -12,31 +12,22 @@ part 'speech_evaluation_result.g.dart';
 /// might be directly extracted from cloud storage for analysis in the future.
 @JsonSerializable()
 class SpeechEvaluationResult {
-  final String? userId;
-  final String? examId;
-  final String? speechDataPath;
-  final SentenceInfo? sentenceInfo;
-
   SpeechEvaluationResult(
       {this.userId, this.examId, this.speechDataPath, this.sentenceInfo});
+
   factory SpeechEvaluationResult.fromJson(Map<String, dynamic> json) =>
       _$SpeechEvaluationResultFromJson(json);
+
+  final String? examId;
+  final SentenceInfo? sentenceInfo;
+  final String? speechDataPath;
+  final String? userId;
+
   Map<String, dynamic> toJson() => _$SpeechEvaluationResultToJson(this);
 }
 
 @JsonSerializable()
 class SentenceInfo {
-  @JsonKey(name: 'SuggestedScore')
-  final double? suggestedScore;
-  @JsonKey(name: 'PronAccuracy')
-  final double? pronAccuracy;
-  @JsonKey(name: 'PronFluency')
-  final double? pronFluency;
-  @JsonKey(name: 'PronCompletion')
-  final double? pronCompletion;
-  @JsonKey(name: 'Words')
-  final List<WordInfo>? words;
-
   SentenceInfo(
       {this.suggestedScore,
       this.pronAccuracy,
@@ -44,40 +35,39 @@ class SentenceInfo {
       this.pronCompletion,
       this.words});
 
+  factory SentenceInfo.fromJson(Map<String, dynamic> json) =>
+      _$SentenceInfoFromJson(json);
+
+  @JsonKey(name: 'SuggestedScore')
+  final double? suggestedScore;
+
+  @JsonKey(name: 'PronAccuracy')
+  final double? pronAccuracy;
+
+  @JsonKey(name: 'PronFluency')
+  final double? pronFluency;
+
+  @JsonKey(name: 'PronCompletion')
+  final double? pronCompletion;
+
+  @JsonKey(name: 'Words')
+  final List<WordInfo>? words;
+
   double get displaySuggestedScore => suggestedScore ?? -1.0;
+
   double get displayPronAccuracy => pronAccuracy ?? -1.0;
+
   double get displayPronFluency =>
       pronFluency == null ? -1.0 : pronFluency! * 100;
+
   double get displayPronCompletion =>
       pronCompletion == null ? -1.0 : pronCompletion! * 100;
 
-  factory SentenceInfo.fromJson(Map<String, dynamic> json) =>
-      _$SentenceInfoFromJson(json);
   Map<String, dynamic> toJson() => _$SentenceInfoToJson(this);
 }
 
 @JsonSerializable()
 class WordInfo {
-  @JsonKey(name: 'MemBeginTime')
-  final int? beginTime;
-  @JsonKey(name: 'MemEndTime')
-  final int? endTime;
-  @JsonKey(name: 'PronAccuracy')
-  final double? pronAccuracy;
-  @JsonKey(name: 'PronFluency')
-  final double? pronFluency;
-  @JsonKey(name: 'Word')
-  final String? word;
-  @JsonKey(
-      name: 'MatchTag',
-      fromJson: MatchResultUtil.fromInt,
-      toJson: EnumToString.convertToString)
-  final MatchResult? matchTag;
-  @JsonKey(name: 'PhoneInfos')
-  final List<PhoneInfo>? phoneInfos;
-  @JsonKey(name: 'ReferenceWord')
-  final String? referenceWord;
-
   WordInfo(
       {this.beginTime,
       this.endTime,
@@ -88,9 +78,41 @@ class WordInfo {
       this.matchTag,
       this.phoneInfos});
 
+  factory WordInfo.fromJson(Map<String, dynamic> json) =>
+      _$WordInfoFromJson(json);
+
+  @JsonKey(name: 'MemBeginTime')
+  final int? beginTime;
+
+  @JsonKey(name: 'MemEndTime')
+  final int? endTime;
+
+  @JsonKey(name: 'PronAccuracy')
+  final double? pronAccuracy;
+
+  @JsonKey(name: 'PronFluency')
+  final double? pronFluency;
+
+  @JsonKey(name: 'Word')
+  final String? word;
+
+  @JsonKey(
+      name: 'MatchTag',
+      fromJson: MatchResultUtil.fromInt,
+      toJson: EnumToString.convertToString)
+  final MatchResult? matchTag;
+
+  @JsonKey(name: 'PhoneInfos')
+  final List<PhoneInfo>? phoneInfos;
+
+  @JsonKey(name: 'ReferenceWord')
+  final String? referenceWord;
+
   double get displayPronAccuracy => pronAccuracy ?? -1.0;
+
   double get displayPronFluency =>
       pronFluency == null ? -1.0 : pronFluency! * 100;
+
   double get displaySuggestedScore {
     if (pronFluency == null || pronFluency == null) {
       return -1.0;
@@ -99,33 +121,11 @@ class WordInfo {
     }
   }
 
-  factory WordInfo.fromJson(Map<String, dynamic> json) =>
-      _$WordInfoFromJson(json);
   Map<String, dynamic> toJson() => _$WordInfoToJson(this);
 }
 
 @JsonSerializable()
 class PhoneInfo {
-  @JsonKey(name: 'MemBeginTime')
-  final int? beginTime;
-  @JsonKey(name: 'MemEndTime')
-  final int? endTime;
-  @JsonKey(name: 'PronAccuracy')
-  final double? pronAccuracy;
-  @JsonKey(name: 'DetectedStress')
-  final bool? detectedStress;
-  @JsonKey(name: 'Stress')
-  final bool? referenceStress;
-  @JsonKey(name: 'Phone')
-  final String? detectedPhone;
-  @JsonKey(name: 'ReferencePhone')
-  final String? referencePhone;
-  @JsonKey(
-      name: 'MatchTag',
-      fromJson: MatchResultUtil.fromInt,
-      toJson: EnumToString.convertToString)
-  final MatchResult? matchTag;
-
   PhoneInfo(
       {this.beginTime,
       this.endTime,
@@ -136,10 +136,38 @@ class PhoneInfo {
       this.detectedPhone,
       this.matchTag});
 
-  double get displayPronAccuracy => pronAccuracy ?? -1.0;
-
   factory PhoneInfo.fromJson(Map<String, dynamic> json) =>
       _$PhoneInfoFromJson(json);
+
+  @JsonKey(name: 'MemBeginTime')
+  final int? beginTime;
+
+  @JsonKey(name: 'MemEndTime')
+  final int? endTime;
+
+  @JsonKey(name: 'PronAccuracy')
+  final double? pronAccuracy;
+
+  @JsonKey(name: 'DetectedStress')
+  final bool? detectedStress;
+
+  @JsonKey(name: 'Stress')
+  final bool? referenceStress;
+
+  @JsonKey(name: 'Phone')
+  final String? detectedPhone;
+
+  @JsonKey(name: 'ReferencePhone')
+  final String? referencePhone;
+
+  @JsonKey(
+      name: 'MatchTag',
+      fromJson: MatchResultUtil.fromInt,
+      toJson: EnumToString.convertToString)
+  final MatchResult? matchTag;
+
+  double get displayPronAccuracy => pronAccuracy ?? -1.0;
+
   Map<String, dynamic> toJson() => _$PhoneInfoToJson(this);
 }
 

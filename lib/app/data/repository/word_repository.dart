@@ -8,11 +8,12 @@ import '../provider/word_provider.dart';
 
 /// Initialize at start of app and cache all words.
 class WordRepository extends GetxService {
-  static WordRepository? _instance;
-  final WordProvider _provider = WordFirebaseProvider();
-  late List<Word> _allWords;
-
   WordRepository._internal();
+
+  static WordRepository? _instance;
+
+  late List<Word> _allWords;
+  final WordProvider _provider = WordFirebaseProvider();
 
   static Future<WordRepository> get instance async {
     if (_instance == null) {
@@ -21,9 +22,9 @@ class WordRepository extends GetxService {
     }
     return _instance!;
   }
-  
+
   Future<void> refresh() async => _allWords = await _provider.get();
-  
+
   List<Word> get allWords => _allWords;
 
   List<Word> findWordBy(Map<String, dynamic> conditions) =>

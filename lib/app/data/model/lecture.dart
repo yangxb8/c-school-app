@@ -1,24 +1,22 @@
 // 📦 Package imports:
 
+// 🌎 Project imports:
+import 'package:c_school_app/app/core/utils/filterable.dart';
+import 'package:c_school_app/app/data/repository/exam_repository.dart';
+import 'package:c_school_app/app/data/repository/word_repository.dart';
 // 📦 Package imports:
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
 
-// 🌎 Project imports:
-import 'package:c_school_app/app/core/utils/filterable.dart';
-import 'package:c_school_app/app/data/repository/exam_repository.dart';
-import 'package:c_school_app/app/data/repository/word_repository.dart';
-import '../service/lecture_service.dart';
-import '../../core/utils/searchable.dart';
 import './word/word.dart';
+import '../../core/utils/searchable.dart';
+import '../service/lecture_service.dart';
 import 'exam/exam_base.dart';
 
 part 'lecture.flamingo.dart';
 
 class Lecture extends Document<Lecture> with Filterable implements Searchable {
-  static const levelPrefix = 'Level';
-
   Lecture({
     String? id,
     int level = 0,
@@ -29,8 +27,7 @@ class Lecture extends Document<Lecture> with Filterable implements Searchable {
         tags = id == null ? [] : ['$levelPrefix$level'],
         super(id: id, snapshot: snapshot, values: values);
 
-  @Field()
-  String? lectureId;
+  static const levelPrefix = 'Level';
 
   /// For display
   @Field()
@@ -50,21 +47,6 @@ class Lecture extends Document<Lecture> with Filterable implements Searchable {
   @Field()
   String picHash = '';
 
-  /// If the lecture has pic in cloud storage
-  @StorageField()
-  StorageFile? pic;
-
-  String get levelForDisplay => '$levelPrefix$level';
-
-  /// 'C0001' => 1
-  int get intLectureId => int.parse(lectureId!.numericOnly());
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
-
   @override
   Map<String, dynamic> get searchableProperties => {
         'title': title,
@@ -80,6 +62,24 @@ class Lecture extends Document<Lecture> with Filterable implements Searchable {
         'level': level,
         'tags': tags,
       };
+
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
+  @Field()
+  String? lectureId;
+
+  /// If the lecture has pic in cloud storage
+  @StorageField()
+  StorageFile? pic;
+
+  String get levelForDisplay => '$levelPrefix$level';
+
+  /// 'C0001' => 1
+  int get intLectureId => int.parse(lectureId!.numericOnly());
 }
 
 extension LectureUtil on Lecture {

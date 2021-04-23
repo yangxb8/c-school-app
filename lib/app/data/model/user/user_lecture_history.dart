@@ -14,16 +14,18 @@ class LectureHistory extends Model {
     Map<String, dynamic>? values,
   }) : super(values: values);
 
-  @Field()
-  String? lectureId;
-  @Field()
-  Timestamp? timestamp;
-  @Field()
-  bool? isLatest;
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 
   @override
   Map<String, dynamic> toData() => _$toData(this);
 
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+  @Field()
+  String? lectureId;
+
+  @Field()
+  Timestamp? timestamp;
+
+  @Field()
+  bool? isLatest;
 }

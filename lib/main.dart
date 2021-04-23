@@ -2,11 +2,13 @@
 import 'dart:async';
 import 'dart:io';
 
+// 🌎 Project imports:
+import 'package:c_school_app/app/data/repository/exam_repository.dart';
+import 'package:c_school_app/app/data/repository/lecture_repository.dart';
+import 'package:c_school_app/app/data/repository/user_repository.dart';
+import 'package:c_school_app/app/data/repository/word_repository.dart';
 // 🐦 Flutter imports:
 import 'package:c_school_app/app/data/service/lecture_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 // 📦 Package imports:
 import 'package:catcher/catcher.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -14,17 +16,14 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flamingo/flamingo.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:logger/logger.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wiredash/wiredash.dart';
 
-// 🌎 Project imports:
-import 'package:c_school_app/app/data/repository/exam_repository.dart';
-import 'package:c_school_app/app/data/repository/lecture_repository.dart';
-import 'package:c_school_app/app/data/repository/user_repository.dart';
-import 'package:c_school_app/app/data/repository/word_repository.dart';
 import 'app/core/theme/app_theme.dart';
 import 'app/core/utils/index.dart';
 import 'app/core/values/strings/messages.dart';
@@ -127,7 +126,7 @@ Future<void> initServices() async {
   await Flamingo.initializeApp();
   // Only after login can user access other repository
   once<bool>(UserRepository.isUserLogin, (isUserLogin) async {
-    if(isUserLogin){
+    if (isUserLogin) {
       await Get.putAsync(() async => await LectureRepository.instance);
       await Get.putAsync(() async => await WordRepository.instance);
       await Get.putAsync(() async => await ExamRepository.instance);
@@ -138,8 +137,7 @@ Future<void> initServices() async {
   });
   await Get.putAsync(() async => await UserRepository.instance);
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
-  await Get.putAsync(
-      () async => await LocalStorageService.instance);
+  await Get.putAsync(() async => await LocalStorageService.instance);
   Get.put(AudioService());
   Logger.level = AppStateService.isDebug ? Level.debug : Level.warning;
   WiredashService.startWireDashService();

@@ -4,10 +4,10 @@ targets:
       flamingo_generator|field_value_generator:
         generate_for:
           include:
-            - lib/model/*.dart
-            - lib/**/model/*.dart
-            - lib/**/controller/*.dart
+            - lib/app/data/model/**/*.dart
+            - lib/app/data/model/*.dart
       json_serializable:
         generate_for:
           include:
-            - lib/app/model/*.dart
+            - lib/app/data/model/**/*.dart
+            - lib/app/data/model/*.dart

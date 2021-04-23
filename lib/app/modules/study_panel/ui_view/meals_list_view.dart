@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:supercharged/supercharged.dart';
 
@@ -17,8 +16,8 @@ class MealsListView extends StatefulWidget {
       required this.mainScreenAnimation})
       : super(key: key);
 
-  final AnimationController? mainScreenAnimationController;
   final Animation<double> mainScreenAnimation;
+  final AnimationController? mainScreenAnimationController;
 
   @override
   _MealsListViewState createState() => _MealsListViewState();
@@ -30,6 +29,12 @@ class _MealsListViewState extends State<MealsListView>
   List<MealsListData> mealsListData = MealsListData.tabIconsList;
 
   @override
+  void dispose() {
+    animationController!.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
@@ -39,12 +44,6 @@ class _MealsListViewState extends State<MealsListView>
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
     return true;
-  }
-
-  @override
-  void dispose() {
-    animationController!.dispose();
-    super.dispose();
   }
 
   @override
@@ -98,9 +97,9 @@ class MealsView extends StatelessWidget {
       required this.animation})
       : super(key: key);
 
-  final MealsListData? mealsListData;
-  final AnimationController? animationController;
   final Animation<double> animation;
+  final AnimationController? animationController;
+  final MealsListData? mealsListData;
 
   @override
   Widget build(BuildContext context) {

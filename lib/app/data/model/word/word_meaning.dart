@@ -23,6 +23,12 @@ class WordMeaning extends Model {
                 exampleHanzis, exampleMeanings, examplePinyins),
         super(values: values);
 
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
   @Field()
   String? meaning;
 
@@ -45,10 +51,4 @@ class WordMeaning extends Model {
                         .elementAtOrElse(i, () => '')
                         .split(PINYIN_SEPARATOR),
                   ));
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }

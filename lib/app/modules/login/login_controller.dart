@@ -8,7 +8,6 @@ import 'dart:async';
 // 🐦 Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 
@@ -18,18 +17,6 @@ import '../../data/service/app_state_service.dart';
 
 class LoginController extends GetxController {
   final FirebaseAuthApiHelper apiHelper = FirebaseAuthApiHelper();
-  RxBool processing = false.obs;
-
-  final GlobalKey<FormFieldState> loginEmailKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> loginPasswordKey =
-      GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupEmailKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupPasswordKey =
-      GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupNamelKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> signupConfirmPasswordlKey =
-      GlobalKey<FormFieldState>();
-
   Map<String, String> formTexts = {
     'loginEmail': '',
     'loginPassword': '',
@@ -37,6 +24,19 @@ class LoginController extends GetxController {
     'signupPassword': '',
     'signupName': ''
   };
+
+  final GlobalKey<FormFieldState> loginEmailKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> loginPasswordKey =
+      GlobalKey<FormFieldState>();
+
+  RxBool processing = false.obs;
+  final GlobalKey<FormFieldState> signupConfirmPasswordlKey =
+      GlobalKey<FormFieldState>();
+
+  final GlobalKey<FormFieldState> signupEmailKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupNamelKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> signupPasswordKey =
+      GlobalKey<FormFieldState>();
 
   Future<void> handleEmailSignUp() async {
     processing.value = true;

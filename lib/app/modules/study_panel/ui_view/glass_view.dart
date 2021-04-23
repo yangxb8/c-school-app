@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:supercharged/supercharged.dart';
 
@@ -10,11 +9,12 @@ import '../../../core/theme/my_progress_theme.dart';
 // 🌎 Project imports:
 
 class GlassView extends StatelessWidget {
-  final AnimationController? animationController;
-  final Animation<double> animation;
-
   const GlassView({Key? key, this.animationController, required this.animation})
       : super(key: key);
+
+  final Animation<double> animation;
+  final AnimationController? animationController;
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(

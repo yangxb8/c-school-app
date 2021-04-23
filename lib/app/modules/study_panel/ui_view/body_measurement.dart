@@ -7,12 +7,12 @@ import '../../../core/theme/my_progress_theme.dart';
 // 🌎 Project imports:
 
 class BodyMeasurementView extends StatelessWidget {
-  final AnimationController? animationController;
-  final Animation<double> animation;
-
   const BodyMeasurementView(
       {Key? key, this.animationController, required this.animation})
       : super(key: key);
+
+  final Animation<double> animation;
+  final AnimationController? animationController;
 
   @override
   Widget build(BuildContext context) {

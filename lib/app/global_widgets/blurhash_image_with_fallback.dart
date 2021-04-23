@@ -1,20 +1,12 @@
 // 🐦 Flutter imports:
 
-// 🐦 Flutter imports:
-import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 class BlurHashImageWithFallback extends StatelessWidget {
-  /// Fallback image mush be a String to asset or a widget
-  final dynamic fallbackImg;
-  final String? mainImgUrl;
-
-  /// Boxfit will be applied to all image
-  final BoxFit boxFit;
-  final String blurHash;
   const BlurHashImageWithFallback(
       {Key? key,
       this.fallbackImg,
@@ -22,6 +14,16 @@ class BlurHashImageWithFallback extends StatelessWidget {
       this.boxFit = BoxFit.cover,
       this.blurHash = ''})
       : super(key: key);
+
+  final String blurHash;
+
+  /// Boxfit will be applied to all image
+  final BoxFit boxFit;
+
+  /// Fallback image mush be a String to asset or a widget
+  final dynamic fallbackImg;
+
+  final String? mainImgUrl;
 
   @override
   Widget build(BuildContext context) {

@@ -5,16 +5,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class FlippableBox extends StatelessWidget {
-  final double? clipRadius;
-  final double duration;
-  final Curve curve;
-  final bool flipVt;
-  final BoxDecoration? bg;
-  final Container? front;
-  final Container? back;
-
-  final bool? isFlipped;
-
   const FlippableBox(
       {Key? key,
       this.isFlipped = false,
@@ -26,6 +16,15 @@ class FlippableBox extends StatelessWidget {
       this.curve = Curves.easeOut,
       this.flipVt = false})
       : super(key: key);
+
+  final Container? back;
+  final BoxDecoration? bg;
+  final double? clipRadius;
+  final Curve curve;
+  final double duration;
+  final bool flipVt;
+  final Container? front;
+  final bool? isFlipped;
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +55,6 @@ class FlippableBox extends StatelessWidget {
 }
 
 class Rotation3d extends StatelessWidget {
-  //Degrees to rads constant
-  static const double degrees2Radians = pi / 180;
-
-  final Widget child;
-  final double? rotationX;
-  final double rotationY;
-  final double rotationZ;
-
   const Rotation3d(
       {Key? key,
       required this.child,
@@ -71,6 +62,14 @@ class Rotation3d extends StatelessWidget {
       this.rotationZ = 0,
       this.rotationX})
       : super(key: key);
+
+  //Degrees to rads constant
+  static const double degrees2Radians = pi / 180;
+
+  final Widget child;
+  final double? rotationX;
+  final double rotationY;
+  final double rotationZ;
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +85,11 @@ class Rotation3d extends StatelessWidget {
 }
 
 class AnimatedBackground extends StatelessWidget {
-  final Container? child;
-  final BoxDecoration? decoration;
-
   const AnimatedBackground({Key? key, this.child, this.decoration})
       : super(key: key);
+
+  final Container? child;
+  final BoxDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {

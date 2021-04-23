@@ -5,11 +5,11 @@ import 'dart:async';
 import 'package:flamingo/flamingo.dart';
 import 'package:get/get.dart';
 
-// 🌎 Project imports:
-import '../../data/service/lecture_service.dart';
 import '../../data/model/word/word.dart';
 import '../../data/model/word/word_example.dart';
 import '../../data/service/audio_service.dart';
+// 🌎 Project imports:
+import '../../data/service/lecture_service.dart';
 import '../../data/service/logger_service.dart';
 import '../../modules/review_panel/review_words/review_words_detail_controller.dart';
 
@@ -18,28 +18,28 @@ const LAN_CODE_CN = 'zh-cn';
 class WordCardController extends GetxController {
   WordCardController(this.word);
 
-  final Word word;
   static final LectureService lectureHelper = Get.find<LectureService>();
+
+  final audioService = Get.find<AudioService>();
+
+  /// Is the card flipped to back
+  final isCardFlipped = false.obs;
+
+  /// Is hint shown under meaning
+  final isHintShown = false.obs;
+
+  final logger = LoggerService.logger;
+  final Word word;
 
   /// Words user favorite
   late final RxList<String> _userLikedWordIds =
       lectureHelper.userLikedWordIds_Rx;
 
-  /// Is hint shown under meaning
-  final isHintShown = false.obs;
-
-  /// Is the card flipped to back
-  final isCardFlipped = false.obs;
-
-  final logger = LoggerService.logger;
-
-  final audioService = Get.find<AudioService>();
-
-  void toggleFavoriteCard() => lectureHelper.toggleWordLiked(word);
-
-  void toggleHint() => isHintShown.value = !isHintShown.value;
-
-  bool isWordLiked() => _userLikedWordIds.contains(word.wordId);
+  @override
+  void onClose() {
+    lectureHelper.commitChange();
+    super.onClose();
+  }
 
   @override
   void onInit() {
@@ -54,6 +54,12 @@ class WordCardController extends GetxController {
     ].forEach((file) => audioService.prepareAudio(file.url));
     super.onInit();
   }
+
+  void toggleFavoriteCard() => lectureHelper.toggleWordLiked(word);
+
+  void toggleHint() => isHintShown.value = !isHintShown.value;
+
+  bool isWordLiked() => _userLikedWordIds.contains(word.wordId);
 
   /// Flip our card
   void flipCard() {
@@ -76,8 +82,7 @@ class WordCardController extends GetxController {
   }
 
   /// Play audio of the meanings one by one, now only tts is supported
-  Future<void> playMeanings(
-      {int meaningOrdinal = 0}) async {
+  Future<void> playMeanings({int meaningOrdinal = 0}) async {
     await audioService.speakList(word.wordMeanings!.map((m) => m.meaning!));
   }
 
@@ -100,10 +105,4 @@ class WordCardController extends GetxController {
       Get.isRegistered<ReviewWordsController>()
           ? Get.find<ReviewWordsController>().speakerGender.value
           : SpeakerGender.male;
-
-  @override
-  void onClose() {
-    lectureHelper.commitChange();
-    super.onClose();
-  }
 }

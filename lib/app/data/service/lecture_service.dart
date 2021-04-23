@@ -1,48 +1,49 @@
 // 🐦 Flutter imports:
 
-// 🐦 Flutter imports:
-import 'package:flutter/material.dart';
-
-// 📦 Package imports:
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
-import 'package:supercharged/supercharged.dart';
-
 // 🌎 Project imports:
 import 'package:c_school_app/app/core/utils/helper/api_helper.dart';
 import 'package:c_school_app/app/data/repository/exam_repository.dart';
 import 'package:c_school_app/app/data/repository/lecture_repository.dart';
 import 'package:c_school_app/app/data/repository/user_repository.dart';
 import 'package:c_school_app/app/data/repository/word_repository.dart';
+// 📦 Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:supercharged/supercharged.dart';
+
+import '../../global_widgets/word_card.dart';
 import '../model/exam/exam_base.dart';
 import '../model/lecture.dart';
 import '../model/user/user_lecture_history.dart';
 import '../model/user/user_word_history.dart';
 import '../model/word/word.dart';
-import '../../global_widgets/word_card.dart';
 
 /*
 * This class provide service related to Class, like fetching class,
 * words, etc.
 */
-class LectureService extends GetxService{
+class LectureService extends GetxService {
   static final userRepository = Get.find<UserRepository>();
-  final user = userRepository.currentUser;
-  final lectureRepository = Get.find<LectureRepository>();
-  final wordRepository = Get.find<WordRepository>();
-  final examRepository = Get.find<ExamRepository>();
 
-  /// Observable Liked words list for updating
-  final RxList<String> userLikedWordIds_Rx =
-      userRepository.currentUser.likedWords!.obs;
+  final examRepository = Get.find<ExamRepository>();
+  final lectureRepository = Get.find<LectureRepository>();
+  final user = userRepository.currentUser;
 
   /// Observable Class History list for updating
   final RxList<LectureHistory> userLecturesHistory_Rx =
       userRepository.currentUser.reviewedClassHistory!.obs;
 
+  /// Observable Liked words list for updating
+  final RxList<String> userLikedWordIds_Rx =
+      userRepository.currentUser.likedWords!.obs;
+
   /// Observable Word History list for updating
   final RxList<WordHistory> userWordsHistory_Rx =
       userRepository.currentUser.reviewedWordHistory!.obs;
+
+  final wordRepository = Get.find<WordRepository>();
 
   List<Lecture> get allLecture => lectureRepository.allLectures;
 

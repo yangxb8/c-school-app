@@ -1,11 +1,10 @@
 // 🐦 Flutter imports:
 
+// 📦 Package imports:
+import 'package:auto_size_text/auto_size_text.dart';
 // 🐦 Flutter imports:
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-// 📦 Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 
 class SelectableAutoSizeText extends StatelessWidget {
@@ -48,44 +47,6 @@ class SelectableAutoSizeText extends StatelessWidget {
         locale = null,
         softWrap = null,
         semanticsLabel = null,
-        super(key: key);
-
-  const SelectableAutoSizeText.unselectable(
-    String this.data, {
-    Key? key,
-    this.textKey,
-    this.style,
-    this.strutStyle,
-    this.minFontSize = 12,
-    this.maxFontSize = double.infinity,
-    this.stepGranularity = 1,
-    this.presetFontSizes,
-    this.textAlign,
-    this.textDirection,
-    this.locale,
-    this.softWrap,
-    this.wrapWords = true,
-    this.overflow,
-    this.overflowReplacement,
-    this.textScaleFactor,
-    this.maxLines,
-    this.semanticsLabel,
-  })  : textSpan = null,
-        selectable = false,
-        focusNode = null,
-        autofocus = null,
-        showCursor = null,
-        cursorWidth = null,
-        cursorHeight = null,
-        cursorRadius = null,
-        cursorColor = null,
-        enableInteractiveSelection = null,
-        dragStartBehavior = null,
-        toolbarOptions = null,
-        onTap = null,
-        scrollPhysics = null,
-        textHeightBehavior = null,
-        textWidthBasis = null,
         super(key: key);
 
   /// Creates a [AutoSizeText] widget with a [TextSpan].
@@ -164,154 +125,71 @@ class SelectableAutoSizeText extends StatelessWidget {
         textWidthBasis = null,
         super(key: key);
 
-  /// Sets the key for the resulting [Text] widget.
+  const SelectableAutoSizeText.unselectable(
+    String this.data, {
+    Key? key,
+    this.textKey,
+    this.style,
+    this.strutStyle,
+    this.minFontSize = 12,
+    this.maxFontSize = double.infinity,
+    this.stepGranularity = 1,
+    this.presetFontSizes,
+    this.textAlign,
+    this.textDirection,
+    this.locale,
+    this.softWrap,
+    this.wrapWords = true,
+    this.overflow,
+    this.overflowReplacement,
+    this.textScaleFactor,
+    this.maxLines,
+    this.semanticsLabel,
+  })  : textSpan = null,
+        selectable = false,
+        focusNode = null,
+        autofocus = null,
+        showCursor = null,
+        cursorWidth = null,
+        cursorHeight = null,
+        cursorRadius = null,
+        cursorColor = null,
+        enableInteractiveSelection = null,
+        dragStartBehavior = null,
+        toolbarOptions = null,
+        onTap = null,
+        scrollPhysics = null,
+        textHeightBehavior = null,
+        textWidthBasis = null,
+        super(key: key);
+
+  /// {@macro flutter.widgets.editableText.autofocus}
+  final bool? autofocus;
+
+  /// The color to use when painting the cursor.
   ///
-  /// This allows you to find the actual `Text` widget built by `AutoSizeText`.
-  final Key? textKey;
+  /// Defaults to the theme's `cursorColor` when null.
+  final Color? cursorColor;
+
+  /// {@macro flutter.widgets.editableText.cursorHeight}
+  final double? cursorHeight;
+
+  /// {@macro flutter.widgets.editableText.cursorRadius}
+  final Radius? cursorRadius;
+
+  /// {@macro flutter.widgets.editableText.cursorWidth}
+  final double? cursorWidth;
 
   /// The text to display.
   ///
   /// This will be null if a [textSpan] is provided instead.
   final String? data;
 
-  /// The text to display as a [TextSpan].
-  ///
-  /// This will be null if [data] is provided instead.
-  final TextSpan? textSpan;
+  /// {@macro flutter.widgets.scrollable.dragStartBehavior}
+  final DragStartBehavior? dragStartBehavior;
 
-  /// If non-null, the style to use for this text.
-  ///
-  /// If the style's 'inherit' property is true, the style will be merged with
-  /// the closest enclosing [DefaultTextStyle]. Otherwise, the style will
-  /// replace the closest enclosing [DefaultTextStyle].
-  final TextStyle? style;
-
-  // The default font size if none is specified.
-  static const double _defaultFontSize = 14.0;
-
-  /// The strut style to use. Strut style defines the strut, which sets minimum
-  /// vertical layout metrics.
-  ///
-  /// Omitting or providing null will disable strut.
-  ///
-  /// Omitting or providing null for any properties of [StrutStyle] will result in
-  /// default values being used. It is highly recommended to at least specify a
-  /// font size.
-  ///
-  /// See [StrutStyle] for details.
-  final StrutStyle? strutStyle;
-
-  /// The minimum text size constraint to be used when auto-sizing text.
-  ///
-  /// Is being ignored if [presetFontSizes] is set.
-  final double minFontSize;
-
-  /// The maximum text size constraint to be used when auto-sizing text.
-  ///
-  /// Is being ignored if [presetFontSizes] is set.
-  final double maxFontSize;
-
-  /// The step size in which the font size is being adapted to constraints.
-  ///
-  /// The Text scales uniformly in a range between [minFontSize] and
-  /// [maxFontSize].
-  /// Each increment occurs as per the step size set in stepGranularity.
-  ///
-  /// Most of the time you don't want a stepGranularity below 1.0.
-  ///
-  /// Is being ignored if [presetFontSizes] is set.
-  final double stepGranularity;
-
-  /// Predefines all the possible font sizes.
-  ///
-  /// **Important:** PresetFontSizes have to be in descending order.
-  final List<double>? presetFontSizes;
-
-  /// How the text should be aligned horizontally.
-  final TextAlign? textAlign;
-
-  /// The directionality of the text.
-  ///
-  /// This decides how [textAlign] values like [TextAlign.start] and
-  /// [TextAlign.end] are interpreted.
-  ///
-  /// This is also used to disambiguate how to render bidirectional text. For
-  /// example, if the [data] is an English phrase followed by a Hebrew phrase,
-  /// in a [TextDirection.ltr] context the English phrase will be on the left
-  /// and the Hebrew phrase to its right, while in a [TextDirection.rtl]
-  /// context, the English phrase will be on the right and the Hebrew phrase on
-  /// its left.
-  ///
-  /// Defaults to the ambient [Directionality], if any.
-  final TextDirection? textDirection;
-
-  /// Used to select a font when the same Unicode character can
-  /// be rendered differently, depending on the locale.
-  ///
-  /// It's rarely necessary to set this property. By default its value
-  /// is inherited from the enclosing app with `Localizations.localeOf(context)`.
-  final Locale? locale;
-
-  /// Whether the text should break at soft line breaks.
-  ///
-  /// If false, the glyphs in the text will be positioned as if there was
-  /// unlimited horizontal space.
-  final bool? softWrap;
-
-  /// Whether words which don't fit in one line should be wrapped.
-  ///
-  /// If false, the fontSize is lowered as far as possible until all words fit
-  /// into a single line.
-  final bool wrapWords;
-
-  /// How visual overflow should be handled.
-  final TextOverflow? overflow;
-
-  /// If the text is overflowing and does not fit its bounds, this widget is
-  /// displayed instead.
-  final Widget? overflowReplacement;
-
-  /// The number of font pixels for each logical pixel.
-  ///
-  /// For example, if the text scale factor is 1.5, text will be 50% larger than
-  /// the specified font size.
-  ///
-  /// This property also affects [minFontSize], [maxFontSize] and [presetFontSizes].
-  ///
-  /// The value given to the constructor as textScaleFactor. If null, will
-  /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
-  /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
-  final double? textScaleFactor;
-
-  /// An optional maximum number of lines for the text to span, wrapping if necessary.
-  /// If the text exceeds the given number of lines, it will be resized according
-  /// to the specified bounds and if necessary truncated according to [overflow].
-  ///
-  /// If this is 1, text will not wrap. Otherwise, text will be wrapped at the
-  /// edge of the box.
-  ///
-  /// If this is null, but there is an ambient [DefaultTextStyle] that specifies
-  /// an explicit number for its [DefaultTextStyle.maxLines], then the
-  /// [DefaultTextStyle] value will take precedence. You can use a [RichText]
-  /// widget directly to entirely override the [DefaultTextStyle].
-  final int? maxLines;
-
-  /// An alternative semantics label for this text.
-  ///
-  /// If present, the semantics of this widget will contain this value instead
-  /// of the actual text. This will overwrite any of the semantics labels applied
-  /// directly to the [TextSpan]s.
-  ///
-  /// This is useful for replacing abbreviations or shorthands with the full
-  /// text value:
-  ///
-  /// ```dart
-  /// Text(r'$$', semanticsLabel: 'Double dollars')
-  /// ```
-  final String? semanticsLabel;
-
-  /// True if the text is selectable
-  final bool selectable;
+  /// {@macro flutter.widgets.editableText.enableInteractiveSelection}
+  final bool? enableInteractiveSelection;
 
   /// Defines the focus for this widget.
   ///
@@ -339,38 +217,35 @@ class SelectableAutoSizeText extends StatelessWidget {
   /// If null, this widget will create its own [FocusNode].
   final FocusNode? focusNode;
 
-  /// {@macro flutter.widgets.editableText.autofocus}
-  final bool? autofocus;
-
-  /// {@macro flutter.widgets.editableText.showCursor}
-  final bool? showCursor;
-
-  /// {@macro flutter.widgets.editableText.cursorWidth}
-  final double? cursorWidth;
-
-  /// {@macro flutter.widgets.editableText.cursorHeight}
-  final double? cursorHeight;
-
-  /// {@macro flutter.widgets.editableText.cursorRadius}
-  final Radius? cursorRadius;
-
-  /// The color to use when painting the cursor.
+  /// Used to select a font when the same Unicode character can
+  /// be rendered differently, depending on the locale.
   ///
-  /// Defaults to the theme's `cursorColor` when null.
-  final Color? cursorColor;
+  /// It's rarely necessary to set this property. By default its value
+  /// is inherited from the enclosing app with `Localizations.localeOf(context)`.
+  final Locale? locale;
 
-  /// {@macro flutter.widgets.editableText.enableInteractiveSelection}
-  final bool? enableInteractiveSelection;
-
-  /// {@macro flutter.widgets.scrollable.dragStartBehavior}
-  final DragStartBehavior? dragStartBehavior;
-
-  /// Configuration of toolbar options.
+  /// The maximum text size constraint to be used when auto-sizing text.
   ///
-  /// Paste and cut will be disabled regardless.
+  /// Is being ignored if [presetFontSizes] is set.
+  final double maxFontSize;
+
+  /// An optional maximum number of lines for the text to span, wrapping if necessary.
+  /// If the text exceeds the given number of lines, it will be resized according
+  /// to the specified bounds and if necessary truncated according to [overflow].
   ///
-  /// If not set, select all and copy will be enabled by default.
-  final ToolbarOptions? toolbarOptions;
+  /// If this is 1, text will not wrap. Otherwise, text will be wrapped at the
+  /// edge of the box.
+  ///
+  /// If this is null, but there is an ambient [DefaultTextStyle] that specifies
+  /// an explicit number for its [DefaultTextStyle.maxLines], then the
+  /// [DefaultTextStyle] value will take precedence. You can use a [RichText]
+  /// widget directly to entirely override the [DefaultTextStyle].
+  final int? maxLines;
+
+  /// The minimum text size constraint to be used when auto-sizing text.
+  ///
+  /// Is being ignored if [presetFontSizes] is set.
+  final double minFontSize;
 
   /// Called when the user taps on this selectable text.
   ///
@@ -389,47 +264,138 @@ class SelectableAutoSizeText extends StatelessWidget {
   /// selectable text's internal gesture detector, use a [Listener].
   final GestureTapCallback? onTap;
 
+  /// How visual overflow should be handled.
+  final TextOverflow? overflow;
+
+  /// If the text is overflowing and does not fit its bounds, this widget is
+  /// displayed instead.
+  final Widget? overflowReplacement;
+
+  /// Predefines all the possible font sizes.
+  ///
+  /// **Important:** PresetFontSizes have to be in descending order.
+  final List<double>? presetFontSizes;
+
   /// {@macro flutter.widgets.editableText.scrollPhysics}
   final ScrollPhysics? scrollPhysics;
+
+  /// True if the text is selectable
+  final bool selectable;
+
+  /// An alternative semantics label for this text.
+  ///
+  /// If present, the semantics of this widget will contain this value instead
+  /// of the actual text. This will overwrite any of the semantics labels applied
+  /// directly to the [TextSpan]s.
+  ///
+  /// This is useful for replacing abbreviations or shorthands with the full
+  /// text value:
+  ///
+  /// ```dart
+  /// Text(r'$$', semanticsLabel: 'Double dollars')
+  /// ```
+  final String? semanticsLabel;
+
+  /// {@macro flutter.widgets.editableText.showCursor}
+  final bool? showCursor;
+
+  /// Whether the text should break at soft line breaks.
+  ///
+  /// If false, the glyphs in the text will be positioned as if there was
+  /// unlimited horizontal space.
+  final bool? softWrap;
+
+  /// The step size in which the font size is being adapted to constraints.
+  ///
+  /// The Text scales uniformly in a range between [minFontSize] and
+  /// [maxFontSize].
+  /// Each increment occurs as per the step size set in stepGranularity.
+  ///
+  /// Most of the time you don't want a stepGranularity below 1.0.
+  ///
+  /// Is being ignored if [presetFontSizes] is set.
+  final double stepGranularity;
+
+  /// The strut style to use. Strut style defines the strut, which sets minimum
+  /// vertical layout metrics.
+  ///
+  /// Omitting or providing null will disable strut.
+  ///
+  /// Omitting or providing null for any properties of [StrutStyle] will result in
+  /// default values being used. It is highly recommended to at least specify a
+  /// font size.
+  ///
+  /// See [StrutStyle] for details.
+  final StrutStyle? strutStyle;
+
+  /// If non-null, the style to use for this text.
+  ///
+  /// If the style's 'inherit' property is true, the style will be merged with
+  /// the closest enclosing [DefaultTextStyle]. Otherwise, the style will
+  /// replace the closest enclosing [DefaultTextStyle].
+  final TextStyle? style;
+
+  /// How the text should be aligned horizontally.
+  final TextAlign? textAlign;
+
+  /// The directionality of the text.
+  ///
+  /// This decides how [textAlign] values like [TextAlign.start] and
+  /// [TextAlign.end] are interpreted.
+  ///
+  /// This is also used to disambiguate how to render bidirectional text. For
+  /// example, if the [data] is an English phrase followed by a Hebrew phrase,
+  /// in a [TextDirection.ltr] context the English phrase will be on the left
+  /// and the Hebrew phrase to its right, while in a [TextDirection.rtl]
+  /// context, the English phrase will be on the right and the Hebrew phrase on
+  /// its left.
+  ///
+  /// Defaults to the ambient [Directionality], if any.
+  final TextDirection? textDirection;
 
   /// {@macro flutter.dart:ui.textHeightBehavior}
   final TextHeightBehavior? textHeightBehavior;
 
+  /// Sets the key for the resulting [Text] widget.
+  ///
+  /// This allows you to find the actual `Text` widget built by `AutoSizeText`.
+  final Key? textKey;
+
+  /// The number of font pixels for each logical pixel.
+  ///
+  /// For example, if the text scale factor is 1.5, text will be 50% larger than
+  /// the specified font size.
+  ///
+  /// This property also affects [minFontSize], [maxFontSize] and [presetFontSizes].
+  ///
+  /// The value given to the constructor as textScaleFactor. If null, will
+  /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
+  /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
+  final double? textScaleFactor;
+
+  /// The text to display as a [TextSpan].
+  ///
+  /// This will be null if [data] is provided instead.
+  final TextSpan? textSpan;
+
   /// {@macro flutter.painting.textPainter.textWidthBasis}
   final TextWidthBasis? textWidthBasis;
 
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, size) {
-      var defaultTextStyle = DefaultTextStyle.of(context);
+  /// Configuration of toolbar options.
+  ///
+  /// Paste and cut will be disabled regardless.
+  ///
+  /// If not set, select all and copy will be enabled by default.
+  final ToolbarOptions? toolbarOptions;
 
-      var adjustedStyle = style;
-      if (style == null || style!.inherit) {
-        adjustedStyle = defaultTextStyle.style.merge(style);
-      }
-      if (adjustedStyle!.fontSize == null) {
-        adjustedStyle = adjustedStyle.copyWith(fontSize: _defaultFontSize);
-      }
+  /// Whether words which don't fit in one line should be wrapped.
+  ///
+  /// If false, the fontSize is lowered as far as possible until all words fit
+  /// into a single line.
+  final bool wrapWords;
 
-      var adjustedMaxLines = maxLines ?? defaultTextStyle.maxLines;
-
-      _sanityCheck(adjustedStyle, adjustedMaxLines);
-
-      var result = _calculateFontSize(size, adjustedStyle, adjustedMaxLines);
-      var fontSize = result[0] as double;
-      var textFits = result[1] as bool;
-
-      Widget text;
-
-      text = _buildText(fontSize, adjustedStyle, adjustedMaxLines);
-
-      if (overflowReplacement != null && !textFits) {
-        return overflowReplacement!;
-      } else {
-        return text;
-      }
-    });
-  }
+  // The default font size if none is specified.
+  static const double _defaultFontSize = 14.0;
 
   void _sanityCheck(TextStyle? style, int? maxLines) {
     assert(overflow == null || overflowReplacement == null,
@@ -645,5 +611,38 @@ class SelectableAutoSizeText extends StatelessWidget {
         );
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, size) {
+      var defaultTextStyle = DefaultTextStyle.of(context);
+
+      var adjustedStyle = style;
+      if (style == null || style!.inherit) {
+        adjustedStyle = defaultTextStyle.style.merge(style);
+      }
+      if (adjustedStyle!.fontSize == null) {
+        adjustedStyle = adjustedStyle.copyWith(fontSize: _defaultFontSize);
+      }
+
+      var adjustedMaxLines = maxLines ?? defaultTextStyle.maxLines;
+
+      _sanityCheck(adjustedStyle, adjustedMaxLines);
+
+      var result = _calculateFontSize(size, adjustedStyle, adjustedMaxLines);
+      var fontSize = result[0] as double;
+      var textFits = result[1] as bool;
+
+      Widget text;
+
+      text = _buildText(fontSize, adjustedStyle, adjustedMaxLines);
+
+      if (overflowReplacement != null && !textFits) {
+        return overflowReplacement!;
+      } else {
+        return text;
+      }
+    });
   }
 }

@@ -20,6 +20,12 @@ class WordExample extends Model {
     Map<String, dynamic>? values,
   }) : super(values: values);
 
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
   @Field()
   String? example;
 
@@ -34,10 +40,4 @@ class WordExample extends Model {
 
   @ModelField()
   SpeechAudio? audioFemale;
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }

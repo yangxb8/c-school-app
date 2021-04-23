@@ -22,14 +22,6 @@ import 'package:flutter/material.dart';
 /// HUD=Heads Up Display
 ///
 class ProgressHUD extends StatelessWidget {
-  final bool inAsyncCall;
-  final double opacity;
-  final Color color;
-  final Widget progressIndicator;
-  final Offset? offset;
-  final bool dismissible;
-  final Widget child;
-
   ProgressHUD({
     Key? key,
     required this.inAsyncCall,
@@ -40,6 +32,14 @@ class ProgressHUD extends StatelessWidget {
     this.dismissible = false,
     required this.child,
   }) : super(key: key);
+
+  final Widget child;
+  final Color color;
+  final bool dismissible;
+  final bool inAsyncCall;
+  final Offset? offset;
+  final double opacity;
+  final Widget progressIndicator;
 
   @override
   Widget build(BuildContext context) {

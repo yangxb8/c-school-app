@@ -2,7 +2,6 @@
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -19,20 +18,6 @@ import 'widgets/words_flashcard.dart';
 import 'widgets/words_list.dart';
 
 class ReviewWords extends GetView<ReviewWordsController> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: Stack(fit: StackFit.expand, children: [
-            Obx(() => controller.mode == WordsReviewMode.flash_card
-                ? WordsFlashcard()
-                : WordsList()),
-            _buildSearchBar(),
-          ]),
-        ));
-  }
-
   SearchBar _buildSearchBar() {
     return SearchBar<Word>(
       items: controller.wordsList,
@@ -81,5 +66,19 @@ class ReviewWords extends GetView<ReviewWordsController> {
         )
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: Stack(fit: StackFit.expand, children: [
+            Obx(() => controller.mode == WordsReviewMode.flash_card
+                ? WordsFlashcard()
+                : WordsList()),
+            _buildSearchBar(),
+          ]),
+        ));
   }
 }

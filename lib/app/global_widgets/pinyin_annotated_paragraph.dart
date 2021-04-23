@@ -1,63 +1,21 @@
 // 🐦 Flutter imports:
 
-// 🐦 Flutter imports:
-import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:collection/collection.dart';
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
-// 🌎 Project imports:
-import '../data/service/lecture_service.dart';
 import '../core/utils/index.dart';
 import '../data/model/word/word.dart';
+// 🌎 Project imports:
+import '../data/service/lecture_service.dart';
 
 typedef SingleHanziBuilder = Widget Function(
     {required int index, required PinyinAnnotatedHanzi pinyinAnnotatedHanzi});
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
-  /// Paragraph of chinese chars
-  final String paragraph;
-
-  /// Pinyins of paragraph
-  final List<String> pinyins;
-
-  /// Max line this paragraph can occupy. If this is set, fontSize will be adjusted to fit
-  final int? maxLines;
-
-  /// Word to apply center word style
-  final Word? centerWord;
-
-  /// Word that can be linked to other words
-  final List<Word>? linkedWords;
-
-  /// TextStyle of paragraph and others if not other text style is specified
-  final TextStyle defaultTextStyle;
-
-  /// Text style for center word
-  final TextStyle centerWordTextStyle;
-
-  /// Text style for linked word
-  final TextStyle linkedWordTextStyle;
-
-  /// Text style for pinyin
-  final TextStyle pinyinTextStyle;
-
-  /// Widget been display before paragraph
-  final Widget? leadingWidget;
-
-  /// False to hide pinyin
-  final bool showPinyins;
-
-  /// Spacing of every chinese char
-  final double spacing;
-
-  /// Spacing of lines
-  final double runSpacing;
-
-  final SingleHanziBuilder? singleHanziBuilder;
-
   const PinyinAnnotatedParagraph(
       {Key? key,
       required this.paragraph,
@@ -79,46 +37,46 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
         centerWordTextStyle = centerWordTextStyle ?? defaultTextStyle,
         super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (_, originSize) {
-      // Adjust font size to fit in lines
-      //TODO: 0.8 is magic number, we need to calculate font size properly
-      var size = originSize.copyWith(maxWidth: originSize.maxWidth * 0.8);
-      var adjustedDefaultFontSize = defaultTextStyle.fontSize;
-      var adjustedPinyinFontSize = pinyinTextStyle.fontSize;
-      if (maxLines != null) {
-        adjustedDefaultFontSize =
-            _calculateFontSize(size, paragraph, defaultTextStyle, maxLines)[0];
-        // If pinyin has its own style, adjust its font size too
-        adjustedPinyinFontSize = _calculateFontSize(
-            size, pinyins.join(), pinyinTextStyle, maxLines)[0];
-      }
-      final adjustedDefaultTextStyle =
-          defaultTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
-      final adjustedPinyinTextStyle =
-          pinyinTextStyle.copyWith(fontSize: adjustedPinyinFontSize);
-      final adjustedCenterWordTextStyle =
-          centerWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
-      final adjustedLinkedWordTextStyle =
-          linkedWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
-      // Build single hanzi
-      final elements =
-          leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget!];
-      elements.addAll(_generateHanzis(
-              adjustedDefaultTextStyle,
-              adjustedPinyinTextStyle,
-              adjustedCenterWordTextStyle,
-              adjustedLinkedWordTextStyle)
-          .mapIndexed((index, hanzi) =>
-              _buildSingleHanzi(index: index, pinyinAnnotatedHanzi: hanzi)));
-      return Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: spacing,
-          runSpacing: runSpacing,
-          children: elements);
-    });
-  }
+  /// Word to apply center word style
+  final Word? centerWord;
+
+  /// Text style for center word
+  final TextStyle centerWordTextStyle;
+
+  /// TextStyle of paragraph and others if not other text style is specified
+  final TextStyle defaultTextStyle;
+
+  /// Widget been display before paragraph
+  final Widget? leadingWidget;
+
+  /// Word that can be linked to other words
+  final List<Word>? linkedWords;
+
+  /// Text style for linked word
+  final TextStyle linkedWordTextStyle;
+
+  /// Max line this paragraph can occupy. If this is set, fontSize will be adjusted to fit
+  final int? maxLines;
+
+  /// Paragraph of chinese chars
+  final String paragraph;
+
+  /// Pinyins of paragraph
+  final List<String> pinyins;
+
+  /// Text style for pinyin
+  final TextStyle pinyinTextStyle;
+
+  /// Spacing of lines
+  final double runSpacing;
+
+  /// False to hide pinyin
+  final bool showPinyins;
+
+  final SingleHanziBuilder? singleHanziBuilder;
+
+  /// Spacing of every chinese char
+  final double spacing;
 
   Widget _buildSingleHanzi(
       {required int index,
@@ -324,16 +282,50 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
         tp.height > constraints.maxHeight ||
         tp.width > constraints.maxWidth);
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (_, originSize) {
+      // Adjust font size to fit in lines
+      //TODO: 0.8 is magic number, we need to calculate font size properly
+      var size = originSize.copyWith(maxWidth: originSize.maxWidth * 0.8);
+      var adjustedDefaultFontSize = defaultTextStyle.fontSize;
+      var adjustedPinyinFontSize = pinyinTextStyle.fontSize;
+      if (maxLines != null) {
+        adjustedDefaultFontSize =
+            _calculateFontSize(size, paragraph, defaultTextStyle, maxLines)[0];
+        // If pinyin has its own style, adjust its font size too
+        adjustedPinyinFontSize = _calculateFontSize(
+            size, pinyins.join(), pinyinTextStyle, maxLines)[0];
+      }
+      final adjustedDefaultTextStyle =
+          defaultTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
+      final adjustedPinyinTextStyle =
+          pinyinTextStyle.copyWith(fontSize: adjustedPinyinFontSize);
+      final adjustedCenterWordTextStyle =
+          centerWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
+      final adjustedLinkedWordTextStyle =
+          linkedWordTextStyle.copyWith(fontSize: adjustedDefaultFontSize);
+      // Build single hanzi
+      final elements =
+          leadingWidget == null ? <Widget>[] : <Widget>[leadingWidget!];
+      elements.addAll(_generateHanzis(
+              adjustedDefaultTextStyle,
+              adjustedPinyinTextStyle,
+              adjustedCenterWordTextStyle,
+              adjustedLinkedWordTextStyle)
+          .mapIndexed((index, hanzi) =>
+              _buildSingleHanzi(index: index, pinyinAnnotatedHanzi: hanzi)));
+      return Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: spacing,
+          runSpacing: runSpacing,
+          children: elements);
+    });
+  }
 }
 
 class PinyinAnnotatedHanzi {
-  final String hanzi;
-  final String pinyin;
-  final TextStyle hanziStyle;
-  final TextStyle pinyinStyle;
-  final ParagraphHanziType type;
-  final Word linkedWord;
-
   const PinyinAnnotatedHanzi(
       {Key? key,
       required this.hanzi,
@@ -342,6 +334,13 @@ class PinyinAnnotatedHanzi {
       required this.pinyinStyle,
       required this.type,
       required this.linkedWord});
+
+  final String hanzi;
+  final TextStyle hanziStyle;
+  final Word linkedWord;
+  final String pinyin;
+  final TextStyle pinyinStyle;
+  final ParagraphHanziType type;
 }
 
 enum ParagraphHanziType { normal, linked, center }

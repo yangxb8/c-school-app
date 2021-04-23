@@ -2,14 +2,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+// 🌎 Project imports:
+import 'package:c_school_app/app/data/model/api_request/soe_request.dart';
+import 'package:c_school_app/app/data/repository/user_repository.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:uuid/uuid.dart';
 
-// 🌎 Project imports:
-import 'package:c_school_app/app/data/model/api_request/soe_request.dart';
-import 'package:c_school_app/app/data/repository/user_repository.dart';
 import '../../core/utils/helper/api_helper.dart';
 import '../../data/model/exam/speech_evaluation_result.dart';
 import '../../data/model/exam/speech_exam.dart';
@@ -20,24 +20,7 @@ import '../expand_box.dart';
 class SpeechRecordingController extends GetxController {
   SpeechRecordingController(this.exam);
 
-  final logger = LoggerService.logger;
   final audioService = Get.find<AudioService>();
-
-  /// If recording, won't response to touch other than stopRecorder
-  /// If in evaluation, won't response to any touch
-  Rx<RecordingStatus> recordingStatus = RecordingStatus.idle.obs;
-
-  /// Word been selected by user, default to 0 (first word in exam.question)
-  final RxInt wordSelected = 0.obs;
-
-  /// Exam this SpeechExamBottomSheet should control.
-  final SpeechExam exam;
-
-  /// TencentApi
-  final tencentApiHelper = TencentApiHelper();
-
-  /// Controller to expand or collapse summary
-  final summaryExpandController = ExpandBoxController();
 
   /// Controller to expand or collapse detail
   final detailExpandController = ExpandBoxController();
@@ -45,11 +28,29 @@ class SpeechRecordingController extends GetxController {
   /// Index of hanzi been shown in detail radial chart
   final detailHanziIndex = 0.obs;
 
-  /// Last speech recorded by user
-  Uint8List? lastSpeech;
+  /// Exam this SpeechExamBottomSheet should control.
+  final SpeechExam exam;
 
   /// latest evaluation result as SetenceInfo
   final Rx<SentenceInfo?> lastResult = null.obs;
+
+  /// Last speech recorded by user
+  Uint8List? lastSpeech;
+
+  final logger = LoggerService.logger;
+
+  /// If recording, won't response to touch other than stopRecorder
+  /// If in evaluation, won't response to any touch
+  Rx<RecordingStatus> recordingStatus = RecordingStatus.idle.obs;
+
+  /// Controller to expand or collapse summary
+  final summaryExpandController = ExpandBoxController();
+
+  /// TencentApi
+  final tencentApiHelper = TencentApiHelper();
+
+  /// Word been selected by user, default to 0 (first word in exam.question)
+  final RxInt wordSelected = 0.obs;
 
   /// When hanzi in result is tapped
   void onHanziTap(int index) => detailHanziIndex.value = index;

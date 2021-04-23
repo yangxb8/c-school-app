@@ -18,24 +18,18 @@ class SpeechExam extends Exam<SpeechExam> {
     Map<String, dynamic>? values,
   }) : super(id: id, snapshot: snapshot, values: values);
 
-  /// Audio data for the original speech
-  @ModelField()
-  SpeechAudio? refSpeech;
-
   /// Text version of refAudio
   @Field()
   String? refText = '';
+
   @Field()
   List<String>? refPinyins = [];
 
-  /// Speech Evaluation mode
-  @Field()
-  String? _mode;
-
-  SpeechExamMode? get mode => _mode == null
-      ? null
-      : EnumToString.fromString(SpeechExamMode.values, _mode!);
-  set mode(SpeechExamMode? mode) => _mode = EnumToString.convertToString(mode);
+  @override
+  void fromData(Map<String, dynamic> data) {
+    super.fromData(data);
+    _$fromData(this, data);
+  }
 
   @override
   Map<String, dynamic> toData() {
@@ -45,11 +39,19 @@ class SpeechExam extends Exam<SpeechExam> {
     return map;
   }
 
-  @override
-  void fromData(Map<String, dynamic> data) {
-    super.fromData(data);
-    _$fromData(this, data);
-  }
+  /// Audio data for the original speech
+  @ModelField()
+  SpeechAudio? refSpeech;
+
+  /// Speech Evaluation mode
+  @Field()
+  String? _mode;
+
+  SpeechExamMode? get mode => _mode == null
+      ? null
+      : EnumToString.fromString(SpeechExamMode.values, _mode!);
+
+  set mode(SpeechExamMode? mode) => _mode = EnumToString.convertToString(mode);
 }
 
 enum SpeechExamMode { WORD, SENTENCE, PARAGRAPH, FREE }

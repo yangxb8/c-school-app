@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 
@@ -13,6 +12,21 @@ import '../study_panel/study_panel_home_screen.dart';
 // 🌎 Project imports:
 
 class MainAppHomeScreen extends StatelessWidget {
+  Widget? activatePanel(int panelIdx) {
+    switch (panelIdx) {
+      case 0:
+        return StudyPanelHomeScreen();
+      case 1:
+        return DiscoverPanelHomeScreen();
+      case 2:
+        return ReviewPanelHomeScreen();
+      case 3:
+        return SettingPanelHomeScreen();
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ObxValue(
@@ -39,20 +53,5 @@ class MainAppHomeScreen extends StatelessWidget {
             ),
             body: activatePanel(panelIndex.value)!),
         0.obs);
-  }
-
-  Widget? activatePanel(int panelIdx) {
-    switch (panelIdx) {
-      case 0:
-        return StudyPanelHomeScreen();
-      case 1:
-        return DiscoverPanelHomeScreen();
-      case 2:
-        return ReviewPanelHomeScreen();
-      case 3:
-        return SettingPanelHomeScreen();
-      default:
-        return null;
-    }
   }
 }

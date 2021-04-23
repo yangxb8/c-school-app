@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:supercharged/supercharged.dart';
 
@@ -15,8 +14,8 @@ class WaterView extends StatefulWidget {
       required this.mainScreenAnimation})
       : super(key: key);
 
-  final AnimationController? mainScreenAnimationController;
   final Animation<double> mainScreenAnimation;
+  final AnimationController? mainScreenAnimationController;
 
   @override
   _WaterViewState createState() => _WaterViewState();

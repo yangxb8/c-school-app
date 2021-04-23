@@ -11,16 +11,16 @@ class SpeechAudio extends Model {
     Map<String, dynamic>? values,
   }) : super(values: values);
 
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
   @StorageField()
   StorageFile? audio;
 
   /// Start times of each hanzi
   @Field()
   List<int>? timeSeries;
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }

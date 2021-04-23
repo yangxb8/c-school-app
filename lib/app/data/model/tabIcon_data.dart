@@ -10,13 +10,6 @@ class TabIconData {
     this.animationController,
   });
 
-  String imagePath;
-  String selectedImagePath;
-  bool isSelected;
-  int index;
-
-  AnimationController? animationController;
-
   static List<TabIconData> tabIconsList = <TabIconData>[
     TabIconData(
       imagePath: 'assets/main_app/tab_1.png',
@@ -47,4 +40,10 @@ class TabIconData {
       animationController: null,
     ),
   ];
+
+  AnimationController? animationController;
+  String imagePath;
+  int index;
+  bool isSelected;
+  String selectedImagePath;
 }

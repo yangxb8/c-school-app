@@ -5,11 +5,6 @@ import 'package:flutter/material.dart';
 import '../core/theme/my_progress_theme.dart';
 
 class TitleView extends StatelessWidget {
-  final String titleTxt;
-  final String subTxt;
-  final AnimationController? animationController;
-  final Animation<double> animation;
-
   const TitleView(
       {Key? key,
       this.titleTxt = '',
@@ -17,6 +12,11 @@ class TitleView extends StatelessWidget {
       this.animationController,
       required this.animation})
       : super(key: key);
+
+  final Animation<double> animation;
+  final AnimationController? animationController;
+  final String subTxt;
+  final String titleTxt;
 
   @override
   Widget build(BuildContext context) {

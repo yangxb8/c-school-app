@@ -7,11 +7,12 @@ import '../model/exam/exam_base.dart';
 import '../provider/exam_provider.dart';
 
 class ExamRepository extends GetxService {
-  static ExamRepository? _instance;
-  final ExamProvider _provider = ExamFirebaseProvider();
-  late List<Exam> _allExams;
-
   ExamRepository._internal();
+
+  static ExamRepository? _instance;
+
+  late List<Exam> _allExams;
+  final ExamProvider _provider = ExamFirebaseProvider();
 
   static Future<ExamRepository> get instance async {
     if (_instance == null) {

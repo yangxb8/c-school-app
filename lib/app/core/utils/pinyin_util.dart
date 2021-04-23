@@ -8,10 +8,6 @@ import 'index.dart';
 /// and transforming it into a string with proper tone diacritics.
 ///
 class PinyinUtil {
-  static final RegExp _tonePtn = RegExp(
-      r"([aeiouvü]{1,2}(n|ng|r|\'er|N|NG|R|\'ER){0,1}[1234])",
-      caseSensitive: false,
-      multiLine: false);
   static final RegExp _suffixPtn = RegExp(r"(n|ng|r|\'er|N|NG|R|\'ER)$",
       caseSensitive: false, multiLine: false);
 
@@ -38,6 +34,11 @@ class PinyinUtil {
     'ü': ['ǖ', 'ǘ', 'ǚ', 'ǜ'],
     'üe': ['üē', 'üé', 'üě', 'üè']
   };
+
+  static final RegExp _tonePtn = RegExp(
+      r"([aeiouvü]{1,2}(n|ng|r|\'er|N|NG|R|\'ER){0,1}[1234])",
+      caseSensitive: false,
+      multiLine: false);
 
   /// [wo3,ai4,ni3] -> [wǒ,ài,nǐ]
   static List<String> transformPinyin(List<String> pinyins) {

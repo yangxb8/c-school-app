@@ -8,13 +8,6 @@ class MealsListData {
     this.kacl = 0,
   });
 
-  String imagePath;
-  String titleTxt;
-  String startColor;
-  String endColor;
-  List<String>? meals;
-  int kacl;
-
   static List<MealsListData> tabIconsList = <MealsListData>[
     MealsListData(
       imagePath: 'assets/main_app/breakfast.png',
@@ -49,4 +42,11 @@ class MealsListData {
       endColor: '#1E1466',
     ),
   ];
+
+  String endColor;
+  String imagePath;
+  int kacl;
+  List<String>? meals;
+  String startColor;
+  String titleTxt;
 }

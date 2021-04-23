@@ -2,7 +2,6 @@
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -19,32 +18,6 @@ typedef SearchResultTap<T> = void Function(T item);
 
 /// Floating Search bar for a searchable type
 class SearchBar<T extends Searchable> extends StatelessWidget {
-  /// Searchable items
-  final Iterable<T> items;
-
-  /// Action buttons before search field
-  final List<Widget> leadingActions;
-
-  /// Action buttons after search field
-  final List<Widget> tailingActions;
-
-  /// Widget to show when result is empty
-  final Widget? emptyWidget;
-
-  /// Builder for result items
-  final SearchBarResultBuilder<T> searchResultBuilder;
-
-  /// Function to run when result is tapped
-  final SearchResultTap<T> onSearchResultTap;
-
-  /// If empty, all searchableProperties can be used. Or you can specify it by names
-  final List<String>? searchEnableProperties;
-
-  final automaticallyImplyBackButton;
-
-  /// Controller of this search bar
-  final _SearchBarController<T> _controller;
-
   SearchBar(
       {Key? key,
       required this.items,
@@ -57,6 +30,50 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
       this.automaticallyImplyBackButton = false})
       : _controller = Get.put(_SearchBarController<T>(items))!,
         super(key: key);
+
+  static const defaultEmptyResult =
+      ListTile(title: Text('なし', style: TextStyle(color: Colors.grey)));
+
+  final automaticallyImplyBackButton;
+
+  /// Widget to show when result is empty
+  final Widget? emptyWidget;
+
+  /// Searchable items
+  final Iterable<T> items;
+
+  /// Action buttons before search field
+  final List<Widget> leadingActions;
+
+  /// Function to run when result is tapped
+  final SearchResultTap<T> onSearchResultTap;
+
+  /// If empty, all searchableProperties can be used. Or you can specify it by names
+  final List<String>? searchEnableProperties;
+
+  /// Builder for result items
+  final SearchBarResultBuilder<T> searchResultBuilder;
+
+  /// Action buttons after search field
+  final List<Widget> tailingActions;
+
+  /// Controller of this search bar
+  final _SearchBarController<T> _controller;
+
+  List<Widget> buildResult() {
+    if (_controller.searchResult.isEmpty) {
+      return emptyWidget == null ? [defaultEmptyResult] : [emptyWidget!];
+    } else {
+      return _controller.searchResult
+          .map((item) => SimpleGestureDetector(
+              onTap: () {
+                _controller.searchBarController.close();
+                onSearchResultTap(item);
+              },
+              child: searchResultBuilder(item)))
+          .toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,32 +117,15 @@ class SearchBar<T extends Searchable> extends StatelessWidget {
       },
     );
   }
-
-  List<Widget> buildResult() {
-    if (_controller.searchResult.isEmpty) {
-      return emptyWidget == null ? [defaultEmptyResult] : [emptyWidget!];
-    } else {
-      return _controller.searchResult
-          .map((item) => SimpleGestureDetector(
-              onTap: () {
-                _controller.searchBarController.close();
-                onSearchResultTap(item);
-              },
-              child: searchResultBuilder(item)))
-          .toList();
-    }
-  }
-
-  static const defaultEmptyResult =
-      ListTile(title: Text('なし', style: TextStyle(color: Colors.grey)));
 }
 
 class _SearchBarController<T extends Searchable> extends GetxController {
+  _SearchBarController(this.items);
+
   final Iterable<T> items;
   final searchBarController = FloatingSearchBarController();
   final searchQuery = ''.obs;
   final searchResult = <T>[].obs;
-  _SearchBarController(this.items);
 
   @override
   void onInit() {

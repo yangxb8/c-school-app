@@ -2,10 +2,10 @@
 typedef ValidatorFunction<T> = T Function(T value);
 
 abstract class FieldValidator<T> {
+  FieldValidator(this.errorText);
+
   /// the errorText to display when the validation fails
   final String errorText;
-
-  FieldValidator(this.errorText);
 
   /// checks the input against the given conditions
   bool isValid(T value);
@@ -20,14 +20,14 @@ abstract class FieldValidator<T> {
 abstract class TextFieldValidator extends FieldValidator<String> {
   TextFieldValidator(String errorText) : super(errorText);
 
-  // return false if you want the validator to return error
-  // message when the value is empty.
-  bool get ignoreEmptyValues => true;
-
   @override
   String? call(String value) {
     return (ignoreEmptyValues && value.isEmpty) ? null : super.call(value);
   }
+
+  // return false if you want the validator to return error
+  // message when the value is empty.
+  bool get ignoreEmptyValues => true;
 
   /// helper function to check if an input matches a given pattern
   bool hasMatch(String pattern, String input) =>
@@ -41,20 +41,20 @@ class RequiredValidator extends TextFieldValidator {
   bool get ignoreEmptyValues => false;
 
   @override
-  bool isValid(String? value) {
-    return value != null && value.isNotEmpty;
+  String? call(String? value) {
+    return isValid(value) ? null : errorText;
   }
 
   @override
-  String? call(String? value) {
-    return isValid(value) ? null : errorText;
+  bool isValid(String? value) {
+    return value != null && value.isNotEmpty;
   }
 }
 
 class MaxLengthValidator extends TextFieldValidator {
-  final int max;
-
   MaxLengthValidator(this.max, {required String errorText}) : super(errorText);
+
+  final int max;
 
   @override
   bool isValid(String value) {
@@ -63,9 +63,9 @@ class MaxLengthValidator extends TextFieldValidator {
 }
 
 class MinLengthValidator extends TextFieldValidator {
-  final int min;
-
   MinLengthValidator(this.min, {required String errorText}) : super(errorText);
+
+  final int min;
 
   @override
   bool get ignoreEmptyValues => false;
@@ -77,15 +77,15 @@ class MinLengthValidator extends TextFieldValidator {
 }
 
 class LengthRangeValidator extends TextFieldValidator {
-  final int min;
-  final int max;
-
-  @override
-  bool get ignoreEmptyValues => false;
-
   LengthRangeValidator(
       {required this.min, required this.max, required String errorText})
       : super(errorText);
+
+  final int max;
+  final int min;
+
+  @override
+  bool get ignoreEmptyValues => false;
 
   @override
   bool isValid(String value) {
@@ -94,12 +94,12 @@ class LengthRangeValidator extends TextFieldValidator {
 }
 
 class RangeValidator extends TextFieldValidator {
-  final num min;
-  final num max;
-
   RangeValidator(
       {required this.min, required this.max, required String errorText})
       : super(errorText);
+
+  final num max;
+  final num min;
 
   @override
   bool isValid(String value) {
@@ -113,31 +113,37 @@ class RangeValidator extends TextFieldValidator {
 }
 
 class EmailValidator extends TextFieldValidator {
+  EmailValidator({required String errorText}) : super(errorText);
+
   /// regex pattern to validate email inputs.
   final _emailPattern =
       r"^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$";
-
-  EmailValidator({required String errorText}) : super(errorText);
 
   @override
   bool isValid(String value) => hasMatch(_emailPattern, value);
 }
 
 class PatternValidator extends TextFieldValidator {
-  final String pattern;
-
   PatternValidator(this.pattern, {required String errorText})
       : super(errorText);
+
+  final String pattern;
 
   @override
   bool isValid(String value) => hasMatch(pattern, value);
 }
 
 class MultiValidator extends FieldValidator {
+  MultiValidator(this.validators) : super(_errorText);
+
   final List<FieldValidator> validators;
+
   static String _errorText = '';
 
-  MultiValidator(this.validators) : super(_errorText);
+  @override
+  String? call(dynamic value) {
+    return isValid(value) ? null : _errorText;
+  }
 
   @override
   bool isValid(value) {
@@ -149,18 +155,13 @@ class MultiValidator extends FieldValidator {
     }
     return true;
   }
-
-  @override
-  String? call(dynamic value) {
-    return isValid(value) ? null : _errorText;
-  }
 }
 
 /// a special match validator to check if the input equals another provided value;
 class MatchValidator {
-  final String errorText;
-
   MatchValidator({required this.errorText});
+
+  final String errorText;
 
   String? validateMatch(String? value, String? value2) {
     return value == value2 ? null : errorText;

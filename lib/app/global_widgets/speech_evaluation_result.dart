@@ -2,7 +2,6 @@
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 
@@ -20,10 +19,10 @@ class SpeechEvaluationRadialBarChart extends StatelessWidget {
       required this.detailExpandController,
       required this.detailHanziIndex});
 
-  final SentenceInfo sentenceInfo;
-  final ExpandBoxController summaryExpandController;
   final ExpandBoxController detailExpandController;
   final RxInt detailHanziIndex;
+  final SentenceInfo sentenceInfo;
+  final ExpandBoxController summaryExpandController;
 
   Map<String, double> get sentenceData => {
         'pronAccuracy'.tr: sentenceInfo.displayPronAccuracy,

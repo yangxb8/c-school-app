@@ -5,13 +5,12 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-// 🐦 Flutter imports:
-import 'package:flutter/services.dart';
-
 // 📦 Package imports:
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flamingo/flamingo.dart';
+// 🐦 Flutter imports:
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pedantic/pedantic.dart';
@@ -30,8 +29,6 @@ import '../index.dart';
 
 // 🌎 Project imports:
 
-
-
 // 🌎 Project imports:
 
 final logger = LoggerService.logger;
@@ -46,6 +43,7 @@ class FirebaseAuthApiHelper {
       'https://www.googleapis.com/auth/user.organization.read'
     ],
   );
+
   final UserRepository _userRepository = Get.find<UserRepository>();
 
   // Already return fromm every conditions
@@ -283,7 +281,7 @@ class TcApi extends GetConnect {
       'Host': endpoint,
       'X-TC-Action': action,
       'X-TC-RequestClient':
-      GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
+          GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
       'X-TC-Timestamp': timestamp,
       'X-TC-Version': version,
       'X-TC-Language': 'zh-CN',
@@ -311,21 +309,22 @@ class TcApi extends GetConnect {
       'X-TC-Region': region,
       'X-TC-Action': action,
       'X-TC-RequestClient':
-      GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
+          GetPlatform.isIOS ? 'cschool_ios' : 'cschool_android',
       'X-TC-Timestamp': timestamp,
       'X-TC-Version': version,
       'X-TC-Language': 'zh-CN',
       'Content-Type': 'application/json',
       'Authorization': sign,
     });
+
     return base64Decode(response.body['Response']['Audio']);
   }
 
   String _generateAuth(
       {required String endpoint,
-        required String service,
-        required String payload,
-        required DateTime now}) {
+      required String service,
+      required String payload,
+      required DateTime now}) {
     // 时间处理, 获取世界时间日期
     final utc = now.toUtc();
     final timestamp = (now.millisecondsSinceEpoch / 1000).floor().toString();
@@ -334,7 +333,7 @@ class TcApi extends GetConnect {
     final signedHeaders = 'content-type;host';
 
     final hashedRequestPayload =
-    sha256.convert(utf8.encode(payload)).toString();
+        sha256.convert(utf8.encode(payload)).toString();
     final httpRequestMethod = 'POST';
     final canonicalUri = '/';
     final canonicalQueryString = '';
@@ -355,7 +354,7 @@ class TcApi extends GetConnect {
     // ************* 步骤 2：拼接待签名字符串 *************
     final algorithm = 'TC3-HMAC-SHA256';
     final hashedCanonicalRequest =
-    sha256.convert(utf8.encode(canonicalRequest)).toString();
+        sha256.convert(utf8.encode(canonicalRequest)).toString();
     final credentialScope = date + '/' + service + '/' + 'tc3_request';
     final stringToSign = algorithm +
         '\n' +
@@ -390,7 +389,6 @@ class TcApi extends GetConnect {
     return Hmac(sha256, key).convert(utf8.encode(message));
   }
 }
-
 
 extension StorageExtension on Storage {
   Future<StorageFile> saveFromBytes(

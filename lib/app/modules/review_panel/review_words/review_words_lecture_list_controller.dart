@@ -3,38 +3,37 @@
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:supercharged/supercharged.dart';
 
-// 🌎 Project imports:
-import '../../../data/service/lecture_service.dart';
 import '../../../core/utils/index.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
+// 🌎 Project imports:
+import '../../../data/service/lecture_service.dart';
 
 class ReviewWordsHomeController extends GetxController {
-  final LectureService lectureHelper = Get.find<LectureService>();
+  static const lastViewedLectureIndexKey =
+      'ReviewWordsHomeController.lastViewedLectureIndex';
 
   /// Used to controller scroll of lectures list
   final groupedItemScrollController = GroupedItemScrollController();
 
-  static const lastViewedLectureIndexKey =
-      'ReviewWordsHomeController.lastViewedLectureIndex';
-
   /// Last Lecture user has viewed, default to 0 (First lecture)
   final lastViewedLectureIndex = 0.obs.trackLocal(lastViewedLectureIndexKey);
 
-  /// Liked words
-  RxList<Word> wordsListLiked = <Word>[].obs;
+  final LectureService lectureHelper = Get.find<LectureService>();
+
+  /// All words
+  RxList<Word> wordsListAll = <Word>[].obs;
 
   /// Forgotten words
   RxList<Word> wordsListForgotten = <Word>[].obs;
 
-  /// All words
-  RxList<Word> wordsListAll = <Word>[].obs;
+  /// Liked words
+  RxList<Word> wordsListLiked = <Word>[].obs;
 
   @override
   void onInit() {
@@ -53,26 +52,25 @@ class ReviewWordsHomeController extends GetxController {
 
   void refreshState() {
     wordsListLiked.assignAll(lectureHelper.likedWords);
-    wordsListForgotten.assignAll(lectureHelper.findWordsBy({
-      'wordMemoryStatus': WordMemoryStatus.FORGOT
-    }));
+    wordsListForgotten.assignAll(lectureHelper
+        .findWordsBy({'wordMemoryStatus': WordMemoryStatus.FORGOT}));
     wordsListAll.assignAll(lectureHelper.allWords);
   }
 }
 
 class LectureCardController extends GetxController {
-  final LectureService lectureHelper = Get.find<LectureService>();
-
-  /// Lecture this card is associated with
-  final Lecture lecture;
+  LectureCardController(this.lecture);
 
   /// Forgotten words in this lecture
   final RxList<Word> forgottenWords = <Word>[].obs;
 
+  /// Lecture this card is associated with
+  final Lecture lecture;
+
+  final LectureService lectureHelper = Get.find<LectureService>();
+
   /// How many times this lecture has been viewed
   final RxInt lectureViewCount = (-1).obs;
-
-  LectureCardController(this.lecture);
 
   @override
   void onInit() {

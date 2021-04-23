@@ -3,7 +3,6 @@ import 'dart:math';
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
@@ -108,13 +107,14 @@ class WordsFlashcard extends GetView<ReviewWordsController> {
 }
 
 class CardScrollWidget extends GetView<ReviewWordsController> {
-  final pageFraction;
-  final padding = 10.0;
-  final verticalInset = 8.0;
-  final logger = LoggerService.logger;
+  CardScrollWidget(this.pageFraction);
+
   static const MAX_CARDS_FRAME = 4;
 
-  CardScrollWidget(this.pageFraction);
+  final logger = LoggerService.logger;
+  final padding = 10.0;
+  final pageFraction;
+  final verticalInset = 8.0;
 
   @override
   Widget build(BuildContext context) {

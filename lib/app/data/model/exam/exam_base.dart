@@ -1,19 +1,15 @@
 // 📦 Package imports:
+// 🌎 Project imports:
+import 'package:c_school_app/app/core/utils/filterable.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 
-// 🌎 Project imports:
-import 'package:c_school_app/app/core/utils/filterable.dart';
 import 'speech_exam.dart';
 
 part 'exam_base.flamingo.dart';
 
 /// Exam base, extends this class to make different exam
 class Exam<T> extends Document<Exam<T>> with Filterable {
-  /// Hold information about exam extends this class, need to be updated by hand
-  static final Map<String, Object Function(DocumentSnapshot snapshot)>
-      _factories = {'SpeechExam': (snapshot) => SpeechExam(snapshot: snapshot)};
-
   Exam({
     String? id,
     DocumentSnapshot? snapshot,
@@ -27,28 +23,34 @@ class Exam<T> extends Document<Exam<T>> with Filterable {
   factory Exam.fromSnapshot(DocumentSnapshot snapshot) =>
       _factories[snapshot.data()!['_examType']]!(snapshot) as Exam<T>;
 
-  @Field()
-  String? examId;
+  /// Hold information about exam extends this class, need to be updated by hand
+  static final Map<String, Object Function(DocumentSnapshot snapshot)>
+      _factories = {'SpeechExam': (snapshot) => SpeechExam(snapshot: snapshot)};
+
   @Field()
   String title = '';
+
   @Field()
   String question = '';
-  @Field()
-  List<String>? tags;
-  @Field()
-  String _examType;
-
-  String get lectureId => examId!.split('-').first;
 
   @override
-  Map<String, dynamic> toData() => _$toData(this);
+  Map<String, dynamic> get filterableProperties =>
+      {'examId': examId, 'tags': tags};
 
   @override
   void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 
   @override
-  Map<String, dynamic> get filterableProperties => {
-    'examId': examId,
-    'tags': tags
-  };
+  Map<String, dynamic> toData() => _$toData(this);
+
+  @Field()
+  String? examId;
+
+  @Field()
+  List<String>? tags;
+
+  @Field()
+  String _examType;
+
+  String get lectureId => examId!.split('-').first;
 }

@@ -10,24 +10,6 @@ typedef PhoneShakeCallback = void Function();
 
 /// ShakeDetector class for phone shake functionality
 class ShakeDetector {
-  /// User callback for phone shake
-  final PhoneShakeCallback? onPhoneShake;
-
-  /// Shake detection threshold
-  final double shakeThresholdGravity;
-
-  /// Minimum time between shake
-  final int shakeSlopTimeMS;
-
-  /// Time before shake count resets
-  final int shakeCountResetTime;
-
-  int mShakeTimestamp = DateTime.now().millisecondsSinceEpoch;
-  int mShakeCount = 0;
-
-  /// StreamSubscription for Accelerometer events
-  StreamSubscription? streamSubscription;
-
   /// This constructor automatically calls [startListening] and starts detection and callbacks.\
   ShakeDetector.autoStart(
       {this.onPhoneShake,
@@ -36,6 +18,24 @@ class ShakeDetector {
       this.shakeCountResetTime = 3000}) {
     startListening();
   }
+
+  int mShakeCount = 0;
+  int mShakeTimestamp = DateTime.now().millisecondsSinceEpoch;
+
+  /// User callback for phone shake
+  final PhoneShakeCallback? onPhoneShake;
+
+  /// Time before shake count resets
+  final int shakeCountResetTime;
+
+  /// Minimum time between shake
+  final int shakeSlopTimeMS;
+
+  /// Shake detection threshold
+  final double shakeThresholdGravity;
+
+  /// StreamSubscription for Accelerometer events
+  StreamSubscription? streamSubscription;
 
   /// Starts listening to accerelometer events
   void startListening() {

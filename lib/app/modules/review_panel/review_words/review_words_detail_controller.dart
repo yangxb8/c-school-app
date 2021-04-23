@@ -3,19 +3,18 @@ import 'dart:async';
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
-// 🌎 Project imports:
-import '../../../data/service/lecture_service.dart';
 import '../../../core/utils/index.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
 import '../../../data/service/audio_service.dart';
+// 🌎 Project imports:
+import '../../../data/service/lecture_service.dart';
 import '../../../data/service/logger_service.dart';
 import '../../../global_widgets/controller/word_card_controller.dart';
 
@@ -27,64 +26,75 @@ const LAN_CODE_CN = 'zh-cn';
 
 class ReviewWordsController extends GetxController
     with SingleGetTickerProviderMixin {
-  final LectureService lectureHelper = Get.find<LectureService>();
-  final logger = LoggerService.logger;
+  /// [WordsFlashcard] Key for primaryWordIndex to save by localStorage
+  static const primaryWordIndexKey = 'ReviewWordsController.primaryWordIndex';
 
   /// If all words mode, there will be no associated lecture
   Lecture? associatedLecture;
 
-  /// WordsList for this lecture(s)
-  List<Word> wordsList = [];
+  /// Audio Service
+  final AudioService audioService = Get.find();
 
-  /// List or card
-  final _mode = WordsReviewMode.list.obs;
+  /// [WordsFlashCard] Should be go back to first card if last card is reach
+  /// If false then a toast will be show to inform user that we will go back to first card
+  bool backToFirstCard = false;
 
   /// True if we are in autoPlay mode
   RxBool isAutoPlayMode = false.obs;
 
-  /// Animate icon shape, it will auto-play by worker when color change
-  late final AnimationController searchBarPlayIconController;
+  /// [WordsFlashCard] If word card is first time rendered
+  bool isCardFirstRender = true;
+
+  final LectureService lectureHelper = Get.find<LectureService>();
+  final logger = LoggerService.logger;
+
+  /// [WordsFlashcard] pageController
+  late final PageController pageController;
+
+  /// [WordsFlashcard] Used to controller pagination of card
+  late final RxDouble pageFraction;
+
+  /// [WordsFlashcard] Controller of primary card
+  WordCardController? primaryWordCardController;
+
+  /// [WordsFlashcard] Current primary word index in _wordList
+  final primaryWordIndex = 0.obs;
+
+  /// [WordsFlashcard] Reversed Words List for flashCard
+  List<Word> reversedWordsList = [];
 
   /// Animate icon color
   Rx<CustomAnimationControl> searchBarPlayIconControl =
       CustomAnimationControl.STOP.obs;
 
+  /// Animate icon shape, it will auto-play by worker when color change
+  late final AnimationController searchBarPlayIconController;
+
   /// Speaker gender of all audio (tts not supported)
   Rx<SpeakerGender> speakerGender = SpeakerGender.male.obs;
-
-  /// If this is set, afterFirstLayout will animate to the word instead of tracked one
-  int? _jumpToWord;
-
-  /// Audio Service
-  final AudioService audioService = Get.find();
-
-  /// [WordsFlashcard] pageController
-  late final PageController pageController;
-
-  /// [WordsFlashcard] Key for primaryWordIndex to save by localStorage
-  static const primaryWordIndexKey = 'ReviewWordsController.primaryWordIndex';
-
-  /// [WordsFlashcard] Current primary word index in _wordList
-  final primaryWordIndex = 0.obs;
-
-  /// [WordsFlashcard] Controller of primary card
-  WordCardController? primaryWordCardController;
-
-  /// [WordsFlashcard] Reversed Words List for flashCard
-  List<Word> reversedWordsList = [];
 
   /// [WordsFlashcard] WordMemoryStatus of primary word
   Rx<WordMemoryStatus> wordMemoryStatus = WordMemoryStatus.NOT_REVIEWED.obs;
 
-  /// [WordsFlashcard] Used to controller pagination of card
-  late final RxDouble pageFraction;
+  /// WordsList for this lecture(s)
+  List<Word> wordsList = [];
 
-  /// [WordsFlashCard] If word card is first time rendered
-  bool isCardFirstRender = true;
+  /// If this is set, afterFirstLayout will animate to the word instead of tracked one
+  int? _jumpToWord;
 
-  /// [WordsFlashCard] Should be go back to first card if last card is reach
-  /// If false then a toast will be show to inform user that we will go back to first card
-  bool backToFirstCard = false;
+  /// List or card
+  final _mode = WordsReviewMode.list.obs;
+
+  @override
+  void onClose() {
+    // If we have are at last card, clear track
+    if (primaryWordIndex.value == 0) {
+      primaryWordIndex.value = wordsList.length - 1;
+    }
+    saveAndResetWordHistory();
+    lectureHelper.commitChange();
+    super.onClose();
+  }
 
   @override
   Future<void> onInit() async {
@@ -314,17 +324,6 @@ class ReviewWordsController extends GetxController
     // Clear jumpToWord
     _jumpToWord = null;
     if (isCardFirstRender) isCardFirstRender = false;
-  }
-
-  @override
-  void onClose() {
-    // If we have are at last card, clear track
-    if (primaryWordIndex.value == 0) {
-      primaryWordIndex.value = wordsList.length - 1;
-    }
-    saveAndResetWordHistory();
-    lectureHelper.commitChange();
-    super.onClose();
   }
 }
 

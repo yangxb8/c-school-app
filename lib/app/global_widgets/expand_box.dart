@@ -3,7 +3,6 @@ import 'dart:math';
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -26,17 +25,19 @@ class ExpandBox extends StatelessWidget {
   }) : super(key: key);
 
   static const default_duration = Duration(milliseconds: 500);
-  final bool expandHorizontally;
-  final Duration? duration;
 
   /// Expand immediately
   final bool autoExpand;
+
+  final Widget child;
   final ExpandBoxController controller;
-  final AnimationStatusListener? listener;
+  final Duration? duration;
+  final bool expandHorizontally;
 
   /// If false, no arrow will be shown, hence expand can only be perform programmatically
   final bool hideArrow;
-  final Widget child;
+
+  final AnimationStatusListener? listener;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +114,7 @@ class ExpandBoxController extends GetxController {
   }
 
   void expand() => control.value = CustomAnimationControl.PLAY;
+
   void collapse() => control.value = CustomAnimationControl.PLAY_REVERSE;
 }
 

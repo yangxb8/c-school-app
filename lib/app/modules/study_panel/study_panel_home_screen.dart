@@ -18,12 +18,16 @@ class StudyPanelHomeScreen extends StatefulWidget {
 class _StudyPanelHomeScreenState extends State<StudyPanelHomeScreen>
     with TickerProviderStateMixin {
   late final animationController;
-
-  late Animation<double> topBarAnimation;
-
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
+  late Animation<double> topBarAnimation;
   double topBarOpacity = 0.0;
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -59,12 +63,6 @@ class _StudyPanelHomeScreenState extends State<StudyPanelHomeScreen>
       }
     });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
   }
 
   void addAllListData() {
@@ -170,25 +168,6 @@ class _StudyPanelHomeScreenState extends State<StudyPanelHomeScreen>
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
     return true;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: FintnessAppTheme.background,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            getMainListViewUI(),
-            getAppBarUI(),
-            SizedBox(
-              height: MediaQuery.of(context).padding.bottom,
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   Widget getMainListViewUI() {
@@ -345,6 +324,25 @@ class _StudyPanelHomeScreenState extends State<StudyPanelHomeScreen>
           },
         )
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: FintnessAppTheme.background,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: <Widget>[
+            getMainListViewUI(),
+            getAppBarUI(),
+            SizedBox(
+              height: MediaQuery.of(context).padding.bottom,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

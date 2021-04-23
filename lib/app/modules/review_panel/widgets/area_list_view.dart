@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 
@@ -16,8 +15,9 @@ class AreaListView extends StatefulWidget {
       required this.mainScreenAnimation})
       : super(key: key);
 
-  final AnimationController? mainScreenAnimationController;
   final Animation<double> mainScreenAnimation;
+  final AnimationController? mainScreenAnimationController;
+
   @override
   _AreaListViewState createState() => _AreaListViewState();
 }
@@ -33,16 +33,16 @@ class _AreaListViewState extends State<AreaListView>
   ];
 
   @override
+  void dispose() {
+    animationController!.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    animationController!.dispose();
-    super.dispose();
   }
 
   @override
@@ -111,10 +111,10 @@ class AreaView extends StatelessWidget {
     required this.animation,
   }) : super(key: key);
 
+  final Animation<double> animation;
+  final AnimationController? animationController;
   final String? imagePath;
   final VoidCallback? onTap;
-  final AnimationController? animationController;
-  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {

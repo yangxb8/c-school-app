@@ -15,19 +15,21 @@ class UserMemo extends Model {
     Map<String, dynamic>? values,
   }) : super(values: values);
 
+  @override
+  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
+
+  @override
+  Map<String, dynamic> toData() => _$toData(this);
+
   @Field()
   String? title;
+
   @Field()
   String? content;
+
   @Field()
   String? relatedClassId;
 
   @Field()
   Timestamp? timestamp;
-
-  @override
-  Map<String, dynamic> toData() => _$toData(this);
-
-  @override
-  void fromData(Map<String, dynamic> data) => _$fromData(this, data);
 }

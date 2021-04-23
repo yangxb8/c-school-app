@@ -4,7 +4,6 @@
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:get/get.dart';
 
@@ -36,17 +35,13 @@ class AppRouter {
       GetPage(
           name: '/review/words/home',
           page: () => ReviewWordsHomeScreen(),
-          binding: BindingsBuilder(() => {
-                Get.lazyPut(
-                    () => ReviewWordsHomeController())
-              })),
+          binding: BindingsBuilder(
+              () => {Get.lazyPut(() => ReviewWordsHomeController())})),
       GetPage(
           name: '/review/words',
           page: () => ReviewWords(),
-          binding: BindingsBuilder(() => {
-                Get.lazyPut(
-                    () => ReviewWordsController())
-              })),
+          binding: BindingsBuilder(
+              () => {Get.lazyPut(() => ReviewWordsController())})),
     ];
   }
 }

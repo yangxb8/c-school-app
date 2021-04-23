@@ -1,9 +1,9 @@
 // 📦 Package imports:
+// 🌎 Project imports:
+import 'package:c_school_app/app/data/service/logger_service.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:logger/logger.dart';
 
-// 🌎 Project imports:
-import 'package:c_school_app/app/data/service/logger_service.dart';
 import '../model/user/user.dart';
 
 abstract class UserProvider {
@@ -19,8 +19,8 @@ abstract class UserProvider {
 }
 
 class UserFirebaseProvider implements UserProvider {
-  Logger logger = LoggerService.logger;
   DocumentAccessor documentAccessor = DocumentAccessor();
+  Logger logger = LoggerService.logger;
 
   @override
   Future<void> delete(AppUser appUser) async {

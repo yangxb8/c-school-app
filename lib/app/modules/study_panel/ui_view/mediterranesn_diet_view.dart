@@ -3,7 +3,6 @@ import 'dart:math' as math;
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:supercharged/supercharged.dart';
 
@@ -13,12 +12,12 @@ import '../../../core/theme/my_progress_theme.dart';
 // 🌎 Project imports:
 
 class MediterranesnDietView extends StatelessWidget {
-  final AnimationController? animationController;
-  final Animation<double> animation;
-
   const MediterranesnDietView(
       {Key? key, this.animationController, required this.animation})
       : super(key: key);
+
+  final Animation<double> animation;
+  final AnimationController? animationController;
 
   @override
   Widget build(BuildContext context) {
@@ -586,10 +585,10 @@ class MediterranesnDietView extends StatelessWidget {
 }
 
 class CurvePainter extends CustomPainter {
+  CurvePainter({this.colors, this.angle = 140});
+
   final double angle;
   final List<Color>? colors;
-
-  CurvePainter({this.colors, this.angle = 140});
 
   @override
   void paint(Canvas canvas, Size size) {

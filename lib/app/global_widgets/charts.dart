@@ -1,6 +1,5 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:styled_widget/styled_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -16,23 +15,23 @@ class RadialBarChart extends StatelessWidget {
     this.maxWidth = double.infinity,
   });
 
-  /// Title of this table
-  final String? title;
-  final double maxHeight;
-
-  final double maxWidth;
+  /// Widget to show in the center of circle chart
+  final Widget? centerWidget;
 
   /// Name - value pair, value must be normalized to 100 max
   final Map<String, double> data;
 
-  /// Widget to show in the center of circle chart
-  final Widget? centerWidget;
+  final double maxHeight;
+  final double maxWidth;
 
   /// Whether to show legend
   final bool showLegend;
 
   /// Whether to show tooltip
   final bool showTooltip;
+
+  /// Title of this table
+  final String? title;
 
   List<RadialBarChartData> get chartData =>
       data.entries.map((e) => RadialBarChartData(e)).toList();
@@ -59,16 +58,16 @@ class RadialBarChart extends StatelessWidget {
 }
 
 class RadialBarChartData {
+  RadialBarChartData(MapEntry<String, double?> titleAndValue)
+      : assert(titleAndValue.value == null || titleAndValue.value! <= 100),
+        title = titleAndValue.key,
+        value = titleAndValue.value ?? -1.0;
+
   /// Name of the value
   final String title;
 
   /// Must be converted to double with max value of 100
   final double value;
-
-  RadialBarChartData(MapEntry<String, double?> titleAndValue)
-      : assert(titleAndValue.value == null || titleAndValue.value! <= 100),
-        title = titleAndValue.key,
-        value = titleAndValue.value ?? -1.0;
 
   /// xData represent the title of this value
   String get xData => title;
