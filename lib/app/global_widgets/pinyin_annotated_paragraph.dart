@@ -10,10 +10,12 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import '../core/utils/index.dart';
 import '../data/model/word/word.dart';
 // 🌎 Project imports:
-import '../data/service/lecture_service.dart';
+import '../core/service/lecture_service.dart';
 
 typedef SingleHanziBuilder = Widget Function(
     {required int index, required PinyinAnnotatedHanzi pinyinAnnotatedHanzi});
+
+typedef OnHanziTap = void Function(int index);
 
 class PinyinAnnotatedParagraph extends StatelessWidget {
   const PinyinAnnotatedParagraph(
@@ -31,7 +33,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
       this.showPinyins = true,
       this.spacing = 0,
       this.runSpacing = 0,
-      this.singleHanziBuilder})
+      this.singleHanziBuilder,
+      this.onHanziTap})
       : pinyinTextStyle = pinyinTextStyle ?? defaultTextStyle,
         linkedWordTextStyle = linkedWordTextStyle ?? defaultTextStyle,
         centerWordTextStyle = centerWordTextStyle ?? defaultTextStyle,
@@ -58,6 +61,8 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   /// Max line this paragraph can occupy. If this is set, fontSize will be adjusted to fit
   final int? maxLines;
 
+  final OnHanziTap? onHanziTap;
+
   /// Paragraph of chinese chars
   final String paragraph;
 
@@ -73,6 +78,7 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
   /// False to hide pinyin
   final bool showPinyins;
 
+  /// When you need some custom presentation of hanzi
   final SingleHanziBuilder? singleHanziBuilder;
 
   /// Spacing of every chinese char
@@ -93,12 +99,15 @@ class PinyinAnnotatedParagraph extends StatelessWidget {
           ]
         : [];
     final inner = IntrinsicWidth(
-      child: Column(
-        children: [
-          ...pinyinRow,
-          Text(pinyinAnnotatedHanzi.hanzi,
-              style: pinyinAnnotatedHanzi.hanziStyle),
-        ],
+      child: SimpleGestureDetector(
+        onTap: onHanziTap == null ? null : () => onHanziTap!(index),
+        child: Column(
+          children: [
+            ...pinyinRow,
+            Text(pinyinAnnotatedHanzi.hanzi,
+                style: pinyinAnnotatedHanzi.hanziStyle),
+          ],
+        ),
       ),
     );
     if (pinyinAnnotatedHanzi.type != ParagraphHanziType.linked) {
@@ -341,6 +350,8 @@ class PinyinAnnotatedHanzi {
   final String pinyin;
   final TextStyle pinyinStyle;
   final ParagraphHanziType type;
+
+  bool get isPunctuation => pinyin.isEmpty;
 }
 
 enum ParagraphHanziType { normal, linked, center }

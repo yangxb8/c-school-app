@@ -8,7 +8,6 @@ part of 'word.dart';
 
 /// Field value key
 enum WordKey {
-  wordId,
   word,
   pinyin,
   explanation,
@@ -19,6 +18,7 @@ enum WordKey {
   breakdowns,
   tags,
   picHash,
+  wordId,
   wordMeanings,
   wordAudioMale,
   wordAudioFemale,
@@ -28,8 +28,6 @@ enum WordKey {
 extension WordKeyExtension on WordKey {
   String get value {
     switch (this) {
-      case WordKey.wordId:
-        return 'wordId';
       case WordKey.word:
         return 'word';
       case WordKey.pinyin:
@@ -50,6 +48,8 @@ extension WordKeyExtension on WordKey {
         return 'tags';
       case WordKey.picHash:
         return 'picHash';
+      case WordKey.wordId:
+        return 'wordId';
       case WordKey.wordMeanings:
         return 'wordMeanings';
       case WordKey.wordAudioMale:
@@ -67,7 +67,6 @@ extension WordKeyExtension on WordKey {
 /// For save data
 Map<String, dynamic> _$toData(Word doc) {
   final data = <String, dynamic>{};
-  Helper.writeNotNull(data, 'wordId', doc.wordId);
   Helper.writeNotNull(data, 'word', doc.word);
   Helper.writeNotNull(data, 'pinyin', doc.pinyin);
   Helper.writeNotNull(data, 'explanation', doc.explanation);
@@ -78,6 +77,7 @@ Map<String, dynamic> _$toData(Word doc) {
   Helper.writeNotNull(data, 'breakdowns', doc.breakdowns);
   Helper.writeNotNull(data, 'tags', doc.tags);
   Helper.writeNotNull(data, 'picHash', doc.picHash);
+  Helper.writeNotNull(data, 'wordId', doc.wordId);
 
   Helper.writeModelListNotNull(data, 'wordMeanings', doc.wordMeanings);
   Helper.writeModelNotNull(data, 'wordAudioMale', doc.wordAudioMale);
@@ -90,7 +90,6 @@ Map<String, dynamic> _$toData(Word doc) {
 
 /// For load data
 void _$fromData(Word doc, Map<String, dynamic> data) {
-  doc.wordId = Helper.valueFromKey<String?>(data, 'wordId');
   doc.word = Helper.valueListFromKey<String>(data, 'word');
   doc.pinyin = Helper.valueListFromKey<String>(data, 'pinyin');
   doc.explanation = Helper.valueFromKey<String?>(data, 'explanation');
@@ -103,6 +102,7 @@ void _$fromData(Word doc, Map<String, dynamic> data) {
   doc.breakdowns = Helper.valueListFromKey<String>(data, 'breakdowns');
   doc.tags = Helper.valueListFromKey<String>(data, 'tags');
   doc.picHash = Helper.valueFromKey<String?>(data, 'picHash');
+  doc.wordId = Helper.valueFromKey<String?>(data, 'wordId');
 
   final _wordMeanings =
       Helper.valueMapListFromKey<String, dynamic>(data, 'wordMeanings');

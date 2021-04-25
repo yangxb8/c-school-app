@@ -9,7 +9,7 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 // 🌎 Project imports:
-import '../core/utils/searchable.dart';
+import '../data/interface/searchable.dart';
 
 /// Builder of search result
 typedef SearchBarResultBuilder<T> = Widget Function(T item);

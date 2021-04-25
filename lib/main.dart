@@ -8,7 +8,7 @@ import 'package:c_school_app/app/data/repository/lecture_repository.dart';
 import 'package:c_school_app/app/data/repository/user_repository.dart';
 import 'package:c_school_app/app/data/repository/word_repository.dart';
 // 🐦 Flutter imports:
-import 'package:c_school_app/app/data/service/lecture_service.dart';
+import 'package:c_school_app/app/core/service/lecture_service.dart';
 // 📦 Package imports:
 import 'package:catcher/catcher.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -28,11 +28,11 @@ import 'app/core/theme/app_theme.dart';
 import 'app/core/utils/index.dart';
 import 'app/core/values/strings/messages.dart';
 import 'app/core/values/strings/wiredash_translation.dart';
-import 'app/data/service/app_state_service.dart';
-import 'app/data/service/audio_service.dart';
-import 'app/data/service/localstorage_service.dart';
-import 'app/data/service/logger_service.dart';
-import 'app/data/service/wiredash_service.dart';
+import 'app/core/service/app_state_service.dart';
+import 'app/core/service/audio_service.dart';
+import 'app/core/service/localstorage_service.dart';
+import 'app/core/service/logger_service.dart';
+import 'app/core/service/wiredash_service.dart';
 import 'app/routes/router.dart';
 
 void main() async {
@@ -42,7 +42,7 @@ void main() async {
   ]);
 
   /// Debug configuration with dialog report mode and console handler. It will show dialog and once user accepts it, error will be shown   /// in console.
-  var debugOptions = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+  // var debugOptions = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
 
   /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
   var releaseOptions = CatcherOptions(SilentReportMode(), [
@@ -52,7 +52,7 @@ void main() async {
   ]);
   Catcher(
       rootWidget: CSchoolApp(),
-      debugConfig: debugOptions,
+      // debugConfig: debugOptions,
       releaseConfig: releaseOptions);
 }
 

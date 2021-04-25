@@ -1,6 +1,3 @@
-// 🌎 Project imports:
-import 'index.dart';
-
 /// Pinyinizer Adds proper (Mandarin) Chinese tone diacritics to a string.
 ///
 /// The four tones of Chinese are commonly represented by the numbers 1-4.
@@ -48,9 +45,10 @@ class PinyinUtil {
   /// ['我','，','爱','你']+['wǒ','ài','nǐ'] => [wǒ,'，',ài,nǐ]
   static List<String> appendPunctuation(
       {required List<String> origin, required List<String> ref}) {
-    var copy = origin.map((e) => e).toList();
+    var copy = origin.sublist(0);
+    final originLength = origin.length;
     for (var i = 0; i < ref.length; i++) {
-      if (!ref[i].isSingleHanzi) {
+      if (i >= originLength || copy[i] != ref[i]) {
         copy.insert(i, ref[i]);
       }
     }

@@ -8,12 +8,12 @@ part of 'lecture.dart';
 
 /// Field value key
 enum LectureKey {
-  lectureId,
   level,
   title,
   description,
   tags,
   picHash,
+  lectureId,
 
   pic,
 }
@@ -21,8 +21,6 @@ enum LectureKey {
 extension LectureKeyExtension on LectureKey {
   String get value {
     switch (this) {
-      case LectureKey.lectureId:
-        return 'lectureId';
       case LectureKey.level:
         return 'level';
       case LectureKey.title:
@@ -33,6 +31,8 @@ extension LectureKeyExtension on LectureKey {
         return 'tags';
       case LectureKey.picHash:
         return 'picHash';
+      case LectureKey.lectureId:
+        return 'lectureId';
       case LectureKey.pic:
         return 'pic';
       default:
@@ -44,12 +44,12 @@ extension LectureKeyExtension on LectureKey {
 /// For save data
 Map<String, dynamic> _$toData(Lecture doc) {
   final data = <String, dynamic>{};
-  Helper.writeNotNull(data, 'lectureId', doc.lectureId);
   Helper.writeNotNull(data, 'level', doc.level);
   Helper.writeNotNull(data, 'title', doc.title);
   Helper.writeNotNull(data, 'description', doc.description);
   Helper.writeNotNull(data, 'tags', doc.tags);
   Helper.writeNotNull(data, 'picHash', doc.picHash);
+  Helper.writeNotNull(data, 'lectureId', doc.lectureId);
 
   Helper.writeStorageNotNull(data, 'pic', doc.pic, isSetNull: true);
 
@@ -58,12 +58,12 @@ Map<String, dynamic> _$toData(Lecture doc) {
 
 /// For load data
 void _$fromData(Lecture doc, Map<String, dynamic> data) {
-  doc.lectureId = Helper.valueFromKey<String?>(data, 'lectureId');
   doc.level = Helper.valueFromKey<int>(data, 'level');
   doc.title = Helper.valueFromKey<String>(data, 'title');
   doc.description = Helper.valueFromKey<String>(data, 'description');
   doc.tags = Helper.valueListFromKey<String>(data, 'tags');
   doc.picHash = Helper.valueFromKey<String>(data, 'picHash');
+  doc.lectureId = Helper.valueFromKey<String?>(data, 'lectureId');
 
   doc.pic = Helper.storageFile(data, 'pic');
 }

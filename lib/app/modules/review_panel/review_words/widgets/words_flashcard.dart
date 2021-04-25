@@ -11,8 +11,8 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import '../../../../core/utils/index.dart';
 import '../../../../core/values/icons/c_school_icons.dart';
 import '../../../../data/model/word/word.dart';
-import '../../../../data/service/logger_service.dart';
-import '../../../../global_widgets/word_card.dart';
+import '../../../../core/service/logger_service.dart';
+import '../../../../global_widgets/word_card/word_card.dart';
 import '../review_words_detail_controller.dart';
 
 // 🌎 Project imports:

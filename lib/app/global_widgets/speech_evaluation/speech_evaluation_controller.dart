@@ -13,12 +13,13 @@ import 'package:uuid/uuid.dart';
 import '../../core/utils/helper/api_helper.dart';
 import '../../data/model/exam/speech_evaluation_result.dart';
 import '../../data/model/exam/speech_exam.dart';
-import '../../data/service/audio_service.dart';
-import '../../data/service/logger_service.dart';
+import '../../core/service/audio_service.dart';
+import '../../core/service/logger_service.dart';
 import '../expand_box.dart';
+import '../../core/utils/index.dart';
 
-class SpeechRecordingController extends GetxController {
-  SpeechRecordingController(this.exam);
+class SpeechEvaluationController extends GetxController {
+  SpeechEvaluationController(this.exam);
 
   final audioService = Get.find<AudioService>();
 
@@ -31,7 +32,7 @@ class SpeechRecordingController extends GetxController {
   /// Exam this SpeechExamBottomSheet should control.
   final SpeechExam exam;
 
-  /// latest evaluation result as SetenceInfo
+  /// latest evaluation result as SentenceInfo
   final Rx<SentenceInfo?> lastResult = null.obs;
 
   /// Last speech recorded by user
@@ -52,16 +53,28 @@ class SpeechRecordingController extends GetxController {
   /// Word been selected by user, default to 0 (first word in exam.question)
   final RxInt wordSelected = 0.obs;
 
-  /// When hanzi in result is tapped
-  void onHanziTap(int index) => detailHanziIndex.value = index;
+  /// When ref hanzi is tapped. The index should be count without punctuation.
+  void onRefHanziTap(int index) {
+    playRefSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
+  }
+
+  /// When hanzi in result is tapped. The index should be count without punctuation.
+  void onResultHanziTap(int index) {
+    if (lastResult.value == null || lastSpeech == null) return;
+    playUserSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
+  }
 
   /// Play userSpeech. If wordIndex is specified, play the single word
   void playUserSpeech({int? wordIndex}) async {
     var from;
     var to;
     if (wordIndex != null) {
-      from = lastResult.value?.words?[wordIndex].beginTime;
-      to = lastResult.value?.words?.elementAtOrNull(wordIndex + 1)?.beginTime;
+      from = lastResult.value?.words?[wordIndex].beginTime?.milliseconds;
+      to = lastResult.value?.words?[wordIndex].endTime?.milliseconds;
+      if (from == null || to == null) {
+        logger.w('No start or end time found for word index $wordIndex');
+        return;
+      }
     }
     await audioService.startPlayer(
         bytes: lastSpeech, key: '${exam.refText!}:user', from: from, to: to);
@@ -114,7 +127,7 @@ class SpeechRecordingController extends GetxController {
     final base64 = base64Encode(lastSpeech!);
     final request = SoeRequest(
         ScoreCoeff: Get.find<UserRepository>().currentUser.userScoreCoeff,
-        RefText: exam.refText,
+        RefText: exam.refTextAsString,
         UserVoiceData: base64,
         SessionId: Uuid().v1());
     recordingStatus.value = RecordingStatus.idle;

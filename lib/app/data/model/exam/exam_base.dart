@@ -1,6 +1,6 @@
 // 📦 Package imports:
 // 🌎 Project imports:
-import 'package:c_school_app/app/core/utils/filterable.dart';
+import 'package:c_school_app/app/data/interface/filterable.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flamingo_annotation/flamingo_annotation.dart';
 

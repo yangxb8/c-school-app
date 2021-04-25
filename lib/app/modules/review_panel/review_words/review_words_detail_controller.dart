@@ -12,11 +12,11 @@ import 'package:supercharged/supercharged.dart';
 import '../../../core/utils/index.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
-import '../../../data/service/audio_service.dart';
+import '../../../core/service/audio_service.dart';
 // 🌎 Project imports:
-import '../../../data/service/lecture_service.dart';
-import '../../../data/service/logger_service.dart';
-import '../../../global_widgets/controller/word_card_controller.dart';
+import '../../../core/service/lecture_service.dart';
+import '../../../core/service/logger_service.dart';
+import '../../../global_widgets/word_card/word_card_controller.dart';
 
 // 🌎 Project imports:
 

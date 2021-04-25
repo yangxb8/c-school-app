@@ -20,7 +20,7 @@ class SpeechExam extends Exam<SpeechExam> {
 
   /// Text version of refAudio
   @Field()
-  String? refText = '';
+  List<String>? refText = [];
 
   @Field()
   List<String>? refPinyins = [];
@@ -46,6 +46,8 @@ class SpeechExam extends Exam<SpeechExam> {
   /// Speech Evaluation mode
   @Field()
   String? _mode;
+
+  String? get refTextAsString => refText?.join('');
 
   SpeechExamMode? get mode => _mode == null
       ? null

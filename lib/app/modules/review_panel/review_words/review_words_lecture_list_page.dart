@@ -16,7 +16,7 @@ import '../../../core/utils/index.dart';
 import '../../../core/values/icons/c_school_icons.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
-import '../../../data/service/lecture_service.dart';
+import '../../../core/service/lecture_service.dart';
 import '../../../global_widgets/blurhash_image_with_fallback.dart';
 import '../../../global_widgets/search_bar.dart';
 import 'review_words_lecture_list_controller.dart';

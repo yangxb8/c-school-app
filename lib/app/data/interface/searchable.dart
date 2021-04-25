@@ -2,7 +2,7 @@
 import 'package:fuzzy/fuzzy.dart';
 
 // 🌎 Project imports:
-import 'index.dart';
+import '../../core/utils/index.dart';
 
 final defaultFuzzyOption =
     FuzzyOptions(findAllMatches: true, tokenize: true, threshold: 0.5);

@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 
 // 🌎 Project imports:
 import '../../core/utils/helper/api_helper.dart';
-import '../../data/service/app_state_service.dart';
+import '../../core/service/app_state_service.dart';
 
 class LoginController extends GetxController {
   final FirebaseAuthApiHelper apiHelper = FirebaseAuthApiHelper();

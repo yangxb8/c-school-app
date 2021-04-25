@@ -24,7 +24,7 @@ import '../../../data/model/exam/speech_evaluation_result.dart';
 import '../../../data/model/exam/speech_exam.dart';
 import '../../../data/model/user/user.dart';
 import '../../../data/repository/user_repository.dart';
-import '../../../data/service/logger_service.dart';
+import '../../service/logger_service.dart';
 import '../index.dart';
 
 // 🌎 Project imports:

@@ -8,8 +8,8 @@ import 'package:settings_ui/settings_ui.dart';
 
 // 🌎 Project imports:
 import '../../data/model/exam/speech_exam.dart';
-import '../../data/service/app_state_service.dart';
-import '../../global_widgets/speech_exam_bottom_sheet.dart';
+import '../../core/service/app_state_service.dart';
+import '../../global_widgets/speech_evaluation/speech_evaluation.dart';
 
 class SettingPanelHomeScreen extends StatelessWidget {
   List<SettingsSection> _getDebugSection() {
@@ -18,19 +18,30 @@ class SettingPanelHomeScreen extends StatelessWidget {
         title: 'Debug Section',
         tiles: [
           SettingsTile(
-            title: 'Recorder dialog',
-            leading: Icon(Icons.mic),
-            //TODO: fetch exam properly
-            onPressed: (_) => Get.bottomSheet(
-              SpeechExamBottomSheet(
-                  exam: SpeechExam()
-                    ..refText = '大家好才是真的好。'
-                    ..question = 'TEST'
-                    ..title = 'TEST'),
-              elevation: 2.0,
-              backgroundColor: Colors.white,
-            ),
-          ),
+              title: 'Recorder dialog',
+              leading: Icon(Icons.mic),
+              trailing: null,
+              //TODO: fetch exam properly
+              onPressed: (_) => Get.bottomSheet(
+                    SpeechEvaluation(
+                        exam: SpeechExam()
+                          ..refText = '大家好才是真的好。'.split('')
+                          ..refPinyins = [
+                            'dà',
+                            'jiā',
+                            'hǎo',
+                            'cái',
+                            'shì',
+                            'zhēn',
+                            'de',
+                            'hǎo',
+                            '。'
+                          ]
+                          ..question = 'TEST'
+                          ..title = 'TEST'),
+                    elevation: 2.0,
+                    backgroundColor: Colors.white,
+                  )),
         ],
       ),
     ];

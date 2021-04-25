@@ -18,9 +18,9 @@ TtsRequest _$TtsRequestFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$TtsRequestToJson(TtsRequest instance) =>
     <String, dynamic>{
-      'Text': instance.Text,
-      'SessionId': instance.SessionId,
-      'ModelType': instance.ModelType,
-      'VoiceType': instance.VoiceType,
       'Codec': instance.Codec,
+      'ModelType': instance.ModelType,
+      'SessionId': instance.SessionId,
+      'Text': instance.Text,
+      'VoiceType': instance.VoiceType,
     };

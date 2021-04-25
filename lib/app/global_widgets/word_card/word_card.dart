@@ -15,15 +15,15 @@ import 'package:styled_widget/styled_widget.dart';
 import 'package:uuid/uuid.dart';
 
 // 🌎 Project imports:
-import '../core/theme/review_words_theme.dart';
-import '../core/values/icons/c_school_icons.dart';
-import '../data/model/word/word.dart';
-import '../data/model/word/word_example.dart';
-import 'blurhash_image_with_fallback.dart';
-import 'controller/word_card_controller.dart';
-import 'flippable_box.dart';
-import 'pinyin_annotated_paragraph.dart';
-import 'selectable_autosize_text.dart';
+import '../../core/theme/review_words_theme.dart';
+import '../../core/values/icons/c_school_icons.dart';
+import '../../data/model/word/word.dart';
+import '../../data/model/word/word_example.dart';
+import '../blurhash_image_with_fallback.dart';
+import 'word_card_controller.dart';
+import '../flippable_box.dart';
+import '../pinyin_annotated_paragraph.dart';
+import '../selectable_autosize_text.dart';
 
 final cardAspectRatio = 12.0 / 22.0;
 final icon_size = 40.0;

@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/core/service/logger_service.dart';
 import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
@@ -91,19 +92,8 @@ class ExpandBox extends StatelessWidget {
 
 class ExpandBoxController extends GetxController {
   final control = CustomAnimationControl.STOP.obs;
+  final logger = LoggerService.logger;
   var expandState = ExpandStatus.collapse;
-
-  @override
-  void onInit() {
-    ever(control, (state) {
-      if (state == CustomAnimationControl.PLAY) {
-        expandState = ExpandStatus.expand;
-      } else if (state == CustomAnimationControl.PLAY_REVERSE) {
-        expandState = ExpandStatus.collapse;
-      }
-    });
-    super.onInit();
-  }
 
   void handleTap() {
     if (expandState == ExpandStatus.collapse) {
@@ -113,9 +103,17 @@ class ExpandBoxController extends GetxController {
     }
   }
 
-  void expand() => control.value = CustomAnimationControl.PLAY;
+  void expand() {
+    assert(expandState == ExpandStatus.collapse);
+    control.value = CustomAnimationControl.PLAY;
+    expandState = ExpandStatus.expand;
+  }
 
-  void collapse() => control.value = CustomAnimationControl.PLAY_REVERSE;
+  void collapse() {
+    assert(expandState == ExpandStatus.expand);
+    expandState = ExpandStatus.collapse;
+    control.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+  }
 }
 
 enum ExpandStatus { expand, collapse }

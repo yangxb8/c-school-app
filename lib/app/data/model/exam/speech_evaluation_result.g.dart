@@ -21,10 +21,10 @@ SpeechEvaluationResult _$SpeechEvaluationResultFromJson(
 Map<String, dynamic> _$SpeechEvaluationResultToJson(
         SpeechEvaluationResult instance) =>
     <String, dynamic>{
-      'userId': instance.userId,
       'examId': instance.examId,
-      'speechDataPath': instance.speechDataPath,
       'sentenceInfo': instance.sentenceInfo,
+      'speechDataPath': instance.speechDataPath,
+      'userId': instance.userId,
     };
 
 SentenceInfo _$SentenceInfoFromJson(Map<String, dynamic> json) {

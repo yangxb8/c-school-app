@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 // 🌎 Project imports:
 import '../data/repository/user_repository.dart';
-import '../data/service/app_state_service.dart';
+import '../core/service/app_state_service.dart';
 import '../modules/home/home_page.dart';
 import '../modules/login/login_controller.dart';
 import '../modules/login/login_page.dart';

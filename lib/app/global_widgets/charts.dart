@@ -5,15 +5,15 @@ import 'package:styled_widget/styled_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class RadialBarChart extends StatelessWidget {
-  const RadialBarChart({
-    this.title,
-    required this.data,
-    this.centerWidget,
-    this.showLegend = true,
-    this.showTooltip = true,
-    this.maxHeight = double.infinity,
-    this.maxWidth = double.infinity,
-  });
+  const RadialBarChart(
+      {this.title,
+      required this.data,
+      this.centerWidget,
+      this.showLegend = true,
+      this.showTooltip = true,
+      this.maxHeight = double.infinity,
+      this.maxWidth = double.infinity,
+      this.animationDuration = 500.0});
 
   /// Widget to show in the center of circle chart
   final Widget? centerWidget;
@@ -32,6 +32,9 @@ class RadialBarChart extends StatelessWidget {
 
   /// Title of this table
   final String? title;
+
+  /// Milliseconds
+  final double animationDuration;
 
   List<RadialBarChartData> get chartData =>
       data.entries.map((e) => RadialBarChartData(e)).toList();
@@ -52,6 +55,7 @@ class RadialBarChart extends StatelessWidget {
               xValueMapper: (RadialBarChartData data, _) => data.xData,
               yValueMapper: (RadialBarChartData data, _) => data.yData,
               cornerStyle: CornerStyle.bothCurve,
+              animationDuration: animationDuration,
               maximumValue: 100),
         ]).constrained(maxWidth: maxWidth, maxHeight: maxHeight);
   }

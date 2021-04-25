@@ -11,12 +11,12 @@ class SpeechExamAdaptor {
   static SpeechExam wordToExam(Word word) => SpeechExam()
     ..mode = SpeechExamMode.SENTENCE
     ..refSpeech = word.wordAudioFemale
-    ..refText = word.wordAsString
+    ..refText = word.word
     ..refPinyins = word.pinyin;
 
   static SpeechExam WordExampleToExam(WordExample wordExample) => SpeechExam()
     ..mode = SpeechExamMode.SENTENCE
     ..refSpeech = wordExample.audioFemale
-    ..refText = wordExample.example
+    ..refText = wordExample.example?.split('')
     ..refPinyins = wordExample.pinyin;
 }

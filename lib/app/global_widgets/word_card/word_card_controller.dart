@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 
 import '../../data/model/word/word.dart';
 import '../../data/model/word/word_example.dart';
-import '../../data/service/audio_service.dart';
+import '../../core/service/audio_service.dart';
 // 🌎 Project imports:
-import '../../data/service/lecture_service.dart';
-import '../../data/service/logger_service.dart';
+import '../../core/service/lecture_service.dart';
+import '../../core/service/logger_service.dart';
 import '../../modules/review_panel/review_words/review_words_detail_controller.dart';
 
 const LAN_CODE_CN = 'zh-cn';

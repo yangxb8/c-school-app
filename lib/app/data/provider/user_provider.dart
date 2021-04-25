@@ -1,9 +1,8 @@
 // 📦 Package imports:
 // 🌎 Project imports:
-import 'package:c_school_app/app/data/service/logger_service.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:logger/logger.dart';
-
+import '../../core/service/logger_service.dart';
 import '../model/user/user.dart';
 
 abstract class UserProvider {

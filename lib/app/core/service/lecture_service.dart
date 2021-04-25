@@ -13,12 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supercharged/supercharged.dart';
 
-import '../../global_widgets/word_card.dart';
-import '../model/exam/exam_base.dart';
-import '../model/lecture.dart';
-import '../model/user/user_lecture_history.dart';
-import '../model/user/user_word_history.dart';
-import '../model/word/word.dart';
+import '../../global_widgets/word_card/word_card.dart';
+import '../../data/model/exam/exam_base.dart';
+import '../../data/model/lecture.dart';
+import '../../data/model/user/user_lecture_history.dart';
+import '../../data/model/user/user_word_history.dart';
+import '../../data/model/word/word.dart';
 
 /*
 * This class provide service related to Class, like fetching class,

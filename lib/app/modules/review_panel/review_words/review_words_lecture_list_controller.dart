@@ -12,7 +12,7 @@ import '../../../core/utils/index.dart';
 import '../../../data/model/lecture.dart';
 import '../../../data/model/word/word.dart';
 // 🌎 Project imports:
-import '../../../data/service/lecture_service.dart';
+import '../../../core/service/lecture_service.dart';
 
 class ReviewWordsHomeController extends GetxController {
   static const lastViewedLectureIndexKey =

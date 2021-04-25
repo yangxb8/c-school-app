@@ -4,7 +4,7 @@
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
-import '../../data/service/localstorage_service.dart';
+import '../service/localstorage_service.dart';
 
 // 🌎 Project imports:
 

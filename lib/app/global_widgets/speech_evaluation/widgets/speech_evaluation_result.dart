@@ -1,14 +1,16 @@
 // 🐦 Flutter imports:
 
 // 🐦 Flutter imports:
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
-import '../data/model/exam/speech_evaluation_result.dart';
-import 'charts.dart';
-import 'expand_box.dart';
+import '../../../data/model/exam/speech_evaluation_result.dart';
+import '../../charts.dart';
+import '../../expand_box.dart';
 
 // 🌎 Project imports:
 
@@ -19,6 +21,7 @@ class SpeechEvaluationRadialBarChart extends StatelessWidget {
       required this.detailExpandController,
       required this.detailHanziIndex});
 
+  static const totalScoreStyle = TextStyle(fontSize: 20);
   final ExpandBoxController detailExpandController;
   final RxInt detailHanziIndex;
   final SentenceInfo sentenceInfo;
@@ -48,28 +51,34 @@ class SpeechEvaluationRadialBarChart extends StatelessWidget {
             title: 'ui.speech.evaluation.result.summary'.tr,
             data: sentenceData,
             maxHeight: 250,
-            centerWidget:
-                Text(sentenceInfo.displaySuggestedScore.floor().toString()),
+            centerWidget: Text(
+              sentenceInfo.displaySuggestedScore.floor().toString(),
+              style: totalScoreStyle,
+            ),
           ),
         ),
         ExpandBox(
           controller: detailExpandController,
           listener: (AnimationStatus status) {
             if (status == AnimationStatus.forward) {
-              summaryExpandController.collapse();
+              // Allow frame started by detail expand to finish render
+              Timer.run(summaryExpandController.collapse);
             } else if (status == AnimationStatus.reverse) {
-              summaryExpandController.expand();
+              // Allow frame started by detail expand to finish render
+              Timer.run(summaryExpandController.expand);
             }
           },
           child: ObxValue(
               (RxInt index) => RadialBarChart(
-                    title: sentenceInfo.words![detailHanziIndex.value].word,
                     data: hanziData(index.value),
                     maxHeight: 250,
-                    centerWidget: Text(sentenceInfo
-                        .words![detailHanziIndex.value].displaySuggestedScore
-                        .floor()
-                        .toString()),
+                    centerWidget: Text(
+                      sentenceInfo
+                          .words![detailHanziIndex.value].displaySuggestedScore
+                          .floor()
+                          .toString(),
+                      style: totalScoreStyle,
+                    ),
                   ),
               detailHanziIndex),
         )
@@ -88,8 +97,8 @@ final testData = SentenceInfo.fromJson({
     {
       'MemBeginTime': 440,
       'MemEndTime': 660,
-      'PronAccuracy': 76.29468,
-      'PronFluency': 0.9774803,
+      'PronAccuracy': 23.29468,
+      'PronFluency': 0.3774803,
       'ReferenceWord': '',
       'Word': '大',
       'MatchTag': 0,
@@ -120,7 +129,7 @@ final testData = SentenceInfo.fromJson({
       'MemBeginTime': 660,
       'MemEndTime': 900,
       'PronAccuracy': 81.862434,
-      'PronFluency': 0.9904488,
+      'PronFluency': 0.3904488,
       'ReferenceWord': '',
       'Word': '家',
       'MatchTag': 0,

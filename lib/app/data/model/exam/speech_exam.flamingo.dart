@@ -45,7 +45,7 @@ Map<String, dynamic> _$toData(SpeechExam doc) {
 
 /// For load data
 void _$fromData(SpeechExam doc, Map<String, dynamic> data) {
-  doc.refText = Helper.valueFromKey<String?>(data, 'refText');
+  doc.refText = Helper.valueListFromKey<String>(data, 'refText');
   doc.refPinyins = Helper.valueListFromKey<String>(data, 'refPinyins');
   doc._mode = Helper.valueFromKey<String?>(data, '_mode');
 

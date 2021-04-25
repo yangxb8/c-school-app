@@ -1,7 +1,7 @@
 // 📦 Package imports:
 
 // 🌎 Project imports:
-import 'package:c_school_app/app/core/utils/filterable.dart';
+import 'package:c_school_app/app/data/interface/filterable.dart';
 import 'package:c_school_app/app/data/repository/exam_repository.dart';
 import 'package:c_school_app/app/data/repository/word_repository.dart';
 // 📦 Package imports:
@@ -10,8 +10,8 @@ import 'package:flamingo_annotation/flamingo_annotation.dart';
 import 'package:get/get.dart';
 
 import './word/word.dart';
-import '../../core/utils/searchable.dart';
-import '../service/lecture_service.dart';
+import '../interface/searchable.dart';
+import '../../core/service/lecture_service.dart';
 import 'exam/exam_base.dart';
 
 part 'lecture.flamingo.dart';
