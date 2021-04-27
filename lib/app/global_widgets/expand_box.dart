@@ -91,7 +91,7 @@ class ExpandBox extends StatelessWidget {
 }
 
 class ExpandBoxController extends GetxController {
-  final control = CustomAnimationControl.STOP.obs;
+  final control = CustomAnimationControl.stop.obs;
   final logger = LoggerService.logger;
   var expandState = ExpandStatus.collapse;
 
@@ -105,14 +105,14 @@ class ExpandBoxController extends GetxController {
 
   void expand() {
     assert(expandState == ExpandStatus.collapse);
-    control.value = CustomAnimationControl.PLAY;
+    control.value = CustomAnimationControl.play;
     expandState = ExpandStatus.expand;
   }
 
   void collapse() {
     assert(expandState == ExpandStatus.expand);
     expandState = ExpandStatus.collapse;
-    control.value = CustomAnimationControl.PLAY_REVERSE_FROM_END;
+    control.value = CustomAnimationControl.playReverseFromEnd;
   }
 }
 

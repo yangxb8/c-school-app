@@ -69,6 +69,7 @@ class WordCard extends StatelessWidget {
           maxLines: 1,
           defaultTextStyle: ReviewWordsTheme.wordCardWord,
           pinyinTextStyle: ReviewWordsTheme.wordCardPinyin,
+          onHanziTap: (_) => controller.showSpeechEvaluationForWord(),
         ).paddingOnly(right: 30).center().expanded()
       ],
     ).paddingOnly(top: 40).center();
@@ -140,6 +141,8 @@ class WordCard extends StatelessWidget {
               linkedWords: word.relatedWords,
               linkedWordTextStyle: ReviewWordsTheme.wordCardExampleLinkedWord,
               spacing: 2,
+              onHanziTap: (_) =>
+                  controller.showSpeechEvaluationForExample(wordExample),
             ).expanded()
           ],
         ),

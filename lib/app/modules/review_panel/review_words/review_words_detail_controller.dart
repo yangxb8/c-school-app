@@ -65,7 +65,7 @@ class ReviewWordsController extends GetxController
 
   /// Animate icon color
   Rx<CustomAnimationControl> searchBarPlayIconControl =
-      CustomAnimationControl.STOP.obs;
+      CustomAnimationControl.stop.obs;
 
   /// Animate icon shape, it will auto-play by worker when color change
   late final AnimationController searchBarPlayIconController;
@@ -120,11 +120,11 @@ class ReviewWordsController extends GetxController
     });
     ever<bool>(isAutoPlayMode, (isAutoPlayMode) {
       if (isAutoPlayMode) {
-        searchBarPlayIconControl.value = CustomAnimationControl.PLAY_FROM_START;
+        searchBarPlayIconControl.value = CustomAnimationControl.playFromStart;
         searchBarPlayIconController.forward();
       } else {
         searchBarPlayIconControl.value =
-            CustomAnimationControl.PLAY_REVERSE_FROM_END;
+            CustomAnimationControl.playReverseFromEnd;
         searchBarPlayIconController.reverse();
       }
     });

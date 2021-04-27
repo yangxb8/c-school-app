@@ -27,74 +27,57 @@ class SpeechEvaluation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 700,
-      child: GetBuilder(
-        init: SpeechEvaluationController(exam),
-        builder: (SpeechEvaluationController controller) => Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Icon(CSchool.comment_dots),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => Get.back(),
-                  )
-                ],
-              ),
-            ),
-            SimpleGestureDetector(
-              onTap: () => controller.playRefSpeech(),
-              child: PinyinAnnotatedParagraph(
-                  paragraph: exam.refTextAsString!,
-                  pinyins: exam.refPinyins!,
-                  spacing: 5.0,
-                  defaultTextStyle: defaultTextStyle,
-                  onHanziTap: controller.onRefHanziTap),
-            ).paddingAll(8.0),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Obx(() => controller.lastResult.value == null &&
-                      false // TODO: remove false
-                  ? const SizedBox.shrink()
-                  : PronunciationCorrection(
-                      sentenceInfo:
-                          testData, //TODO: controller.lastResult.value!,
-                      refPinyinList: exam.refPinyins!,
-                      refHanziList: exam.refText!,
-                      currentFocusedHanziIndex: controller.detailHanziIndex,
-                      hanziTapCallback: controller.onResultHanziTap,
-                    )),
-            ),
-            Expanded(
-              child: Obx(
-                () => controller.lastResult.value == null &&
-                        false // TODO: remove false
-                    ? const SizedBox.shrink()
-                    : SpeechEvaluationRadialBarChart(
-                        sentenceInfo:
-                            testData, //TODO: controller.lastResult.value!
-                        summaryExpandController:
-                            controller.summaryExpandController,
-                        detailExpandController:
-                            controller.detailExpandController,
-                        detailHanziIndex: controller.detailHanziIndex,
-                      ),
-              ),
-            ),
-            IconButton(
-              icon: Icon(CSchool.microphone),
-              onPressed: () => controller.handleRecordButtonPressed(),
-              iconSize: 35.0,
-            ),
-          ],
-        ).paddingOnly(left: 20, right: 20, bottom: 20),
-      ),
+    return GetBuilder(
+      init: SpeechEvaluationController(exam),
+      builder: (SpeechEvaluationController controller) => Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Icon(CSchool.comment_dots),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => Get.back(),
+              )
+            ],
+          ),
+          SimpleGestureDetector(
+            onTap: () => controller.playRefSpeech(),
+            child: PinyinAnnotatedParagraph(
+                paragraph: exam.refTextAsString!,
+                pinyins: exam.refPinyins!,
+                spacing: 5.0,
+                defaultTextStyle: defaultTextStyle,
+                onHanziTap: controller.onRefHanziTap),
+          ).paddingAll(8.0),
+          Obx(() => controller.lastResult.value == null
+              ? const SizedBox.shrink()
+              : PronunciationCorrection(
+                  sentenceInfo: controller.lastResult.value!,
+                  refPinyinList: exam.refPinyins!,
+                  refHanziList: exam.refText!,
+                  currentFocusedHanziIndex: controller.detailHanziIndex,
+                  hanziTapCallback: controller.onResultHanziTap,
+                )),
+          Obx(
+            () => controller.lastResult.value == null
+                ? const SizedBox.shrink()
+                : SpeechEvaluationRadialBarChart(
+                    sentenceInfo: controller.lastResult.value!,
+                    summaryExpandController: controller.summaryExpandController,
+                    detailExpandController: controller.detailExpandController,
+                    detailHanziIndex: controller.detailHanziIndex,
+                  ),
+          ),
+          IconButton(
+            icon: Icon(CSchool.microphone),
+            onPressed: () => controller.handleRecordButtonPressed(),
+            iconSize: 35.0,
+          ),
+        ],
+      ).paddingOnly(left: 20, right: 20, bottom: 20),
     );
   }
 }

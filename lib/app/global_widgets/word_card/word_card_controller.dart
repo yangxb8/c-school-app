@@ -2,7 +2,12 @@
 import 'dart:async';
 
 // 📦 Package imports:
+import '../../data/model/exam/speech_exam.dart';
+
+import '../../core/utils/speech_exam_adaptor.dart';
+import '../speech_evaluation/speech_evaluation.dart';
 import 'package:flamingo/flamingo.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../data/model/word/word.dart';
@@ -105,4 +110,19 @@ class WordCardController extends GetxController {
       Get.isRegistered<ReviewWordsController>()
           ? Get.find<ReviewWordsController>().speakerGender.value
           : SpeakerGender.male;
+
+  void showSpeechEvaluationForWord() =>
+      _showSpeechEvaluationBottomSheet(SpeechExamAdaptor.wordToExam(word));
+
+  void showSpeechEvaluationForExample(WordExample wordExample) =>
+      _showSpeechEvaluationBottomSheet(
+          SpeechExamAdaptor.WordExampleToExam(wordExample));
+
+  void _showSpeechEvaluationBottomSheet(SpeechExam exam) => Get.bottomSheet(
+        SpeechEvaluation(
+          exam: exam,
+        ),
+        elevation: 2.0,
+        backgroundColor: Colors.white,
+      );
 }
