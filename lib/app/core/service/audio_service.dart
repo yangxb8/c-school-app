@@ -1,13 +1,15 @@
 // 🎯 Dart imports:
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:c_school_app/app/core/service/app_state_service.dart';
+import 'package:pedantic/pedantic.dart';
 
 // 📦 Package imports:
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_sound_lite/flutter_sound.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart' hide PlayerState;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -19,19 +21,20 @@ class AudioService extends GetxService {
   /// to know if they still connected to the service
   final RxString clientKey = ''.obs;
 
-  /// Timer of last player
-  Timer? currentTimer;
-
   /// State of main player
-  final playerState = PlayerState.isStopped.obs;
+  late PlayerState _playerState;
 
   String? _lastRecordPath;
 
   /// Main audio player we use
-  final _player = FlutterSoundPlayer();
+  final _player = AudioPlayer();
 
   /// State indicate player is occupied
-  final _playerOccupiedState = [PlayerState.isPlaying, PlayerState.isPaused];
+  final _playerOccupiedState = [
+    ProcessingState.loading,
+    ProcessingState.buffering,
+    ProcessingState.ready
+  ];
 
   /// Recorder
   final _recorder = FlutterSoundRecorder();
@@ -41,7 +44,7 @@ class AudioService extends GetxService {
 
   @override
   void onClose() {
-    _player.closeAudioSession();
+    _player.dispose();
     _recorder.closeAudioSession();
     super.onClose();
   }
@@ -49,14 +52,14 @@ class AudioService extends GetxService {
   @override
   void onInit() {
     super.onInit();
-    ever(playerState, (dynamic state) {
-      // When play complete, clientKey is cleared
-      if (!_playerOccupiedState.contains(state)) {
+    _player.playerStateStream.listen((state) {
+      _playerState = state;
+      if (!_playerOccupiedState.contains(state.processingState)) {
         clientKey.value = '';
-        // If there is a timer, stop it
-        currentTimer?.cancel();
       }
     });
+    ever<double>(Get.find<AppStateService>().audioSpeed,
+        (speed) => _player.setSpeed(speed));
     // Set up tts
     _tts.setSpeechRate(0.5);
     _tts.setLanguage(LAN_CODE_JP);
@@ -68,31 +71,29 @@ class AudioService extends GetxService {
     DefaultCacheManager().getSingleFile(url);
   }
 
-  /// Play [uri] or [bytes] provided, if other thing is playing, stop it and play the new audio.
+  /// Play [uri]provided, if other thing is playing, stop it and play the new audio.
   ///
-  /// Either web url or file path can be used, the type will be inferred automatically.
+  /// Either web url or file path can be used, the type will be inferred automatically
+  /// by checking if the uri start with 'http' (network) or not (file)
   /// If void [callback] is provided, it will get called after play completed.
   ///
   /// Use [from] and [to] to specify a range to play, when [to] is hit, player will be PAUSED.
   /// This is ideal if you want to play a different range of the same audio, so we don't need the
   /// stop -> start cycle. In which case, remember to provide the same key for both call of this method.
+  ///
+  /// If speed is not specified, speed from AppStateService will be used.
   Future<void> startPlayer(
-      {String? uri,
-      Uint8List? bytes,
+      {required String uri,
       Function? callback,
       String key = '',
       bool forceRestart = false,
       Duration? from,
       Duration? to}) async {
-    assert(uri != null || bytes != null);
-    if (!_player.isOpen()) {
-      await _player.openAudioSession();
-    }
     // If stopped, not point to call stop again
     // If forceRestart, restart
     // If a new audio, restart
     // Event key is the same. If both are empty key, restart
-    if (playerState.value != PlayerState.isStopped && forceRestart ||
+    if (_playerState.processingState != ProcessingState.idle && forceRestart ||
         clientKey.value != key ||
         key != '') {
       await stopPlayer();
@@ -100,51 +101,40 @@ class AudioService extends GetxService {
     // Set clientKey to new key
     clientKey.value = key;
     // Always cache the audio
-    final data = bytes ??
-        (await DefaultCacheManager().getSingleFile(uri!)).readAsBytesSync();
-    // If Player is stopped, start it
-    if (playerState.value == PlayerState.isStopped) {
-      await _player.startPlayer(
-          fromDataBuffer: data,
-          whenFinished: () {
-            if (callback != null) {
-              callback();
-            }
-            refreshPlayerState();
-          });
-    }
-    if (from != null) {
-      await _player.seekToPlayer(from);
-      await resumePlayer(); // Resume play if it was paused before
-    }
-    if (to != null) {
-      var start = from ?? 0.seconds;
-      var duration = to - start;
-      Timer(duration, () => _player.pausePlayer());
-    }
-    refreshPlayerState();
+    final filePath = uri.startsWith('http')
+        ? (await DefaultCacheManager().getSingleFile(uri)).path
+        : uri;
+    await _player.setFilePath(filePath);
+    await _player.setClip(start: from, end: to);
+    unawaited(_player.play().then((_) {
+      if (callback != null) {
+        callback();
+      }
+    }));
   }
 
   /// Pause the player
-  Future<void> pausePlayer() async {
-    if (playerState.value == PlayerState.isPlaying) {
-      await _player.pausePlayer();
-      refreshPlayerState();
-    }
+  void pausePlayer() {
+    _player.pause();
   }
 
   /// Resume the player
-  Future<void> resumePlayer() async {
-    if (playerState.value == PlayerState.isPaused) {
-      await _player.resumePlayer();
-      refreshPlayerState();
-    }
+  void resumePlayer() {
+    _player.play();
   }
 
   /// Stop the player
   Future<void> stopPlayer() async {
-    await _player.stopPlayer();
-    refreshPlayerState();
+    await _player.stop();
+  }
+
+  Future<Duration> durationOfAudio(String uri) async {
+    if (uri.startsWith('http')) {
+      await _player.setUrl(uri);
+    } else {
+      await _player.setFilePath(uri);
+    }
+    return _player.duration!;
   }
 
   /// Only used to play
@@ -173,7 +163,7 @@ class AudioService extends GetxService {
       await _recorder.openAudioSession();
     }
     final tempDir = (await getTemporaryDirectory()).path;
-    _lastRecordPath = '$tempDir/${Uuid().v1()}';
+    _lastRecordPath = '$tempDir/${Uuid().v1()}.wav';
     await _recorder.startRecorder(
         toFile: _lastRecordPath, codec: Codec.pcm16WAV);
   }
@@ -185,6 +175,4 @@ class AudioService extends GetxService {
     await _recorder.closeAudioSession();
     return File(_lastRecordPath!);
   }
-
-  void refreshPlayerState() => playerState.value = _player.playerState;
 }
