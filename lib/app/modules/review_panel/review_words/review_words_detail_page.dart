@@ -1,6 +1,9 @@
 // 🐦 Flutter imports:
 
 // 🐦 Flutter imports:
+import '../../../global_widgets/searchbar_action/toggle_audio_speed.dart';
+import '../../../global_widgets/searchbar_action/toggle_gender.dart';
+
 import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
@@ -10,7 +13,6 @@ import 'package:supercharged/supercharged.dart';
 
 // 🌎 Project imports:
 import '../../../core/theme/review_words_theme.dart';
-import '../../../core/values/icons/c_school_icons.dart';
 import '../../../data/model/word/word.dart';
 import '../../../global_widgets/search_bar.dart';
 import 'review_words_detail_controller.dart';
@@ -58,12 +60,10 @@ class ReviewWords extends GetView<ReviewWordsController> {
           ),
           onPressed: controller.autoPlayPressed,
         ),
-        CircularButton(
-          icon: Obx(() => controller.speakerGender.value == SpeakerGender.male
-              ? Icon(CSchool.male)
-              : Icon(CSchool.female)),
-          onPressed: controller.toggleSpeakerGender,
-        )
+      ],
+      tailingActions: [
+        ToggleGenderAction(),
+        ToggleAudioSpeedAction(),
       ],
     );
   }
