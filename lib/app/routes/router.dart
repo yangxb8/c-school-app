@@ -50,7 +50,7 @@ class HomeRouteMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     if (UserRepository.isUserLogin.isTrue) {
-      if (AppStateService.isDebug) {
+      if (Get.find<AppStateService>().isDebug) {
         return null;
       }
       return RouteSettings(name: '/review/words/home'); //TODO: For beta test

@@ -2,6 +2,8 @@
 import 'dart:async';
 
 // 📦 Package imports:
+import '../../core/service/app_state_service.dart';
+
 import '../../data/model/exam/speech_exam.dart';
 
 import '../../core/utils/speech_exam_adaptor.dart';
@@ -16,7 +18,6 @@ import '../../core/service/audio_service.dart';
 // 🌎 Project imports:
 import '../../core/service/lecture_service.dart';
 import '../../core/service/logger_service.dart';
-import '../../modules/review_panel/review_words/review_words_detail_controller.dart';
 
 const LAN_CODE_CN = 'zh-cn';
 
@@ -107,9 +108,7 @@ class WordCardController extends GetxController {
 
   /// Default to Male
   SpeakerGender get reviewWordSpeakerGender =>
-      Get.isRegistered<ReviewWordsController>()
-          ? Get.find<ReviewWordsController>().speakerGender.value
-          : SpeakerGender.male;
+      Get.find<AppStateService>().speakerGender.value;
 
   void showSpeechEvaluationForWord() =>
       _showSpeechEvaluationBottomSheet(SpeechExamAdaptor.wordToExam(word));

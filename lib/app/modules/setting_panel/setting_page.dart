@@ -70,7 +70,7 @@ class SettingPanelHomeScreen extends StatelessWidget {
               ],
             ),
           ] +
-          (AppStateService.isDebug ? _getDebugSection() : []),
+          (Get.find<AppStateService>().isDebug ? _getDebugSection() : []),
     );
   }
 }

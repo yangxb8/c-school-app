@@ -124,6 +124,8 @@ class Splash extends StatelessWidget {
 Future<void> initServices() async {
   await Firebase.initializeApp();
   await Flamingo.initializeApp();
+  await Get.putAsync(() async => await LocalStorageService.instance);
+  Get.put(AppStateService());
   // Only after login can user access other repository
   once<bool>(UserRepository.isUserLogin, (isUserLogin) async {
     if (isUserLogin) {
@@ -131,14 +133,14 @@ Future<void> initServices() async {
       await Get.putAsync(() async => await WordRepository.instance);
       await Get.putAsync(() async => await ExamRepository.instance);
       Get.put(LectureService());
-      AppStateService.fullyInitialized = true;
+      Get.find<AppStateService>().fullyInitializedComplete();
       LoggerService.logger.i('App fully initialized!');
     }
   });
   await Get.putAsync(() async => await UserRepository.instance);
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
-  await Get.putAsync(() async => await LocalStorageService.instance);
   Get.put(AudioService());
-  Logger.level = AppStateService.isDebug ? Level.debug : Level.warning;
+  Logger.level =
+      Get.find<AppStateService>().isDebug ? Level.debug : Level.warning;
   WiredashService.startWireDashService();
 }

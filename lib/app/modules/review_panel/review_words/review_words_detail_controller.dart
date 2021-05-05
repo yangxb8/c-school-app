@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // 🐦 Flutter imports:
+import 'package:c_school_app/app/core/service/app_state_service.dart';
 import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:fluttertoast/fluttertoast.dart';
@@ -34,6 +35,8 @@ class ReviewWordsController extends GetxController
 
   /// Audio Service
   final AudioService audioService = Get.find();
+
+  final AppStateService appStateService = Get.find();
 
   /// [WordsFlashCard] Should be go back to first card if last card is reach
   /// If false then a toast will be show to inform user that we will go back to first card
@@ -69,9 +72,6 @@ class ReviewWordsController extends GetxController
 
   /// Animate icon shape, it will auto-play by worker when color change
   late final AnimationController searchBarPlayIconController;
-
-  /// Speaker gender of all audio (tts not supported)
-  Rx<SpeakerGender> speakerGender = SpeakerGender.male.obs;
 
   /// [WordsFlashcard] WordMemoryStatus of primary word
   Rx<WordMemoryStatus> wordMemoryStatus = WordMemoryStatus.NOT_REVIEWED.obs;
@@ -138,6 +138,8 @@ class ReviewWordsController extends GetxController
   /// Flashcard or List mode
   WordsReviewMode? get mode => _mode.value;
 
+  Rx<SpeakerGender> get speakerGender => appStateService.speakerGender;
+
   /// Show a single word card from dialog
   void showSingleCard(Word word) {
     lectureHelper.showSingleWordCard(word);
@@ -160,19 +162,6 @@ class ReviewWordsController extends GetxController
       _mode.value = WordsReviewMode.flash_card;
       logger.i('Change to Card Mode');
     }
-  }
-
-  /// Male or Female
-  void toggleSpeakerGender() {
-    speakerGender.value = speakerGender.value == SpeakerGender.male
-        ? SpeakerGender.female
-        : SpeakerGender.male;
-    Fluttertoast.showToast(
-        msg: 'review.word.toast.changeSpeaker'.trParams({
-      'gender': speakerGender.value == SpeakerGender.male
-          ? 'review.word.toast.changeSpeaker.male'.tr
-          : 'review.word.toast.changeSpeaker.female'.tr
-    })!);
   }
 
   /// Handle autoPlay button pressed, will start play in card mode from beginning.
@@ -200,7 +189,7 @@ class ReviewWordsController extends GetxController
   /// Play audio of the word
   Future<void> playWord({required Word word, required String audioKey}) async {
     if (isAutoPlayMode.value) return;
-    var wordAudio = speakerGender.value == SpeakerGender.male
+    var wordAudio = appStateService.speakerGender.value == SpeakerGender.male
         ? word.wordAudioMale
         : word.wordAudioFemale;
     if (wordAudio == null) {
@@ -328,5 +317,3 @@ class ReviewWordsController extends GetxController
 }
 
 enum WordsReviewMode { list, flash_card }
-
-enum SpeakerGender { male, female }

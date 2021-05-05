@@ -140,19 +140,19 @@ class LoginController extends GetxController {
   }
 
   void _showLoginSuccessPopup() {
+    final appStateService = Get.find<AppStateService>();
     Get.defaultDialog(
         title: 'login.login.dialog.success.title'.tr,
         content: Text('login.login.dialog.success.content'
-            .trParams({'studyCount': '${AppStateService.startCount + 1}'})!),
+            .trParams({'studyCount': '${appStateService.startCount + 1}'})!),
         textConfirm: 'button.close'.tr,
         onConfirm: () {
-          if (AppStateService.fullyInitialized) {
+          if (appStateService.fullyInitialized.isTrue) {
             Get.offAllNamed('/home');
           } else {
             processing.value = true;
-            Timer.periodic(0.5.seconds, (timer) {
-              if (AppStateService.fullyInitialized) {
-                timer.cancel();
+            once<bool>(appStateService.fullyInitialized, (val) {
+              if (val) {
                 Get.offAllNamed('/home');
               }
             });
