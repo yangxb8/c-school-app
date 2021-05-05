@@ -4,9 +4,11 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
+  - audio_session (0.0.1):
+    - Flutter
   - catcher (0.0.1):
     - Flutter
-  - cloud_firestore (1.0.5):
+  - cloud_firestore (1.0.7):
     - Firebase/Firestore (= 7.4.0)
     - firebase_core
     - Flutter
@@ -31,22 +33,22 @@ PODS:
   - Firebase/Storage (7.4.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 7.4.0)
-  - firebase_analytics (8.0.0):
+  - firebase_analytics (8.0.2):
     - Firebase/Analytics (= 7.4.0)
     - firebase_core
     - Flutter
-  - firebase_auth (1.1.0):
+  - firebase_auth (1.1.2):
     - Firebase/Auth (= 7.4.0)
     - firebase_core
     - Flutter
-  - firebase_core (1.0.3):
+  - firebase_core (1.1.0):
     - Firebase/CoreOnly (= 7.4.0)
     - Flutter
-  - firebase_performance (0.7.0):
+  - firebase_performance (0.7.0-2):
     - Firebase/Performance (= 7.4.0)
     - firebase_core
     - Flutter
-  - firebase_storage (8.0.3):
+  - firebase_storage (8.0.5):
     - Firebase/Storage (= 7.4.0)
     - firebase_core
     - Flutter
@@ -156,6 +158,8 @@ PODS:
   - GTMSessionFetcher/Core (1.5.0)
   - GTMSessionFetcher/Full (1.5.0):
     - GTMSessionFetcher/Core (= 1.5.0)
+  - just_audio (0.0.1):
+    - Flutter
   - nanopb (2.30907.0):
     - nanopb/decode (= 2.30907.0)
     - nanopb/encode (= 2.30907.0)
@@ -188,6 +192,7 @@ PODS:
   - Toast (4.0.0)
 
 DEPENDENCIES:
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - catcher (from `.symlinks/plugins/catcher/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -203,6 +208,7 @@ DEPENDENCIES:
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
@@ -240,6 +246,8 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   catcher:
     :path: ".symlinks/plugins/catcher/ios"
   cloud_firestore:
@@ -271,6 +279,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in:
     :path: ".symlinks/plugins/google_sign_in/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider:
@@ -295,15 +305,16 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   catcher: 67a006a3c121c4bbf1202d1e5ea186afb7ef4a18
-  cloud_firestore: 2ba52157df63d8773018bb9ecb97cbe08b5055a4
+  cloud_firestore: 8a6456dcb24c42694d30c5a3c0902f91365116bc
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   Firebase: 09fb40287b6dfc8ee65f726fa0b788719d3f2a07
-  firebase_analytics: 7eb18a640957243412f90aceeaac2f14369d614c
-  firebase_auth: 34cb862c9522bf9b540e20481b30ef5def476d94
-  firebase_core: a9d2738c7c85ab10baee3176a5803c8e7f3b79fa
-  firebase_performance: 2aa6fc374a403614fb58519242fc76ae42a175f6
-  firebase_storage: 4be971ca66fc01205b66538f7d5945d5c1d35c8a
+  firebase_analytics: 52a34e5d50443001f6c804644cb365c6ba77504a
+  firebase_auth: 1b0d14770b52e0bd3290bd8315b8e7a924247c08
+  firebase_core: b6426e922b04da23fef9960066eebc03211da294
+  firebase_performance: 8fc0bac93ce1bc7061139bcdcec0aeb7754a2726
+  firebase_storage: 2cfec48ca5c969ce12fde4fe0daf9d2b3bd57d09
   FirebaseABTesting: e419991eb6e92772b3c0a02fa3a675f59da692f1
   FirebaseAnalytics: adb3c8f02f83d00661cdaac6dbb4d54e9720d1b6
   FirebaseAuth: d8dba8db90a1705ee2493857047282ca4f6e7598
@@ -327,6 +338,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: d866834472f1324d080496bc67ab3ce5d0d46027
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
