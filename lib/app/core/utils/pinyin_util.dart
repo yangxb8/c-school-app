@@ -1,12 +1,15 @@
+import './index.dart';
+import 'package:collection/collection.dart';
+
 /// Pinyinizer Adds proper (Mandarin) Chinese tone diacritics to a string.
 ///
 /// The four tones of Chinese are commonly represented by the numbers 1-4.
 /// This package enables one to take a string with numerical tone representation
 /// and transforming it into a string with proper tone diacritics.
-///
 class PinyinUtil {
   static final RegExp _suffixPtn = RegExp(r"(n|ng|r|\'er|N|NG|R|\'ER)$",
       caseSensitive: false, multiLine: false);
+  static final toneDigitPtn = RegExp(r'[1-4]');
 
   static const _toneMap = {
     'a': ['ā', 'á', 'ǎ', 'à'],
@@ -39,19 +42,36 @@ class PinyinUtil {
 
   /// [wo3,ai4,ni3] -> [wǒ,ài,nǐ]
   static List<String> transformPinyin(List<String> pinyins) {
-    return _transform(pinyins.join('-')).split('-');
+    final adjusted = _adjustTonePosition(pinyins);
+    return _transform(adjusted.join('-')).split('-');
   }
 
   /// ['我','，','爱','你']+['wǒ','ài','nǐ'] => [wǒ,'，',ài,nǐ]
   static List<String> appendPunctuation(
-      {required List<String> origin, required List<String> ref}) {
+      {required List<String> origin,
+      required List<String> refHanziList,
+      List<String> ignoreList = const []}) {
     var copy = origin.sublist(0);
-    final originLength = origin.length;
-    for (var i = 0; i < ref.length; i++) {
-      if (i >= originLength || copy[i] != ref[i]) {
-        copy.insert(i, ref[i]);
+    for (var i = 0; i < refHanziList.length; i++) {
+      if (!refHanziList[i].isSingleHanzi &&
+          !ignoreList.contains(refHanziList[i])) {
+        copy.insert(i, refHanziList[i]);
       }
     }
+    return copy;
+  }
+
+  static List<String> _adjustTonePosition(List<String> pinyins) {
+    final copy = pinyins.sublist(0);
+    copy.forEachIndexed((index, pinyin) {
+      final pinyinList = pinyin.split('');
+      final toneIndex = pinyinList.indexWhere((s) => toneDigitPtn.hasMatch(s));
+      if (toneIndex != -1) {
+        final tone = pinyinList.removeAt(toneIndex);
+        pinyinList.add(tone);
+        copy[index] = pinyinList.join('');
+      }
+    });
     return copy;
   }
 

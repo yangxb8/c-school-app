@@ -351,7 +351,7 @@ class PinyinAnnotatedHanzi {
   final TextStyle pinyinStyle;
   final ParagraphHanziType type;
 
-  bool get isPunctuation => pinyin.isEmpty;
+  bool get isHanzi => hanzi.isSingleHanzi;
 }
 
 enum ParagraphHanziType { normal, linked, center }

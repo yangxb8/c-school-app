@@ -60,7 +60,9 @@ class Messages extends Translations {
           'review.word.card.lastCard':
               'Last card reached. Swipe left will go to first card',
           // Ui view
-          'ui.charts.summary': 'Summary',
+          'ui.speech.evaluation.error.speechTooShort': 'Too short',
+          'ui.speech.evaluation.result.summary': 'Summary',
+          'ui.speech.evaluation.result.word': 'Word',
           'ui.speech.evaluation.result.pronAccuracy': 'Accuracy',
           'ui.speech.evaluation.result.pronCompletion': 'Completion',
           'ui.speech.evaluation.result.pronFluency': 'Fluency',
@@ -116,7 +118,9 @@ class Messages extends Translations {
           'review.word.toast.changeSpeaker.female': '女性',
           'review.word.card.lastCard': '最後のカードです。左にスワイプすると初めに戻ります。',
           // Ui
+          'ui.speech.evaluation.error.speechTooShort': '短すぎます',
           'ui.speech.evaluation.result.summary': '総評',
+          'ui.speech.evaluation.result.word': '単語',
           'ui.speech.evaluation.result.pronAccuracy': '精確度',
           'ui.speech.evaluation.result.pronCompletion': '完成度',
           'ui.speech.evaluation.result.pronFluency': '流暢度',

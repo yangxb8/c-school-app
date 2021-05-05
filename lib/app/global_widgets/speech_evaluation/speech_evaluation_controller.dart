@@ -1,14 +1,15 @@
 // 🎯 Dart imports:
 import 'dart:convert';
-import 'dart:typed_data';
 
 // 🌎 Project imports:
 import 'package:c_school_app/app/data/model/api_request/soe_request.dart';
 import 'package:c_school_app/app/data/repository/user_repository.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:uuid/uuid.dart';
+import 'package:pedantic/pedantic.dart';
 
 import '../../core/utils/helper/api_helper.dart';
 import '../../data/model/exam/speech_evaluation_result.dart';
@@ -16,7 +17,6 @@ import '../../data/model/exam/speech_exam.dart';
 import '../../core/service/audio_service.dart';
 import '../../core/service/logger_service.dart';
 import '../expand_box.dart';
-import '../../core/utils/index.dart';
 
 class SpeechEvaluationController extends GetxController {
   SpeechEvaluationController(this.exam);
@@ -33,10 +33,10 @@ class SpeechEvaluationController extends GetxController {
   final SpeechExam exam;
 
   /// latest evaluation result as SentenceInfo
-  final Rx<SentenceInfo?> lastResult = null.obs;
+  RxList<SentenceInfo> results = <SentenceInfo>[].obs;
 
   /// Last speech recorded by user
-  Uint8List? lastSpeech;
+  String? lastSpeechPath;
 
   final logger = LoggerService.logger;
 
@@ -50,34 +50,43 @@ class SpeechEvaluationController extends GetxController {
   /// TencentApi
   final tencentApiHelper = TencentApiHelper();
 
-  /// Word been selected by user, default to 0 (first word in exam.question)
-  final RxInt wordSelected = 0.obs;
+  /// Word been selected by user, default to -1
+  final RxInt wordSelected = (-1).obs;
 
-  /// When ref hanzi is tapped. The index should be count without punctuation.
+  /// ATTENTION: At present this only play the whole speech as timeseries of
+  /// audio is not accurate enough.
   void onRefHanziTap(int index) {
-    playRefSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
+    // When ref hanzi is tapped. The index should be count without punctuation.
+    // playRefSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
+    playRefSpeech();
   }
 
-  /// When hanzi in result is tapped. The index should be count without punctuation.
+  /// ATTENTION: At present this only play the whole speech as timeseries of
+  /// audio is not accurate enough.
   void onResultHanziTap(int index) {
-    if (lastResult.value == null || lastSpeech == null) return;
-    playUserSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
+    if (results.isEmpty || lastSpeechPath == null) return;
+    // When hanzi in result is tapped. The index should be count without punctuation.
+    // playUserSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
+    playUserSpeech();
   }
 
   /// Play userSpeech. If wordIndex is specified, play the single word
   void playUserSpeech({int? wordIndex}) async {
     var from;
     var to;
+    if (lastSpeechPath == null) {
+      logger.e('Called when lastSpeechPath is null!');
+    }
     if (wordIndex != null) {
-      from = lastResult.value?.words?[wordIndex].beginTime?.milliseconds;
-      to = lastResult.value?.words?[wordIndex].endTime?.milliseconds;
+      from = results.last.words?[wordIndex].beginTime?.milliseconds;
+      to = results.last.words?[wordIndex].endTime?.milliseconds;
       if (from == null || to == null) {
         logger.w('No start or end time found for word index $wordIndex');
         return;
       }
     }
     await audioService.startPlayer(
-        bytes: lastSpeech, key: '${exam.refText!}:user', from: from, to: to);
+        uri: lastSpeechPath!, key: '${exam.refText!}:user', from: from, to: to);
   }
 
   /// Play ref speech of exam. If wordIndex is specified, play the single word
@@ -85,8 +94,10 @@ class SpeechEvaluationController extends GetxController {
     var from;
     var to;
     if (wordIndex != null) {
-      from = exam.refSpeech!.timeSeries![wordIndex];
-      to = exam.refSpeech!.timeSeries!.elementAtOrNull(wordIndex + 1);
+      from = exam.refSpeech!.timeSeries![wordIndex].milliseconds;
+      to = exam.refSpeech!.timeSeries!
+          .elementAtOrNull(wordIndex + 1)
+          ?.milliseconds;
     }
     await audioService.startPlayer(
         uri: exam.refSpeech!.audio!.url,
@@ -115,23 +126,32 @@ class SpeechEvaluationController extends GetxController {
     if (recordingStatus.value != RecordingStatus.idle) return;
     await audioService.startRecorder();
     detailHanziIndex.value = 0;
-    lastResult.value = null;
     recordingStatus.value = RecordingStatus.recording;
   }
 
+  /// If audio < 1s, the result will not be evaluated
   void _stopRecordAndEvaluate() async {
     if (recordingStatus.value != RecordingStatus.recording) return null;
     recordingStatus.value = RecordingStatus.evaluating;
     final file = await audioService.stopRecorder();
-    lastSpeech = file.readAsBytesSync();
-    final base64 = base64Encode(lastSpeech!);
+    lastSpeechPath = file.path;
+    if (await audioService.durationOfAudio(file.path) < 1.seconds) {
+      unawaited(Fluttertoast.showToast(
+          msg: 'ui.speech.evaluation.error.speechTooShort'.tr));
+      recordingStatus.value = RecordingStatus.idle;
+      return;
+    }
+    final base64 = base64Encode(file.readAsBytesSync());
     final request = SoeRequest(
         ScoreCoeff: Get.find<UserRepository>().currentUser.userScoreCoeff,
         RefText: exam.refTextAsString,
         UserVoiceData: base64,
         SessionId: Uuid().v1());
     recordingStatus.value = RecordingStatus.idle;
-    lastResult.value = await tencentApiHelper.soe(request, file);
+    final result = await tencentApiHelper.soe(request, file);
+    if (result != null) {
+      results.add(result);
+    }
   }
 }
 

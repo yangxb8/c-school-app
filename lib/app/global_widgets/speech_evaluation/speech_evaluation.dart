@@ -4,6 +4,7 @@
 // 🌎 Project imports:
 
 // 🐦 Flutter imports:
+import '../searchbar_action/toggle_audio_speed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 // 📦 Package imports:
@@ -36,7 +37,8 @@ class SpeechEvaluation extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(CSchool.comment_dots),
+              Icon(CSchool.comment_dots).paddingAll(8.0),
+              ToggleAudioSpeedAction(),
               IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () => Get.back(),
@@ -52,20 +54,20 @@ class SpeechEvaluation extends StatelessWidget {
                 defaultTextStyle: defaultTextStyle,
                 onHanziTap: controller.onRefHanziTap),
           ).paddingAll(8.0),
-          Obx(() => controller.lastResult.value == null
+          Obx(() => controller.results.isEmpty
               ? const SizedBox.shrink()
               : PronunciationCorrection(
-                  sentenceInfo: controller.lastResult.value!,
+                  sentenceInfo: controller.results.last,
                   refPinyinList: exam.refPinyins!,
                   refHanziList: exam.refText!,
                   currentFocusedHanziIndex: controller.detailHanziIndex,
                   hanziTapCallback: controller.onResultHanziTap,
                 )),
           Obx(
-            () => controller.lastResult.value == null
+            () => controller.results.isEmpty
                 ? const SizedBox.shrink()
                 : SpeechEvaluationRadialBarChart(
-                    sentenceInfo: controller.lastResult.value!,
+                    sentenceInfo: controller.results.last,
                     summaryExpandController: controller.summaryExpandController,
                     detailExpandController: controller.detailExpandController,
                     detailHanziIndex: controller.detailHanziIndex,

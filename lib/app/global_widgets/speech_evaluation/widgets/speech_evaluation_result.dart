@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 // 🌎 Project imports:
 import '../../../data/model/exam/speech_evaluation_result.dart';
-import '../../charts.dart';
+import '../../radial_bar_chart.dart';
 import '../../expand_box.dart';
 
 // 🌎 Project imports:
@@ -70,6 +70,7 @@ class SpeechEvaluationRadialBarChart extends StatelessWidget {
           },
           child: ObxValue(
               (RxInt index) => RadialBarChart(
+                    title: 'ui.speech.evaluation.result.word'.tr,
                     data: hanziData(index.value),
                     maxHeight: 250,
                     centerWidget: Text(

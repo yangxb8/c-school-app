@@ -180,7 +180,11 @@ extension MatchResultUtil on MatchResult {
 }
 
 extension PinyinExtension on WordInfo {
-  String get pinyin => PinyinUtil.transformPinyin(
-          [phoneInfos!.map((p) => p.referencePhone ?? p.detectedPhone!).join()])
-      .single;
+  String get pinyin => PinyinUtil.transformPinyin([
+        phoneInfos!
+            .map((p) => p.referencePhone!.isNotEmpty
+                ? p.referencePhone
+                : p.detectedPhone!)
+            .join()
+      ]).single;
 }
