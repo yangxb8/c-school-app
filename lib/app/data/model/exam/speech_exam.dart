@@ -14,7 +14,7 @@ part 'speech_exam.flamingo.dart';
 class SpeechExam extends Exam<SpeechExam> {
   SpeechExam({
     String? id,
-    DocumentSnapshot<Map<String, dynamic>>? snapshot,
+    DocumentSnapshot? snapshot,
     Map<String, dynamic>? values,
   }) : super(id: id, snapshot: snapshot, values: values);
 

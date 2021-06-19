@@ -51,7 +51,8 @@ class SpeechEvaluation extends StatelessWidget {
                 paragraph: exam.refTextAsString!,
                 pinyins: exam.refPinyins!,
                 spacing: 5.0,
-                defaultTextStyle: defaultTextStyle),
+                defaultTextStyle: defaultTextStyle,
+                onHanziTap: controller.onRefHanziTap),
           ).paddingAll(8.0),
           Obx(() => controller.results.isEmpty
               ? const SizedBox.shrink()

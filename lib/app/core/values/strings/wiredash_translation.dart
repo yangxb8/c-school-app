@@ -134,17 +134,5 @@ class CSchoolTranslations extends WiredashTranslations {
   @override
   String get validationHintFeedbackLength => 'フィードバックが長すぎます。';
 
-  @override
-  String get feedbackStateErrorMsg => 'フィードバックエラー';
-
-  @override
-  String get feedbackStateErrorTitle => 'フィードバックエラー';
-
-  @override
-  String get feedbackSubmitRetryMsg => 'フィードバック再送信';
-
-  @override
-  String get feedbackSubmitRetryTitle => 'フィードバック再送信';
-
   /// override all the terms
 }

@@ -20,7 +20,7 @@ class Lecture extends Document<Lecture> with Filterable implements Searchable {
   Lecture({
     String? id,
     int level = 0,
-    DocumentSnapshot<Map<String, dynamic>>? snapshot,
+    DocumentSnapshot? snapshot,
     Map<String, dynamic>? values,
   })  : lectureId = id,
         level = level,
