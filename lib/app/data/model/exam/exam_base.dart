@@ -12,7 +12,7 @@ part 'exam_base.flamingo.dart';
 class Exam<T> extends Document<Exam<T>> with Filterable {
   Exam({
     String? id,
-    DocumentSnapshot? snapshot,
+    DocumentSnapshot<Map<String, dynamic>>? snapshot,
     Map<String, dynamic>? values,
   })  : examId = id,
         tags = id == null ? const [] : [id.split('-').first],
@@ -20,11 +20,12 @@ class Exam<T> extends Document<Exam<T>> with Filterable {
         super(id: id, snapshot: snapshot, values: values);
 
   /// Create instance of subclass by snapshot
-  factory Exam.fromSnapshot(DocumentSnapshot snapshot) =>
-      _factories[snapshot.data()!['_examType']]!(snapshot) as Exam<T>;
+  factory Exam.fromSnapshot(DocumentSnapshot<Map<String, dynamic>>? snapshot) =>
+      _factories[snapshot!.data()!['_examType']]!(snapshot) as Exam<T>;
 
   /// Hold information about exam extends this class, need to be updated by hand
-  static final Map<String, Object Function(DocumentSnapshot snapshot)>
+  static final Map<String,
+          Object Function(DocumentSnapshot<Map<String, dynamic>>? snapshot)>
       _factories = {'SpeechExam': (snapshot) => SpeechExam(snapshot: snapshot)};
 
   @Field()

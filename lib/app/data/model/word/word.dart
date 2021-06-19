@@ -21,7 +21,7 @@ part 'word.flamingo.dart';
 class Word extends Document<Word> with Filterable implements Searchable {
   Word({
     String? id,
-    DocumentSnapshot? snapshot,
+    DocumentSnapshot<Map<String, dynamic>>? snapshot,
     Map<String, dynamic>? values,
   })  : wordId = id,
         tags =

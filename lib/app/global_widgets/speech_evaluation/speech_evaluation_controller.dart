@@ -55,11 +55,11 @@ class SpeechEvaluationController extends GetxController {
 
   /// ATTENTION: At present this only play the whole speech as timeseries of
   /// audio is not accurate enough.
-  void onRefHanziTap(int index) {
-    // When ref hanzi is tapped. The index should be count without punctuation.
-    // playRefSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
-    playRefSpeech();
-  }
+  // void onRefHanziTap(int index) {
+  //   // When ref hanzi is tapped. The index should be count without punctuation.
+  //   // playRefSpeech(wordIndex: exam.refText!.indexWithoutPunctuation(index));
+  //   playRefSpeech();
+  // }
 
   /// ATTENTION: At present this only play the whole speech as timeseries of
   /// audio is not accurate enough.

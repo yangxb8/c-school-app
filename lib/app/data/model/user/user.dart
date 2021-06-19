@@ -20,7 +20,7 @@ part 'user.flamingo.dart';
 class AppUser extends Document<AppUser> {
   AppUser({
     String? id,
-    DocumentSnapshot? snapshot,
+    DocumentSnapshot<Map<String, dynamic>>? snapshot,
     Map<String, dynamic>? values,
   }) : super(id: id, snapshot: snapshot, values: values);
 
